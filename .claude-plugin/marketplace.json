@@ -1,0 +1,37 @@
+{
+  "name": "atc-net",
+  "version": "1.0.0",
+  "owner": {
+    "name": "atc-net",
+    "email": "atcnet.org@gmail.com"
+  },
+  "metadata": {
+    "description": "Official marketplace for atc-net plugins",
+    "version": "1.0.0"
+  },
+  "repository": "https://github.com/atc-net/atc-agentic-toolkit",
+  "plugins": [
+    {
+      "name": "code-refactoring",
+      "version": "1.0.0",
+      "description": "Code refactoring tools for applying consistent formatting and style across C# projects",
+      "author": {
+        "name": "atc-net"
+      },
+      "source": "./.claude/plugins/code-refactoring",
+      "category": "utilities",
+      "keywords": [
+        "refactoring",
+        "code-quality",
+        "formatting",
+        "csharp",
+        "dotnet",
+        "cleanup"
+      ],
+      "homepage": "https://github.com/atc-net/atc-agentic-toolkit",
+      "repository": "https://github.com/atc-net/atc-agentic-toolkit",
+      "license": "MIT",
+      "strict": true
+    }
+  ]
+}

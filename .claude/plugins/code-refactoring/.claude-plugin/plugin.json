@@ -1,0 +1,19 @@
+{
+  "name": "code-refactoring",
+  "version": "1.0.0",
+  "description": "Code refactoring tools for applying consistent formatting and style across C# projects",
+  "author": {
+    "name": "atc-net"
+  },
+  "homepage": "https://github.com/atc-net/atc-agentic-toolkit",
+  "repository": "https://github.com/atc-net/atc-agentic-toolkit",
+  "license": "MIT",
+  "keywords": [
+    "refactoring",
+    "code-quality",
+    "formatting",
+    "csharp",
+    "dotnet",
+    "cleanup"
+  ]
+}
