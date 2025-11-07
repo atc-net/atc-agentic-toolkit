@@ -32,6 +32,30 @@
       "repository": "https://github.com/atc-net/atc-agentic-toolkit",
       "license": "MIT",
       "strict": true
+    },
+    {
+      "name": "common",
+      "version": "1.0.0",
+      "description": "Common base skills, plugins, commands etc.",
+      "author": {
+        "name": "atc-net"
+      },
+      "source": "./.claude/plugins/common",
+      "category": "utilities",
+      "keywords": [
+        "skills",
+        "utilities",
+        "skill-creator",
+        "base",
+        "common",
+        "scaffolding",
+        "templates",
+        "development"
+      ],
+      "homepage": "https://github.com/atc-net/atc-agentic-toolkit",
+      "repository": "https://github.com/atc-net/atc-agentic-toolkit",
+      "license": "MIT",
+      "strict": true
     }
   ]
 }
