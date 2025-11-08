@@ -1,0 +1,33 @@
+FROM mcr.microsoft.com/dotnet/sdk:9.0-bookworm-slim AS build-env
+ARG FEED_ACCESSTOKEN
+WORKDIR /app
+
+RUN curl -L https://raw.githubusercontent.com/Microsoft/artifacts-credprovider/master/helpers/installcredprovider.sh | sh
+
+RUN mkdir src
+COPY {{MODULE_CSPROJ_PATH}}/*.csproj ./src/
+{{CONTRACTS_CSPROJ_COPY}}
+COPY Directory.Build.props .
+COPY .editorconfig .
+COPY nuget.config .
+
+{{NUGET_CONFIG_SECTION}}
+RUN dotnet restore "./src/{{ModuleName}}.csproj"
+COPY src/ ./src/
+RUN dotnet publish "{{MODULE_PUBLISH_PATH}}/{{ModuleName}}.csproj" -c Release -o out
+
+FROM mcr.microsoft.com/dotnet/runtime:9.0-bookworm-slim
+WORKDIR /app
+COPY --from=build-env /app/out ./
+
+ENV USER=moduleuser
+ENV PUID=2000
+ENV TPM_GID=3000
+
+RUN useradd --uid $PUID --shell /bin/bash --create-home "$USER"
+RUN groupadd -f -g $TPM_GID aziottpm
+RUN usermod -a -G aziottpm $USER
+
+USER $USER
+
+ENTRYPOINT ["./{{ModuleName}}"]

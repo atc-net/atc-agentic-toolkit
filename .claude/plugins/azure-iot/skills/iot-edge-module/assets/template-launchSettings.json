@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "{{ModuleName}}": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Standalone"
+      }
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

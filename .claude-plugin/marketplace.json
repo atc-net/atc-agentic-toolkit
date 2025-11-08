@@ -56,6 +56,30 @@
       "repository": "https://github.com/atc-net/atc-agentic-toolkit",
       "license": "MIT",
       "strict": true
+    },
+    {
+      "name": "azure-iot",
+      "version": "1.0.0",
+      "description": "Azure IoT services automation and scaffolding for IoT Edge modules, IoT Hub, and related services",
+      "author": {
+        "name": "atc-net"
+      },
+      "source": "./.claude/plugins/azure-iot",
+      "category": "utilities",
+      "keywords": [
+        "azure",
+        "iot-edge",
+        "iot-hub",
+        "scaffolding",
+        "modules",
+        "deployment",
+        "dotnet",
+        "csharp"
+      ],
+      "homepage": "https://github.com/atc-net/atc-agentic-toolkit",
+      "repository": "https://github.com/atc-net/atc-agentic-toolkit",
+      "license": "MIT",
+      "strict": true
     }
   ]
 }
