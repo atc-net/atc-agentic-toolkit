@@ -1,0 +1,10 @@
+global using Atc.Azure.IoTEdge.Extensions;
+global using Atc.Azure.IoTEdge.Factories;
+global using Atc.Azure.IoTEdge.TestMocks;
+global using Atc.Azure.IoTEdge.Wrappers;
+global using {{PROJECT_NAMESPACE}}.Modules.Contracts.Extensions;
+global using {{PROJECT_NAMESPACE}}.Modules.Contracts.{{ModuleName}};
+global using Microsoft.Azure.Devices.Client;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Hosting;
+global using Microsoft.Extensions.Logging;
