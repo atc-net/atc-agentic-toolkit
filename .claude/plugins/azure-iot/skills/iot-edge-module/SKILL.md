@@ -7,6 +7,25 @@ description: This skill should be used when creating a new Azure IoT Edge module
 
 This skill automates the creation of new Azure IoT Edge modules. Use this skill to scaffold a complete module structure including source code, Docker configuration, deployment manifests, and shared contracts.
 
+## Execution Environment
+
+**IMPORTANT: All bash commands MUST use Unix syntax regardless of platform.**
+
+- Always use Unix bash syntax (e.g., `test -d`, `[ -f ]`, etc.)
+- NEVER use Windows CMD syntax (e.g., `if exist`, `dir`, etc.)
+- NEVER pipe commands to null (`2>/dev/null`, `2>nul`, etc.) - let all output and errors show naturally
+- Bash is available on all platforms: native on Linux/macOS, via WSL/Git Bash on Windows
+- Python scripts are cross-platform and handle path normalization internally
+
+## Communication Guidelines
+
+**Be concise and avoid stating obvious or expected behavior:**
+
+- Don't explain why assets are in the plugin directory (this is expected)
+- Don't describe where script files "should" be located (this is obvious)
+- Focus output on actionable information, progress, and actual errors only
+- Avoid verbose explanations of normal/expected conditions
+
 ## When to Use This Skill
 
 Trigger this skill when the user requests to:
@@ -92,6 +111,8 @@ Choose option (1/2/3):
 
 **Confirmation prompt (if detected, not saved):**
 
+Display the detected configuration to the user in a clear, readable format:
+
 ```
 Detected project structure:
 • Modules location: <modules_base_path>
@@ -99,9 +120,17 @@ Detected project structure:
 • Container registry: <container_registry>
 • Contracts project: <contracts_project_name> (<contracts_project_path>)
 • Deployment manifests: <manifests_found count> found
-
-Use this configuration? (Yes/No/Save and use)
+• NuGet feed: <nuget_feed_url or "Not configured">
 ```
+
+Then use AskUserQuestion tool to ask for confirmation:
+
+- **Question**: "Use this detected configuration?"
+- **Header**: "Config"
+- **Options**:
+  1. "Yes, use it" - "Proceed with the detected configuration"
+  2. "Save and use" - "Save this configuration for future modules and use it now"
+  3. "No, customize" - "Manually specify configuration values instead"
 
 **If user selects "Save and use":**
 
@@ -109,7 +138,7 @@ Use this configuration? (Yes/No/Save and use)
 python scripts/detect_project_structure.py --root . --save
 ```
 
-**If detection fails or user says No, prompt for:**
+**If user selects "No, customize" or if detection fails, prompt for:**
 
 - Project namespace (e.g., "Company.IoT.EdgeAPI")
 - Container registry URL (e.g., "myregistry.azurecr.io")
@@ -182,11 +211,13 @@ Create the module directory:
 <modules_base_path>/<modulename>/
 ```
 
-Check if directory already exists using bash:
+Check if directory already exists (MUST use this exact bash syntax):
 
 ```bash
 test -d "<modules_base_path>/<modulename>" && echo "EXISTS" || echo "NOT_EXISTS"
 ```
+
+**Note:** Do NOT use Windows CMD syntax like `if exist`. Always use Unix bash syntax as shown above.
 
 - If EXISTS: Ask user "Module directory exists. Overwrite? (Yes/Rename/Cancel)"
 - If Rename: Prompt for new name and restart from Step 3
