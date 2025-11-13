@@ -8,44 +8,44 @@ A curated collection of prompts, skills, plugins, and best practices for AI codi
 
 ---
 
-## Table of Contents
+## 📑 Table of Contents
 
 - [ATC Agentic Toolkit](#atc-agentic-toolkit)
-  - [Table of Contents](#table-of-contents)
-  - [What is ATC Agentic Toolkit?](#what-is-atc-agentic-toolkit)
-  - [Key Features](#key-features)
-    - [Plugin Marketplace](#plugin-marketplace)
-    - [Skill Framework](#skill-framework)
-    - [.NET-First Approach](#net-first-approach)
-    - [Production-Ready Tooling](#production-ready-tooling)
-  - [Quick Start](#quick-start)
-    - [For Claude Code](#for-claude-code)
-    - [For GitHub Copilot (Coming Soon)](#for-github-copilot-coming-soon)
-  - [Available Plugins](#available-plugins)
-    - [code-refactoring](#code-refactoring)
-    - [common](#common)
-    - [azure-iot](#azure-iot)
-  - [Project Structure](#project-structure)
-  - [Plugin Development](#plugin-development)
-  - [AI Assistant Support](#ai-assistant-support)
-    - [Claude Code](#claude-code)
-    - [GitHub Copilot (Coming Soon)](#github-copilot-coming-soon)
-  - [Requirements](#requirements)
-    - [Required](#required)
-    - [Verify Installation](#verify-installation)
-  - [Documentation](#documentation)
-    - [Guides](#guides)
-    - [Best Practices](#best-practices)
-    - [Reference](#reference)
-  - [Troubleshooting](#troubleshooting)
-    - [Plugin Not Found](#plugin-not-found)
-    - [Command Not Available](#command-not-available)
-    - [Installation Issues](#installation-issues)
-  - [How to contribute](#how-to-contribute)
+  - [📑 Table of Contents](#-table-of-contents)
+  - [💡 What is ATC Agentic Toolkit?](#-what-is-atc-agentic-toolkit)
+  - [⭐ Key Features](#-key-features)
+    - [🏪 Plugin Marketplace](#-plugin-marketplace)
+    - [🎯 Skill Framework](#-skill-framework)
+    - [💠 .NET-First Approach](#-net-first-approach)
+    - [⚙️ Production-Ready Tooling](#️-production-ready-tooling)
+  - [🚀 Quick Start](#-quick-start)
+    - [🎨 For Claude Code](#-for-claude-code)
+    - [🚧 For GitHub Copilot (Coming Soon)](#-for-github-copilot-coming-soon)
+  - [🔌 Available Plugins](#-available-plugins)
+    - [♻️ code-refactoring](#️-code-refactoring)
+    - [📦 common](#-common)
+    - [☁️ azure-iot](#️-azure-iot)
+  - [📁 Project Structure](#-project-structure)
+  - [🛠️ Plugin Development](#️-plugin-development)
+  - [🤖 AI Assistant Support](#-ai-assistant-support)
+    - [🎨 Claude Code](#-claude-code)
+    - [🚧 GitHub Copilot (Coming Soon)](#-github-copilot-coming-soon)
+  - [✅ Requirements](#-requirements)
+    - [📋 Required](#-required)
+    - [✔️ Verify Installation](#️-verify-installation)
+  - [📚 Documentation](#-documentation)
+    - [📘 Guides](#-guides)
+    - [✨ Best Practices](#-best-practices)
+    - [📖 Reference](#-reference)
+  - [🔧 Troubleshooting](#-troubleshooting)
+    - [🔍 Plugin Not Found](#-plugin-not-found)
+    - [⚠️ Command Not Available](#️-command-not-available)
+    - [🚨 Installation Issues](#-installation-issues)
+  - [🤝 How to contribute](#-how-to-contribute)
 
 ---
 
-## What is ATC Agentic Toolkit?
+## 💡 What is ATC Agentic Toolkit?
 
 AI coding assistants like Claude Code and GitHub Copilot are transforming software development, but without standardized configurations, teams face:
 
@@ -63,29 +63,29 @@ ATC Agentic Toolkit solves this by providing:
 
 ---
 
-## Key Features
+## ⭐ Key Features
 
-### Plugin Marketplace
+### 🏪 Plugin Marketplace
 
 Custom plugin distribution system with namespace support, version management, and dependency resolution. Plugins can bundle skills, agents, commands, and documentation for seamless installation.
 
-### Skill Framework
+### 🎯 Skill Framework
 
 Modular, discoverable expertise packages that extend Claude Code with specialized capabilities. Skills use progressive disclosure (metadata → instructions → bundled resources) for optimal context management.
 
-### .NET-First Approach
+### 💠 .NET-First Approach
 
 Enterprise patterns built-in: service injection, structured logging, ATC-Net conventions, and Azure integrations. Designed for teams using C#, ASP.NET Core, and Azure services.
 
-### Production-Ready Tooling
+### ⚙️ Production-Ready Tooling
 
 Not just examples—provides automated scaffolding and best practice enforcement.
 
 ---
 
-## Quick Start
+## 🚀 Quick Start
 
-### For Claude Code
+### 🎨 For Claude Code
 
 **1. Add the ATC-Net Marketplace**
 
@@ -103,7 +103,7 @@ Install desired plugins from the marketplace:
 Install the azure-iot plugin from the atc-net marketplace
 ```
 
-### For GitHub Copilot (Coming Soon)
+### 🚧 For GitHub Copilot (Coming Soon)
 
 **Using the Updater CLI Tool**
 
@@ -111,9 +111,9 @@ An updater CLI tool will be available to fetch the newest versions of configurat
 
 ---
 
-## Available Plugins
+## 🔌 Available Plugins
 
-### code-refactoring
+### ♻️ code-refactoring
 
 **Code refactoring tools for applying consistent formatting and style across C# projects**
 
@@ -139,7 +139,7 @@ An updater CLI tool will be available to fetch the newest versions of configurat
 
 ---
 
-### common
+### 📦 common
 
 **Common base skills, plugins, commands, and utilities**
 
@@ -172,7 +172,7 @@ Use the skill-creator skill to create a new skill named api-generator that scaff
 
 ---
 
-### azure-iot
+### ☁️ azure-iot
 
 **Azure IoT services automation and scaffolding for IoT Edge modules, IoT Hub, and related services**
 
@@ -217,7 +217,7 @@ Using the slash command:
 
 ---
 
-## Project Structure
+## 📁 Project Structure
 
 ```mermaid
 graph TD
@@ -264,7 +264,7 @@ graph TD
 
 ---
 
-## Plugin Development
+## 🛠️ Plugin Development
 
 Want to create your own plugins? The ATC Agentic Toolkit provides a complete framework for developing, testing, and distributing custom plugins.
 
@@ -291,9 +291,9 @@ See [Plugin Development Guide](docs/guides/plugin-development.md) for detailed i
 
 ---
 
-## AI Assistant Support
+## 🤖 AI Assistant Support
 
-### Claude Code
+### 🎨 Claude Code
 
 **Status: ✅ Fully Supported**
 
@@ -320,7 +320,7 @@ ATC Agentic Toolkit is designed for Claude Code with native support for:
 
 ---
 
-### GitHub Copilot (Coming Soon)
+### 🚧 GitHub Copilot (Coming Soon)
 
 **Status: 🚧 Planned**
 
@@ -332,16 +332,16 @@ GitHub Copilot support is planned for a future release. The toolkit will include
 
 ---
 
-## Requirements
+## ✅ Requirements
 
-### Required
+### 📋 Required
 
 - **.NET SDK** (9.0 or higher) - [Download](https://dotnet.microsoft.com/download)
 - **Python 3.x** - [Download](https://www.python.org/downloads/)
 - **Claude Code CLI** - [Installation Guide](https://docs.claude.com/claude-code)
 - **Git** - [Download](https://git-scm.com/downloads)
 
-### Verify Installation
+### ✔️ Verify Installation
 
 ```bash
 dotnet --version    # Should show 9.0 or higher
@@ -352,25 +352,25 @@ git --version       # Should show Git version
 
 ---
 
-## Documentation
+## 📚 Documentation
 
 Comprehensive documentation is available in the `docs/` directory:
 
-### Guides
+### 📘 Guides
 
 - [Plugin Development](docs/guides/plugin-development.md) - Creating plugins
 - [Skill Creation](docs/guides/skill-creation.md) - Building skills
 - [Agent Creation](docs/guides/agent-creation.md) - Building specialized agents
 - [Command Creation](docs/guides/command-creation.md) - Writing slash commands
 
-### Best Practices
+### ✨ Best Practices
 
 - [Claude Code Fundamentals](docs/best-practices/claude-code-fundamentals.md) - Core concepts
 - [Effective Prompts](docs/best-practices/effective-prompts.md) - Prompt engineering
 - [Context Management](docs/best-practices/context-management.md) - Advanced techniques
 - [Team Standards](docs/best-practices/team-standards.md) - ATC-Net conventions
 
-### Reference
+### 📖 Reference
 
 - [Plugin Structure](docs/reference/plugin-structure.md) - Directory layout
 - [Skill Anatomy](docs/reference/skill-anatomy.md) - SKILL.md format
@@ -379,9 +379,9 @@ Comprehensive documentation is available in the `docs/` directory:
 
 ---
 
-## Troubleshooting
+## 🔧 Troubleshooting
 
-### Plugin Not Found
+### 🔍 Plugin Not Found
 
 **Issue:** Claude Code doesn't recognize the plugin or skill.
 
@@ -391,7 +391,7 @@ Comprehensive documentation is available in the `docs/` directory:
 - Restart Claude Code CLI
 - Check for typos in skill invocation
 
-### Command Not Available
+### ⚠️ Command Not Available
 
 **Issue:** Slash command doesn't autocomplete or work.
 
@@ -400,7 +400,7 @@ Comprehensive documentation is available in the `docs/` directory:
 - Restart Claude Code CLI
 - Check command syntax in plugin documentation
 
-### Installation Issues
+### 🚨 Installation Issues
 
 **Issue:** Cannot install plugin from marketplace.
 
@@ -412,7 +412,7 @@ Comprehensive documentation is available in the `docs/` directory:
 
 ---
 
-## How to contribute
+## 🤝 How to contribute
 
 [Contribution Guidelines](https://atc-net.github.io/introduction/about-atc#how-to-contribute)
 
