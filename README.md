@@ -338,7 +338,7 @@ GitHub Copilot support is planned for a future release. The toolkit will include
 
 - **.NET SDK** (9.0 or higher) - [Download](https://dotnet.microsoft.com/download)
 - **Python 3.x** - [Download](https://www.python.org/downloads/)
-- **Claude Code CLI** - [Installation Guide](https://docs.claude.com/claude-code)
+- **Claude Code CLI** - [Installation Guide](https://code.claude.com/docs/en/overview)
 - **Git** - [Download](https://git-scm.com/downloads)
 
 ### ✔️ Verify Installation
