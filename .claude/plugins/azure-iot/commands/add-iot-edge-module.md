@@ -1,6 +1,6 @@
 # Add IoT Edge Module
 
-Immediately invoke the Skill tool with skill name "azure-iot:iot-edge-module" to create a new Azure IoT Edge module. Do not explore the codebase or ask questions before invoking the skill - just call the Skill tool directly.
+DO NOT output any text. Immediately invoke the Skill tool with skill name "azure-iot:iot-edge-module" without any preamble or explanation. The skill will handle all communication with the user.
 
 The user has provided:
 - Module name: {{ARG1}}
