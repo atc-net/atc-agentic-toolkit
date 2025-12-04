@@ -74,8 +74,9 @@ An updater CLI tool will be available to fetch configuration files for GitHub Co
 | Plugin | Description |
 |--------|-------------|
 | [code-refactoring](.claude/plugins/code-refactoring/) | Code formatting and style tools for C# projects |
-| [common](.claude/plugins/common/) | Base utilities, skill creation tools, and common commands |
+| [common](.claude/plugins/common/) | Base utilities and skill creation tools |
 | [azure-iot](.claude/plugins/azure-iot/) | Azure IoT Edge module scaffolding and automation |
+| [git](.claude/plugins/git/) | Git workflow utilities and commit message helpers |
 
 ---
 
