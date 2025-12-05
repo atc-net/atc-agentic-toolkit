@@ -2,11 +2,24 @@
 
 Generate conventional commit message suggestions for staged git changes, aligned with the repository's commit style.
 
+## Critical Rules
+
+**ALWAYS:**
+- Run the git commands below EVERY time - never assume or remember previous state
+- Base your suggestions ONLY on the actual git command output from THIS invocation
+
+**NEVER include in your output:**
+- The "🤖 Generated with Claude Code" footer
+- The "Co-Authored-By: Claude" line
+- Any other Claude Code attribution text
+
+These footers are for actual commits only, NOT for commit suggestions.
+
 ## Execution Steps
 
 ### Step 1: Gather Git Information
 
-Run these commands in parallel to understand the staged changes:
+You MUST run these commands every time this command is invoked - do not rely on previous context or memory:
 
 ```bash
 git diff --cached --stat           # Change overview with insertions/deletions
