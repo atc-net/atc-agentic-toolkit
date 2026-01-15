@@ -1,0 +1,17 @@
+{
+  "name": "hooks",
+  "version": "1.0.3",
+  "description": "Audio notification hooks for Claude Code",
+  "author": {
+    "name": "atc-net"
+  },
+  "homepage": "https://github.com/atc-net/atc-agentic-toolkit",
+  "repository": "https://github.com/atc-net/atc-agentic-toolkit",
+  "license": "MIT",
+  "keywords": [
+    "hooks",
+    "notifications",
+    "sounds",
+    "cross-platform"
+  ]
+}
