@@ -101,6 +101,28 @@
       "repository": "https://github.com/atc-net/atc-agentic-toolkit",
       "license": "MIT",
       "strict": true
+    },
+    {
+      "name": "hooks",
+      "version": "1.0.3",
+      "description": "Automation hooks for Claude Code sessions - notifications, formatting, and workflow enhancements",
+      "author": {
+        "name": "atc-net"
+      },
+      "source": "./.claude/plugins/hooks",
+      "category": "utilities",
+      "keywords": [
+        "hooks",
+        "automation",
+        "notifications",
+        "formatting",
+        "workflow",
+        "productivity"
+      ],
+      "homepage": "https://github.com/atc-net/atc-agentic-toolkit",
+      "repository": "https://github.com/atc-net/atc-agentic-toolkit",
+      "license": "MIT",
+      "strict": true
     }
   ]
 }
