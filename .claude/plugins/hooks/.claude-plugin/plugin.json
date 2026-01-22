@@ -1,6 +1,6 @@
 {
   "name": "hooks",
-  "version": "1.0.3",
+  "version": "1.0.7",
   "description": "Audio notification hooks for Claude Code",
   "author": {
     "name": "atc-net"

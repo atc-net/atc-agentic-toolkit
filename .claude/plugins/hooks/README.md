@@ -1,17 +1,16 @@
 # Hooks Plugin
 
-Age of Empires II sound effects for Claude Code events. Inspired by [age-of-claude](https://github.com/kylesnowschwartz/age-of-claude).
+Audio notification hooks for Claude Code events.
 
 ## Features
 
-Plays classic Age of Empires II sounds for Claude Code lifecycle events:
+Plays notification sounds for Claude Code lifecycle events:
 
 | Event | Sound | Description |
 |-------|-------|-------------|
-| **SessionStart** | Startup music | Session begins |
-| **Stop** | Villager training complete | Claude finishes responding |
-| **PermissionRequest** | WOLOLO! (Priest convert) | Permission prompt appears |
-| **SessionEnd** | Soldier death | Session ends |
+| **SessionStart** | ready.mp3 | Session begins |
+| **Stop** | finished.mp3 | Claude finishes responding |
+| **PermissionRequest** | human-input.mp3 | Permission prompt appears |
 
 ## Installation
 
@@ -36,19 +35,18 @@ Install via the atc-net marketplace:
 
 ## Customizing Sounds
 
-Replace the `.wav` files in the `sounds/` folder:
+Replace the `.mp3` files in the `sounds/` folder:
 
 ```
 sounds/
-├── claude_startup.wav          # SessionStart
-├── villager_training_complete.wav  # Stop
-├── priest_convert_wololo5.wav  # PermissionRequest
-└── soldier_death1.wav          # SessionEnd
+├── ready.mp3        # SessionStart
+├── finished.mp3     # Stop
+└── human-input.mp3  # PermissionRequest
 ```
 
 ## Technical Notes
 
-This plugin uses inline Python commands that read `CLAUDE_PLUGIN_ROOT` from the environment variable (not command string substitution) to work around a Windows path escaping bug where backslashes get stripped when passed to bash.
+This plugin uses Python to read `CLAUDE_PLUGIN_ROOT` from the environment variable and call a PowerShell script for sound playback. This approach works around a Windows path escaping bug where backslashes get stripped when passed to bash.
 
 ## License
 
