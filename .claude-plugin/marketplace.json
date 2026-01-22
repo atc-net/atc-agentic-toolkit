@@ -104,8 +104,8 @@
     },
     {
       "name": "hooks",
-      "version": "1.0.3",
-      "description": "Automation hooks for Claude Code sessions - notifications, formatting, and workflow enhancements",
+      "version": "1.0.7",
+      "description": "Automation hooks for Claude Code sessions - notifications and workflow enhancements",
       "author": {
         "name": "atc-net"
       },
@@ -115,7 +115,6 @@
         "hooks",
         "automation",
         "notifications",
-        "formatting",
         "workflow",
         "productivity"
       ],

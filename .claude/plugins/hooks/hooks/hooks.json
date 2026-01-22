@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python -c \"import os,sys,subprocess,platform; p=os.path.join(os.environ.get('CLAUDE_PLUGIN_ROOT','.'), 'sounds', 'claude_startup.wav'); subprocess.run(['powershell.exe','-c',f\\\"(New-Object Media.SoundPlayer '{p}').PlaySync()\\\"] if platform.system()=='Windows' else ['afplay',p], capture_output=True)\" 2>/dev/null"
+            "command": "python -c \"import os,subprocess; r=os.environ.get('CLAUDE_PLUGIN_ROOT','.'); subprocess.run(['powershell.exe','-ExecutionPolicy','Bypass','-File',os.path.join(r,'play_sound.ps1'),'-Event','session_start'])\""
           }
         ]
       }
@@ -16,7 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python -c \"import os,sys,subprocess,platform; p=os.path.join(os.environ.get('CLAUDE_PLUGIN_ROOT','.'), 'sounds', 'villager_training_complete.wav'); subprocess.run(['powershell.exe','-c',f\\\"(New-Object Media.SoundPlayer '{p}').PlaySync()\\\"] if platform.system()=='Windows' else ['afplay',p], capture_output=True)\" 2>/dev/null"
+            "command": "python -c \"import os,subprocess; r=os.environ.get('CLAUDE_PLUGIN_ROOT','.'); subprocess.run(['powershell.exe','-ExecutionPolicy','Bypass','-File',os.path.join(r,'play_sound.ps1'),'-Event','stop'])\""
           }
         ]
       }
@@ -27,17 +27,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python -c \"import os,sys,subprocess,platform; p=os.path.join(os.environ.get('CLAUDE_PLUGIN_ROOT','.'), 'sounds', 'priest_convert_wololo5.wav'); subprocess.run(['powershell.exe','-c',f\\\"(New-Object Media.SoundPlayer '{p}').PlaySync()\\\"] if platform.system()=='Windows' else ['afplay',p], capture_output=True)\" 2>/dev/null"
-          }
-        ]
-      }
-    ],
-    "SessionEnd": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python -c \"import os,sys,subprocess,platform; p=os.path.join(os.environ.get('CLAUDE_PLUGIN_ROOT','.'), 'sounds', 'soldier_death1.wav'); subprocess.run(['powershell.exe','-c',f\\\"(New-Object Media.SoundPlayer '{p}').PlaySync()\\\"] if platform.system()=='Windows' else ['afplay',p], capture_output=True)\" 2>/dev/null"
+            "command": "python -c \"import os,subprocess; r=os.environ.get('CLAUDE_PLUGIN_ROOT','.'); subprocess.run(['powershell.exe','-ExecutionPolicy','Bypass','-File',os.path.join(r,'play_sound.ps1'),'-Event','permission'])\""
           }
         ]
       }
