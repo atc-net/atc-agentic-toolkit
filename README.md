@@ -40,7 +40,7 @@ AI coding assistants like Claude Code and GitHub Copilot are transforming softwa
 
 ATC Agentic Toolkit solves this by providing:
 
-- **Reusable Components** - Skills, commands, and plugins that work out of the box
+- **Reusable Components** - Skills and plugins that work out of the box
 - **Team Consistency** - Standardized configurations that ensure predictable AI behavior
 - **Enterprise-Ready** - Production patterns for .NET, Azure, and enterprise development
 - **Extensible Framework** - Custom marketplace system for distributing internal tooling
@@ -73,10 +73,11 @@ An updater CLI tool will be available to fetch configuration files for GitHub Co
 
 | Plugin | Description |
 |--------|-------------|
-| [code-refactoring](.claude/plugins/code-refactoring/) | Code formatting and style tools for C# projects |
+| [code-refactoring](.claude/plugins/code-refactoring/) | Code refactoring and style enforcement skills for C# projects |
 | [common](.claude/plugins/common/) | Base utilities and skill creation tools |
 | [azure-iot](.claude/plugins/azure-iot/) | Azure IoT Edge module scaffolding and automation |
-| [git](.claude/plugins/git/) | Git workflow utilities and commit message helpers |
+| [git](.claude/plugins/git/) | Git workflow utilities including commit and PR description generators |
+| [hooks](.claude/plugins/hooks/) | Automation hooks for Claude Code sessions - notifications and workflow enhancements |
 
 ---
 
@@ -89,10 +90,9 @@ graph TD
     A --> D[docs/]
 
     B --> E["plugin-name/"]
-    E --> F[commands/]
-    E --> G[skills/]
-    E --> H[agents/]
-    E --> I[.claude-plugin/]
+    E --> F[skills/]
+    E --> G[agents/]
+    E --> H[.claude-plugin/]
 
     C --> J[marketplace.json]
 
@@ -108,7 +108,7 @@ graph TD
 
 **Key Directories:**
 
-- `.claude/plugins/` - Plugin implementations (skills, agents, commands, configs)
+- `.claude/plugins/` - Plugin implementations (skills, agents, hooks, configs)
 - `.claude-plugin/` - Marketplace configuration and metadata
 - `docs/` - Comprehensive documentation (guides, best practices, reference)
 
@@ -120,7 +120,7 @@ Want to create your own plugins? The toolkit provides a complete framework for d
 
 1. **Use the skill-creator skill** to generate plugin structure
 2. **Define your plugin** in `.claude-plugin/marketplace.json`
-3. **Create skills and commands** in `.claude/plugins/[your-plugin]/`
+3. **Create skills** in `.claude/plugins/[your-plugin]/skills/`
 4. **Test locally** in your project
 5. **Distribute** via marketplace or direct installation
 
@@ -128,7 +128,6 @@ Want to create your own plugins? The toolkit provides a complete framework for d
 
 - [Plugin Development Guide](docs/guides/plugin-development.md)
 - [Skill Creation Guide](docs/guides/skill-creation.md)
-- [Command Creation Guide](docs/guides/command-creation.md)
 - [Plugin Structure Reference](docs/reference/plugin-structure.md)
 
 ---
@@ -156,7 +155,6 @@ git --version       # Should show Git version
 - [Plugin Development](docs/guides/plugin-development.md) - Creating plugins
 - [Skill Creation](docs/guides/skill-creation.md) - Building skills
 - [Agent Creation](docs/guides/agent-creation.md) - Building specialized agents
-- [Command Creation](docs/guides/command-creation.md) - Writing slash commands
 
 ### ✨ Best Practices
 
@@ -176,8 +174,6 @@ git --version       # Should show Git version
 ## 🔧 Troubleshooting
 
 **Plugin Not Found:** Verify the marketplace was added correctly, check that the plugin was installed, and restart Claude Code CLI.
-
-**Command Not Available:** Verify the plugin containing the command is installed and restart Claude Code CLI.
 
 **Installation Issues:** Ensure Claude Code CLI is up to date, check network connection, and verify the marketplace URL is correct.
 
