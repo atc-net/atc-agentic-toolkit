@@ -1,20 +1,10 @@
 ---
 name: suggest-pr
-description: This skill should be used when the user wants to generate a pull request title and summary from the commits on the current branch. It produces a well-structured markdown PR description with categorized changes, ready to copy-paste into a PR.
+description: Generate a pull request title and well-structured markdown summary from the commits on the current branch. Use when the user wants to create or draft a PR description, asks for a PR summary, or says "suggest PR".
+disable-model-invocation: true
 ---
 
 # Suggest PR
-
-Generate a thorough, well-structured pull request title and summary from all commits on the current branch compared to the base branch.
-
-## When to Use This Skill
-
-Trigger this skill when the user:
-
-- Wants to create or draft a PR description
-- Asks for a PR summary or title
-- Needs help writing a pull request
-- Says "suggest PR", "PR summary", "draft PR", or similar
 
 ## Execution Steps
 

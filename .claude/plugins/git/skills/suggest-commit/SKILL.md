@@ -1,19 +1,10 @@
 ---
 name: suggest-commit
-description: This skill should be used when the user wants to generate conventional commit message suggestions for staged git changes, aligned with the repository's commit style.
+description: Generate conventional commit message suggestions for staged git changes, aligned with the repository's commit style. Use when the user wants a commit message suggestion, asks what to commit, or says "suggest commit".
+disable-model-invocation: true
 ---
 
 # Suggest Commit
-
-Generate conventional commit message suggestions for staged git changes, aligned with the repository's commit style.
-
-## When to Use This Skill
-
-Trigger this skill when the user:
-
-- Wants a commit message suggestion
-- Asks what to commit or how to describe staged changes
-- Says "suggest commit", "commit message", "what should I commit", or similar
 
 ## Critical Rules
 
