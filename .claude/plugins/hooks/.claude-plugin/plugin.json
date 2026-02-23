@@ -1,7 +1,7 @@
 {
   "name": "hooks",
   "version": "1.0.7",
-  "description": "Audio notification hooks for Claude Code",
+  "description": "Automation hooks for Claude Code sessions - notifications and workflow enhancements",
   "author": {
     "name": "atc-net"
   },

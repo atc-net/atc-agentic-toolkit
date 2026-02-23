@@ -1,20 +1,10 @@
 ---
 name: format-params
-description: This skill should be used when the user wants to apply consistent method parameter line break formatting across C# projects. It formats parameter lists in declarations (methods, constructors, local functions, delegates) while leaving invocations untouched.
+description: Apply consistent method parameter line break formatting across C# projects. Formats parameter lists in declarations (methods, constructors, local functions, delegates) while leaving invocations untouched. Use when the user wants to format method parameters or apply parameter line break formatting.
+disable-model-invocation: true
 ---
 
 # Format Method Parameters
-
-Apply consistent method parameter line break formatting across all C# projects in the repository.
-
-## When to Use This Skill
-
-Trigger this skill when the user:
-
-- Wants to format method parameters in C# files
-- Asks to apply parameter line break formatting
-- Needs consistent parameter formatting across a project
-- Says "format params", "format parameters", "parameter line breaks", or similar
 
 ## Scope: What to Format
 

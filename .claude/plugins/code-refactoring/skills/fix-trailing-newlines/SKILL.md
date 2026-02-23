@@ -1,21 +1,10 @@
 ---
 name: fix-trailing-newlines
-description: This skill should be used when the user wants to fix SA1518 StyleCop violations by removing trailing newlines from files. It targets projects where .editorconfig has insert_final_newline = false, ensuring files do not end with trailing newline characters.
+description: Fix SA1518 StyleCop violations by removing trailing newlines from files. Targets projects where .editorconfig has insert_final_newline = false. Use when the user mentions SA1518 violations, trailing newline issues, or wants to enforce insert_final_newline = false.
+disable-model-invocation: true
 ---
 
 # Fix Trailing Newlines (SA1518)
-
-Remove trailing newline characters from the end of source files to fix SA1518 StyleCop violations.
-
-## When to Use This Skill
-
-Trigger this skill when the user:
-
-- Mentions SA1518 violations or trailing newline issues
-- Wants to fix "file may not end with a newline character" warnings
-- Asks to remove trailing newlines from project files
-- Needs to enforce `insert_final_newline = false` from `.editorconfig`
-- Says "fix trailing newlines", "SA1518", "remove final newlines", or similar
 
 ## What This Fixes
 
