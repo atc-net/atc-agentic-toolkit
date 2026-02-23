@@ -1,39 +1,9 @@
 ---
 name: iot-edge-module
-description: This skill should be used when creating a new Azure IoT Edge module. It automates module scaffolding, manifest configuration, and shared contract generation with intelligent project structure detection.
+description: Automates Azure IoT Edge module scaffolding, manifest configuration, and shared contract generation with intelligent project structure detection. Use when the user wants to create, scaffold, or set up a new IoT Edge module, or add a new module to an edge deployment.
 ---
 
-# IoT Edge Module Scaffolding Skill
-
-This skill automates the creation of new Azure IoT Edge modules, scaffolding a complete module structure including source code, Docker configuration, deployment manifests, and shared contracts.
-
-## Execution Environment
-
-**IMPORTANT: All bash commands MUST use Unix syntax regardless of platform.**
-
-- Always use Unix bash syntax (e.g., `test -d`, `[ -f ]`, etc.)
-- NEVER use Windows CMD syntax (e.g., `if exist`, `dir`, etc.)
-- NEVER pipe commands to null (`2>/dev/null`, `2>nul`, etc.) - let all output and errors show naturally
-- Bash is available on all platforms: native on Linux/macOS, via WSL/Git Bash on Windows
-- Python scripts are cross-platform and handle path normalization internally
-
-## Communication Guidelines
-
-**Be concise and avoid stating obvious or expected behavior:**
-
-- Don't explain why assets are in the plugin directory (this is expected)
-- Don't describe where script files "should" be located (this is obvious)
-- Focus output on actionable information, progress, and actual errors only
-- Avoid verbose explanations of normal/expected conditions
-
-## When to Use This Skill
-
-Trigger this skill when the user requests to:
-
-- Create a new IoT Edge module
-- Scaffold an edge module
-- Set up a new module for IoT Edge
-- Add a new module to the edge deployment
+# IoT Edge Module Scaffolding
 
 ## Prerequisites
 
@@ -56,94 +26,19 @@ python scripts/detect_project_structure.py --root .
 
 ### Step 1.5: Verify IoTEdgeModules Folder Structure
 
-**Check if the IoTEdgeModules folder exists:**
+If `modules_base_path` wasn't found or doesn't exist, ask the user via AskUserQuestion:
+- Option 1: Create at default `src/IoTEdgeModules/modules/`
+- Option 2: Specify custom path
+- Option 3: Cancel scaffolding
 
-If the detection script couldn't find `modules_base_path` or it doesn't exist:
-
-**Prompt user:**
-
-```
-IoTEdgeModules folder not found. Where should modules be created?
-
-1. Create at default location: src/IoTEdgeModules/modules/
-2. Specify custom path
-3. Cancel scaffolding
-
-Choose option (1/2/3):
-```
-
-**If option 1 selected:**
-
-- Create directory structure:
-  ```
-  src/IoTEdgeModules/
-  ├── modules/
-  └── config/
-  ```
-- Update detected configuration with this path
-
-**If option 2 selected:**
-
-- Prompt: "Enter custom IoTEdgeModules path (e.g., edge/modules/):"
-- Validate path is reasonable
-- Create directory structure at custom location
-- Update detected configuration
-
-**If option 3 selected:**
-
-- Exit scaffolding with message: "Scaffolding cancelled by user"
-
-**What this detects:**
-
-- Modules base path (e.g., `src/IoTEdgeModules/modules`)
-- Contracts project path and name
-- Deployment manifests location
-- Project namespace
-- Container registry URL
-- NuGet feed URL (if configured)
-
-**Processing the output:**
+**Processing detection output:**
 
 1. Parse the JSON output
-2. If `config_source` is `"saved"`, use the saved configuration silently
-3. If `config_source` is `"detected"`, present findings to user for confirmation
-4. If detection fails or user rejects, prompt for each value manually
-
-**Confirmation prompt (if detected, not saved):**
-
-Display the detected configuration to the user in a clear, readable format:
-
-```
-Detected project structure:
-• Modules location: <modules_base_path>
-• Project namespace: <project_namespace>
-• Container registry: <container_registry>
-• Contracts project: <contracts_project_name> (<contracts_project_path>)
-• Deployment manifests: <manifests_found count> found
-• NuGet feed: <nuget_feed_url or "Not configured">
-```
-
-Then use AskUserQuestion tool to ask for confirmation:
-
-- **Question**: "Use this detected configuration?"
-- **Header**: "Config"
-- **Options**:
-  1. "Yes, use it" - "Proceed with the detected configuration"
-  2. "Save and use" - "Save this configuration for future modules and use it now"
-  3. "No, customize" - "Manually specify configuration values instead"
-
-**If user selects "Save and use":**
-
-```bash
-python scripts/detect_project_structure.py --root . --save
-```
-
-**If user selects "No, customize" or if detection fails, prompt for:**
-
-- Project namespace (e.g., "Company.IoT.EdgeAPI")
-- Container registry URL (e.g., "myregistry.azurecr.io")
-- Modules base path (default: "src/IoTEdgeModules/modules")
-- Contracts project name and path (or "none" if not using shared contracts)
+2. If `config_source` is `"saved"`, use silently
+3. If `config_source` is `"detected"`, present findings and ask for confirmation via AskUserQuestion:
+   - "Yes, use it" / "Save and use" / "No, customize"
+4. If "Save and use": run `python scripts/detect_project_structure.py --root . --save`
+5. If "No, customize" or detection fails, prompt for: project namespace, container registry URL, modules base path, contracts project name/path
 
 ### Step 2: Gather Module-Specific Information
 
@@ -405,68 +300,12 @@ python scripts/scan_manifests.py --root .
 
 ### Step 7.5: Handle "No Manifests Found" Scenario
 
-**If scan_manifests.py returns 0 manifests:**
+If 0 manifests found, ask user to create a base manifest or skip:
 
-**Prompt user:**
+- **If Yes**: Prompt for manifest name (default: "base"), create from `assets/template-base.deployment.manifest.json` at `<manifests_base_path>/{name}.deployment.manifest.json`, then add module via the update script
+- **If No**: Skip to Step 9
 
-```
-No deployment manifests found. This appears to be the first module in the project.
-
-Create a base deployment manifest with this module? (Yes/No)
-```
-
-**If user selects No:**
-
-- Skip to Step 9 (README update)
-- Inform user: "Module created without deployment manifest. You'll need to create a manifest manually."
-
-**If user selects Yes:**
-
-1. **Prompt for manifest name:**
-   ```
-   Manifest name (default: base): _
-   ```
-   - Accept user input or use "base" as default
-   - Validate name (alphanumeric, dashes, underscores only)
-
-2. **Create base deployment manifest:**
-   - Read template: `assets/template-base.deployment.manifest.json`
-   - Determine manifest path: `<manifests_base_path>/{name}.deployment.manifest.json`
-   - If `manifests_base_path` not detected, use `<modules_base_path>/../{name}.deployment.manifest.json`
-   - Write base manifest to file
-
-3. **Add the new module to the base manifest:**
-   - Run update script:
-     ```bash
-     python scripts/update_deployment_manifest.py \
-       "<manifest_path>" \
-       "<modulename>" \
-       --registry "<container_registry>"
-     ```
-   - This adds the newly scaffolded module as the first custom module
-
-4. **Report to user:**
-   ```
-   ✓ Created base deployment manifest: <manifest_path>
-   ✓ Added <modulename> to manifest (startup order: 1)
-   ```
-
-**Continue to Step 8 (or Step 9 if no updates needed)**
-
-**Multi-manifest selection prompt:**
-
-```
-Found <count> deployment manifests:
-
-1. <manifest_basename> (<modules_count> modules)
-   Path: <manifest_path>
-
-2. <manifest_basename> (<modules_count> modules)
-   Path: <manifest_path>
-
-Which manifest(s) should include this module?
-(Enter numbers separated by commas, or 'all', or 'none')
-```
+**Multi-manifest selection**: If multiple manifests found, present list with module counts and let user pick which to update (comma-separated numbers, 'all', or 'none').
 
 ### Step 8: Update Deployment Manifests (Automated)
 
@@ -485,55 +324,7 @@ python scripts/update_deployment_manifest.py \
 2. Report to user: "✓ Added <modulename> to <manifest_name> (startup order: <startup_order>)"
 3. If error: Report error and provide manual fallback instructions
 
-**Error handling:**
-
-If the script fails (e.g., module already exists, invalid JSON):
-
-1. Show error message from script
-2. Provide manual instructions:
-
-```
-Manual update required for <manifest_path>:
-
-Add to $edgeAgent.properties.desired.modules:
-{
-  "<modulename>": {
-    "version": "1.0",
-    "type": "docker",
-    "status": "running",
-    "restartPolicy": "always",
-    "startupOrder": <next-order>,
-    "settings": {
-      "image": "${MODULES.<modulename>}",
-      "createOptions": {
-        "HostConfig": {
-          "LogConfig": {
-            "Type": "json-file",
-            "Config": {
-              "max-size": "10m",
-              "max-file": "10"
-            }
-          },
-          "Mounts": [{
-            "Type": "volume",
-            "Target": "/app/data/",
-            "Source": "<modulename>"
-          }]
-        }
-      }
-    }
-  }
-}
-
-Add to $edgeHub.properties.desired.routes:
-{
-  "<modulename>ToIoTHub": {
-    "route": "FROM /messages/modules/<modulename>/outputs/* INTO $upstream",
-    "priority": 0,
-    "timeToLiveSecs": 86400
-  }
-}
-```
+If the script fails, show the error and provide manual fallback instructions from `references/deployment-manifests.md`.
 
 ### Step 9: Update README.md (Optional)
 
@@ -615,162 +406,14 @@ Configuration:
 
 **Next steps for the user:**
 
-1. **Implement module logic:**
-   - Edit `<ModuleName>Service.cs`
-   - Add business logic in `ExecuteAsync()`
-   - Register direct method handlers if needed
+1. Implement business logic in `<ModuleName>Service.cs` → `ExecuteAsync()`
+2. Test locally: `dotnet run --project <module_path>` (uses mock IoT Hub client)
+3. Build Docker image, push to registry, deploy manifest to IoT Hub
 
-2. **Add dependencies (if needed):**
-   - Update `<ModuleName>.csproj` with additional NuGet packages
-   - Add service registrations in `Program.cs`
-
-3. **Configure module (if needed):**
-   - Create options classes in `Options/` folder
-   - Add environment variables to deployment manifest:
-     ```json
-     "env": {
-       "MyOptions__Setting": { "value": "value" }
-     }
-     ```
-
-4. **Test locally:**
-   - Use `Properties/launchSettings.json` for standalone mode
-   - Run: `dotnet run --project <module_path>`
-   - Module runs with mock IoT Hub client
-
-5. **Add direct methods (if needed):**
-   - Add method names to `<ModuleName>Constants.cs`
-   - Register handlers in service:
-     ```csharp
-     await moduleClient.RegisterMethodHandlerAsync(
-         YourModuleConstants.DirectMethodName,
-         HandleMethodAsync,
-         stoppingToken);
-     ```
-
-6. **Customize routing (if needed):**
-   - Default route: Module → IoT Hub (`$upstream`)
-   - For module-to-module: Update route to use `BrokeredEndpoint`
-   - Edit in deployment manifest
-
-7. **Build and deploy:**
-   - Build module Docker image
-   - Push to container registry
-   - Deploy manifest to IoT Hub
-
-**File paths for quick reference:**
-
-- Module source: `<module_full_path>/`
-- Constants: `<constants_full_path>`
-- Deployment manifest(s): `<manifest_paths>`
+For post-scaffolding customizations (Quartz, config options, routing, direct methods, etc.), see `references/customizations.md`.
 
 ## Reference Documentation
 
-For detailed information, see reference files:
-
-- `references/module-structure.md` - Complete module structure reference
-- `references/deployment-manifests.md` - Deployment manifest reference
-
-Load these when:
-
-- User asks about module structure details
-- User needs help with deployment manifest configuration
-- Debugging scaffolding issues
-- Understanding naming conventions
-
-## Common Customizations
-
-After scaffolding, users may want to:
-
-**1. Add Quartz scheduler support:**
-
-- Add NuGet package `Quartz`
-- Register: `services.AddQuartz()`
-- Create `Jobs/` folder with `IJob` implementations
-
-**2. Add configuration options:**
-
-- Create `Options/` folder
-- Define option classes
-- Register: `services.Configure<MyOptions>(hostContext.Configuration)`
-- Set via env vars in deployment manifest
-
-**3. Add module-to-module routing:**
-
-- Update route in deployment manifest:
-  ```json
-  "route": "FROM /messages/modules/source/* INTO BrokeredEndpoint(\"/modules/target/inputs/input1\")"
-  ```
-
-**4. Add host binds (replace volume mounts):**
-
-- Update deployment manifest `createOptions`:
-  ```json
-  "Binds": ["/host/path/:/container/path/"]
-  ```
-
-**5. Add privileged access (for device access like TPM):**
-
-- Update deployment manifest `createOptions.HostConfig`:
-  ```json
-  "Privileged": true
-  ```
-
-**6. Remove volume mount (for stateless modules):**
-
-- Delete `Mounts` section from deployment manifest
-
-## Error Handling
-
-**Module directory exists:**
-
-- Prompt: "Overwrite/Rename/Cancel"
-- If Overwrite: Delete existing directory first
-- If Rename: Go back to Step 3 with new name
-
-**Manifest update fails:**
-
-- Show error from Python script
-- Provide manual update instructions
-- Continue with other manifests
-
-**Detection fails:**
-
-- Fall back to manual prompts for each value
-- Offer to save configuration for future runs
-
-**Missing Python:**
-
-- If Python not available, provide manual instructions for all steps
-- Skip automated manifest updates, provide JSON templates
-
-## Advanced: Configuration File Format
-
-Saved configuration (`.claude/.iot-edge-module-config.json`):
-
-```json
-{
-  "config_source": "detected",
-  "modules_base_path": "src/IoTEdgeModules/modules",
-  "contracts_project_path": "src/Company.Modules.Contracts",
-  "contracts_project_name": "Company.Modules.Contracts",
-  "manifests_base_path": "src/IoTEdgeModules",
-  "project_namespace": "Company.IoT.EdgeAPI",
-  "container_registry": "myregistry.azurecr.io",
-  "nuget_feed_url": null,
-  "has_contracts_project": true,
-  "has_nuget_feed": false
-}
-```
-
-Users can manually edit this file to override auto-detection.
-
-## Notes
-
-- Module directory names: lowercase with "module" suffix (e.g., `dataprocessormodule`)
-- C# class names: PascalCase with "Module" suffix (e.g., `DataProcessorModule`)
-- Namespaces: PascalCase, no "module" suffix (e.g., `namespace DataProcessorModule;`)
-- All modules use non-root user (moduleuser, UID 2000) for security
-- Build context is repo root (`contextPath: "../../../"`)
-- Log rotation: 10MB max size, 10 files
-- Default route: Module outputs → `$upstream` (IoT Hub)
+- `references/module-structure.md` - Module structure, naming conventions, and notes
+- `references/deployment-manifests.md` - Deployment manifest configuration
+- `references/customizations.md` - Post-scaffolding customizations, error handling, and config file format
