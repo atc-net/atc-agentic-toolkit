@@ -1,7 +1,7 @@
 {
   "name": "code-refactoring",
-  "version": "1.0.0",
-  "description": "Code refactoring tools for applying consistent formatting and style across C# projects",
+  "version": "2.0.0",
+  "description": "Code refactoring and style enforcement skills for C# projects, including parameter formatting and trailing newline fixes",
   "author": {
     "name": "atc-net"
   },
