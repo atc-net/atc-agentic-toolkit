@@ -1,11 +1,11 @@
 ---
 name: iot-edge-module
-description: This skill should be used when creating a new Azure IoT Edge module. Use when the user requests to scaffold, create, or set up a new edge module. The skill automates module scaffolding, manifest configuration, and shared contract generation with intelligent project structure detection.
+description: This skill should be used when creating a new Azure IoT Edge module. It automates module scaffolding, manifest configuration, and shared contract generation with intelligent project structure detection.
 ---
 
 # IoT Edge Module Scaffolding Skill
 
-This skill automates the creation of new Azure IoT Edge modules. Use this skill to scaffold a complete module structure including source code, Docker configuration, deployment manifests, and shared contracts.
+This skill automates the creation of new Azure IoT Edge modules, scaffolding a complete module structure including source code, Docker configuration, deployment manifests, and shared contracts.
 
 ## Execution Environment
 

@@ -27,10 +27,10 @@ Scaffolds new Azure IoT Edge modules with complete project structure, deployment
 Use the iot-edge-module skill to create a new module named [ModuleName]
 ```
 
-Or use the slash command:
+The skill can also be invoked directly:
 
-```markdown
-/add-iot-edge-module [ModuleName] "[Description]"
+```
+/azure-iot:iot-edge-module
 ```
 
 ## Requirements
