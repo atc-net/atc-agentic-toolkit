@@ -1,7 +1,7 @@
 {
   "name": "git",
-  "version": "1.0.1",
-  "description": "Git workflow utilities and commit message helpers",
+  "version": "2.0.0",
+  "description": "Git workflow utilities including commit message and PR description generators",
   "author": {
     "name": "atc-net"
   },
@@ -13,6 +13,7 @@
     "commits",
     "conventional-commits",
     "workflow",
-    "version-control"
+    "version-control",
+    "pull-requests"
   ]
 }

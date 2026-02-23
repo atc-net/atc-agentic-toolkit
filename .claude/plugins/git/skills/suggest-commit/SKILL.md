@@ -1,15 +1,28 @@
+---
+name: suggest-commit
+description: This skill should be used when the user wants to generate conventional commit message suggestions for staged git changes, aligned with the repository's commit style.
+---
+
 # Suggest Commit
 
 Generate conventional commit message suggestions for staged git changes, aligned with the repository's commit style.
+
+## When to Use This Skill
+
+Trigger this skill when the user:
+
+- Wants a commit message suggestion
+- Asks what to commit or how to describe staged changes
+- Says "suggest commit", "commit message", "what should I commit", or similar
 
 ## Critical Rules
 
 **ALWAYS:**
 - Run the git commands below EVERY time - never assume or remember previous state
-- Base your suggestions ONLY on the actual git command output from THIS invocation
+- Base suggestions ONLY on the actual git command output from THIS invocation
 
-**NEVER include in your output:**
-- The "🤖 Generated with Claude Code" footer
+**NEVER include in output:**
+- The "Generated with Claude Code" footer
 - The "Co-Authored-By: Claude" line
 - Any other Claude Code attribution text
 
@@ -19,7 +32,7 @@ These footers are for actual commits only, NOT for commit suggestions.
 
 ### Step 1: Gather Git Information
 
-You MUST run these commands every time this command is invoked - do not rely on previous context or memory:
+Run these commands every time this skill is invoked - do not rely on previous context or memory:
 
 ```bash
 git diff --cached --stat           # Change overview with insertions/deletions
@@ -29,7 +42,7 @@ git log --oneline -15              # Recent commits for style reference
 
 ### Step 2: Analyze Change Scope
 
-**If no staged changes:** Inform the user there's nothing to commit.
+**If no staged changes:** Inform the user there is nothing to commit.
 
 **If changes exist:** Determine if this is a small or large changeset:
 - **Small** (1-5 related files): Suggest a single commit
@@ -44,7 +57,7 @@ git diff --cached                  # Full diff for understanding changes
 
 #### Commit Message Format
 
-Follow Conventional Commits format matching this repository's style:
+Follow Conventional Commits format matching the repository's style:
 
 ```
 type(scope): short description
@@ -77,9 +90,9 @@ type(scope): short description
 #### Scope Heuristics
 
 Determine scope from file paths:
-- `plugins/azure-iot/` → `azure-iot`
-- `src/Services/Auth*` → `auth`
-- `docs/guides/` → `docs` or omit scope
+- `plugins/azure-iot/` -> `azure-iot`
+- `src/Services/Auth*` -> `auth`
+- `docs/guides/` -> `docs` or omit scope
 - Match existing scopes from repo history when possible
 
 ### Step 4: Grouping Rules for Large Changes
@@ -140,7 +153,7 @@ docs: add authentication setup guide
 - docs/AUTHENTICATION.md
 ```
 
-## Important Notes
+## Guidelines
 
 - Always analyze the actual diff content to understand what changed
 - Match the repository's existing commit style from recent history
