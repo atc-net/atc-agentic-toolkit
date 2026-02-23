@@ -1,13 +1,13 @@
 {
   "name": "atc-net",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": {
     "name": "atc-net",
     "email": "atcnet.org@gmail.com"
   },
   "metadata": {
     "description": "Official marketplace for atc-net plugins",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "repository": "https://github.com/atc-net/atc-agentic-toolkit",
   "plugins": [
