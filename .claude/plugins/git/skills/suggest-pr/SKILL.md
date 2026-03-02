@@ -118,6 +118,7 @@ Brief overview of the PR purpose and motivation.
 **ALWAYS:**
 - Base the summary ONLY on actual commits and diffs from THIS invocation
 - Run the git commands every time - never assume or remember previous state
+- Use `git -C <path>` when targeting a specific directory — NEVER use `cd <path> && git` compound commands (they trigger security prompts)
 - Use emojis for change categories as specified above
 - Group related changes together under appropriate categories
 - Write in imperative mood for change descriptions
