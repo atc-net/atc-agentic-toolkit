@@ -11,6 +11,7 @@ disable-model-invocation: true
 **ALWAYS:**
 - Run the git commands below EVERY time - never assume or remember previous state
 - Base suggestions ONLY on the actual git command output from THIS invocation
+- Use `git -C <path>` when targeting a specific directory — NEVER use `cd <path> && git` compound commands (they trigger security prompts)
 
 **NEVER include in output:**
 - The "Generated with Claude Code" footer
