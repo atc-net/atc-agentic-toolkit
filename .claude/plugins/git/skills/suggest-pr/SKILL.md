@@ -6,6 +6,10 @@ disable-model-invocation: true
 
 # Suggest PR
 
+## Git Command Safety
+
+NEVER use `cd <path> && git` compound commands — they trigger security approval prompts. Run `git` commands directly (the working directory is already the target repo), or use `git -C <path>` if you need to target a different directory.
+
 ## Execution Steps
 
 ### Step 1: Determine the Base Branch
@@ -118,7 +122,6 @@ Brief overview of the PR purpose and motivation.
 **ALWAYS:**
 - Base the summary ONLY on actual commits and diffs from THIS invocation
 - Run the git commands every time - never assume or remember previous state
-- Use `git -C <path>` when targeting a specific directory — NEVER use `cd <path> && git` compound commands (they trigger security prompts)
 - Use emojis for change categories as specified above
 - Group related changes together under appropriate categories
 - Write in imperative mood for change descriptions
