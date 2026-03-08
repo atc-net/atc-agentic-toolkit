@@ -1,14 +1,14 @@
-# Azure IoT Plugin
+# Azure Plugin
 
-Azure IoT services automation and scaffolding for IoT Edge modules, IoT Hub, and related services.
+Azure services skills including IoT Edge modules, IoT Hub, and related services.
 
 ## Overview
 
-This plugin provides tools and automation for working with Azure IoT services, with a focus on development efficiency and best practices.
+This plugin provides skills and automation for working with Azure services, with a focus on development efficiency and best practices.
 
 ## Skills
 
-### iot-edge-module
+### azure-iot-edge-module
 
 Scaffolds new Azure IoT Edge modules with complete project structure, deployment manifests, and solution integration.
 
@@ -24,13 +24,13 @@ Scaffolds new Azure IoT Edge modules with complete project structure, deployment
 **Usage:**
 
 ```markdown
-Use the iot-edge-module skill to create a new module named [ModuleName]
+Use the azure-iot-edge-module skill to create a new module named [ModuleName]
 ```
 
 The skill can also be invoked directly:
 
 ```
-/azure-iot:iot-edge-module
+/azure:azure-iot-edge-module
 ```
 
 ## Requirements
