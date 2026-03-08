@@ -7,7 +7,8 @@
   },
   "metadata": {
     "description": "Official marketplace for atc-net plugins",
-    "version": "1.1.0"
+    "version": "1.1.0",
+    "pluginRoot": "./.claude/plugins"
   },
   "repository": "https://github.com/atc-net/atc-agentic-toolkit",
   "plugins": [
@@ -18,7 +19,7 @@
       "author": {
         "name": "atc-net"
       },
-      "source": "./.claude/plugins/code-refactoring",
+      "source": "code-refactoring",
       "category": "utilities",
       "keywords": [
         "refactoring",
@@ -41,7 +42,7 @@
       "author": {
         "name": "atc-net"
       },
-      "source": "./.claude/plugins/common",
+      "source": "common",
       "category": "utilities",
       "keywords": [
         "skills",
@@ -68,7 +69,7 @@
       "author": {
         "name": "atc-net"
       },
-      "source": "./.claude/plugins/azure",
+      "source": "azure",
       "category": "utilities",
       "keywords": [
         "azure",
@@ -92,7 +93,7 @@
       "author": {
         "name": "atc-net"
       },
-      "source": "./.claude/plugins/git",
+      "source": "git",
       "category": "utilities",
       "keywords": [
         "git",
@@ -114,7 +115,7 @@
       "author": {
         "name": "atc-net"
       },
-      "source": "./.claude/plugins/hooks",
+      "source": "hooks",
       "category": "utilities",
       "keywords": [
         "hooks",
