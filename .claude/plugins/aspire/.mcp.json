@@ -1,0 +1,9 @@
+{
+  "aspire": {
+    "command": "aspire",
+    "args": [
+      "mcp",
+      "start"
+    ]
+  }
+}

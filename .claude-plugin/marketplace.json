@@ -109,6 +109,29 @@
       "strict": true
     },
     {
+      "name": "aspire",
+      "version": "1.0.0",
+      "description": "Aspire distributed application orchestration skills covering AppHost, CLI, integrations, dashboard, and deployment",
+      "author": {
+        "name": "atc-net"
+      },
+      "source": "aspire",
+      "category": "utilities",
+      "keywords": [
+        "aspire",
+        "distributed-apps",
+        "orchestration",
+        "apphost",
+        "service-discovery",
+        "dotnet",
+        "containers"
+      ],
+      "homepage": "https://github.com/atc-net/atc-agentic-toolkit",
+      "repository": "https://github.com/atc-net/atc-agentic-toolkit",
+      "license": "MIT",
+      "strict": true
+    },
+    {
       "name": "hooks",
       "version": "1.0.7",
       "description": "Automation hooks for Claude Code sessions - notifications and workflow enhancements",
