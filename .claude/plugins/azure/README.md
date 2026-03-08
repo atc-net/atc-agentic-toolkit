@@ -6,6 +6,43 @@ Azure services skills including IoT Edge modules, IoT Hub, and related services.
 
 This plugin provides skills and automation for working with Azure services, with a focus on development efficiency and best practices.
 
+## MCP Servers
+
+This plugin bundles three MCP servers that start automatically when the plugin is enabled.
+
+### Microsoft Learn MCP Server
+
+Remote server providing real-time access to official Microsoft documentation. No API keys or authentication required.
+
+- `microsoft_docs_search` — semantic search across Microsoft Learn documentation
+- `microsoft_docs_fetch` — fetch a full documentation page as markdown
+- `microsoft_code_sample_search` — find official code snippets and examples
+
+Source: [MicrosoftDocs/mcp](https://github.com/MicrosoftDocs/mcp)
+
+### Azure MCP Server
+
+Local server providing tools for managing Azure resources, querying Azure Resource Graph, and interacting with Azure services directly from your agent.
+
+Requires: Node.js and an authenticated Azure CLI session (`az login`).
+
+Source: [@azure/mcp](https://www.npmjs.com/package/@azure/mcp)
+
+> **macOS/Linux:** The bundled config uses `cmd /c` for Windows. On macOS/Linux, override locally without the wrapper:
+> ```bash
+> claude mcp add --transport stdio azure-mcp-server -- npx -y @azure/mcp@latest server start
+> ```
+
+### Fetch (Fallback)
+
+Generic web fetching server used as a fallback when the Microsoft Learn MCP Server is not available. Fetches any URL and extracts its contents as markdown.
+
+- `fetch` — fetch a URL and return its content
+
+Requires: Node.js
+
+Source: [mcp-fetch-server](https://www.npmjs.com/package/mcp-fetch-server)
+
 ## Skills
 
 ### azure-iot-edge-module
