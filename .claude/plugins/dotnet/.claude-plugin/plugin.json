@@ -1,6 +1,6 @@
 {
   "name": "dotnet",
-  "version": "3.0.0",
+  "version": "1.0.0",
   "description": "C#/.NET development skills including refactoring, testing, async patterns, documentation, NuGet management, and Windows app development",
   "author": {
     "name": "atc-net"
