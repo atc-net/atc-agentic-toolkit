@@ -1,0 +1,20 @@
+{
+  "name": "web",
+  "version": "1.0.0",
+  "description": "Web development skills covering HTML, CSS, JavaScript, web APIs, security, performance, and accessibility",
+  "author": {
+    "name": "atc-net"
+  },
+  "homepage": "https://github.com/atc-net/atc-agentic-toolkit",
+  "repository": "https://github.com/atc-net/atc-agentic-toolkit",
+  "license": "MIT",
+  "keywords": [
+    "web",
+    "html",
+    "css",
+    "javascript",
+    "web-apis",
+    "accessibility",
+    "performance"
+  ]
+}
