@@ -62,13 +62,13 @@
       "strict": true
     },
     {
-      "name": "azure-iot",
-      "version": "1.1.0",
-      "description": "Azure IoT services automation and scaffolding for IoT Edge modules, IoT Hub, and related services",
+      "name": "azure",
+      "version": "2.0.0",
+      "description": "Azure services skills including IoT Edge modules, IoT Hub, and related services",
       "author": {
         "name": "atc-net"
       },
-      "source": "./.claude/plugins/azure-iot",
+      "source": "./.claude/plugins/azure",
       "category": "utilities",
       "keywords": [
         "azure",

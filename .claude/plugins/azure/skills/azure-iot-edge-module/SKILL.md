@@ -1,5 +1,5 @@
 ---
-name: iot-edge-module
+name: azure-iot-edge-module
 description: Automates Azure IoT Edge module scaffolding, manifest configuration, and shared contract generation with intelligent project structure detection. Use when the user wants to create, scaffold, or set up a new IoT Edge module, or add a new module to an edge deployment.
 ---
 
