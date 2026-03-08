@@ -7,6 +7,7 @@ Technical specification for plugin directory structure, file formats, and organi
 ```
 .claude/plugins/[plugin-name]/
 ├── README.md                          # Plugin documentation (required)
+├── .mcp.json                          # MCP server configuration (optional)
 ├── skills/                            # Skill definitions (optional)
 │   └── [skill-name]/
 │       ├── SKILL.md                   # Skill definition (required)
@@ -91,6 +92,48 @@ Description and usage.
 
 MIT
 ```
+
+---
+
+## Optional Files
+
+### .mcp.json (Plugin Root)
+
+**Purpose:** Bundles MCP (Model Context Protocol) server configurations with the plugin. When the plugin is enabled, its MCP servers start automatically — no manual setup needed.
+
+**Format:** JSON
+
+**How it works:**
+- MCP servers defined here start automatically when the plugin is enabled
+- MCP tools appear alongside manually configured MCP tools
+- Plugin servers are managed through plugin installation (not `/mcp` commands)
+- Supports stdio, SSE, and HTTP transports
+- Use `${CLAUDE_PLUGIN_ROOT}` for plugin-relative paths in stdio server configs
+
+**Example — remote HTTP server (no auth required):**
+```json
+{
+  "microsoftdocs": {
+    "type": "http",
+    "url": "https://learn.microsoft.com/api/mcp"
+  }
+}
+```
+
+**Example — local stdio server:**
+```json
+{
+  "database-tools": {
+    "command": "${CLAUDE_PLUGIN_ROOT}/servers/db-server",
+    "args": ["--config", "${CLAUDE_PLUGIN_ROOT}/config.json"],
+    "env": {
+      "DB_URL": "${DB_URL}"
+    }
+  }
+}
+```
+
+**Reference:** [Claude Code MCP documentation](https://code.claude.com/docs/en/mcp)
 
 ---
 
