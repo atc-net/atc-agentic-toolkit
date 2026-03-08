@@ -1,0 +1,26 @@
+{
+  "microsoftdocs": {
+    "type": "http",
+    "url": "https://learn.microsoft.com/api/mcp"
+  },
+  "azure-mcp-server": {
+    "command": "cmd",
+    "args": [
+      "/c",
+      "npx",
+      "-y",
+      "@azure/mcp@latest",
+      "server",
+      "start"
+    ]
+  },
+  "fetch": {
+    "command": "cmd",
+    "args": [
+      "/c",
+      "npx",
+      "-y",
+      "mcp-fetch-server"
+    ]
+  }
+}
