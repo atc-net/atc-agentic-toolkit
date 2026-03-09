@@ -8,7 +8,7 @@ This plugin provides skills and automation for working with Azure services, with
 
 ## MCP Servers
 
-This plugin bundles three MCP servers that start automatically when the plugin is enabled.
+This plugin bundles two MCP servers that start automatically when the plugin is enabled.
 
 ### Microsoft Learn MCP Server
 
@@ -32,16 +32,6 @@ Source: [@azure/mcp](https://www.npmjs.com/package/@azure/mcp)
 > ```bash
 > claude mcp add --transport stdio azure-mcp-server -- npx -y @azure/mcp@latest server start
 > ```
-
-### Fetch (Fallback)
-
-Generic web fetching server used as a fallback when the Microsoft Learn MCP Server is not available. Fetches any URL and extracts its contents as markdown.
-
-- `fetch` — fetch a URL and return its content
-
-Requires: Node.js
-
-Source: [mcp-fetch-server](https://www.npmjs.com/package/mcp-fetch-server)
 
 ## Skills
 
