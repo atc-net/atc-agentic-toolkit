@@ -19,7 +19,7 @@
       "author": {
         "name": "atc-net"
       },
-      "source": "common",
+      "source": "./.claude/plugins/common",
       "category": "utilities",
       "keywords": [
         "skills",
@@ -44,7 +44,7 @@
       "author": {
         "name": "atc-net"
       },
-      "source": "dotnet",
+      "source": "./.claude/plugins/dotnet",
       "category": "utilities",
       "keywords": [
         "csharp",
@@ -68,7 +68,7 @@
       "author": {
         "name": "atc-net"
       },
-      "source": "azure",
+      "source": "./.claude/plugins/azure",
       "category": "utilities",
       "keywords": [
         "azure",
@@ -92,7 +92,7 @@
       "author": {
         "name": "atc-net"
       },
-      "source": "aspire",
+      "source": "./.claude/plugins/aspire",
       "category": "utilities",
       "keywords": [
         "aspire",
@@ -115,7 +115,7 @@
       "author": {
         "name": "atc-net"
       },
-      "source": "git",
+      "source": "./.claude/plugins/git",
       "category": "utilities",
       "keywords": [
         "git",
@@ -138,7 +138,7 @@
       "author": {
         "name": "atc-net"
       },
-      "source": "playwright",
+      "source": "./.claude/plugins/playwright",
       "category": "utilities",
       "keywords": [
         "playwright",
@@ -159,7 +159,7 @@
       "author": {
         "name": "atc-net"
       },
-      "source": "web",
+      "source": "./.claude/plugins/web",
       "category": "utilities",
       "keywords": [
         "web",
@@ -182,7 +182,7 @@
       "author": {
         "name": "atc-net"
       },
-      "source": "hooks",
+      "source": "./.claude/plugins/hooks",
       "category": "utilities",
       "keywords": [
         "hooks",
