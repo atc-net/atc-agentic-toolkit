@@ -1,7 +1,7 @@
 ---
 name: azure-cache-redis
 description: Expert knowledge for Azure Cache for Redis development including troubleshooting, best practices, decision making, architecture & design patterns, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure Cache for Redis applications. Not for Azure Managed Redis (use azure-managed-redis), Azure Cosmos DB (use azure-cosmos-db), Azure Table Storage (use azure-table-storage).
-compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or fetch_webpage to retrieve documentation.
+compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 ---
 # Azure Cache for Redis Skill
 
@@ -12,7 +12,7 @@ This skill provides expert guidance for Azure Cache for Redis. Covers troublesho
 > **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
 This skill requires **network access** to fetch documentation content.
 Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use `mcp_fetch:fetch` if the Microsoft Learn MCP server is not available.
+- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
 
 ## Category Index
 

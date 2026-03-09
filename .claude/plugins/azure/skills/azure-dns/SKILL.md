@@ -1,7 +1,7 @@
 ---
 name: azure-dns
 description: Expert knowledge for Azure DNS development including troubleshooting, decision making, architecture & design patterns, limits & quotas, security, configuration, and integrations & coding patterns. Use when building, debugging, or optimizing Azure DNS applications. Not for Azure Traffic Manager (use azure-traffic-manager), Azure Front Door (use azure-front-door), Azure Virtual Network (use azure-virtual-network), Azure Private Link (use azure-private-link).
-compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or fetch_webpage to retrieve documentation.
+compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 ---
 # Azure DNS Skill
 
@@ -12,7 +12,7 @@ This skill provides expert guidance for Azure DNS. Covers troubleshooting, decis
 > **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
 This skill requires **network access** to fetch documentation content.
 Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use `mcp_fetch:fetch` if the Microsoft Learn MCP server is not available.
+- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
 
 ## Category Index
 

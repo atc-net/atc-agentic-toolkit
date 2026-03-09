@@ -1,7 +1,7 @@
 ---
 name: azure-dedicated-hsm
 description: Expert knowledge for Azure Dedicated HSM development including troubleshooting, decision making, architecture & design patterns, security, configuration, and deployment. Use when building, debugging, or optimizing Azure Dedicated HSM applications. Not for Azure Cloud Hsm (use azure-cloud-hsm), Azure Key Vault (use azure-key-vault), Azure Payment Hsm (use azure-payment-hsm).
-compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or fetch_webpage to retrieve documentation.
+compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 ---
 # Azure Dedicated HSM Skill
 
@@ -12,7 +12,7 @@ This skill provides expert guidance for Azure Dedicated HSM. Covers troubleshoot
 > **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
 This skill requires **network access** to fetch documentation content.
 Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use `mcp_fetch:fetch` if the Microsoft Learn MCP server is not available.
+- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
 
 ## Category Index
 

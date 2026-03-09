@@ -13,14 +13,5 @@
       "server",
       "start"
     ]
-  },
-  "fetch": {
-    "command": "cmd",
-    "args": [
-      "/c",
-      "npx",
-      "-y",
-      "mcp-fetch-server"
-    ]
   }
 }

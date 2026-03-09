@@ -1,7 +1,7 @@
 ---
 name: azure-iot
 description: Expert knowledge for Azure IoT development including troubleshooting, best practices, decision making, architecture & design patterns, security, configuration, and integrations & coding patterns. Use when building, debugging, or optimizing Azure IoT applications. Not for Azure IoT Hub (use azure-iot-hub), Azure IoT Edge (use azure-iot-edge), Azure IoT Central (use azure-iot-central), Azure Defender For Iot (use azure-defender-for-iot).
-compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or fetch_webpage to retrieve documentation.
+compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 ---
 # Azure IoT Skill
 
@@ -12,7 +12,7 @@ This skill provides expert guidance for Azure IoT. Covers troubleshooting, best 
 > **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
 This skill requires **network access** to fetch documentation content.
 Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use `mcp_fetch:fetch` if the Microsoft Learn MCP server is not available.
+- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
 
 ## Category Index
 
