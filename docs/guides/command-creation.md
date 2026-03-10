@@ -82,7 +82,7 @@ Create a command when:
 Commands are stored in the `commands/` directory of your plugin:
 
 ```
-.claude/plugins/my-plugin/
+plugins/my-plugin/
 └── commands/
     ├── my-command.md
     ├── another-command.md
@@ -326,7 +326,7 @@ If file write fails due to permissions:
 
 1. **Create the command file:**
 ```bash
-cd .claude/plugins/my-plugin/commands
+cd plugins/my-plugin/commands
 ```
 
 2. **Write command definition:**
@@ -793,7 +793,7 @@ Run tests: dotnet test tests/UserServiceTests.cs
 
 - Review [Plugin Development Guide](plugin-development.md) for creating complete plugins
 - Study [Skill Creation Guide](skill-creation.md) for more complex workflows
-- Check existing commands in [code-refactoring](../../.claude/plugins/code-refactoring/commands/) and [azure-iot](../../.claude/plugins/azure-iot/commands/) plugins
+- Check existing commands in [code-refactoring](../../plugins/code-refactoring/commands/) and [azure-iot](../../plugins/azure-iot/commands/) plugins
 - Explore [Command Reference](../reference/plugin-structure.md#commands) for technical specifications
 
 ---

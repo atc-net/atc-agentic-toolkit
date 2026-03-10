@@ -37,11 +37,6 @@
       "name": "web",
       "source": "./plugins/web",
       "description": "Web development skills covering HTML, CSS, JavaScript, web APIs, security, performance, and accessibility"
-    },
-    {
-      "name": "hooks",
-      "source": "./.claude/plugins/hooks",
-      "description": "Automation hooks for Claude Code sessions - notifications and workflow enhancements"
     }
   ]
 }

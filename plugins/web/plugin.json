@@ -1,0 +1,6 @@
+{
+  "name": "web",
+  "version": "1.1.0",
+  "description": "Web development skills covering HTML, CSS, JavaScript, web APIs, security, performance, and accessibility",
+  "skills": "./skills/"
+}

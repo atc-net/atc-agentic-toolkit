@@ -42,7 +42,7 @@ Plugins enable:
 ### Directory Structure
 
 ```
-.claude/plugins/[plugin-name]/
+plugins/[plugin-name]/
 ├── README.md                           # Plugin documentation
 ├── skills/                             # Skill definitions
 │   ├── [skill-name]/
@@ -98,8 +98,8 @@ Plugins are created manually by setting up the directory structure. Once the plu
 ### Step 1: Create Plugin Directory Structure
 
 ```bash
-# Navigate to your project's Claude plugins directory
-cd .claude/plugins/
+# Navigate to your project's plugins directory
+cd plugins/
 
 # Create plugin directory
 mkdir my-awesome-plugin
@@ -178,7 +178,7 @@ Skills define workflows and processes that Claude executes. They use progressive
 
 ### Creating a Skill
 
-1. Create skill directory under `.claude/plugins/[plugin-name]/skills/[skill-name]/`
+1. Create skill directory under `plugins/[plugin-name]/skills/[skill-name]/`
 2. Write `SKILL.md` with YAML frontmatter and instructions
 3. Add reference documentation in `references/` (optional)
 4. Test the skill by invoking it: `Use the [skill-name] skill to...`
@@ -193,7 +193,7 @@ Commands provide quick, parameterized access to common operations via slash comm
 
 ### Creating a Command
 
-1. Create markdown file under `.claude/plugins/[plugin-name]/commands/[command-name].md`
+1. Create markdown file under `plugins/[plugin-name]/commands/[command-name].md`
 2. Write command instructions including arguments, examples, and error handling
 3. Test the command: `/command-name [arguments]`
 
@@ -209,7 +209,7 @@ Agents define specialized personas that Claude adopts to provide domain-specific
 
 ### Creating an Agent
 
-1. Create markdown file under `.claude/plugins/[plugin-name]/agents/[agent-name].md`
+1. Create markdown file under `plugins/[plugin-name]/agents/[agent-name].md`
 2. Write agent definition with YAML frontmatter (name, description, model)
 3. Include sections: Purpose, Capabilities, Behavioral Traits, Knowledge Base, Response Approach, Example Interactions
 4. Test the agent: `@agent-name [task description]`
@@ -278,7 +278,7 @@ Verify:
 
 Once your plugin is ready, register it in the marketplace and test installation:
 
-1. Register plugin in `.claude-plugin/marketplace.json`
+1. Register plugin in `plugin.json`
 2. Push changes to your repository
 3. Add the marketplace in Claude Code
 4. Install the plugin from marketplace: `Install the [plugin-name] plugin from [marketplace-name] marketplace`
@@ -288,7 +288,7 @@ Once your plugin is ready, register it in the marketplace and test installation:
 
 ## Registering in Marketplace
 
-To make your plugin discoverable, add it to `.claude-plugin/marketplace.json`:
+To make your plugin discoverable, add it to `plugin.json`:
 
 ```json
 {
@@ -298,7 +298,7 @@ To make your plugin discoverable, add it to `.claude-plugin/marketplace.json`:
       "version": "1.0.0",
       "description": "Brief description of your plugin",
       "author": { "name": "Your Name" },
-      "source": "./.claude/plugins/my-awesome-plugin",
+      "source": "./plugins/my-awesome-plugin",
       "category": "utilities",
       "keywords": ["keyword1", "keyword2"],
       "license": "MIT",
@@ -320,6 +320,8 @@ To make your plugin discoverable, add it to `.claude-plugin/marketplace.json`:
 
 **Best for:** Open-source plugins shared with the community
 
+Plugins work with both **GitHub Copilot** and **Claude Code**, so a single plugin can serve users of either platform.
+
 1. Add plugin to public `atc-agentic-toolkit` repository
 2. Register in marketplace.json
 3. Submit pull request
@@ -329,6 +331,7 @@ To make your plugin discoverable, add it to `.claude-plugin/marketplace.json`:
 - Maximum discoverability
 - Community contributions
 - Version control and history
+- Dual-platform support (GitHub Copilot and Claude Code)
 
 ### Strategy 2: Private Marketplace
 

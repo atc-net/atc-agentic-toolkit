@@ -5,7 +5,7 @@ Technical specification for plugin directory structure, file formats, and organi
 ## Directory Structure
 
 ```
-.claude/plugins/[plugin-name]/
+plugins/[plugin-name]/
 ├── README.md                          # Plugin documentation (required)
 ├── .mcp.json                          # MCP server configuration (optional)
 ├── skills/                            # Skill definitions (optional)
@@ -113,9 +113,12 @@ MIT
 **Example — remote HTTP server (no auth required):**
 ```json
 {
-  "microsoftdocs": {
-    "type": "http",
-    "url": "https://learn.microsoft.com/api/mcp"
+  "mcpServers": {
+    "microsoftdocs": {
+      "type": "http",
+      "url": "https://learn.microsoft.com/api/mcp",
+      "tools": ["*"]
+    }
   }
 }
 ```
@@ -123,11 +126,14 @@ MIT
 **Example — local stdio server:**
 ```json
 {
-  "database-tools": {
-    "command": "${CLAUDE_PLUGIN_ROOT}/servers/db-server",
-    "args": ["--config", "${CLAUDE_PLUGIN_ROOT}/config.json"],
-    "env": {
-      "DB_URL": "${DB_URL}"
+  "mcpServers": {
+    "database-tools": {
+      "command": "${CLAUDE_PLUGIN_ROOT}/servers/db-server",
+      "args": ["--config", "${CLAUDE_PLUGIN_ROOT}/config.json"],
+      "env": {
+        "DB_URL": "${DB_URL}"
+      },
+      "tools": ["*"]
     }
   }
 }
@@ -277,11 +283,11 @@ If [condition]:
 
 ## Marketplace Registration
 
-**File:** `.claude-plugin/marketplace.json`
+**File:** `plugin.json`
 
 **Purpose:** Registers plugins for discovery and installation.
 
-**Location:** Repository root level (not inside `.claude/`)
+**Location:** Repository root level
 
 **Format:** JSON
 
@@ -307,7 +313,7 @@ If [condition]:
       "author": {
         "name": "Author Name"
       },
-      "source": "./.claude/plugins/plugin-name",
+      "source": "./plugins/plugin-name",
       "category": "utilities",
       "keywords": ["keyword1", "keyword2"],
       "homepage": "https://github.com/org/repo",
@@ -358,7 +364,7 @@ See [Marketplace Config Reference](marketplace-config.md) for detailed specifica
 ## Example: Complete Plugin
 
 ```
-.claude/plugins/api-documentation/
+plugins/api-documentation/
 ├── README.md
 ├── skills/
 │   ├── generate-openapi/
