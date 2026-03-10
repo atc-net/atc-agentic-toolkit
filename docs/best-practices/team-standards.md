@@ -418,8 +418,8 @@ Reach out to the team lead or post in the #development channel.
    ```
 
 2. **Add internal plugins** to the forked repository:
-   - Create plugins in `.claude/plugins/`
-   - Register in `.claude-plugin/marketplace.json`
+   - Create plugins in `plugins/`
+   - Register in `plugin.json`
    - Document in team README
 
 3. **Team members add the marketplace** in Claude Code:
@@ -437,7 +437,7 @@ Reach out to the team lead or post in the #development channel.
 **For company-specific plugins:**
 
 1. Add to your organization's marketplace repository
-2. Register in `.claude-plugin/marketplace.json`
+2. Register in `plugin.json`
 3. Document in team README
 4. Announce to team (they install via marketplace)
 

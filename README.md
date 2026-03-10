@@ -14,8 +14,6 @@ A curated collection of prompts, skills, plugins, and best practices for AI codi
   - [📑 Table of Contents](#-table-of-contents)
   - [💡 What is ATC Agentic Toolkit?](#-what-is-atc-agentic-toolkit)
   - [🚀 Quick Start](#-quick-start)
-    - [🎨 For Claude Code](#-for-claude-code)
-    - [🚧 For GitHub Copilot (Coming Soon)](#-for-github-copilot-coming-soon)
   - [🔌 Available Plugins](#-available-plugins)
   - [📁 Project Structure](#-project-structure)
   - [🛠️ Plugin Development](#️-plugin-development)
@@ -49,23 +47,45 @@ ATC Agentic Toolkit solves this by providing:
 
 ## 🚀 Quick Start
 
-### 🎨 For Claude Code
+### 🖥️ Copilot CLI / Claude Code
 
-**1. Add the ATC-Net Marketplace**
+1. Launch Copilot CLI or Claude Code
+2. Add the marketplace:
+   ```
+   /plugin marketplace add atc-net/atc-agentic-toolkit
+   ```
+3. Install a plugin:
+   ```
+   /plugin install <plugin>@atc-agentic-toolkit
+   ```
+4. Restart to load the new plugins
+5. View available skills:
+   ```
+   /skills
+   ```
+6. View available agents:
+   ```
+   /agents
+   ```
+7. Update plugin (on demand):
+   ```
+   /plugin update <plugin>@atc-agentic-toolkit
+   ```
 
-```text
-Add the atc-net marketplace from atc-net/atc-agentic-toolkit
+### 🆚 VS Code / VS Code Insiders (Preview)
+
+> [!IMPORTANT]
+> VS Code plugin support is a preview feature and subject to change. You may need to enable it first.
+
+```jsonc
+// settings.json
+{
+  "chat.plugins.enabled": true,
+  "chat.plugins.marketplaces": ["atc-net/atc-agentic-toolkit"]
+}
 ```
 
-**2. Install Plugins**
-
-```text
-Install the azure-iot plugin from the atc-net marketplace
-```
-
-### 🚧 For GitHub Copilot (Coming Soon)
-
-An updater CLI tool will be available to fetch configuration files for GitHub Copilot integration.
+Once configured, type `/plugins` in Copilot Chat or use the `@agentPlugins` filter in Extensions to browse and install plugins from the marketplace.
 
 ---
 
@@ -73,11 +93,14 @@ An updater CLI tool will be available to fetch configuration files for GitHub Co
 
 | Plugin | Description |
 |--------|-------------|
-| [code-refactoring](.claude/plugins/code-refactoring/) | Code refactoring and style enforcement skills for C# projects |
-| [common](.claude/plugins/common/) | Base utilities and skill creation tools |
-| [azure-iot](.claude/plugins/azure-iot/) | Azure IoT Edge module scaffolding and automation |
-| [git](.claude/plugins/git/) | Git workflow utilities including commit and PR description generators |
-| [hooks](.claude/plugins/hooks/) | Automation hooks for Claude Code sessions - notifications and workflow enhancements |
+| [common](plugins/common/) | Common base skills including documentation generators, implementation planning, and utility tools |
+| [dotnet](plugins/dotnet/) | C#/.NET development skills including refactoring, testing, async patterns, and NuGet management |
+| [azure](plugins/azure/) | Azure services skills covering 200+ cloud services, IoT, AI, data, networking, and more |
+| [aspire](plugins/aspire/) | Aspire distributed application orchestration skills |
+| [git](plugins/git/) | Git workflow utilities including commit message generators, PR descriptions, and GitHub issue management |
+| [playwright](plugins/playwright/) | Browser automation and testing skills using Playwright |
+| [web](plugins/web/) | Web development skills covering HTML, CSS, JavaScript, web APIs, security, performance, and accessibility |
+| [hooks](.claude/plugins/hooks/) | Automation hooks for Claude Code sessions (Claude Code only) |
 
 ---
 
@@ -85,31 +108,37 @@ An updater CLI tool will be available to fetch configuration files for GitHub Co
 
 ```mermaid
 graph TD
-    A[atc-agentic-toolkit] --> B[.claude/plugins/]
+    A[atc-agentic-toolkit] --> B[plugins/]
     A --> C[.claude-plugin/]
+    A --> G[.github/plugin/]
     A --> D[docs/]
+    A --> H[.claude/plugins/hooks/]
 
     B --> E["plugin-name/"]
     E --> F[skills/]
-    E --> G[agents/]
-    E --> H[.claude-plugin/]
+    E --> I[agents/]
+    E --> K[plugin.json]
 
     C --> J[marketplace.json]
+    G --> L[marketplace.json]
 
-    D --> K[guides/]
-    D --> L[best-practices/]
-    D --> M[reference/]
+    D --> M[guides/]
+    D --> N[best-practices/]
+    D --> O[reference/]
 
     style A fill:#e1f5ff
     style B fill:#fff4e1
     style C fill:#f0e1ff
+    style G fill:#f0e1ff
     style D fill:#e1ffe1
 ```
 
 **Key Directories:**
 
-- `.claude/plugins/` - Plugin implementations (skills, agents, hooks, configs)
-- `.claude-plugin/` - Marketplace configuration and metadata
+- `plugins/` - Plugin implementations (skills, agents, configs)
+- `.claude/plugins/hooks/` - Claude Code specific hooks
+- `.claude-plugin/` - Claude Code marketplace configuration
+- `.github/plugin/` - GitHub Copilot marketplace configuration
 - `docs/` - Comprehensive documentation (guides, best practices, reference)
 
 ---
@@ -119,10 +148,10 @@ graph TD
 Want to create your own plugins? The toolkit provides a complete framework for developing, testing, and distributing custom plugins.
 
 1. **Use the skill-creator skill** to generate plugin structure
-2. **Define your plugin** in `.claude-plugin/marketplace.json`
-3. **Create skills** in `.claude/plugins/[your-plugin]/skills/`
+2. **Define your plugin** in `plugin.json` at the plugin root
+3. **Create skills** in `plugins/[your-plugin]/skills/`
 4. **Test locally** in your project
-5. **Distribute** via marketplace or direct installation
+5. **Register** in both `.claude-plugin/marketplace.json` and `.github/plugin/marketplace.json`
 
 **Documentation:**
 
@@ -136,6 +165,7 @@ Want to create your own plugins? The toolkit provides a complete framework for d
 
 - **.NET SDK** (9.0 or higher) - [Download](https://dotnet.microsoft.com/download)
 - **Python 3.x** - [Download](https://www.python.org/downloads/)
+- **GitHub Copilot** (CLI or VS Code extension) - or -
 - **Claude Code CLI** - [Installation Guide](https://code.claude.com/docs/en/overview)
 - **Git** - [Download](https://git-scm.com/downloads)
 

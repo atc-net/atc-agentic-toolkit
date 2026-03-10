@@ -1,0 +1,6 @@
+{
+  "name": "aspire",
+  "version": "1.1.0",
+  "description": "Aspire distributed application orchestration skills covering AppHost, CLI, integrations, dashboard, and deployment",
+  "skills": "./skills/"
+}

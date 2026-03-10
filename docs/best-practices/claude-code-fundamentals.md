@@ -302,7 +302,7 @@ Use the iot-edge-module skill to create a new module named TemperatureSensor
 
 **Purpose:** Distributable collections of skills and commands
 
-**Location:** `.claude/plugins/[plugin-name]/`
+**Location:** `plugins/[plugin-name]/`
 
 **Installation:**
 ```

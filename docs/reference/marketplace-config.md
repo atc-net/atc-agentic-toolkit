@@ -8,7 +8,9 @@ For complete documentation on `marketplace.json` configuration, see the official
 
 ## Quick Reference
 
-**Location:** `.claude-plugin/marketplace.json`
+**Location:**
+- **Claude Code:** `.claude-plugin/marketplace.json`
+- **GitHub Copilot:** `.github/plugin/marketplace.json`
 
 **Purpose:** Register plugins for discovery and installation
 
@@ -35,7 +37,7 @@ For complete documentation on `marketplace.json` configuration, see the official
       "author": {
         "name": "Author Name"
       },
-      "source": "./.claude/plugins/plugin-name",
+      "source": "./plugins/plugin-name",
       "category": "utilities",
       "keywords": ["keyword1", "keyword2"],
       "homepage": "https://github.com/org/repo",

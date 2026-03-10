@@ -301,8 +301,8 @@ If you prefer manual setup:
 
 ```bash
 # Create skill directory
-mkdir -p .claude/plugins/my-plugin/skills/my-custom-skill
-cd .claude/plugins/my-plugin/skills/my-custom-skill
+mkdir -p plugins/my-plugin/skills/my-custom-skill
+cd plugins/my-plugin/skills/my-custom-skill
 
 # Create SKILL.md
 touch SKILL.md
@@ -481,7 +481,7 @@ If rotation or merging fails:
 
 ```bash
 # From the plugin directory
-cd .claude/plugins/my-plugin/skills
+cd plugins/my-plugin/skills
 
 # Create a zip file
 zip -r my-custom-skill.zip my-custom-skill/
@@ -655,7 +655,7 @@ If the script fails:
 
 1. **Install the skill** in a test project:
 ```bash
-cp -r .claude/plugins/my-plugin/skills/my-custom-skill /path/to/test/.claude/plugins/test-plugin/skills/
+cp -r plugins/my-plugin/skills/my-custom-skill /path/to/test/plugins/test-plugin/skills/
 ```
 
 2. **Invoke the skill:**
@@ -881,7 +881,7 @@ To generate unit tests:
 ## Next Steps
 
 - Review the [Plugin Development Guide](plugin-development.md) for creating full plugins
-- Study the [skill-creator SKILL.md](../../.claude/plugins/common/skills/skill-creator/SKILL.md) as a reference
+- Study the [skill-creator SKILL.md](../../plugins/common/skills/skill-creator/SKILL.md) as a reference
 - Explore [Skill Anatomy Reference](../reference/skill-anatomy.md) for technical details
 - Read [Claude Code Fundamentals](../best-practices/claude-code-fundamentals.md) for context management
 

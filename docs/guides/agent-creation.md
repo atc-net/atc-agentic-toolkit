@@ -642,7 +642,7 @@ Agent approach: [Response strategy]
 ### File Location
 
 ```
-.claude/plugins/[plugin-name]/agents/[agent-name].md
+plugins/[plugin-name]/agents/[agent-name].md
 ```
 
 ### Naming Convention
