@@ -1,7 +1,6 @@
 ---
 name: fix-trailing-newlines
-description: Fix SA1518 StyleCop violations by removing trailing newlines from files. Targets projects where .editorconfig has insert_final_newline = false. Use when the user mentions SA1518 violations, trailing newline issues, or wants to enforce insert_final_newline = false.
-disable-model-invocation: true
+description: Fix SA1518 StyleCop violations by removing trailing newlines from .cs, .xaml, .axaml, .csproj, .props, .targets, .editorconfig, .slnx, .sln, and .json files. Targets projects where .editorconfig has insert_final_newline = false. Use when SA1518 violations appear, trailing newline issues occur, or to enforce insert_final_newline = false across the repository.
 ---
 
 # Fix Trailing Newlines (SA1518)
@@ -23,6 +22,9 @@ When `.editorconfig` has `insert_final_newline = false`, files must NOT end with
 | `.props` | MSBuild property files |
 | `.targets` | MSBuild target files |
 | `.editorconfig` | Editor configuration files |
+| `.slnx` | Solution XML files |
+| `.sln` | Solution files |
+| `.json` | JSON configuration files |
 
 ## Excluded Directories
 
