@@ -16,6 +16,7 @@ import sys
 
 EXTENSIONS = {
     ".cs", ".xaml", ".axaml", ".csproj", ".props", ".targets", ".editorconfig",
+    ".slnx", ".sln", ".json",
 }
 
 EXCLUDE_DIRS = {
