@@ -2,6 +2,7 @@
 name: azure-open-datasets
 description: Expert knowledge for Azure Open Datasets development including limits & quotas. Use when building, debugging, or optimizing Azure Open Datasets applications. Not for Azure Data Explorer (use azure-data-explorer), Azure Synapse Analytics (use azure-synapse-analytics), Azure Databricks (use azure-databricks), Azure Machine Learning (use azure-machine-learning).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
+user-invocable: false
 ---
 # Azure Open Datasets Skill
 

@@ -2,6 +2,7 @@
 name: azure-active-directory-b2c
 description: Expert knowledge for Azure Active Directory B2C development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure Active Directory B2C applications. Not for Azure Information Protection (use azure-information-protection), Azure Role-based access control (use azure-rbac), Azure Security (use azure-security).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
+user-invocable: false
 ---
 # Azure Active Directory B2C Skill
 

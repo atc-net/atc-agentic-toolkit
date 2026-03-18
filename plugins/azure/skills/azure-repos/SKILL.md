@@ -2,6 +2,7 @@
 name: azure-repos
 description: Expert knowledge for Azure Repos development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure Repos applications. Not for Azure DevOps (use azure-devops), Azure Artifacts (use azure-artifacts), Azure Boards (use azure-boards), Azure Pipelines (use azure-pipelines).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
+user-invocable: false
 ---
 # Azure Repos Skill
 

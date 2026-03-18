@@ -2,6 +2,7 @@
 name: azure-oracle
 description: Expert knowledge for Azure Oracle development including troubleshooting, security, configuration, and integrations & coding patterns. Use when building, debugging, or optimizing Azure Oracle applications. Not for SQL Server on Azure Virtual Machines (use azure-sql-virtual-machines), Azure SQL Managed Instance (use azure-sql-managed-instance), Azure SQL Database (use azure-sql-database), Azure VMware Solution (use azure-vmware-solution).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
+user-invocable: false
 ---
 # Azure Oracle Skill
 

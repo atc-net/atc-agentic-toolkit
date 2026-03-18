@@ -2,6 +2,7 @@
 name: azure-data-science-vm
 description: Expert knowledge for Azure Data Science Virtual Machines development including troubleshooting, decision making, architecture & design patterns, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure Data Science Virtual Machines applications. Not for Azure Virtual Machines (use azure-virtual-machines), Azure Machine Learning (use azure-machine-learning), Azure Databricks (use azure-databricks), Azure HDInsight (use azure-hdinsight).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
+user-invocable: false
 ---
 # Azure Data Science Virtual Machines Skill
 

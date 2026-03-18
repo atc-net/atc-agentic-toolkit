@@ -2,6 +2,7 @@
 name: azure-ai-foundry-local
 description: Expert knowledge for Azure AI Foundry Local development including troubleshooting, best practices, configuration, and integrations & coding patterns. Use when building, debugging, or optimizing Azure AI Foundry Local applications. Not for Azure Machine Learning (use azure-machine-learning), Azure AI services (use azure-ai-services), Azure AI Vision (use azure-ai-vision), Azure AI Document Intelligence (use azure-document-intelligence).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
+user-invocable: false
 ---
 # Azure AI Foundry Local Skill
 

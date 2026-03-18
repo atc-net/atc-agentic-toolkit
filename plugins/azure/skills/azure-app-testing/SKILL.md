@@ -2,6 +2,7 @@
 name: azure-app-testing
 description: Expert knowledge for Azure App Testing development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure App Testing applications. Not for Azure Test Plans (use azure-test-plans), Playwright Workspaces (use azure-playwright-workspaces), Azure DevOps (use azure-devops), Azure App Service (use azure-app-service).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
+user-invocable: false
 ---
 # Azure App Testing Skill
 
