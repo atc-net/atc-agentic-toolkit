@@ -2,6 +2,7 @@
 name: azure-managed-applications
 description: Expert knowledge for Azure Managed Applications development including limits & quotas, security, configuration, and deployment. Use when building, debugging, or optimizing Azure Managed Applications applications. Not for Azure Lighthouse (use azure-lighthouse), Azure Resource Manager (use azure-resource-manager), Azure Portal (use azure-portal), Azure Partner Solutions (use azure-partner-solutions).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
+user-invocable: false
 ---
 # Azure Managed Applications Skill
 

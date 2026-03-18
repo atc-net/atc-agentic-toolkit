@@ -2,6 +2,7 @@
 name: azure-firmware-analysis
 description: Expert knowledge for Azure Firmware Analysis development including troubleshooting, best practices, security, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure Firmware Analysis applications.
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
+user-invocable: false
 ---
 # Azure Firmware Analysis Skill
 

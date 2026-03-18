@@ -2,6 +2,7 @@
 name: azure-video-indexer
 description: Expert knowledge for Azure AI Video Indexer development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure AI Video Indexer applications. Not for Azure AI services (use azure-ai-services), Azure AI Vision (use azure-ai-vision), Azure AI Custom Vision (use azure-custom-vision).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
+user-invocable: false
 ---
 # Azure AI Video Indexer Skill
 

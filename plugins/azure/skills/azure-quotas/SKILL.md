@@ -2,6 +2,7 @@
 name: azure-quotas
 description: Expert knowledge for Azure Quotas development including limits & quotas. Use when building, debugging, or optimizing Azure Quotas applications. Not for Azure Monitor (use azure-monitor), Azure Cost Management (use azure-cost-management), Azure Resource Manager (use azure-resource-manager), Azure Policy (use azure-policy).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
+user-invocable: false
 ---
 # Azure Quotas Skill
 

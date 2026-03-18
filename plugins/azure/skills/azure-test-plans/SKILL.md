@@ -2,6 +2,7 @@
 name: azure-test-plans
 description: Expert knowledge for Azure Test Plans development including limits & quotas, security, and configuration. Use when building, debugging, or optimizing Azure Test Plans applications. Not for Azure DevOps (use azure-devops), Azure Boards (use azure-boards), Azure Pipelines (use azure-pipelines), Azure App Testing (use azure-app-testing).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
+user-invocable: false
 ---
 # Azure Test Plans Skill
 

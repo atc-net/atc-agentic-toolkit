@@ -2,6 +2,7 @@
 name: azure-internet-peering
 description: Expert knowledge for Azure Internet Peering development including troubleshooting. Use when building, debugging, or optimizing Azure Internet Peering applications. Not for Azure ExpressRoute (use azure-expressroute), Azure Peering Service (use azure-peering-service), Azure Virtual Network (use azure-virtual-network), Azure Virtual WAN (use azure-virtual-wan).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
+user-invocable: false
 ---
 # Azure Internet Peering Skill
 

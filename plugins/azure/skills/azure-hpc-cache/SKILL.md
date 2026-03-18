@@ -2,6 +2,7 @@
 name: azure-hpc-cache
 description: Expert knowledge for Azure HPC Cache development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure HPC Cache applications. Not for Azure Managed Lustre (use azure-managed-lustre), Azure NetApp Files (use azure-netapp-files), Azure Batch (use azure-batch).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
+user-invocable: false
 ---
 # Azure HPC Cache Skill
 

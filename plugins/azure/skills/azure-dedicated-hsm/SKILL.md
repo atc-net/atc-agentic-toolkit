@@ -2,6 +2,7 @@
 name: azure-dedicated-hsm
 description: Expert knowledge for Azure Dedicated HSM development including troubleshooting, decision making, architecture & design patterns, security, configuration, and deployment. Use when building, debugging, or optimizing Azure Dedicated HSM applications. Not for Azure Cloud Hsm (use azure-cloud-hsm), Azure Key Vault (use azure-key-vault), Azure Payment Hsm (use azure-payment-hsm).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
+user-invocable: false
 ---
 # Azure Dedicated HSM Skill
 

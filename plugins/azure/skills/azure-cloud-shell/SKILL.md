@@ -2,6 +2,7 @@
 name: azure-cloud-shell
 description: Expert knowledge for Azure Cloud Shell development including troubleshooting, limits & quotas, and security. Use when building, debugging, or optimizing Azure Cloud Shell applications. Not for Azure Portal (use azure-portal), Azure Virtual Machines (use azure-virtual-machines), Azure Resource Manager (use azure-resource-manager).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
+user-invocable: false
 ---
 # Azure Cloud Shell Skill
 

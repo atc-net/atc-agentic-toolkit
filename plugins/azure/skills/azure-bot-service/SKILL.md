@@ -2,6 +2,7 @@
 name: azure-bot-service
 description: Expert knowledge for Azure AI Bot Service development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure AI Bot Service applications. Not for Azure Health Bot (use azure-health-bot), Azure Web PubSub (use azure-web-pubsub), Azure Functions (use azure-functions), Azure App Service (use azure-app-service).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
+user-invocable: false
 ---
 # Azure AI Bot Service Skill
 

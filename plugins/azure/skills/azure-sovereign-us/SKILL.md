@@ -2,6 +2,7 @@
 name: azure-sovereign-us
 description: Expert knowledge for Azure US Government development including decision making, architecture & design patterns, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure US Government applications. Not for Azure Local (use azure-local), Azure Stack Edge (use azure-stack-edge), Azure Virtual Network (use azure-virtual-network), Azure Security (use azure-security).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
+user-invocable: false
 ---
 # Azure US Government Skill
 
