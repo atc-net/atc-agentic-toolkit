@@ -1,6 +1,6 @@
 {
   "name": "atc-agentic-toolkit",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "owner": { "name": "atc-net" },
   "plugins": [
     {
@@ -26,7 +26,12 @@
     {
       "name": "git",
       "source": "./plugins/git",
-      "description": "Git workflow utilities including commit message generators, PR descriptions, and GitHub issue management"
+      "description": "Git workflow utilities including commit message generators and PR descriptions"
+    },
+    {
+      "name": "github",
+      "source": "./plugins/github",
+      "description": "GitHub platform skills including CI/CD workflow conventions for GitHub Actions and GitHub issue management"
     },
     {
       "name": "playwright",
@@ -37,6 +42,11 @@
       "name": "web",
       "source": "./plugins/web",
       "description": "Web development skills covering HTML, CSS, JavaScript, web APIs, security, performance, and accessibility"
+    },
+    {
+      "name": "security",
+      "source": "./plugins/security",
+      "description": "Security best practices and OWASP Top 10 guidelines for secure coding across all languages and frameworks"
     }
   ]
 }

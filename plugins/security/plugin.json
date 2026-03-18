@@ -1,0 +1,6 @@
+{
+  "name": "security",
+  "version": "1.0.0",
+  "description": "Security best practices and OWASP Top 10 guidelines for secure coding across all languages and frameworks",
+  "skills": "./skills/"
+}

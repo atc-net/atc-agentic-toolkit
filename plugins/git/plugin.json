@@ -1,6 +1,6 @@
 {
   "name": "git",
-  "version": "2.1.0",
-  "description": "Git workflow utilities including commit message generators, PR descriptions, and GitHub issue management",
+  "version": "3.0.0",
+  "description": "Git workflow utilities including commit message generators and PR descriptions",
   "skills": "./skills/"
 }
