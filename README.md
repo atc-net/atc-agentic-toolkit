@@ -101,6 +101,9 @@ Once configured, type `/plugins` in Copilot Chat or use the `@agentPlugins` filt
 | [github](plugins/github/) | GitHub platform skills including CI/CD workflow conventions for GitHub Actions and GitHub issue management |
 | [playwright](plugins/playwright/) | Browser automation and testing skills using Playwright |
 | [web](plugins/web/) | Web development skills covering HTML, CSS, JavaScript, web APIs, security, performance, and accessibility |
+| [bicep](plugins/bicep/) | Azure Bicep IaC best practices, naming conventions, modularization, and security patterns |
+| [docker](plugins/docker/) | Docker and containerization best practices covering Dockerfile optimization, multi-stage builds, security, and orchestration |
+| [powershell](plugins/powershell/) | PowerShell cmdlet development and scripting best practices based on Microsoft guidelines |
 | [security](plugins/security/) | Security best practices and OWASP Top 10 guidelines for secure coding across all languages and frameworks |
 | [hooks](.claude/plugins/hooks/) | Automation hooks for Claude Code sessions (Claude Code only) |
 

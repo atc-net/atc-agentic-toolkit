@@ -1,0 +1,6 @@
+{
+  "name": "docker",
+  "version": "1.0.0",
+  "description": "Docker and containerization best practices covering Dockerfile optimization, multi-stage builds, security, and orchestration",
+  "skills": "./skills/"
+}

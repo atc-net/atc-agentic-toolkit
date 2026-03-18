@@ -1,0 +1,6 @@
+{
+  "name": "powershell",
+  "version": "1.0.0",
+  "description": "PowerShell cmdlet development and scripting best practices based on Microsoft guidelines",
+  "skills": "./skills/"
+}
