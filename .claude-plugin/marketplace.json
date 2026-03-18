@@ -44,6 +44,21 @@
       "description": "Web development skills covering HTML, CSS, JavaScript, web APIs, security, performance, and accessibility"
     },
     {
+      "name": "bicep",
+      "source": "./plugins/bicep",
+      "description": "Azure Bicep Infrastructure as Code best practices, naming conventions, modularization, and security patterns"
+    },
+    {
+      "name": "docker",
+      "source": "./plugins/docker",
+      "description": "Docker and containerization best practices covering Dockerfile optimization, multi-stage builds, security, and orchestration"
+    },
+    {
+      "name": "powershell",
+      "source": "./plugins/powershell",
+      "description": "PowerShell cmdlet development and scripting best practices based on Microsoft guidelines"
+    },
+    {
       "name": "security",
       "source": "./plugins/security",
       "description": "Security best practices and OWASP Top 10 guidelines for secure coding across all languages and frameworks"

@@ -1,0 +1,6 @@
+{
+  "name": "bicep",
+  "version": "1.0.0",
+  "description": "Azure Bicep Infrastructure as Code best practices, naming conventions, modularization, and security patterns",
+  "skills": "./skills/"
+}
