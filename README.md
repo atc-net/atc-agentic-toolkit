@@ -97,9 +97,11 @@ Once configured, type `/plugins` in Copilot Chat or use the `@agentPlugins` filt
 | [dotnet](plugins/dotnet/) | C#/.NET development skills including refactoring, testing, async patterns, and NuGet management |
 | [azure](plugins/azure/) | Azure services skills covering 200+ cloud services, IoT, AI, data, networking, and more |
 | [aspire](plugins/aspire/) | Aspire distributed application orchestration skills |
-| [git](plugins/git/) | Git workflow utilities including commit message generators, PR descriptions, and GitHub issue management |
+| [git](plugins/git/) | Git workflow utilities including commit message generators and PR descriptions |
+| [github](plugins/github/) | GitHub platform skills including CI/CD workflow conventions for GitHub Actions and GitHub issue management |
 | [playwright](plugins/playwright/) | Browser automation and testing skills using Playwright |
 | [web](plugins/web/) | Web development skills covering HTML, CSS, JavaScript, web APIs, security, performance, and accessibility |
+| [security](plugins/security/) | Security best practices and OWASP Top 10 guidelines for secure coding across all languages and frameworks |
 | [hooks](.claude/plugins/hooks/) | Automation hooks for Claude Code sessions (Claude Code only) |
 
 ---

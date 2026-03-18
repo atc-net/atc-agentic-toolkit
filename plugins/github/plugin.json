@@ -1,0 +1,6 @@
+{
+  "name": "github",
+  "version": "1.0.0",
+  "description": "GitHub platform skills including CI/CD workflow conventions for GitHub Actions and GitHub issue management",
+  "skills": "./skills/"
+}

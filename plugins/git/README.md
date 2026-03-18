@@ -1,10 +1,10 @@
 # Git Plugin
 
-Git workflow utilities including commit message generators, PR descriptions, and GitHub issue management.
+Git workflow utilities including commit message generators and PR descriptions.
 
 ## Overview
 
-This plugin provides skills for streamlining Git and GitHub workflows.
+This plugin provides skills for streamlining Git workflows.
 
 ## Skills
 
@@ -15,10 +15,6 @@ Generate conventional commit message suggestions based on staged changes.
 ### suggest-pr
 
 Generate PR titles and structured markdown summaries for pull requests.
-
-### github-issues
-
-Create, update, and manage GitHub issues with labels, assignees, milestones, and project fields.
 
 ## License
 
