@@ -1,0 +1,22 @@
+{
+  "name": "atc",
+  "version": "1.0.0",
+  "description": "Skills for the atc-net ecosystem — REST API source generation, WPF controls, MVVM toolkit, and more",
+  "author": {
+    "name": "atc-net"
+  },
+  "homepage": "https://github.com/atc-net/atc-agentic-toolkit",
+  "repository": "https://github.com/atc-net/atc-agentic-toolkit",
+  "license": "MIT",
+  "keywords": [
+    "atc-net",
+    "rest-api",
+    "source-generator",
+    "openapi",
+    "wpf",
+    "mvvm",
+    "xaml",
+    "dotnet",
+    "csharp"
+  ]
+}

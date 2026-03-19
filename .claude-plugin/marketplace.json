@@ -1,6 +1,6 @@
 {
   "name": "atc-agentic-toolkit",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "owner": { "name": "atc-net" },
   "plugins": [
     {
@@ -62,6 +62,11 @@
       "name": "security",
       "source": "./plugins/security",
       "description": "Security best practices and OWASP Top 10 guidelines for secure coding across all languages and frameworks"
+    },
+    {
+      "name": "atc",
+      "source": "./plugins/atc",
+      "description": "ATC.NET library skills including atc-net tools, e.g. REST API source generation from OpenAPI specs, WPF controls, cross-platform XAML development etc."
     },
     {
       "name": "hooks",

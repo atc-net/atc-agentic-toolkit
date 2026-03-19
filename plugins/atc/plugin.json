@@ -1,0 +1,6 @@
+{
+  "name": "atc",
+  "version": "1.0.0",
+  "description": "Skills for ATC.NET libraries/tools, e.g. REST API source generation, WPF controls, cross-platform XAML development etc.",
+  "skills": "./skills/"
+}
