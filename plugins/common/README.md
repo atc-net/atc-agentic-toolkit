@@ -18,11 +18,6 @@ Documentation context server that provides up-to-date library documentation dire
 
 Source: [@upstash/context7-mcp](https://www.npmjs.com/package/@upstash/context7-mcp)
 
-> **macOS/Linux:** The bundled config uses `cmd /c` for Windows. On macOS/Linux, override locally without the wrapper:
-> ```bash
-> claude mcp add --transport stdio context7 -- npx -y @upstash/context7-mcp@latest
-> ```
-
 ## Skills
 
 ### interview

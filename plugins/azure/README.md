@@ -28,11 +28,6 @@ Requires: Node.js and an authenticated Azure CLI session (`az login`).
 
 Source: [@azure/mcp](https://www.npmjs.com/package/@azure/mcp)
 
-> **macOS/Linux:** The bundled config uses `cmd /c` for Windows. On macOS/Linux, override locally without the wrapper:
-> ```bash
-> claude mcp add --transport stdio azure-mcp-server -- npx -y @azure/mcp@latest server start
-> ```
-
 ## Skills
 
 ### azure-iot-edge-module
