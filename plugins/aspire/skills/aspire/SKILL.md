@@ -191,7 +191,7 @@ Valid commands in Aspire CLI 13.1:
 | `aspire do <step>` | Execute a pipeline step | Preview |
 | `aspire update` | Update integrations (or `--self` for CLI) | Preview |
 | `aspire mcp init` | Configure MCP for AI assistants | Stable |
-| `aspire mcp start` | Start the MCP server | Stable |
+| `aspire agent mcp` | Start the MCP server | Stable |
 
 Full command reference with flags: [CLI Reference](references/cli-reference.md).
 
