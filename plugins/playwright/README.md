@@ -20,11 +20,6 @@ Requires: Node.js
 
 Source: [@playwright/mcp](https://www.npmjs.com/package/@playwright/mcp)
 
-> **macOS/Linux:** The bundled config uses `cmd /c` for Windows. On macOS/Linux, override locally without the wrapper:
-> ```bash
-> claude mcp add --transport stdio playwright -- npx -y @playwright/mcp@latest
-> ```
-
 ## Skills
 
 ### playwright-explore-website

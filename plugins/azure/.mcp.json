@@ -2,13 +2,12 @@
   "mcpServers": {
     "microsoftdocs": {
       "type": "http",
-      "url": "https://learn.microsoft.com/api/mcp",
-      "tools": ["*"]
+      "url": "https://learn.microsoft.com/api/mcp"
     },
     "azure-mcp-server": {
-      "command": "cmd",
-      "args": ["/c", "npx", "-y", "@azure/mcp@latest", "server", "start"],
-      "tools": ["*"]
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@azure/mcp@latest", "server", "start"]
     }
   }
 }
