@@ -1,6 +1,6 @@
 # Dashboard — Complete Reference
 
-The Aspire Dashboard provides real-time observability for all resources in your distributed application. It launches automatically with `aspire run` and can also run standalone.
+The Aspire Dashboard provides real-time observability for all resources in your distributed application. It launches automatically with `aspire start` (13.2+) or `aspire run` and can also run standalone.
 
 ---
 
@@ -72,13 +72,16 @@ For applications using AI/LLM integrations:
 
 By default, the dashboard runs on an auto-assigned port. Find it:
 
-- In the terminal output when `aspire run` starts
+- In the terminal output when the app starts
+- Via CLI: `aspire describe` (13.2+)
 - Via MCP: `list_resources` tool
-- Override with `--dashboard-port`:
+- Override with `--dashboard-port` (foreground mode):
 
 ```bash
 aspire run --dashboard-port 18888
 ```
+
+> **13.2+ note:** The VS Code extension shows a live tree view of running apphosts using `aspire describe --follow`.
 
 ---
 

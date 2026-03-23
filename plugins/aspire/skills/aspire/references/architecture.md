@@ -6,7 +6,7 @@ This reference covers Aspire's internal architecture: the DCP engine, resource m
 
 ## Developer Control Plane (DCP)
 
-The DCP is the **runtime engine** that Aspire uses in `aspire run` mode. Key facts:
+The DCP is the **runtime engine** that Aspire uses in `aspire start` / `aspire run` mode. Key facts:
 
 - Written in **Go** (not .NET)
 - Exposes a **Kubernetes-compatible API server** (local only, not a real K8s cluster)
@@ -171,7 +171,7 @@ All languages use the same env var pattern:
 
 ### Proxy architecture
 
-In `aspire run` mode, DCP runs a reverse proxy for each exposed endpoint:
+In local dev mode (`aspire start` or `aspire run`), DCP runs a reverse proxy for each exposed endpoint:
 
 ```
 Browser → Proxy (auto-assigned port) → Actual Service (target port)
@@ -338,4 +338,4 @@ Parameters are resolved from (in priority order):
 2. Environment variables
 3. User secrets (`dotnet user-secrets`)
 4. `appsettings.json` / `appsettings.{Environment}.json`
-5. Interactive prompt (for secrets during `aspire run`)
+5. Interactive prompt (for secrets during startup; `aspire secret set` on 13.2+ avoids prompts)

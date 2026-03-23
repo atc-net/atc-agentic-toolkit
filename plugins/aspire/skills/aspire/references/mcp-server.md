@@ -2,16 +2,19 @@
 
 Aspire exposes an **MCP (Model Context Protocol) server** that lets AI coding assistants query and control your running distributed application, and search Aspire documentation. This enables AI tools to inspect resource status, read logs, view traces, restart services, and look up docs — all from within the AI assistant's context.
 
-Reference: https://aspire.dev/get-started/configure-mcp/
+Reference: https://aspire.dev/get-started/ai-coding-agents/
 
 ---
 
-## Setup: `aspire mcp init`
+## Setup: `aspire agent init` (13.2+) / `aspire mcp init` (13.1)
 
 The easiest way to configure the MCP server is using the Aspire CLI:
 
 ```bash
-# Open a terminal in your project directory
+# 13.2+
+aspire agent init
+
+# 13.1
 aspire mcp init
 ```
 
@@ -21,15 +24,15 @@ The command walks you through an interactive setup:
 2. **Environment detection** — detects supported AI environments (VS Code, Copilot CLI, Claude Code, OpenCode) and asks which to configure
 3. **Playwright MCP** — optionally offers to configure the Playwright MCP server alongside Aspire
 4. **Config creation** — writes the appropriate configuration files (e.g., `.vscode/mcp.json`)
-5. **AGENTS.md** — if one doesn't already exist, creates an `AGENTS.md` with Aspire-specific instructions for AI agents
+5. **Skill files** — creates skill files with Aspire-specific instructions for AI agents
 
-> **Note:** `aspire mcp init` uses interactive prompts (Spectre.Console). It must be run in a real terminal — the VS Code integrated terminal may not handle the prompts correctly. Use an external terminal if needed.
+> **Note:** The init command uses interactive prompts (Spectre.Console). It must be run in a real terminal — the VS Code integrated terminal may not handle the prompts correctly. Use an external terminal if needed.
 
 ---
 
 ## Understanding the Configuration
 
-When you run `aspire mcp init`, the CLI creates configuration files appropriate for your detected environment.
+When you run `aspire agent init` (or `aspire mcp init` on 13.1), the CLI creates configuration files appropriate for your detected environment.
 
 ### VS Code (GitHub Copilot)
 
@@ -49,13 +52,13 @@ Creates or updates `.vscode/mcp.json`:
 
 ## MCP Tools
 
-The tools available depend on your Aspire CLI version. Check with `aspire --version`.
+The tools available depend on your Aspire CLI version. Check with `aspire --version` (or `aspire -v` on 13.2+).
 
 ### Tools available in 13.1+ (stable)
 
 #### Resource management tools
 
-These tools require a running AppHost (`aspire run`).
+These tools require a running AppHost (`aspire start` on 13.2+, or `aspire run` on 13.1).
 
 | Tool                         | Description                                                                          |
 | ---------------------------- | ------------------------------------------------------------------------------------ |
@@ -65,6 +68,8 @@ These tools require a running AppHost (`aspire run`).
 | `list_traces`                | Lists distributed traces. Traces can be filtered using an optional resource name parameter          |
 | `list_trace_structured_logs` | Lists structured logs for a specific trace                                                          |
 | `execute_resource_command`   | Executes a resource command (accepts resource name and command name)                                |
+
+> **13.2+ alternative:** Many of these operations are also available via CLI commands (`aspire describe`, `aspire logs`, `aspire otel logs/traces`, `aspire resource`). CLI commands work directly in the terminal without needing the MCP server.
 
 #### AppHost management tools
 
@@ -84,7 +89,7 @@ These work without a running AppHost.
 
 ### Tools added in 13.2+ (documentation search)
 
-> **Version gate:** These tools were added in [PR #14028](https://github.com/dotnet/aspire/pull/14028) and ship in Aspire CLI **13.2**. If you are on 13.1, these tools will NOT appear. To get them early, update to the daily channel: `aspire update --self --channel daily`.
+> **Version gate:** These tools were added in [PR #14028](https://github.com/dotnet/aspire/pull/14028) and ship in Aspire CLI **13.2**. If you are on 13.1, these tools will NOT appear.
 
 | Tool          | Description                                                              |
 | ------------- | ------------------------------------------------------------------------ |
@@ -93,6 +98,27 @@ These work without a running AppHost.
 | `get_doc`     | Retrieves a specific document by its slug                                |
 
 These tools index aspire.dev content using the `llms.txt` specification and provide weighted lexical search (titles 10x, summaries 8x, headings 6x, code 5x, body 1x). They work without a running AppHost.
+
+> **CLI alternative (13.2+):** Docs are also accessible via CLI: `aspire docs search <query>`, `aspire docs get <slug>`, `aspire docs list`. These work without the MCP server running.
+
+### Resource MCP tools (13.2+)
+
+Some Aspire resources expose their own MCP tools when configured. For example, `WithPostgresMcp()` adds SQL query tools for a PostgreSQL resource.
+
+These are **separate from** the Aspire MCP server tools above — resource MCP tools are tools exposed **by individual resources**, discoverable and callable through the CLI:
+
+| CLI Command                                          | Description                                      |
+| ---------------------------------------------------- | ------------------------------------------------ |
+| `aspire mcp tools`                                   | List all available resource MCP tools             |
+| `aspire mcp tools --format Json`                     | List with input schemas                           |
+| `aspire mcp call <resource> <tool> --input <json>`   | Invoke a resource MCP tool                        |
+
+```bash
+# Example: discover and call resource MCP tools
+aspire mcp tools
+aspire mcp tools --format Json                                # includes input schemas
+aspire mcp call mydb query-tool --input '{"sql":"SELECT 1"}'  # invoke a tool
+```
 
 ### Fallback for documentation (13.1 users)
 
@@ -121,7 +147,7 @@ builder.Build().Run();
 
 ## Supported AI Assistants
 
-The `aspire mcp init` command supports:
+The `aspire agent init` (13.2+) / `aspire mcp init` (13.1) command supports:
 
 - [VS Code](https://code.visualstudio.com/docs/copilot/customization/mcp-servers) (GitHub Copilot)
 - [Copilot CLI](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli#add-an-mcp-server)
@@ -134,7 +160,7 @@ The MCP server uses the **STDIO transport protocol** and may work with other age
 
 ## Usage Patterns
 
-### Debugging with AI assistance
+### Debugging with AI assistance (MCP)
 
 Once MCP is configured, your AI assistant can:
 
@@ -164,6 +190,18 @@ Once MCP is configured, your AI assistant can:
    - "How do I configure service discovery?"
    - _(Requires CLI 13.2+. On 13.1, use Context7 or `list_integrations`/`get_integration_docs` for integration-specific docs.)_
 
+### Debugging with CLI (13.2+)
+
+On 13.2+, many debugging operations can be done directly via CLI without MCP:
+
+1. `aspire describe` — check resource status, endpoints, health
+2. `aspire otel logs <resource>` — view structured logs
+3. `aspire logs <resource>` — view console output
+4. `aspire otel traces <resource>` — view distributed traces
+5. `aspire otel logs --trace-id <id>` — logs for a specific trace
+6. `aspire resource <resource> restart` — restart a service
+7. `aspire doctor` — environment diagnostics
+
 ---
 
 ## Security Considerations
@@ -188,8 +226,8 @@ If you run into issues, check the [open MCP issues on GitHub](https://github.com
 
 ## See Also
 
-- [aspire mcp command](https://aspire.dev/reference/cli/commands/aspire-mcp/)
-- [aspire mcp init command](https://aspire.dev/reference/cli/commands/aspire-mcp-init/)
+- [AI coding agents guide](https://aspire.dev/get-started/ai-coding-agents/)
+- [aspire agent init command](https://aspire.dev/reference/cli/commands/aspire-agent-init/)
 - [aspire agent mcp command](https://aspire.dev/reference/cli/commands/aspire-agent-mcp/)
 - [GitHub Copilot in the Dashboard](https://aspire.dev/dashboard/copilot/)
 - [How I taught AI to read Aspire docs](https://davidpine.dev/posts/aspire-docs-mcp-tools/)

@@ -4,7 +4,19 @@ Aspire has **144+ integrations** across 13 categories. Rather than maintaining a
 
 ---
 
-## Discovering integrations (MCP tools)
+## Discovering integrations
+
+### CLI docs (13.2+)
+
+On CLI 13.2+, search for integration documentation directly from the command line:
+
+```bash
+aspire docs search "redis"           # Find integration docs
+aspire docs get <slug>               # Read the full guide
+aspire add redis                     # Install into AppHost
+```
+
+### MCP tools (all versions)
 
 The Aspire MCP server provides two tools for integration discovery — these work on **all CLI versions** (13.1+) and do **not** require a running AppHost.
 

@@ -2,7 +2,7 @@
 
 The Aspire CLI (`aspire`) is the primary interface for creating, running, and publishing distributed applications. It is cross-platform and installed standalone (not coupled to the .NET CLI, though `dotnet` commands also work).
 
-**Tested against:** Aspire CLI 13.1.0
+**Tested against:** Aspire CLI 13.2.0
 
 ---
 
@@ -34,7 +34,14 @@ All commands support these options:
 | `--non-interactive`   | Disable all interactive prompts and spinners   |
 | `--wait-for-debugger` | Wait for a debugger to attach before executing |
 | `-?, -h, --help`      | Show help and usage information                |
-| `--version`           | Show version information                       |
+| `-v, --version`       | Show version information                       |
+
+Many commands also support:
+
+| Option                | Description                                                  |
+| --------------------- | ------------------------------------------------------------ |
+| `--format Json`       | Machine-readable JSON output (stdout); status messages go to stderr |
+| `--apphost <path>`    | Target a specific AppHost project                            |
 
 ---
 
@@ -65,7 +72,7 @@ aspire new aspire-apphost-singlefile
 Available templates:
 
 - `aspire-starter` — ASP.NET Core/Blazor starter + AppHost + tests
-- `aspire-ts-cs-starter` — ASP.NET Core/React + AppHost
+- `aspire-ts-cs-starter` — ASP.NET Core/React + TypeScript AppHost
 - `aspire-py-starter` — FastAPI/React + AppHost
 - `aspire-apphost-singlefile` — Empty single-file AppHost
 
@@ -90,17 +97,23 @@ Adds AppHost and ServiceDefaults projects to an existing solution. Interactive p
 
 ### `aspire run`
 
-Start all resources locally using the DCP (Developer Control Plane).
+Start all resources locally using the DCP (Developer Control Plane). Runs in the **foreground** — blocks the terminal.
+
+> **13.2+ recommendation:** Use `aspire start` instead for background operation. The new generated skill states: "NEVER use `aspire run` at all" for agent/AI workflows.
 
 ```bash
 aspire run [options] [-- <additional arguments>]
 
 # Options:
 #   --project <path>       Path to AppHost project file
+#   --detach               Run in background (equivalent to `aspire start`) (13.2+)
+#   --isolated             Randomized ports, isolated secrets (for worktrees) (13.2+)
+#   --no-build             Skip build when artifacts already up-to-date (13.2+)
 
 # Examples:
 aspire run
 aspire run --project ./src/MyApp.AppHost
+aspire run --detach --isolated    # equivalent to: aspire start --isolated
 ```
 
 Behavior:
@@ -113,6 +126,235 @@ Behavior:
 6. Streams logs to the terminal
 
 Press `Ctrl+C` to gracefully stop all resources.
+
+### `aspire start` (13.2+)
+
+Start the AppHost in the **background**. Shorthand for `aspire run --detach`. Automatically stops any previously running instance.
+
+```bash
+aspire start [options]
+
+# Options:
+#   --apphost <path>       Path to AppHost project file
+#   --isolated             Isolated mode (separate ports, user secrets; for worktrees)
+#   --format Json          Machine-readable output
+
+# Examples:
+aspire start
+aspire start --isolated
+aspire start --apphost ./src/MyApp.AppHost
+```
+
+Behavior:
+
+1. Builds the AppHost project
+2. If a previous instance is running, stops it first
+3. Starts the DCP engine in the background
+4. Returns immediately (non-blocking)
+
+**This is the recommended command for 13.2+.** Relaunching is safe — just run `aspire start` again.
+
+### `aspire stop` (13.2+)
+
+Stop a background AppHost started with `aspire start`.
+
+```bash
+aspire stop [options]
+
+# Options:
+#   --apphost <path>       Path to AppHost project file
+
+# Example:
+aspire stop
+```
+
+### `aspire wait` (13.2+)
+
+Block until a resource reaches the specified status.
+
+```bash
+aspire wait <resource> [options]
+
+# Options:
+#   --apphost <path>       Path to AppHost project file
+#   --status <status>      Target status: healthy, up, down (default: healthy)
+#   --timeout <seconds>    Timeout in seconds
+
+# Examples:
+aspire start --isolated
+aspire wait myapi
+aspire wait mydb --timeout 60
+```
+
+### `aspire describe` / `aspire resources` (13.2+)
+
+List resources and their status, endpoints, environment variables, and health.
+
+```bash
+aspire describe [options]
+aspire resources [options]
+
+# Options:
+#   --apphost <path>       Path to AppHost project file
+#   --follow               Continuous streaming of resource state changes
+#   --format Json          Machine-readable output
+
+# Examples:
+aspire describe
+aspire describe --format Json
+aspire describe --follow    # live updates (used by VS Code extension)
+```
+
+### `aspire resource` (13.2+)
+
+Run a command on a specific resource, or control its lifecycle.
+
+```bash
+aspire resource <resource> <command> [options]
+
+# Built-in commands:
+#   start     Start a stopped resource
+#   stop      Stop a running resource
+#   restart   Restart a resource
+
+# Options:
+#   --apphost <path>       Path to AppHost project file
+
+# Examples:
+aspire resource myapi restart
+aspire resource worker stop
+aspire resource api rebuild    # custom command if defined
+```
+
+### `aspire logs` (13.2+)
+
+View console logs (stdout/stderr) for a resource.
+
+```bash
+aspire logs [resource] [options]
+
+# Options:
+#   --apphost <path>       Path to AppHost project file
+
+# Examples:
+aspire logs             # all resources
+aspire logs myapi       # specific resource
+```
+
+### `aspire otel` (13.2+)
+
+View OpenTelemetry structured logs and distributed traces.
+
+```bash
+aspire otel logs [resource] [options]
+aspire otel traces [resource] [options]
+aspire otel logs --trace-id <id> [options]
+
+# Options:
+#   --apphost <path>       Path to AppHost project file
+#   --format Json          Machine-readable output
+
+# Examples:
+aspire otel logs myapi                   # structured logs for a resource
+aspire otel traces myapi                 # distributed traces
+aspire otel logs --trace-id abc123       # logs for a specific trace
+```
+
+### `aspire ps` (13.2+)
+
+List running AppHosts.
+
+```bash
+aspire ps [options]
+
+# Options:
+#   --resources            Include resource details
+#   --format Json          Machine-readable output
+
+# Examples:
+aspire ps
+aspire ps --resources --format Json
+```
+
+### `aspire doctor` (13.2+)
+
+Run comprehensive environment diagnostics.
+
+```bash
+aspire doctor
+
+# Checks:
+#   - HTTPS development certificate status
+#   - Container runtime (Docker/Podman) availability
+#   - .NET SDK installation
+#   - WSL2 configuration (Windows)
+#   - Agent configuration status
+```
+
+### `aspire docs` (13.2+)
+
+Search and read Aspire documentation from the CLI.
+
+```bash
+aspire docs search <query> [options]
+aspire docs get <slug> [options]
+aspire docs list [options]
+
+# Options:
+#   --limit <n>            Limit search results
+#   --section <name>       Get a specific section of a doc page
+#   --format Json          Machine-readable output
+
+# Examples:
+aspire docs search "redis caching"
+aspire docs search "service discovery" --limit 5
+aspire docs get getting-started
+aspire docs get getting-started --section "prerequisites"
+aspire docs list
+```
+
+### `aspire export` (13.2+)
+
+Capture telemetry and resource data into a zip file for sharing or analysis.
+
+```bash
+aspire export [options]
+
+# Options:
+#   --apphost <path>       Path to AppHost project file
+#   --resource <name>      Scope to a single resource
+
+# Example:
+aspire export
+aspire export --resource myapi
+```
+
+### `aspire secret` (13.2+)
+
+Manage AppHost user secrets without requiring the .NET CLI.
+
+```bash
+aspire secret set <key> <value> [options]
+aspire secret list [options]
+
+# Options:
+#   --apphost <path>       Path to AppHost project file
+#   --format Json          Machine-readable output
+
+# Examples:
+aspire secret set "Parameters:ApiKey" "my-secret-key"
+aspire secret list
+aspire secret list --format Json
+```
+
+### `aspire certs` (13.2+)
+
+Manage development certificates.
+
+```bash
+aspire certs clean     # Remove stale developer certificates
+aspire certs trust     # Trust the current development certificate
+```
 
 ### `aspire add`
 
@@ -130,6 +372,22 @@ aspire add [<integration>] [options]
 aspire add redis
 aspire add postgresql
 aspire add mongodb
+```
+
+> **TypeScript AppHosts (13.2+):** `aspire add` also generates TypeScript SDKs into `.modules/` when used with a TypeScript AppHost.
+
+### `aspire restore` (13.2+)
+
+Regenerate TypeScript SDKs for a TypeScript AppHost. Runs automatically on `aspire run`/`aspire start`, but can be triggered manually after upgrades or branch switches.
+
+```bash
+aspire restore [options]
+
+# Options:
+#   --apphost <path>       Path to AppHost project file
+
+# Example:
+aspire restore
 ```
 
 ### `aspire publish` (Preview)
@@ -162,7 +420,7 @@ aspire config <subcommand>
 # Subcommands:
 #   get <key>              Get a configuration value
 #   set <key> <value>      Set a configuration value
-#   list                   List all configuration values
+#   list                   List all configuration values (color-coded feature flags)
 #   delete <key>           Delete a configuration value
 
 # Examples:
@@ -243,33 +501,61 @@ aspire update --self --channel daily   # Update CLI to daily build
 
 ### `aspire mcp`
 
-Manage the MCP (Model Context Protocol) server.
+MCP (Model Context Protocol) tools and server management.
 
 ```bash
 aspire mcp <subcommand>
 
-# Subcommands:
-#   init    Initialize MCP server configuration for detected agent environments
-#   start   Start the MCP server
+# 13.2+ subcommands:
+#   tools                  List resource MCP tools
+#   call <res> <tool>      Call a resource MCP tool
+
+# 13.1 subcommands (replaced by `aspire agent` in 13.2):
+#   init                   Initialize MCP configuration (use `aspire agent init` on 13.2+)
+#   start                  Start the MCP server (use `aspire agent mcp` on 13.2+)
 ```
 
-#### `aspire mcp init`
+#### `aspire mcp tools` / `aspire mcp call` (13.2+)
+
+Discover and invoke resource MCP tools. Some resources expose MCP tools when configured (e.g., `WithPostgresMcp()`).
 
 ```bash
-aspire mcp init
+aspire mcp tools [options]
+aspire mcp call <resource> <tool> --input <json> [options]
 
-# Interactive — detects your AI environment and creates config files.
+# Options:
+#   --format Json          Machine-readable output (includes input schemas)
+#   --apphost <path>       Path to AppHost project file
+
+# Examples:
+aspire mcp tools
+aspire mcp tools --format Json
+aspire mcp call mydb query-tool --input '{"sql":"SELECT 1"}'
+```
+
+### `aspire agent`
+
+Agent and AI assistant integration commands.
+
+#### `aspire agent init` (13.2+, replaces `aspire mcp init`)
+
+```bash
+aspire agent init
+
+# Interactive — detects your AI environment and creates config files + skill files.
 # Supported environments:
 # - VS Code (GitHub Copilot)
 # - Copilot CLI
 # - Claude Code
 # - OpenCode
+
+# On 13.1, use `aspire mcp init` instead.
 ```
 
-Generates the appropriate configuration file for your detected AI tool.
+Generates the appropriate configuration and skill files for your detected AI tool.
 See [MCP Server](mcp-server.md) for details.
 
-#### `aspire agent mcp`
+#### `aspire agent mcp` (13.2+, replaces `aspire mcp start`)
 
 ```bash
 aspire agent mcp
@@ -282,14 +568,17 @@ aspire agent mcp
 
 ## Commands That Do NOT Exist
 
-The following commands are **not valid** in Aspire CLI 13.1. Use alternatives:
+The following commands are **not valid**. Use alternatives:
 
-| Invalid Command | Alternative                                                          |
-| --------------- | -------------------------------------------------------------------- |
-| `aspire build`  | Use `dotnet build ./AppHost`                                         |
-| `aspire test`   | Use `dotnet test ./Tests`                                            |
-| `aspire dev`    | Use `aspire run` (includes file watching)                            |
-| `aspire list`   | Use `aspire new --help` for templates, `aspire add` for integrations |
+| Invalid Command                    | Alternative                                                          |
+| ---------------------------------- | -------------------------------------------------------------------- |
+| `aspire build`                     | Use `dotnet build ./AppHost`                                         |
+| `aspire test`                      | Use `dotnet test ./Tests`                                            |
+| `aspire dev`                       | Use `aspire start` (13.2+) or `aspire run` (background/foreground)   |
+| `aspire list`                      | Use `aspire new --help` for templates, `aspire add` for integrations |
+| `aspire start` (on 13.1)          | Use `aspire run` (foreground only on 13.1)                           |
+| `aspire describe` (on 13.1)       | Use MCP `list_resources` tool or dashboard                           |
+| `aspire logs` (on 13.1)           | Use MCP `list_console_logs` tool or dashboard                        |
 
 ---
 
@@ -300,8 +589,9 @@ The `dotnet` CLI can perform some Aspire tasks:
 | Aspire CLI                  | .NET CLI Equivalent              |
 | --------------------------- | -------------------------------- |
 | `aspire new aspire-starter` | `dotnet new aspire-starter`      |
+| `aspire start` (13.2+)     | `dotnet run --project ./AppHost` (foreground only) |
 | `aspire run`                | `dotnet run --project ./AppHost` |
 | N/A                         | `dotnet build ./AppHost`         |
 | N/A                         | `dotnet test ./Tests`            |
 
-The Aspire CLI adds value with `publish`, `deploy`, `add`, `mcp`, `config`, `cache`, `do`, and `update` — commands that have no direct `dotnet` equivalent.
+The Aspire CLI adds value with `start`, `stop`, `wait`, `describe`, `resource`, `logs`, `otel`, `ps`, `doctor`, `docs`, `export`, `secret`, `certs`, `publish`, `deploy`, `add`, `mcp`, `agent`, `config`, `cache`, `do`, `restore`, and `update` — commands that have no direct `dotnet` equivalent.
