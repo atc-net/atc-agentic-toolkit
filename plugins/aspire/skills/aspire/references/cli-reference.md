@@ -269,10 +269,10 @@ aspire mcp init
 Generates the appropriate configuration file for your detected AI tool.
 See [MCP Server](mcp-server.md) for details.
 
-#### `aspire mcp start`
+#### `aspire agent mcp`
 
 ```bash
-aspire mcp start
+aspire agent mcp
 
 # Starts the MCP server using STDIO transport.
 # This is typically invoked by your AI tool, not run manually.

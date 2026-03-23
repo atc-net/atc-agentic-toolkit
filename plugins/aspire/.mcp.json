@@ -1,9 +1,9 @@
 {
   "mcpServers": {
     "aspire": {
+      "type": "stdio",
       "command": "aspire",
-      "args": ["mcp", "start"],
-      "tools": ["*"]
+      "args": ["agent", "mcp"]
     }
   }
 }

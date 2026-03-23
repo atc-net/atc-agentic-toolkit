@@ -41,7 +41,7 @@ Creates or updates `.vscode/mcp.json`:
     "aspire": {
       "type": "stdio",
       "command": "aspire",
-      "args": ["mcp", "start"]
+      "args": ["agent", "mcp"]
     }
   }
 }
@@ -190,6 +190,6 @@ If you run into issues, check the [open MCP issues on GitHub](https://github.com
 
 - [aspire mcp command](https://aspire.dev/reference/cli/commands/aspire-mcp/)
 - [aspire mcp init command](https://aspire.dev/reference/cli/commands/aspire-mcp-init/)
-- [aspire mcp start command](https://aspire.dev/reference/cli/commands/aspire-mcp-start/)
+- [aspire agent mcp command](https://aspire.dev/reference/cli/commands/aspire-agent-mcp/)
 - [GitHub Copilot in the Dashboard](https://aspire.dev/dashboard/copilot/)
 - [How I taught AI to read Aspire docs](https://davidpine.dev/posts/aspire-docs-mcp-tools/)
