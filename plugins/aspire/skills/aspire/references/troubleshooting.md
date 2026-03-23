@@ -76,7 +76,7 @@ var resource = builder.AddExperimentalResource("test");
 | --------------------------------- | --------------------------------------------------------------- |
 | "Python not found"                | Ensure Python is on PATH; specify full path in `AddPythonApp()` |
 | venv not found                    | Use `.WithVirtualEnvironment()` or create venv manually         |
-| pip packages fail to install      | Use `.WithPipPackages()` or install in venv before `aspire run` |
+| pip packages fail to install      | Use `.WithPipPackages()` or install in venv before starting the app |
 | ModuleNotFoundError               | venv isn't activated; `.WithVirtualEnvironment()` handles this  |
 | "Port already in use" for Uvicorn | Check `targetPort` — another instance may be running            |
 
@@ -138,7 +138,18 @@ var resource = builder.AddExperimentalResource("test");
 | "Project not found" for `AddProject<T>()` | Ensure `.csproj` is in the solution and referenced by AppHost       |
 | Package version conflicts                 | Pin all Aspire packages to the same version                         |
 | AppHost won't build                       | Check `Aspire.AppHost.Sdk` is in the project; run `dotnet restore`  |
-| `aspire run` build error                  | Fix the build error first; `aspire run` requires a successful build |
+| `aspire run` / `aspire start` build error | Fix the build error first; both commands require a successful build |
+
+### Process management (13.2+)
+
+| Problem                               | Solution                                                                             |
+| ------------------------------------- | ------------------------------------------------------------------------------------ |
+| `aspire start` says "already running" | Just run `aspire start` again — it auto-stops the previous instance                  |
+| `aspire wait` times out               | Check resource health with `aspire describe`; inspect logs with `aspire logs <resource>` |
+| `aspire describe` shows no resources  | AppHost may not be running; check with `aspire ps`                                   |
+| Port conflict with `--isolated`       | Ensure no other instances conflict; check with `aspire ps`                           |
+| TypeScript AppHost `.modules/` missing| Run `aspire restore` to regenerate TypeScript SDKs                                   |
+| `aspire.config.json` migration issues | CLI auto-migrates legacy files on first command; check for merge conflicts           |
 
 ### Deployment
 
@@ -180,6 +191,12 @@ If MCP is configured (see [MCP Server](mcp-server.md)), ask your AI assistant:
 ### 6. Isolate the problem
 
 Run just the failing resource by commenting out others in the AppHost. This narrows whether the issue is the resource itself or a dependency.
+
+### 7. Use CLI diagnostics (13.2+)
+
+Run `aspire doctor` to check your environment (SDK versions, container runtime, HTTPS certs, WSL2, agent config).
+
+Use `aspire describe` + `aspire otel logs <resource>` + `aspire otel traces <resource>` for quick command-line inspection without needing the dashboard or MCP.
 
 ---
 

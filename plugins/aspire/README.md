@@ -21,7 +21,7 @@ Expert guidance for Aspire distributed application development including AppHost
 ## Requirements
 
 - .NET SDK 8.0+
-- Aspire CLI (`dotnet tool install -g aspirate`)
+- Aspire CLI 13.2+ (install via [aspire.dev](https://aspire.dev): `curl -sSL https://aspire.dev/install.sh | bash` or `irm https://aspire.dev/install.ps1 | iex`)
 
 ## License
 

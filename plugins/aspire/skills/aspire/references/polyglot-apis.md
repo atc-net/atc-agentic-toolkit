@@ -1,6 +1,6 @@
 # Polyglot APIs — Complete Reference
 
-Aspire supports 10+ languages/runtimes. The AppHost is always .NET, but orchestrated workloads can be any language. Each language has a hosting method that returns a resource you wire into the dependency graph.
+Aspire supports 10+ languages/runtimes. The AppHost is written in C# (all versions) or TypeScript (13.2+ preview), and orchestrated workloads can be any language. Each language has a hosting method that returns a resource you wire into the dependency graph.
 
 ---
 
@@ -114,6 +114,77 @@ Chaining methods:
 const redisUrl = process.env.ConnectionStrings__cache;
 const apiUrl = process.env.services__api__http__0;
 ```
+
+---
+
+## TypeScript AppHost (13.2+ preview)
+
+In Aspire CLI 13.2+, the AppHost itself can be written in **TypeScript** as an alternative to C#. The TypeScript code runs as a guest process communicating with Aspire's .NET orchestration host via JSON-RPC over local transport — .NET SDK is still required under the hood, but you write the orchestration in TypeScript.
+
+### How it works
+
+- `aspire add` inspects integration assemblies and generates TypeScript SDKs into `.modules/`
+- `aspire restore` regenerates SDKs after upgrades or branch switches (also runs automatically on `aspire start` / `aspire run`)
+- `aspire.config.json` enables automatic TypeScript AppHost discovery (no `.csproj` needed)
+- VS Code extension provides CodeLens, gutter decorations, and debugging support for `createBuilder()` calls
+
+### Configuration: `aspire.config.json`
+
+```json
+{
+  "appHost": {
+    "path": "apphost.ts",
+    "language": "typescript/nodejs"
+  },
+  "sdk": {
+    "version": "13.2.0"
+  },
+  "channel": "stable"
+}
+```
+
+### Basic pattern
+
+The API mirrors C# but in idiomatic TypeScript (camelCase):
+
+```typescript
+import { createBuilder } from './.modules/aspire.js';
+
+const builder = await createBuilder();
+
+// Infrastructure
+const cache = await builder.addRedis("cache");
+const postgres = await builder.addPostgres("pg").addDatabase("catalog");
+
+// .NET API
+const api = await builder.addProject("api", "../api")
+    .withReference(postgres)
+    .withReference(cache)
+    .waitFor(postgres)
+    .waitFor(cache);
+
+// React frontend (Vite)
+const web = await builder.addViteApp("web", "../frontend")
+    .withHttpEndpoint({ targetPort: 5173 })
+    .withReference(api);
+
+await builder.build().run();
+```
+
+### C# → TypeScript API mapping
+
+| C# (PascalCase)                  | TypeScript (camelCase)              |
+|---|---|
+| `AddProject<T>(name)`            | `addProject(name, path)`           |
+| `AddRedis(name)`                 | `addRedis(name)`                   |
+| `AddPostgres(name)`              | `addPostgres(name)`                |
+| `.WithReference(resource)`       | `.withReference(resource)`         |
+| `.WithHttpEndpoint(...)`         | `.withHttpEndpoint({ ... })`       |
+| `.WithEnvironment(key, value)`   | `.withEnvironment(key, value)`     |
+| `.WaitFor(resource)`             | `.waitFor(resource)`               |
+| `builder.Build().Run()`          | `builder.build().run()`            |
+
+> **Note:** TypeScript AppHost is in preview. The API surface may evolve. Use `aspire docs search "typescript apphost"` for the latest API reference.
 
 ---
 
