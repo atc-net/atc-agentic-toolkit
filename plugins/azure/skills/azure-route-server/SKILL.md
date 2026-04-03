@@ -1,6 +1,6 @@
 ---
 name: azure-route-server
-description: Expert knowledge for Azure Route Server development including troubleshooting, best practices, architecture & design patterns, limits & quotas, security, and configuration. Use when building, debugging, or optimizing Azure Route Server applications. Not for Azure Virtual Network (use azure-virtual-network), Azure Virtual Network Manager (use azure-virtual-network-manager), Azure Virtual WAN (use azure-virtual-wan), Azure VPN Gateway (use azure-vpn-gateway).
+description: Expert knowledge for Azure Route Server development including troubleshooting, best practices, architecture & design patterns, limits & quotas, security, and configuration. Use when designing hub-spoke or multi-region topologies, BGP peering with NVAs/on-prem, tuning routing policies, or fixing route propagation issues, and other Azure Route Server related development tasks. Not for Azure Virtual Network (use azure-virtual-network), Azure Virtual Network Manager (use azure-virtual-network-manager), Azure Virtual WAN (use azure-virtual-wan), Azure VPN Gateway (use azure-vpn-gateway).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,12 +19,12 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L34-L38 | Diagnosing and resolving common Azure Route Server connectivity and BGP peering issues, including misconfigurations, route propagation problems, and troubleshooting steps. |
-| Best Practices | L39-L44 | Configuring Azure Route Server routing preferences, BGP path selection, and custom routing policies to control traffic flow and route advertisement to your NVA or on-premises routers. |
-| Architecture & Design Patterns | L45-L54 | Design patterns for using Route Server in hub-spoke, dual-homed, anycast, multi-region, ExpressRoute/VPN integrations, NVA next-hop designs, and spoke route injection. |
-| Limits & Quotas | L55-L59 | Guidance on Route Server capacity planning, scale units, connection limits, and how many peers/routes each deployment can support. |
-| Security | L60-L64 | Configuring Azure RBAC roles and permissions needed to securely manage Azure Route Server resources and operations. |
-| Configuration | L65-L69 | Configuring Route Server settings (BGP peers, route propagation, maintenance) and monitoring its health, performance, and routes using Azure Monitor metrics |
+| Troubleshooting | L28-L31 | Diagnosing and fixing common Azure Route Server connectivity problems, including BGP peering issues, route propagation, and troubleshooting steps/logs. |
+| Best Practices | L33-L37 | Configuring Azure Route Server routing preferences, BGP path selection, and custom routing policies to control traffic flow and route advertisement to your NVA or on-premises routers. |
+| Architecture & Design Patterns | L39-L47 | Design patterns for using Route Server in hub-spoke, dual-homed, anycast, multi-region, ExpressRoute/VPN integrations, NVA next-hop designs, and spoke route injection. |
+| Limits & Quotas | L49-L52 | Guidance on Route Server capacity planning, scale units, connection limits, and how many peers/routes each deployment can support. |
+| Security | L54-L57 | Configuring Azure RBAC roles and permissions needed to securely manage Azure Route Server resources and operations. |
+| Configuration | L59-L63 | Configuring Azure Route Server BGP peers, policies, and settings, and monitoring its performance, health, and traffic with Azure Monitor metrics |
 
 ### Troubleshooting
 | Topic | URL |
@@ -60,5 +60,5 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 ### Configuration
 | Topic | URL |
 |-------|-----|
-| Configure and manage Azure Route Server settings | https://learn.microsoft.com/en-us/azure/route-server/configure-route-server |
+| Configure and manage Azure Route Server BGP settings | https://learn.microsoft.com/en-us/azure/route-server/configure-route-server |
 | Monitor Azure Route Server with Azure Monitor metrics | https://learn.microsoft.com/en-us/azure/route-server/monitor-route-server |

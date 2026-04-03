@@ -1,6 +1,6 @@
 ---
 name: azure-large-instances
-description: Expert knowledge for Azure Large Instances development including troubleshooting, limits & quotas, and integrations & coding patterns. Use when building, debugging, or optimizing Azure Large Instances applications. Not for Azure Baremetal Infrastructure (use azure-baremetal-infrastructure), Azure Virtual Machines (use azure-virtual-machines), Azure Virtual Machine Scale Sets (use azure-vm-scalesets), SAP HANA on Azure Large Instances (use azure-sap).
+description: Expert knowledge for Azure Large Instances development including troubleshooting, limits & quotas, and integrations & coding patterns. Use when configuring Epic SKUs, sizing volume groups, tuning EHR storage, or resolving Epic–ALI connectivity/perf issues, and other Azure Large Instances related development tasks. Not for Azure Baremetal Infrastructure (use azure-baremetal-infrastructure), Azure Virtual Machines (use azure-virtual-machines), Azure Virtual Machine Scale Sets (use azure-vm-scalesets), Azure HPC Cache (use azure-hpc-cache).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,9 +19,9 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L31-L35 | Diagnosing and resolving common Azure Large Instances issues with Epic integration, including connectivity, performance, configuration, and operational error troubleshooting. |
-| Limits & Quotas | L36-L40 | Epic SKU capacity limits and quotas for Azure Large Instances, including supported sizes, scaling constraints, and resource availability per SKU. |
-| Integrations & Coding Patterns | L41-L44 | Guidance for configuring, creating, and performance-tuning Epic EHR storage volume groups on Azure Large Instances, including layout, sizing, and best practices. |
+| Troubleshooting | L25-L28 | Diagnosing and resolving common Azure Large Instances issues with Epic integration, including connectivity, performance, configuration, and operational error troubleshooting. |
+| Limits & Quotas | L30-L33 | Epic SKU capacity limits and quotas for Azure Large Instances, including supported sizes, scaling constraints, and resource availability per SKU. |
+| Integrations & Coding Patterns | L35-L38 | Guidance for configuring, creating, and performance-tuning Epic EHR storage volume groups on Azure Large Instances, including layout, sizing, and best practices. |
 
 ### Troubleshooting
 | Topic | URL |

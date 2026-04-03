@@ -1,12 +1,12 @@
 ---
 name: azure-language-service
-description: Expert knowledge for Azure AI Language development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure AI Language applications. Not for Azure AI Search (use azure-cognitive-search), Azure AI Speech (use azure-speech), Azure Translator (use azure-translator), Azure AI Immersive Reader (use azure-immersive-reader).
+description: Expert knowledge for Azure AI Language development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building CLU, custom NER, text classification, CQA, sentiment, summarization, or health workloads, and other Azure AI Language related development tasks. Not for Azure AI Search (use azure-cognitive-search), Azure AI Speech (use azure-speech), Azure Translator (use azure-translator), Azure AI Bot Service (use azure-bot-service).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
-# Azure AI Language Skill
+# Azure Language Service Skill
 
-This skill provides expert guidance for Azure AI Language. Covers troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure Language Service. Covers troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
@@ -19,15 +19,15 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L37-L42 | Diagnosing and fixing common errors, low-accuracy results, and configuration issues in custom text classification and custom question answering projects in Azure AI Language. |
-| Best Practices | L43-L60 | Best practices for designing, labeling, and evaluating CLU, custom NER, text classification, and CQA projects, including multilingual handling, emojis, schemas, and autolabeling. |
-| Decision Making | L61-L69 | Guidance on when and how to migrate or transition Azure Language workloads (LUIS, QnA Maker, Text Analytics, Language Studio) and how to choose/manage resources for conversational QA. |
-| Architecture & Design Patterns | L70-L76 | Architectural guidance for CLU and custom text classification: choosing CLU vs orchestration workflows, and designing regional backup, redundancy, and failover strategies. |
-| Limits & Quotas | L77-L94 | Limits, quotas, and language/region support for Azure AI Language: rate/data caps, CLU and CQA model/job/container limits, per-call constraints, and supported languages for each feature. |
-| Security | L95-L104 | Security for Azure AI Language: encryption at rest, customer-managed keys, RBAC, managed identities, SAS tokens, and network isolation/Private Link for CQA resources. |
-| Configuration | L105-L131 | Configuring Azure AI Language projects and containers: CLU, NER, text classification, CQA, sentiment, summarization, and health—data formats, training, metrics, resources, and runtime options. |
-| Integrations & Coding Patterns | L132-L164 | How to call Azure Language/CLU/Health/Summarization/CQA APIs and SDKs, wire them into bots, Power Automate, and Foundry, and correctly handle async, parameters, and outputs |
-| Deployment | L165-L175 | How to deploy Azure AI Language models and projects (custom text/Q&A, NER, language detection, key phrases) across regions, containers, and AKS, including moving Q&A projects between resources. |
+| Troubleshooting | L31-L35 | Diagnosing and fixing common errors, low-accuracy results, and configuration issues in custom text classification and custom question answering projects in Azure AI Language. |
+| Best Practices | L37-L53 | Best practices for designing, labeling, and evaluating CLU, custom NER, text classification, and CQA projects, including multilingual handling, emojis, schemas, and autolabeling. |
+| Decision Making | L55-L61 | Guidance on Azure Language lifecycle policies, choosing resources for conversational QA, and when/how to migrate from LUIS, QnA Maker, or Text Analytics to Azure Language API |
+| Architecture & Design Patterns | L63-L68 | Architectural guidance for CLU and custom text classification: choosing CLU vs orchestration workflows, and designing regional backup, redundancy, and failover strategies. |
+| Limits & Quotas | L70-L87 | Limits, quotas, and regional/language support for Azure AI Language features (CLU, NER, PII, CQA, containers), including data, rate, throughput, and job constraints. |
+| Security | L89-L97 | Security for Azure AI Language: encryption at rest, customer-managed keys, RBAC, managed identities, SAS tokens, and network isolation/Private Link for CQA resources. |
+| Configuration | L99-L124 | Configuring Azure AI Language projects and containers: CLU, NER, text classification, CQA, sentiment, summarization, and health—data formats, training, metrics, resources, and runtime options. |
+| Integrations & Coding Patterns | L126-L156 | How to call Azure Language/CLU/Health/Summarization/CQA APIs and SDKs, wire them into bots, Power Automate, and Foundry, and correctly handle async, parameters, and outputs |
+| Deployment | L158-L168 | How to deploy and run Azure AI Language models (custom classification, NER, QnA, key phrases, language detection) across regions, containers, AKS, and migrate projects/resources. |
 
 ### Troubleshooting
 | Topic | URL |
@@ -57,10 +57,9 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Topic | URL |
 |-------|-----|
 | Understand Azure Language model lifecycle policies | https://learn.microsoft.com/en-us/azure/ai-services/language-service/concepts/model-lifecycle |
-| Plan migration from Language Studio to Foundry | https://learn.microsoft.com/en-us/azure/ai-services/language-service/migration-studio-to-foundry |
 | Choose and manage Azure resources for CQA | https://learn.microsoft.com/en-us/azure/ai-services/language-service/question-answering/concepts/azure-resources |
 | Decide when to migrate from LUIS or QnA Maker | https://learn.microsoft.com/en-us/azure/ai-services/language-service/reference/migrate |
-| Migrate from Text Analytics to Azure Language API | https://learn.microsoft.com/en-us/azure/ai-services/language-service/reference/migrate-language-service-latest |
+| Migrate Text Analytics apps to Azure Language API | https://learn.microsoft.com/en-us/azure/ai-services/language-service/reference/migrate-language-service-latest |
 
 ### Architecture & Design Patterns
 | Topic | URL |
@@ -73,6 +72,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Topic | URL |
 |-------|-----|
 | Use Azure Language data and rate limits | https://learn.microsoft.com/en-us/azure/ai-services/language-service/concepts/data-limits |
+| Check regional availability for Azure Language features | https://learn.microsoft.com/en-us/azure/ai-services/language-service/concepts/regional-support |
 | Train and manage CLU model jobs and limits | https://learn.microsoft.com/en-us/azure/ai-services/language-service/conversational-language-understanding/how-to/train-model |
 | Apply CLU Docker container request limits | https://learn.microsoft.com/en-us/azure/ai-services/language-service/conversational-language-understanding/how-to/use-containers |
 | Apply CLU data, region, and throughput limits | https://learn.microsoft.com/en-us/azure/ai-services/language-service/conversational-language-understanding/service-limits |
@@ -128,7 +128,6 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Topic | URL |
 |-------|-----|
 | Integrate Azure Language SDK and REST APIs | https://learn.microsoft.com/en-us/azure/ai-services/language-service/concepts/developer-guide |
-| Use Azure Language tools and agents in Foundry | https://learn.microsoft.com/en-us/azure/ai-services/language-service/concepts/foundry-tools-agents |
 | Use Azure Language features asynchronously | https://learn.microsoft.com/en-us/azure/ai-services/language-service/concepts/use-asynchronously |
 | Call CLU prediction APIs and SDKs | https://learn.microsoft.com/en-us/azure/ai-services/language-service/conversational-language-understanding/how-to/call-api |
 | Integrate CLU with Bot Framework SDK | https://learn.microsoft.com/en-us/azure/ai-services/language-service/conversational-language-understanding/tutorials/bot-framework |
@@ -164,7 +163,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Deploy custom text classification models for prediction | https://learn.microsoft.com/en-us/azure/ai-services/language-service/custom-text-classification/how-to/deploy-model |
 | Run key phrase extraction in Docker containers on-premises | https://learn.microsoft.com/en-us/azure/ai-services/language-service/key-phrase-extraction/how-to/use-containers |
 | Deploy language detection with Docker containers on-premises | https://learn.microsoft.com/en-us/azure/ai-services/language-service/language-detection/how-to/use-containers |
+| Migrate Azure Language Studio projects to Foundry | https://learn.microsoft.com/en-us/azure/ai-services/language-service/migration-studio-to-foundry |
 | Deploy NER with Docker containers on-premises | https://learn.microsoft.com/en-us/azure/ai-services/language-service/named-entity-recognition/how-to/use-containers |
-| Create and deploy a custom Q&A agent in Foundry | https://learn.microsoft.com/en-us/azure/ai-services/language-service/question-answering/how-to/deploy-agent |
 | Move custom question answering projects between resources | https://learn.microsoft.com/en-us/azure/ai-services/language-service/question-answering/how-to/migrate-knowledge-base |
 | Deploy Language containers to Azure Kubernetes Service | https://learn.microsoft.com/en-us/azure/ai-services/language-service/tutorials/use-kubernetes-service |

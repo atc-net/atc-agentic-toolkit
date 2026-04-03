@@ -1,12 +1,12 @@
 ---
 name: azure-video-indexer
-description: Expert knowledge for Azure AI Video Indexer development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure AI Video Indexer applications. Not for Azure AI services (use azure-ai-services), Azure AI Vision (use azure-ai-vision), Azure AI Custom Vision (use azure-custom-vision).
+description: Expert knowledge for Azure AI Video Indexer development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when using Video Indexer APIs/widgets, live camera indexing, custom speech/brand models, or Azure OpenAI integrations, and other Azure AI Video Indexer related development tasks. Not for Azure AI services (use microsoft-foundry-tools), Azure AI Vision (use azure-ai-vision).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
-# Azure AI Video Indexer Skill
+# Azure Video Indexer Skill
 
-This skill provides expert guidance for Azure AI Video Indexer. Covers troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure Video Indexer. Covers troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
@@ -19,15 +19,15 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L37-L41 | Diagnosing and resolving issues when running Azure Video Indexer on Arc, including connectivity, deployment, configuration, and runtime troubleshooting steps. |
-| Best Practices | L42-L49 | Guidance on using AI agents for live analysis, scaling Video Indexer, training custom speech models, and interpreting text-based emotion detection insights. |
-| Decision Making | L50-L55 | Guidance on selecting the right Azure Video Indexer account type and designing multi-tenant setups, including isolation, scaling, and management strategies for multiple customers or apps. |
-| Architecture & Design Patterns | L56-L60 | Guidance on architecting disaster recovery and failover for Azure Video Indexer, including redundancy, regional failover, backup, and high-availability design considerations. |
-| Limits & Quotas | L61-L68 | Service limits, supported languages/capabilities, and how to use live camera indexing features like event summaries and viewing live recordings. |
-| Security | L69-L81 | Securing Video Indexer: roles and access control, restricted/limited features, custom person models, NSGs/service tags, private endpoints, and firewall-protected storage best practices. |
-| Configuration | L82-L99 | Configuring Video Indexer: custom models (brand, language, speech), transcripts and speakers, indexing/live presets, regions, monitoring, and advanced upload/search settings. |
-| Integrations & Coding Patterns | L100-L123 | Using Video Indexer APIs, widgets, and Logic Apps/Power Automate to extract, use, or redact insights (faces, objects, text, audio, topics) and integrate with Azure OpenAI. |
-| Deployment | L124-L129 | Guides for deploying Azure Video Indexer using Arc extensions, ARM, and Bicep templates, including provisioning accounts and configuring infrastructure as code. |
+| Troubleshooting | L31-L34 | Diagnosing and resolving issues when running Azure Video Indexer on Arc, including connectivity, deployment, configuration, and runtime troubleshooting steps. |
+| Best Practices | L36-L42 | Guidance on using AI agents for live analysis, scaling Video Indexer, training custom speech models, and interpreting text-based emotion detection insights. |
+| Decision Making | L44-L48 | Guidance on selecting the right Azure Video Indexer account type and designing multi-tenant setups, including isolation, scaling, and management strategies for multiple customers or apps. |
+| Architecture & Design Patterns | L50-L53 | Guidance on architecting disaster recovery and failover for Azure Video Indexer, including redundancy, regional failover, backup, and high-availability design considerations. |
+| Limits & Quotas | L55-L61 | Service limits, supported languages/capabilities, and how to use live camera indexing features like event summaries and viewing live recordings. |
+| Security | L63-L74 | Securing Video Indexer: roles and access control, restricted/limited features, custom person models, NSGs/service tags, private endpoints, and firewall-protected storage best practices. |
+| Configuration | L76-L92 | Configuring Video Indexer: custom models (brand, language, speech), transcripts and speakers, indexing/live presets, regions, monitoring, and advanced upload/search settings. |
+| Integrations & Coding Patterns | L94-L116 | Using Video Indexer APIs, widgets, and Logic Apps/Power Automate to extract, use, or redact insights (faces, objects, text, audio, topics) and integrate with Azure OpenAI. |
+| Deployment | L118-L123 | Guides for deploying Azure Video Indexer using Arc extensions, ARM, and Bicep templates, including provisioning accounts and configuring infrastructure as code. |
 
 ### Troubleshooting
 | Topic | URL |

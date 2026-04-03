@@ -1,12 +1,12 @@
 ---
 name: azure-database-mysql
-description: Expert knowledge for Azure Database for MySQL development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure Database for MySQL applications. Not for Azure Database for MariaDB (use azure-database-mariadb), Azure Database for PostgreSQL (use azure-database-postgresql), Azure SQL Database (use azure-sql-database), SQL Server on Azure Virtual Machines (use azure-sql-virtual-machines).
+description: Expert knowledge for Azure Database for MySQL development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when deploying MySQL Flexible Server, tuning performance, configuring HA/networking, securing access, or integrating apps, and other Azure Database for MySQL related development tasks. Not for Azure Database for MariaDB (use azure-database-mariadb), Azure Database for PostgreSQL (use azure-database-postgresql), Azure SQL Database (use azure-sql-database), Azure SQL Managed Instance (use azure-sql-managed-instance).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
-# Azure Database for MySQL Skill
+# Azure Database Mysql Skill
 
-This skill provides expert guidance for Azure Database for MySQL. Covers troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure Database Mysql. Covers troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
@@ -19,15 +19,15 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L37-L53 | Diagnosing and fixing MySQL Flexible Server issues: connectivity, performance (CPU/memory/queries), errors, corruption, capacity, replication lag, CLI problems, and using logs/self-heal tools |
-| Best Practices | L54-L71 | Best practices for monitoring, performance tuning, troubleshooting, safe operations, BCDR, and end-to-end migration/optimization for Azure Database for MySQL Flexible Server |
-| Decision Making | L72-L88 | Guidance on sizing, HA/BCDR, performance features, and planning/choosing methods for migrating and upgrading MySQL workloads to Azure Database for MySQL Flexible Server |
-| Architecture & Design Patterns | L89-L98 | Patterns for connecting AKS to MySQL Flexible Server, designing backup/restore, data-in/out replication, high availability (zone-redundant), and read-replica-based scaling. |
-| Limits & Quotas | L99-L107 | Limits, quotas, and performance caps for MySQL Flexible Server: compute/storage/IOPS limits, quota increase process, restore retention limits, and stop/start duration constraints. |
-| Security | L108-L134 | Securing Azure Database for MySQL Flexible Server: network isolation (Private Link, firewalls), TLS and cert rotation, encryption, Entra auth, users, and audit logging before/after migration. |
-| Configuration | L135-L165 | Configuring MySQL Flexible Server: parameters, HA, networking (VNet/firewall), replication, logs/slow queries, monitoring/metrics, alerts, scaling, maintenance, backups, and read replicas. |
-| Integrations & Coding Patterns | L166-L176 | Connecting to Azure Database for MySQL Flexible Server via CLI, Java/JDBC, Power BI, managing connection strings with Key Vault, and migrating data from RDS, on-prem, VMs, or Workbench |
-| Deployment | L177-L187 | Automating MySQL Flexible Server deployments and maintenance: CI/CD with Azure Pipelines/GitHub Actions, backups/geo-restore, major version upgrades, and scheduled/automated management tasks. |
+| Troubleshooting | L31-L46 | Diagnosing and fixing MySQL Flexible Server issues: connectivity, performance (CPU/memory/queries), errors, corruption, capacity, replication lag, CLI problems, and using logs/self-heal tools |
+| Best Practices | L48-L64 | Best practices for monitoring, performance tuning, troubleshooting, safe operations, BCDR, and end-to-end migration/optimization for Azure Database for MySQL Flexible Server |
+| Decision Making | L66-L81 | Guidance on sizing, HA/BCDR, performance features, and planning/choosing methods for migrating and upgrading MySQL workloads to Azure Database for MySQL Flexible Server |
+| Architecture & Design Patterns | L83-L90 | Patterns for connecting AKS to MySQL Flexible Server, designing backup/restore, data-in/out replication, high availability (zone-redundant), and read-replica-based scaling. |
+| Limits & Quotas | L92-L99 | Limits, quotas, and performance caps for MySQL Flexible Server: compute/storage/IOPS limits, quota increase process, restore retention limits, and stop/start duration constraints. |
+| Security | L101-L126 | Securing Azure Database for MySQL Flexible Server: network isolation (Private Link, firewalls), TLS and cert rotation, encryption, Entra auth, users, and audit logging before/after migration. |
+| Configuration | L128-L157 | Configuring MySQL Flexible Server: parameters, HA, networking (VNet/firewall), replication, logs/slow queries, monitoring/metrics, alerts, scaling, maintenance, backups, and read replicas. |
+| Integrations & Coding Patterns | L159-L168 | Connecting to Azure Database for MySQL Flexible Server via CLI, Java/JDBC, Power BI, managing connection strings with Key Vault, and migrating data from RDS, on-prem, VMs, or Workbench |
+| Deployment | L170-L180 | Automating MySQL Flexible Server deployments and maintenance: CI/CD with Azure Pipelines/GitHub Actions, backups/geo-restore, major version upgrades, and scheduled/automated management tasks. |
 
 ### Troubleshooting
 | Topic | URL |
@@ -88,7 +88,6 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Backup and restore strategy for MySQL Flexible Server | https://learn.microsoft.com/en-us/azure/mysql/flexible-server/concepts-backup-restore |
 | Design data-in replication into MySQL Flexible Server | https://learn.microsoft.com/en-us/azure/mysql/flexible-server/concepts-data-in-replication |
 | Design data-out replication from MySQL Flexible Server | https://learn.microsoft.com/en-us/azure/mysql/flexible-server/concepts-data-out-replication |
-| Design zone-redundant high availability for MySQL Flexible Server | https://learn.microsoft.com/en-us/azure/mysql/flexible-server/concepts-high-availability |
 | Use read replicas to scale MySQL Flexible Server | https://learn.microsoft.com/en-us/azure/mysql/flexible-server/concepts-read-replicas |
 
 ### Limits & Quotas

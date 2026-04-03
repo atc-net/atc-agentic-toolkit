@@ -1,6 +1,6 @@
 ---
 name: azure-private-link
-description: Expert knowledge for Azure Private Link development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, and configuration. Use when building, debugging, or optimizing Azure Private Link applications. Not for Azure Virtual Network (use azure-virtual-network), Azure Virtual Network Manager (use azure-virtual-network-manager), Azure VPN Gateway (use azure-vpn-gateway), Azure ExpressRoute (use azure-expressroute).
+description: Expert knowledge for Azure Private Link development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, and configuration. Use when configuring Private Endpoints, DNS zones/Resolver, NSPs, Azure Firewall inspection, or hybrid name resolution, and other Azure Private Link related development tasks. Not for Azure Virtual Network (use azure-virtual-network), Azure Virtual Network Manager (use azure-virtual-network-manager), Azure VPN Gateway (use azure-vpn-gateway), Azure ExpressRoute (use azure-expressroute).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,13 +19,13 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L35-L40 | Diagnosing and fixing Azure Private Endpoint and Private Link service connectivity issues, including DNS, network routing, and common misconfiguration problems. |
-| Best Practices | L41-L45 | DNS design and configuration guidance for private endpoints, including zone setup, name resolution patterns, split-horizon DNS, and avoiding common DNS misconfigurations with Private Link |
-| Decision Making | L46-L51 | Guidance on planning/migrating to Network Security Perimeter and designing Azure Private Link architectures optimized for security, segmentation, and cost. |
-| Architecture & Design Patterns | L52-L56 | Designing DNS architectures for Private Endpoints using Azure Private Resolver, including name resolution patterns, forwarding rules, and integration with on-premises or hybrid networks |
-| Limits & Quotas | L57-L62 | Regional availability of Private Link/Endpoints, supported services, and how to view or request increases to per‑VNet and global Private Endpoint limits |
-| Security | L63-L69 | Configuring RBAC for Private Link/Private Endpoints and Network Security Perimeters, and inspecting/controlling Private Endpoint traffic with Azure Firewall. |
-| Configuration | L70-L82 | Configuring Private Link endpoints/services: subnet and NSG policies, ASGs, DNS zones, SNAT bypass, NSPs, and monitoring/diagnostic logs for private connectivity. |
+| Troubleshooting | L29-L33 | Diagnosing and fixing Azure Private Endpoint and Private Link service connectivity issues, including DNS, network routing, and common misconfiguration problems. |
+| Best Practices | L35-L38 | DNS design and configuration guidance for private endpoints, including zone setup, name resolution patterns, split-horizon DNS, and avoiding common DNS misconfigurations with Private Link |
+| Decision Making | L40-L44 | Guidance on planning/migrating to Network Security Perimeter and designing Azure Private Link architectures optimized for security, segmentation, and cost. |
+| Architecture & Design Patterns | L46-L49 | Designing DNS architectures for Private Endpoints using Azure Private Resolver, including name resolution patterns, forwarding rules, and integration with on-premises or hybrid networks |
+| Limits & Quotas | L51-L55 | Regional availability of Private Link/Endpoints, supported services, and how to view or request increases to per‑VNet and global Private Endpoint limits |
+| Security | L57-L62 | Configuring RBAC for Private Link/Private Endpoints and Network Security Perimeters, and inspecting/controlling Private Endpoint traffic with Azure Firewall. |
+| Configuration | L64-L76 | Configuring Private Link endpoints/services: subnet and NSG policies, ASGs, DNS zones, SNAT bypass, NSPs, and monitoring/diagnostic logs for private connectivity. |
 
 ### Troubleshooting
 | Topic | URL |

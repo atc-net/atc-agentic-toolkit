@@ -1,12 +1,12 @@
 ---
 name: azure-security
-description: Expert knowledge for Azure Security development including troubleshooting, best practices, decision making, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure Security applications. Not for Azure Defender For Cloud (use azure-defender-for-cloud), Azure DDos Protection (use azure-ddos-protection), Azure Firewall (use azure-firewall), Azure Web Application Firewall (use azure-web-application-firewall).
+description: Expert knowledge for Azure Security development including troubleshooting, best practices, decision making, security, configuration, integrations & coding patterns, and deployment. Use when securing AKS images, SBOM/Notation workflows, antimalware/firewalls, Customer Lockbox, or CMK/Key Vault, and other Azure Security related development tasks. Not for Azure Defender For Cloud (use azure-defender-for-cloud), Azure Firewall (use azure-firewall), Azure DDos Protection (use azure-ddos-protection), Azure Web Application Firewall (use azure-web-application-firewall).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
 # Azure Security Skill
 
-This skill provides expert guidance for Azure Security. Covers troubleshooting, best practices, decision making, limits & quotas, security, configuration, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure Security. Covers troubleshooting, best practices, decision making, security, configuration, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
@@ -19,14 +19,13 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L36-L40 | Diagnosing and resolving common Azure Customer Lockbox issues, including access request problems, approval/denial errors, and configuration or permission-related failures. |
-| Best Practices | L41-L59 | Security hardening checklists and patterns for Azure IaaS/PaaS: identity, network, data encryption, secrets, DNS, and app/database/service configurations to reduce attack surface. |
-| Decision Making | L60-L64 | Guidance on choosing between Azure Key Vault, Managed HSM, Cloud HSM, and Payment HSM based on security, compliance, key management, and workload requirements. |
-| Limits & Quotas | L65-L69 | Which Azure services support customer-managed encryption keys, and how to determine CMK capabilities and options across different Azure resources |
-| Security | L70-L99 | Security best practices for Azure workloads: threat modeling mitigations, AKS image validation, ransomware defense, incident response, data protection, certificates, and operational/SQL security features |
-| Configuration | L100-L108 | Configuring Azure security features like antimalware, firewalls, container vulnerability tools, security logging/auditing, and upcoming managed TLS/DCV changes |
-| Integrations & Coding Patterns | L109-L113 | Guidance on generating signed SBOMs for container images, attaching them in CI/CD, and integrating software supply chain security into deployment workflows. |
-| Deployment | L114-L120 | Guides for signing and verifying container images with Notation in Azure Pipelines/GitHub Actions, plus comparing security feature availability in Azure vs Azure Government. |
+| Troubleshooting | L29-L32 | Diagnosing and resolving common Azure Customer Lockbox issues, including access request problems, approval/denial errors, and configuration or permission-related failures. |
+| Best Practices | L34-L51 | Security hardening checklists and patterns for Azure IaaS/PaaS: identity, network, data encryption, secrets, DNS, and app/database/service configurations to reduce attack surface. |
+| Decision Making | L53-L57 | Guidance on which Azure services support customer-managed encryption keys and how to choose the right key management approach (Key Vault, managed HSM, platform keys) for your workloads. |
+| Security | L59-L88 | Securing Azure workloads: threat modeling mitigations, AKS image validation, ransomware defense, incident response, data protection, access control, and Azure security best practices. |
+| Configuration | L90-L96 | Configuring Azure security features like antimalware, firewalls, container vulnerability tools, security logging/auditing, and upcoming managed TLS/DCV changes |
+| Integrations & Coding Patterns | L98-L101 | Guidance on generating signed SBOMs for container images, attaching them in CI/CD, and integrating software supply chain security into deployment workflows. |
+| Deployment | L103-L109 | Guides for signing and verifying container images with Notation in Azure Pipelines/GitHub Actions, plus comparing security feature availability in Azure vs Azure Government. |
 
 ### Troubleshooting
 | Topic | URL |
@@ -55,12 +54,8 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 ### Decision Making
 | Topic | URL |
 |-------|-----|
-| Choose between Azure Key Vault, Managed HSM, Cloud HSM, Payment HSM | https://learn.microsoft.com/en-us/azure/security/fundamentals/key-management-choose |
-
-### Limits & Quotas
-| Topic | URL |
-|-------|-----|
-| Identify Azure services supporting customer-managed keys | https://learn.microsoft.com/en-us/azure/security/fundamentals/encryption-customer-managed-keys-support |
+| Identify Azure services supporting customer managed keys | https://learn.microsoft.com/en-us/azure/security/fundamentals/encryption-customer-managed-keys-support |
+| Choose the right Azure key management solution | https://learn.microsoft.com/en-us/azure/security/fundamentals/key-management-choose |
 
 ### Security
 | Topic | URL |
@@ -77,6 +72,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Protect sensitive data using Threat Modeling Tool mitigations | https://learn.microsoft.com/en-us/azure/security/develop/threat-modeling-tool-sensitive-data |
 | Implement secure session management from Threat Modeling Tool | https://learn.microsoft.com/en-us/azure/security/develop/threat-modeling-tool-session-management |
 | Apply Azure-specific security best practices for AI workloads | https://learn.microsoft.com/en-us/azure/security/fundamentals/ai-security-best-practices |
+| Configure Microsoft Antimalware in Azure with PowerShell | https://learn.microsoft.com/en-us/azure/security/fundamentals/antimalware-code-samples |
 | Use Azure Certificate Authority roots and requirements | https://learn.microsoft.com/en-us/azure/security/fundamentals/azure-certificate-authority-details |
 | Design Azure backup and restore plan against ransomware | https://learn.microsoft.com/en-us/azure/security/fundamentals/backup-plan-to-protect-against-ransomware |
 | Implement Azure resource security best practices | https://learn.microsoft.com/en-us/azure/security/fundamentals/best-practices-and-patterns |
@@ -96,7 +92,6 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Topic | URL |
 |-------|-----|
 | Configure Dependabot and Copacetic for container security | https://learn.microsoft.com/en-us/azure/security/container-secure-supply-chain/articles/container-secure-supply-chain-implementation/cssc-depenadabot-quickstart |
-| Configure Microsoft Antimalware in Azure with PowerShell | https://learn.microsoft.com/en-us/azure/security/fundamentals/antimalware-code-samples |
 | Configure firewalls using Azure domain patterns | https://learn.microsoft.com/en-us/azure/security/fundamentals/azure-domains |
 | Configure and analyze Azure security logging and auditing | https://learn.microsoft.com/en-us/azure/security/fundamentals/log-audit |
 | Adapt to upcoming Azure managed TLS and DCV changes | https://learn.microsoft.com/en-us/azure/security/fundamentals/managed-tls-changes |

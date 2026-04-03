@@ -1,6 +1,6 @@
 ---
 name: azure-industry
-description: Expert knowledge for Azure Industry development including troubleshooting, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure Industry applications. Not for Azure Health Data Services (use azure-health-data-services), Azure Energy Data Services (use azure-energy-data-services), Azure Data Manager for Agriculture (use azure-data-manager-for-agri), Azure IoT (use azure-iot).
+description: Expert knowledge for Azure Industry development including troubleshooting, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when managing Community Training portals, Teams embedding, Azure AD/B2C login, Android app builds, or UI languages, and other Azure Industry related development tasks.
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,12 +19,12 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L34-L38 | Diagnosing and resolving performance issues in the Community Training web and mobile apps, including slow load times, timeouts, and general responsiveness problems. |
-| Limits & Quotas | L39-L43 | List of UI languages supported by Azure Community Training, including availability details and localization considerations. |
-| Security | L44-L57 | Configuring Community Training security: auth methods, Azure AD/B2C login types, roles/admin permissions, access restrictions, backups, hosting constraints, and content access control. |
-| Configuration | L58-L68 | Configuring Microsoft Community Training portals: branding, homepage, languages, learner profile fields, role capabilities, and course completion certificate setup and templates. |
-| Integrations & Coding Patterns | L69-L75 | Guides for extending Community Training with integrations, especially embedding it in Microsoft Teams, customizing the Teams app/tab name/icon, and related extensibility FAQs. |
-| Deployment | L76-L82 | Guides for deploying, configuring, and uninstalling Microsoft Community Training on Azure, including prerequisites and building/publishing the Android mobile app. |
+| Troubleshooting | L28-L31 | Diagnosing and resolving performance issues in the Community Training web and mobile apps, including slow load times, timeouts, and general responsiveness problems. |
+| Limits & Quotas | L33-L36 | List of UI languages supported by Azure Community Training, including availability details and localization considerations. |
+| Security | L38-L50 | Configuring Community Training security: auth methods, Azure AD/B2C login types, roles/admin permissions, access restrictions, backups, hosting constraints, and content access control. |
+| Configuration | L52-L61 | Configuring Microsoft Community Training portals: branding, homepage, languages, learner profile fields, role capabilities, and course completion certificate setup and templates. |
+| Integrations & Coding Patterns | L63-L68 | Guides for extending Community Training with integrations, especially embedding it in Microsoft Teams, customizing the Teams app/tab name/icon, and related extensibility FAQs. |
+| Deployment | L70-L76 | Guides for deploying, configuring, and uninstalling Microsoft Community Training on Azure, including prerequisites and building/publishing the Android mobile app. |
 
 ### Troubleshooting
 | Topic | URL |

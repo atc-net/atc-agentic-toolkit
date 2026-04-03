@@ -1,6 +1,6 @@
 ---
 name: azure-update-manager
-description: Expert knowledge for Azure Update Manager development including troubleshooting, best practices, decision making, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure Update Manager applications. Not for Azure Automation (use azure-automation), Azure Monitor (use azure-monitor), Azure Policy (use azure-policy), Azure Resource Manager (use azure-resource-manager).
+description: Expert knowledge for Azure Update Manager development including troubleshooting, best practices, decision making, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when managing VM/Arc patching, Automanage profiles, hotpatch/ESU schedules, change tracking, or SDK/REST automation, and other Azure Update Manager related development tasks. Not for Azure Automation (use azure-automation), Azure Monitor (use azure-monitor), Azure Osconfig (use azure-osconfig), Azure Virtual Machines (use azure-virtual-machines).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,14 +19,14 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L36-L41 | Diagnosing and fixing Azure Update Manager and Automanage onboarding issues, including common error codes, connectivity problems, and remediation steps for failed update operations. |
-| Best Practices | L42-L52 | Best practices for configuring Automanage and guest patching on Windows/Linux/Arc VMs, handling SQL Server and Ubuntu/Ubuntu Pro updates, and managing SMB over QUIC in Update Manager. |
-| Decision Making | L53-L58 | Planning patch strategies across subscriptions and guidance for migrating patch management from Configuration Manager to Azure Update Manager |
-| Limits & Quotas | L59-L68 | OS, region, image, and workload support limits for Update Manager, including supported update sources/types, change tracking matrix, and unsupported scenarios. |
-| Security | L69-L74 | Configuring disk encryption for Automanaged VMs and setting up RBAC roles/permissions to securely manage and control access to Azure Update Manager. |
-| Configuration | L75-L95 | Configuring Update Manager: update schedules, scopes, alerts, policies, ESU, hotpatching, change tracking, workspaces/DCRs, reports, Resource Graph, and cross-subscription patching. |
-| Integrations & Coding Patterns | L96-L108 | Using SDKs (Go/Java/JS/Python) and REST APIs to assign Automanage profiles, manage VM/Arc server updates, and implement pre/post maintenance with Functions, webhooks, and runbooks |
-| Deployment | L109-L121 | Deploying and managing Automanage/Update Manager at scale: onboarding VMs/Arc servers, upgrading/moving profiles and VMs across regions/tenants, and using Policy plus extension release/issue tracking. |
+| Troubleshooting | L30-L34 | Diagnosing and fixing Azure Update Manager and Automanage onboarding issues, including common error codes, connectivity problems, and remediation steps for failed update operations. |
+| Best Practices | L36-L45 | Best practices for configuring Automanage and guest patching on Windows/Linux/Arc VMs, handling SQL Server and Ubuntu/Ubuntu Pro updates, and managing SMB over QUIC in Update Manager. |
+| Decision Making | L47-L51 | Planning patch strategies across subscriptions and guidance for migrating patch management from Configuration Manager to Azure Update Manager |
+| Limits & Quotas | L53-L61 | OS, region, image, and workload support limits for Update Manager, including supported update sources/types, change tracking matrix, and unsupported scenarios. |
+| Security | L63-L67 | Configuring disk encryption for Automanaged VMs and setting up RBAC roles/permissions to securely manage and control access to Azure Update Manager. |
+| Configuration | L69-L88 | Configuring Update Manager: update schedules, scopes, alerts, policies, ESU, hotpatching, change tracking, workspaces/DCRs, reports, Resource Graph, and cross-subscription patching. |
+| Integrations & Coding Patterns | L90-L101 | Using SDKs (Go/Java/JS/Python) and REST APIs to assign Automanage profiles, manage VM/Arc server updates, and implement pre/post maintenance with Functions, webhooks, and runbooks |
+| Deployment | L103-L115 | Deploying and managing Automanage/Update Manager at scale: onboarding VMs/Arc servers, upgrading/moving profiles and VMs across regions/tenants, and using Policy plus extension release/issue tracking. |
 
 ### Troubleshooting
 | Topic | URL |

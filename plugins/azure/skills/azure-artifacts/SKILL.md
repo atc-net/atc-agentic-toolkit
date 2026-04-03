@@ -1,6 +1,6 @@
 ---
 name: azure-artifacts
-description: Expert knowledge for Azure Artifacts development including best practices, decision making, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure Artifacts applications. Not for Azure DevOps (use azure-devops), Azure Pipelines (use azure-pipelines), Azure Repos (use azure-repos), Azure Boards (use azure-boards).
+description: Expert knowledge for Azure Artifacts development including best practices, decision making, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when managing feeds, upstream sources, package publishing/restore, GitHub Actions CI/CD, or npm/NuGet config, and other Azure Artifacts related development tasks. Not for Azure DevOps (use azure-devops), Azure Pipelines (use azure-pipelines), Azure Repos (use azure-repos), Azure Boards (use azure-boards).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,13 +19,13 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Best Practices | L35-L41 | Guidance on Azure Artifacts package management best practices, configuring and using upstream sources, and safely restoring packages from external feeds. |
-| Decision Making | L42-L48 | Guidance on choosing feed scope and planning migrations of package storage, including moving from file shares or MyGet to Azure Artifacts feeds. |
-| Limits & Quotas | L49-L56 | Storage quotas, free allocation, and size/count limits for Azure Artifacts packages, plus how to monitor usage and publish Universal Packages within those limits. |
-| Security | L57-L63 | Securing Azure Artifacts feeds: configuring permissions, protecting upstream sources from malicious packages, and using npm audit to find and fix vulnerabilities. |
-| Configuration | L64-L75 | Configuring Azure Artifacts feeds: views/promotion, retention/deletion, upstream sources, npm/.npmrc and scopes, and .artifactignore for optimizing pipeline artifacts. |
-| Integrations & Coding Patterns | L76-L120 | How to connect build tools and CLIs (Cargo, Maven, Gradle, npm, NuGet, Python, PowerShell, Universal) to Azure Artifacts feeds, publish/restore packages, and use upstream sources. |
-| Deployment | L121-L124 | Using GitHub Actions to build and push packages (NuGet, npm, etc.) to Azure Artifacts feeds, including workflow setup, authentication, and CI/CD integration. |
+| Best Practices | L29-L34 | Guidance on Azure Artifacts package management best practices, configuring and using upstream sources, and safely restoring packages from external feeds. |
+| Decision Making | L36-L41 | Guidance on choosing feed scope and planning migrations of package storage, including moving from file shares or MyGet to Azure Artifacts feeds. |
+| Limits & Quotas | L43-L49 | Storage quotas, free allocation, and per-package size/count limits in Azure Artifacts, plus how to monitor, manage, and publish packages within those limits. |
+| Security | L51-L56 | Securing Azure Artifacts feeds: configuring permissions, protecting upstream sources from malicious packages, and using npm audit to find and fix vulnerabilities. |
+| Configuration | L58-L68 | Configuring Azure Artifacts feeds: views/promotion, retention/deletion, upstream sources, npm/.npmrc and scopes, and .artifactignore for optimizing pipeline artifacts. |
+| Integrations & Coding Patterns | L70-L111 | How to connect build tools and CLIs (Cargo, Maven, Gradle, npm, NuGet, Python, PowerShell, Universal) to Azure Artifacts feeds, publish/restore packages, and use upstream sources. |
+| Deployment | L113-L116 | Using GitHub Actions to build and push packages (NuGet, npm, etc.) to Azure Artifacts feeds, including workflow setup, authentication, and CI/CD integration. |
 
 ### Best Practices
 | Topic | URL |
@@ -44,9 +44,9 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 ### Limits & Quotas
 | Topic | URL |
 |-------|-----|
-| Monitor and manage Azure Artifacts storage quotas | https://learn.microsoft.com/en-us/azure/devops/artifacts/artifact-storage?view=azure-devops |
+| Monitor and manage Azure Artifacts storage limits | https://learn.microsoft.com/en-us/azure/devops/artifacts/artifact-storage?view=azure-devops |
 | Publish Universal Packages and understand size limits | https://learn.microsoft.com/en-us/azure/devops/artifacts/quickstarts/universal-packages?view=azure-devops |
-| Review Azure Artifacts package size and count limits | https://learn.microsoft.com/en-us/azure/devops/artifacts/reference/limits?view=azure-devops |
+| Azure Artifacts package size and count limits | https://learn.microsoft.com/en-us/azure/devops/artifacts/reference/limits?view=azure-devops |
 | Understand Azure Artifacts free storage allocation | https://learn.microsoft.com/en-us/azure/devops/artifacts/start-using-azure-artifacts?view=azure-devops |
 
 ### Security
@@ -101,7 +101,6 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Restore NuGet packages with NuGet CLI from Azure Artifacts | https://learn.microsoft.com/en-us/azure/devops/artifacts/nuget/restore-nuget-packages-nuget-exe?view=azure-devops |
 | Consume NuGet Gallery packages via Azure Artifacts upstream | https://learn.microsoft.com/en-us/azure/devops/artifacts/nuget/upstream-sources?view=azure-devops |
 | Connect Python projects to Azure Artifacts feeds | https://learn.microsoft.com/en-us/azure/devops/artifacts/python/project-setup-python?view=azure-devops |
-| Consume PyPI packages via Azure Artifacts upstream sources | https://learn.microsoft.com/en-us/azure/devops/artifacts/python/use-packages-from-pypi?view=azure-devops |
 | Download Universal Packages from Azure Artifacts feeds | https://learn.microsoft.com/en-us/azure/devops/artifacts/quickstarts/download-universal-packages?view=azure-devops |
 | Install Python packages from Azure Artifacts via CLI | https://learn.microsoft.com/en-us/azure/devops/artifacts/quickstarts/install-python-packages?view=azure-devops |
 | Publish Python packages via CLI to Azure Artifacts | https://learn.microsoft.com/en-us/azure/devops/artifacts/quickstarts/python-cli?view=azure-devops |
@@ -111,7 +110,6 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Use PowerShell Gallery as an Azure Artifacts upstream source | https://learn.microsoft.com/en-us/azure/devops/artifacts/tutorials/powershell-upstream-source?view=azure-devops |
 | Use Azure Artifacts feed as a private PowerShell repository | https://learn.microsoft.com/en-us/azure/devops/artifacts/tutorials/private-powershell-library?view=azure-devops |
 | Connect and configure Universal Packages with Azure Artifacts | https://learn.microsoft.com/en-us/azure/devops/artifacts/universal-packages/project-setup-universal-packages?view=azure-devops |
-| Configure Universal Packages upstream sources in Azure Artifacts | https://learn.microsoft.com/en-us/azure/devops/artifacts/universal-packages/universal-packages-upstream?view=azure-devops |
 
 ### Deployment
 | Topic | URL |

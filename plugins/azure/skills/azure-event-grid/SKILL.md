@@ -1,6 +1,6 @@
 ---
 name: azure-event-grid
-description: Expert knowledge for Azure Event Grid development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure Event Grid applications. Not for Azure Event Hubs (use azure-event-hubs), Azure Service Bus (use azure-service-bus), Azure Notification Hubs (use azure-notification-hubs), Azure Logic Apps (use azure-logic-apps).
+description: Expert knowledge for Azure Event Grid development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when configuring Event Grid topics/subscriptions, MQTT brokers, filters/routing, retries/dead-lettering, or Arc deployments, and other Azure Event Grid related development tasks. Not for Azure Service Bus (use azure-service-bus), Azure Event Hubs (use azure-event-hubs), Azure Notification Hubs (use azure-notification-hubs), Azure Logic Apps (use azure-logic-apps).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,15 +19,15 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L37-L45 | Diagnosing and fixing Event Grid issues: MQTT broker problems, error codes, common failures, network connectivity, and event subscription validation errors. |
-| Best Practices | L46-L50 | Guidance on designing client-side failover for Event Grid, including using multiple regions, retry logic, and resilient publishing patterns for high availability. |
-| Decision Making | L51-L58 | Guidance on choosing Event Grid tiers, matching event schemas, comparing Azure vs Kubernetes Event Grid, and migrating from Event Grid on IoT Edge to IoT Edge hub. |
-| Architecture & Design Patterns | L59-L64 | Patterns for routing events across Event Grid namespace topics and implementing MQTT-based request/response command workflows using Event Grid. |
-| Limits & Quotas | L65-L75 | Event Grid delivery/retry behavior, custom headers, event retention, MQTT protocol support, and regional quotas/service limits for topics, namespaces, and brokers |
-| Security | L76-L126 | Securing Event Grid: auth for publishers/consumers (keys, SAS, Entra ID, JWT, certs), RBAC, managed identities, TLS, IP/firewalls, private endpoints, MQTT security, and Azure Policy controls. |
-| Configuration | L127-L207 | Configuring Event Grid and MQTT: topics, subscriptions, filters, routing, retries, dead-lettering, monitoring, and detailed event schemas for many Azure and Microsoft services. |
-| Integrations & Coding Patterns | L208-L247 | Patterns and tutorials for integrating Event Grid with Auth0, M365/Graph apps, HTTP/webhooks, MQTT, Event Hubs, private endpoints, and using built‑in/proprietary event schemas. |
-| Deployment | L248-L251 | Guides for deploying Event Grid on Azure Arc-enabled Kubernetes, including installing and configuring the Event Grid extension on Arc clusters. |
+| Troubleshooting | L31-L38 | Diagnosing and fixing Event Grid issues: MQTT broker problems, error codes, common failures, network connectivity, and event subscription validation errors. |
+| Best Practices | L40-L43 | Guidance on designing client-side failover for Event Grid, including using multiple regions, retry logic, and resilient publishing patterns for high availability. |
+| Decision Making | L45-L51 | Guidance on choosing Event Grid tiers, matching event schemas, comparing Azure vs Kubernetes Event Grid, and migrating from Event Grid on IoT Edge to IoT Edge hub. |
+| Architecture & Design Patterns | L53-L57 | Patterns for routing events across Event Grid namespace topics and implementing MQTT-based request/response command workflows using Event Grid. |
+| Limits & Quotas | L59-L68 | Event Grid delivery/retry behavior, custom headers, event retention, MQTT protocol support, and regional quotas/service limits for topics, namespaces, and brokers |
+| Security | L70-L119 | Securing Event Grid: auth for publishers/consumers (keys, SAS, Entra ID, JWT, certs), RBAC, managed identities, TLS, IP/firewalls, private endpoints, MQTT security, and Azure Policy controls. |
+| Configuration | L121-L200 | Configuring Event Grid and MQTT: topics, subscriptions, filters, routing, retries, dead-lettering, monitoring, and detailed event schemas for many Azure and Microsoft services. |
+| Integrations & Coding Patterns | L202-L240 | Patterns and tutorials for integrating Event Grid with Auth0, M365/Graph apps, HTTP/webhooks, MQTT, Event Hubs, private endpoints, and using built‑in/proprietary event schemas. |
+| Deployment | L242-L245 | Guides for deploying Event Grid on Azure Arc-enabled Kubernetes, including installing and configuring the Event Grid extension on Arc clusters. |
 
 ### Troubleshooting
 | Topic | URL |

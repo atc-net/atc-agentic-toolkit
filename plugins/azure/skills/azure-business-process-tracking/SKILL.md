@@ -1,6 +1,6 @@
 ---
 name: azure-business-process-tracking
-description: Expert knowledge for Azure Business Process Tracking development including deployment. Use when building, debugging, or optimizing Azure Business Process Tracking applications. Not for Azure Monitor (use azure-monitor), Azure Logic Apps (use azure-logic-apps), Azure Data Factory (use azure-data-factory), Azure Machine Learning (use azure-machine-learning).
+description: Expert knowledge for Azure Business Process Tracking development including deployment. Use when creating CI/CD pipelines, automating builds, running tests, and deploying tracking solutions via DevOps tools, and other Azure Business Process Tracking related development tasks. Not for Azure Monitor (use azure-monitor), Azure Logic Apps (use azure-logic-apps), Azure Data Factory (use azure-data-factory), Azure Machine Learning (use azure-machine-learning).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,7 +19,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Deployment | L29-L32 | Guidance on setting up automated CI/CD pipelines to build, test, and deploy Azure Business Process Tracking solutions using DevOps tools and best practices. |
+| Deployment | L23-L26 | Guidance on setting up automated CI/CD pipelines to build, test, and deploy Azure Business Process Tracking solutions using DevOps tools and best practices. |
 
 ### Deployment
 | Topic | URL |

@@ -1,6 +1,6 @@
 ---
 name: azure-oracle
-description: Expert knowledge for Azure Oracle development including troubleshooting, security, configuration, and integrations & coding patterns. Use when building, debugging, or optimizing Azure Oracle applications. Not for SQL Server on Azure Virtual Machines (use azure-sql-virtual-machines), Azure SQL Managed Instance (use azure-sql-managed-instance), Azure SQL Database (use azure-sql-database), Azure VMware Solution (use azure-vmware-solution).
+description: Expert knowledge for Azure Oracle development including troubleshooting, security, configuration, and integrations & coding patterns. Use when configuring Oracle Database@Azure connectivity, TDE with Key Vault, VNet topology, or Exadata logs to Sentinel, and other Azure Oracle related development tasks. Not for Azure SQL Database (use azure-sql-database), Azure SQL Managed Instance (use azure-sql-managed-instance), SQL Server on Azure Virtual Machines (use azure-sql-virtual-machines), SAP HANA on Azure Large Instances (use azure-sap).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,10 +19,10 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L32-L37 | Operational FAQs and fixes for common Oracle Database@Azure issues, including connectivity, performance, deployment, configuration, and known platform limitations. |
-| Security | L38-L42 | Configuring Oracle Transparent Data Encryption (TDE) to use Azure Key Vault, including key management, integration steps, and security best practices. |
-| Configuration | L43-L48 | Onboarding Oracle Database@Azure, required prerequisites, and designing secure virtual network topologies (subnets, connectivity, routing) for Oracle DB deployments in Azure. |
-| Integrations & Coding Patterns | L49-L52 | Configuring Oracle Exadata log collection and pipelines into Azure Monitor and Microsoft Sentinel for monitoring, analytics, and security SIEM/SOAR use cases. |
+| Troubleshooting | L26-L30 | Operational FAQs and fixes for common Oracle Database@Azure issues, including connectivity, performance, deployment, configuration, and known platform limitations. |
+| Security | L32-L35 | Configuring Oracle Transparent Data Encryption (TDE) to use Azure Key Vault, including key management, integration steps, and security best practices. |
+| Configuration | L37-L41 | Onboarding Oracle Database@Azure, required prerequisites, and designing secure virtual network topologies (subnets, connectivity, routing) for Oracle DB deployments in Azure. |
+| Integrations & Coding Patterns | L43-L46 | Configuring Oracle Exadata log collection and pipelines into Azure Monitor and Microsoft Sentinel for monitoring, analytics, and security SIEM/SOAR use cases. |
 
 ### Troubleshooting
 | Topic | URL |

@@ -1,6 +1,6 @@
 ---
 name: azure-ai-vision
-description: Expert knowledge for Azure AI Vision development including decision making, limits & quotas, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure AI Vision applications. Not for Azure AI services (use azure-ai-services), Azure AI Custom Vision (use azure-custom-vision), Azure AI Video Indexer (use azure-video-indexer), Azure AI Document Intelligence (use azure-document-intelligence).
+description: Expert knowledge for Azure AI Vision development including decision making, limits & quotas, configuration, integrations & coding patterns, and deployment. Use when using Image Analysis, Read OCR containers, Blob Storage image access, smart-crop thumbnails, or video frame analysis, and other Azure AI Vision related development tasks. Not for Azure AI services (use microsoft-foundry-tools), Azure AI Custom Vision (use azure-custom-vision), Azure AI Video Indexer (use azure-video-indexer), Azure AI Document Intelligence (use azure-document-intelligence).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,11 +19,11 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Decision Making | L33-L39 | Guides for planning and executing migrations and upgrades between Azure Vision Image Analysis and Read OCR versions/containers, including breaking changes and app update steps. |
-| Limits & Quotas | L40-L51 | Limits, thresholds, and taxonomies for Image Analysis: category lists, adult content scores, object/people detection constraints, smart-crop behavior, and OCR language support. |
-| Configuration | L52-L57 | Configuring Vision Read OCR containers and setting up Azure Blob Storage access for image retrieval, including environment settings, networking, and storage connection details. |
-| Integrations & Coding Patterns | L58-L68 | How to call and configure Azure Vision/Read APIs and SDKs for OCR, embeddings, thumbnails, background removal, domain models, and live video frame analysis. |
-| Deployment | L69-L72 | Installing, configuring, and running the Azure AI Vision Read OCR container locally or on-premises, including prerequisites, deployment steps, and runtime settings. |
+| Decision Making | L27-L32 | Guides for planning and executing migrations and upgrades between Azure Vision Image Analysis and Read OCR versions/containers, including breaking changes and app update steps. |
+| Limits & Quotas | L34-L44 | Limits, thresholds, and taxonomies for Image Analysis: category lists, adult content scores, object/people detection constraints, smart-crop behavior, and OCR language support. |
+| Configuration | L46-L50 | Configuring Vision Read OCR containers and setting up Azure Blob Storage access for image retrieval, including environment settings, networking, and storage connection details. |
+| Integrations & Coding Patterns | L52-L61 | How to call and configure Azure Vision/Read APIs and SDKs for OCR, embeddings, thumbnails, background removal, domain models, and live video frame analysis. |
+| Deployment | L63-L66 | Installing, configuring, and running the Azure AI Vision Read OCR container locally or on-premises, including prerequisites, deployment steps, and runtime settings. |
 
 ### Decision Making
 | Topic | URL |

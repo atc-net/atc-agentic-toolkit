@@ -1,6 +1,6 @@
 ---
 name: azure-confidential-ledger
-description: Expert knowledge for Azure Confidential Ledger development including decision making, security, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure Confidential Ledger applications. Not for Azure Confidential Computing (use azure-confidential-computing), Azure Virtual Enclaves (use azure-virtual-enclaves), Azure Key Vault (use azure-key-vault), Azure Database for PostgreSQL (use azure-database-postgresql).
+description: Expert knowledge for Azure Confidential Ledger development including decision making, security, integrations & coding patterns, and deployment. Use when configuring Entra auth, ACL roles, UDFs, client SDKs, transaction receipts, or ARM/Terraform deployments, and other Azure Confidential Ledger related development tasks. Not for Azure Confidential Computing (use azure-confidential-computing), Azure Virtual Enclaves (use azure-virtual-enclaves), Azure Key Vault (use azure-key-vault), Azure Dedicated HSM (use azure-dedicated-hsm).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,10 +19,10 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Decision Making | L32-L36 | Guidance on migrating from Managed CCF to Azure Confidential Ledger, including compatibility, feature mapping, and steps to move existing apps and data. |
-| Security | L37-L48 | Configuring Entra auth and app registration, managing cert- and token-based users/roles, enforcing RBAC/UDF security, and verifying enclave/node trust for Azure Confidential Ledger. |
-| Integrations & Coding Patterns | L49-L60 | Client libraries, UDFs, and patterns for integrating Confidential Ledger with apps and services (Blob digests, Power Automate, querying/organizing data, and verifying transaction receipts). |
-| Deployment | L61-L65 | How to deploy and provision Azure Confidential Ledger instances using ARM templates or Terraform, including required parameters and configuration steps. |
+| Decision Making | L26-L29 | Guidance on migrating from Managed CCF to Azure Confidential Ledger, including compatibility, feature mapping, and steps to move existing apps and data. |
+| Security | L31-L41 | Configuring Entra auth and app registration, managing cert- and token-based users/roles, enforcing RBAC/UDF security, and verifying enclave/node trust for Azure Confidential Ledger. |
+| Integrations & Coding Patterns | L43-L53 | Client libraries, UDFs, and patterns for integrating Confidential Ledger with apps and services (Blob digests, Power Automate, querying/organizing data, and verifying transaction receipts). |
+| Deployment | L55-L59 | How to deploy and provision Azure Confidential Ledger instances using ARM templates or Terraform, including required parameters and configuration steps. |
 
 ### Decision Making
 | Topic | URL |

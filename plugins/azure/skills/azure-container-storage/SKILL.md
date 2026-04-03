@@ -1,6 +1,6 @@
 ---
 name: azure-container-storage
-description: Expert knowledge for Azure Container Storage development including troubleshooting, decision making, limits & quotas, security, and configuration. Use when building, debugging, or optimizing Azure Container Storage applications. Not for Azure Blob Storage (use azure-blob-storage), Azure Files (use azure-files), Azure Elastic SAN (use azure-elastic-san), Azure NetApp Files (use azure-netapp-files).
+description: Expert knowledge for Azure Container Storage development including troubleshooting, decision making, limits & quotas, security, and configuration. Use when configuring CMK-encrypted Elastic SAN volumes, ACS pools, LRS/ZRS redundancy, volume resize, or v1 installs, and other Azure Container Storage related development tasks. Not for Azure Blob Storage (use azure-blob-storage), Azure Files (use azure-files), Azure Elastic SAN (use azure-elastic-san), Azure NetApp Files (use azure-netapp-files).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,11 +19,11 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L33-L37 | Diagnosing and fixing Azure Container Storage v1 install failures, pool creation/health issues, and related Kubernetes cluster/storage configuration problems. |
-| Decision Making | L38-L45 | Guidance on Azure Container Storage costs (v1 vs v2), billing models, and choosing/configuring redundancy options like LRS vs ZRS and multi-zone setups |
-| Limits & Quotas | L46-L51 | Guidance on resizing Azure Container Storage volumes (v2 and v1), including capacity/pool limits, constraints, and steps to safely expand volumes within those limits. |
-| Security | L52-L56 | Configuring customer-managed key (CMK) encryption for Azure Container Storage using Elastic SAN volumes, including setup steps and security considerations. |
-| Configuration | L57-L64 | Configuring Azure Container Storage pools, node placement, and monitoring: storage pool parameters, node affinity, Prometheus setup (v1 & current), and Azure Managed Grafana dashboards. |
+| Troubleshooting | L27-L30 | Diagnosing and fixing Azure Container Storage v1 install failures, pool creation/health issues, and related Kubernetes cluster/storage configuration problems. |
+| Decision Making | L32-L38 | Guidance on Azure Container Storage costs (v1 vs v2), billing models, and choosing/configuring redundancy options like LRS vs ZRS and multi-zone setups |
+| Limits & Quotas | L40-L44 | Guidance on resizing Azure Container Storage volumes (v2 and v1), including capacity/pool limits, constraints, and steps to safely expand volumes within those limits. |
+| Security | L46-L49 | Configuring customer-managed key (CMK) encryption for Azure Container Storage using Elastic SAN volumes, including setup steps and security considerations. |
+| Configuration | L51-L58 | Configuring Azure Container Storage pools, node placement, and monitoring: storage pool parameters, node affinity, Prometheus setup (v1 & current), and Azure Managed Grafana dashboards. |
 
 ### Troubleshooting
 | Topic | URL |

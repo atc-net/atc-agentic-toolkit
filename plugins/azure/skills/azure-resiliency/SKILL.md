@@ -1,6 +1,6 @@
 ---
 name: azure-resiliency
-description: Expert knowledge for Azure Resiliency development including limits & quotas, security, and configuration. Use when building, debugging, or optimizing Azure Resiliency applications. Not for Azure Reliability (use azure-reliability), Azure Site Recovery (use azure-site-recovery), Azure Backup (use azure-backup), Azure Monitor (use azure-monitor).
+description: Expert knowledge for Azure Resiliency development including limits & quotas, security, and configuration. Use when managing Backup/Site Recovery vaults, protection policies, replication settings, SLAs, or resiliency security posture, and other Azure Resiliency related development tasks. Not for Azure Reliability (use azure-reliability), Azure Site Recovery (use azure-site-recovery), Azure Backup (use azure-backup), Azure Monitor (use azure-monitor).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,9 +19,9 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Limits & Quotas | L31-L35 | Resiliency support boundaries in Azure: what scenarios are covered or excluded, limitations by service/feature, and how these affect reliability, SLAs, and support expectations. |
-| Security | L36-L41 | Configuring security levels, policies, and posture in Azure Resiliency, including how to assess, adjust, and enforce protections for resilient workloads and infrastructure. |
-| Configuration | L42-L48 | Configuring and managing Azure Backup/Site Recovery vaults and protection policies, including creation, updates, lifecycle operations, and settings for backup and replication. |
+| Limits & Quotas | L25-L28 | Resiliency support boundaries in Azure: what scenarios are covered or excluded, limitations by service/feature, and how these affect reliability, SLAs, and support expectations. |
+| Security | L30-L34 | Configuring security levels, policies, and posture in Azure Resiliency, including how to assess, adjust, and enforce protections for resilient workloads and infrastructure. |
+| Configuration | L36-L42 | Configuring and managing Azure Backup/Site Recovery vaults and protection policies, including creation, updates, lifecycle operations, and settings for backup and replication. |
 
 ### Limits & Quotas
 | Topic | URL |

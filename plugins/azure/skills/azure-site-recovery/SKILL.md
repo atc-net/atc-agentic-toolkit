@@ -1,6 +1,6 @@
 ---
 name: azure-site-recovery
-description: Expert knowledge for Azure Site Recovery development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure Site Recovery applications. Not for Azure Backup (use azure-backup), Azure Migrate (use azure-migrate), Azure Virtual Machines (use azure-virtual-machines), Azure Virtual Machine Scale Sets (use azure-vm-scalesets).
+description: Expert knowledge for Azure Site Recovery development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when planning ASR for VMware/Hyper‑V, configuring Recovery Services vaults, scripting with PowerShell/Terraform, integrating ExpressRoute/Traffic Manager, or protecting AD/SQL/SAP workloads, and other Azure Site Recovery related development tasks. Not for Azure Backup (use azure-backup), Azure Migrate (use azure-migrate), Azure Virtual Machines (use azure-virtual-machines), Azure Virtual Machine Scale Sets (use azure-vm-scalesets).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,15 +19,15 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L37-L65 | Diagnosing and fixing Azure Site Recovery replication, agent, network, failover, Hyper-V/VMware/physical server, and monitoring issues, including specific error codes and health problems. |
-| Best Practices | L66-L71 | Guidance on tuning Azure Site Recovery performance: analyzing high data churn on VMs, and monitoring/troubleshooting process server health, capacity, and throughput. |
-| Decision Making | L72-L89 | Planning and sizing Azure Site Recovery: capacity and cost estimation, VMware/Hyper-V DR planning, failover/failback choices, migration from classic, and comparing ASR vs Azure Migrate. |
-| Architecture & Design Patterns | L90-L100 | Designing Azure Site Recovery architectures for specific workloads (AD/DNS, SAP, Dynamics AX, SharePoint, IIS, SQL, VMware, file servers) and multi-tier app DR patterns. |
-| Limits & Quotas | L101-L115 | Limits, capacity planning, and support matrices for Azure Site Recovery: VM/Hyper-V/VMware DR limits, high churn, shared disks, appliances, Mobility service usage, and safe use with Azure Backup. |
-| Security | L116-L124 | Configuring NSGs, TLS, RBAC, encryption remediation, and migrating Run As to managed identities to secure Azure Site Recovery traffic and access. |
-| Configuration | L125-L192 | Configuring Azure Site Recovery for Azure, VMware, Hyper‑V, and physical servers: setup, networking, encryption, appliances, policies, replication settings, and DR/failback behavior. |
-| Integrations & Coding Patterns | L193-L205 | Scripts and templates for automating ASR: PowerShell for Hyper‑V/shared disks, ExpressRoute/Traffic Manager integration, and Bicep/ARM/Terraform to deploy Recovery Services vaults. |
-| Deployment | L206-L209 | Guidance for moving VMware disaster recovery setups from classic Azure Site Recovery to the modernized architecture, including migration steps, prerequisites, and configuration changes. |
+| Troubleshooting | L31-L58 | Diagnosing and fixing Azure Site Recovery replication, agent, network, failover, Hyper-V/VMware/physical server, and monitoring issues, including specific error codes and health problems. |
+| Best Practices | L60-L64 | Guidance on tuning Azure Site Recovery performance: analyzing high data churn on VMs, and monitoring/troubleshooting process server health, capacity, and throughput. |
+| Decision Making | L66-L82 | Planning and sizing Azure Site Recovery: capacity and cost estimation, VMware/Hyper-V DR planning, failover/failback choices, migration from classic, and comparing ASR vs Azure Migrate. |
+| Architecture & Design Patterns | L84-L93 | Designing Azure Site Recovery architectures for specific workloads (AD/DNS, SAP, Dynamics AX, SharePoint, IIS, SQL, VMware, file servers) and multi-tier app DR patterns. |
+| Limits & Quotas | L95-L108 | Limits, capacity planning, and support matrices for Azure Site Recovery: VM/Hyper-V/VMware DR limits, high churn, shared disks, appliances, Mobility service usage, and safe use with Azure Backup. |
+| Security | L110-L117 | Configuring NSGs, TLS, RBAC, encryption remediation, and migrating Run As to managed identities to secure Azure Site Recovery traffic and access. |
+| Configuration | L119-L185 | Configuring Azure Site Recovery for Azure, VMware, Hyper‑V, and physical servers: setup, networking, encryption, appliances, policies, replication settings, and DR/failback behavior. |
+| Integrations & Coding Patterns | L187-L198 | Scripts and templates for automating ASR: PowerShell for Hyper‑V/shared disks, ExpressRoute/Traffic Manager integration, and Bicep/ARM/Terraform to deploy Recovery Services vaults. |
+| Deployment | L200-L203 | Guidance for moving VMware disaster recovery setups from classic Azure Site Recovery to the modernized architecture, including migration steps, prerequisites, and configuration changes. |
 
 ### Troubleshooting
 | Topic | URL |

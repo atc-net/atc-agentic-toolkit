@@ -1,6 +1,6 @@
 ---
 name: azure-policy
-description: Expert knowledge for Azure Policy development including troubleshooting, best practices, decision making, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure Policy applications. Not for Azure Blueprints (use azure-blueprints), Azure Role-based access control (use azure-rbac), Azure Resource Manager (use azure-resource-manager), Azure Security (use azure-security).
+description: Expert knowledge for Azure Policy development including troubleshooting, best practices, decision making, security, configuration, integrations & coding patterns, and deployment. Use when authoring Machine Configuration packages, deploying via ARM/Bicep/Terraform, mapping to CIS/NIST/ISO, migrating from DSC/Automanage, or querying compliance with Resource Graph, and other Azure Policy related development tasks. Not for Azure Blueprints (use azure-blueprints), Azure Role-based access control (use azure-rbac), Azure Resource Manager (use azure-resource-manager), Azure Security (use azure-security).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,13 +19,13 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L35-L41 | Diagnosing and fixing Azure Policy non-compliance, common policy evaluation/deployment errors, and Machine Configuration deployment and remediation issues. |
-| Best Practices | L42-L57 | Designing effective Azure Policy definitions: effects, logical/value operators, arrays, tags, initiatives, parameters, and testing/behavior of Machine/Guest Configuration. |
-| Decision Making | L58-L64 | Guidance for planning migrations from Azure Automation DSC, DSC extension, and Automanage Best Practices to Azure Policy/Machine Configuration, including mapping features and migration steps. |
-| Security | L65-L125 | Using Azure Policy and Machine Configuration for security baselines and mapping to compliance frameworks (CIS, NIST, ISO, PCI, FedRAMP, HIPAA, regional regs) across Azure and Azure Government. |
-| Configuration | L126-L141 | Authoring, assigning, storing, and securing Machine Configuration (guest configuration) packages and policies, plus prerequisites, networking, remediation, and compliance result analysis. |
-| Integrations & Coding Patterns | L142-L147 | Using Azure Resource Graph to query Azure Policy compliance data and guest configuration state across resources for reporting, auditing, and large-scale policy analysis |
-| Deployment | L148-L157 | How to deploy and assign Machine Configuration packages via ARM/Bicep/Terraform/REST, publish packages to storage, and use safe deployment practices with Azure Policy. |
+| Troubleshooting | L29-L34 | Diagnosing and fixing Azure Policy non-compliance, common policy evaluation/deployment errors, and Machine Configuration deployment and remediation issues. |
+| Best Practices | L36-L50 | Designing effective Azure Policy definitions: effects, logical/value operators, arrays, tags, initiatives, parameters, and testing/behavior of Machine/Guest Configuration. |
+| Decision Making | L52-L57 | Guidance for planning migrations from Azure Automation DSC, DSC extension, and Automanage Best Practices to Azure Policy/Machine Configuration, including mapping features and migration steps. |
+| Security | L59-L118 | Using Azure Policy and Machine Configuration for security baselines and mapping to compliance frameworks (CIS, NIST, ISO, PCI, FedRAMP, HIPAA, regional regs) across Azure and Azure Government. |
+| Configuration | L120-L134 | Authoring, assigning, storing, and securing Machine Configuration (guest configuration) packages and policies, plus prerequisites, networking, remediation, and compliance result analysis. |
+| Integrations & Coding Patterns | L136-L140 | Using Azure Resource Graph to query Azure Policy compliance data and guest configuration state across resources for reporting, auditing, and large-scale policy analysis |
+| Deployment | L142-L151 | How to deploy and assign Machine Configuration packages via ARM/Bicep/Terraform/REST, publish packages to storage, and use safe deployment practices with Azure Policy. |
 
 ### Troubleshooting
 | Topic | URL |

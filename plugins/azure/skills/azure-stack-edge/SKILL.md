@@ -1,6 +1,6 @@
 ---
 name: azure-stack-edge
-description: Expert knowledge for Azure Stack Edge development including troubleshooting, best practices, decision making, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure Stack Edge applications. Not for Azure Data Box (use azure-data-box-family), Azure IoT Edge (use azure-iot-edge), Azure Local (use azure-local).
+description: Expert knowledge for Azure Stack Edge development including troubleshooting, best practices, decision making, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when running IoT Edge or GPU/Kubernetes apps, configuring VMs/storage/networking, or managing device updates, and other Azure Stack Edge related development tasks. Not for Azure Data Box (use azure-data-box-family), Azure IoT Edge (use azure-iot-edge), Azure Kubernetes Service (AKS) (use azure-kubernetes-service), Azure Virtual Machines (use azure-virtual-machines).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,14 +19,14 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L36-L85 | Diagnosing and fixing Azure Stack Edge/Data Box Gateway issues: release-specific known problems, alerts, ordering/activation, certificates, ARM/Blob/IoT/VM/GPU errors, and using diagnostics/logs. |
-| Best Practices | L86-L93 | Best practices for Azure Stack Edge Pro: planning for and recovering from device failure, GPU sharing configuration, and day-to-day operational/maintenance guidelines. |
-| Decision Making | L94-L102 | Guidance on region and data-location choices, resiliency behavior, disconnected deployment planning, and processes for replacing Azure Stack Edge devices. |
-| Limits & Quotas | L103-L114 | Limits, capacities, performance, and system requirements for Azure Stack Edge and Data Box Gateway devices, including supported VM sizes and moving Edge resources across subscriptions. |
-| Security | L115-L141 | Security, identity, and compliance for Azure Stack Edge: user/RBAC access, TLS/certificates, Key Vault secrets, VPN, encryption, data erasure, Azure Policy, and device‑specific security features. |
-| Configuration | L142-L195 | Configuring and managing Azure Stack Edge/Data Box Gateway devices: networking, power, storage, Kubernetes, VMs, GPUs, monitoring, automation, and device lifecycle (reset, wipe, specs). |
-| Integrations & Coding Patterns | L196-L207 | How to deploy and integrate workloads on Azure Stack Edge: IoT Edge modules, GPU-sharing/Kubernetes apps, DeepStream, Arc/Kubernetes GitOps, and connecting to local ARM. |
-| Deployment | L208-L211 | Installing and managing software, firmware, and Kubernetes updates on Azure Stack Edge Pro GPU devices, including update workflows and prerequisites |
+| Troubleshooting | L30-L78 | Diagnosing and fixing Azure Stack Edge/Data Box Gateway issues: release-specific known problems, alerts, ordering/activation, certificates, ARM/Blob/IoT/VM/GPU errors, and using diagnostics/logs. |
+| Best Practices | L80-L86 | Best practices for Azure Stack Edge Pro: planning for and recovering from device failure, GPU sharing configuration, and day-to-day operational/maintenance guidelines. |
+| Decision Making | L88-L95 | Guidance on region and data-location choices, resiliency behavior, disconnected deployment planning, and processes for replacing Azure Stack Edge devices. |
+| Limits & Quotas | L97-L107 | Limits, capacities, performance, and system requirements for Azure Stack Edge and Data Box Gateway devices, including supported VM sizes and moving Edge resources across subscriptions. |
+| Security | L109-L134 | Security, identity, and compliance for Azure Stack Edge: user/RBAC access, TLS/certificates, Key Vault secrets, VPN, encryption, data erasure, Azure Policy, and device‑specific security features. |
+| Configuration | L136-L188 | Configuring and managing Azure Stack Edge/Data Box Gateway devices: networking, power, storage, Kubernetes, VMs, GPUs, monitoring, automation, and device lifecycle (reset, wipe, specs). |
+| Integrations & Coding Patterns | L190-L200 | How to deploy and integrate workloads on Azure Stack Edge: IoT Edge modules, GPU-sharing/Kubernetes apps, DeepStream, Arc/Kubernetes GitOps, and connecting to local ARM. |
+| Deployment | L202-L205 | Installing and managing software, firmware, and Kubernetes updates on Azure Stack Edge Pro GPU devices, including update workflows and prerequisites |
 
 ### Troubleshooting
 | Topic | URL |

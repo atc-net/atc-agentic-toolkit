@@ -1,6 +1,6 @@
 ---
 name: azure-carbon-optimization
-description: Expert knowledge for Azure Carbon Optimization development including troubleshooting, security, and integrations & coding patterns. Use when building, debugging, or optimizing Azure Carbon Optimization applications. Not for Azure Cost Management (use azure-cost-management), Azure Impact Reporting (use azure-impact-reporting), Azure Monitor (use azure-monitor), Azure Policy (use azure-policy).
+description: Expert knowledge for Azure Carbon Optimization development including troubleshooting, security, and integrations & coding patterns. Use when using Carbon Service REST API, Python exports, RBAC roles, emissions data quality, or dashboard issues, and other Azure Carbon Optimization related development tasks. Not for Azure Cost Management (use azure-cost-management), Azure Impact Reporting (use azure-impact-reporting), Azure Monitor (use azure-monitor), Azure Policy (use azure-policy).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,9 +19,9 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L31-L35 | Diagnosing and resolving common Azure Carbon Optimization issues, including data collection gaps, configuration problems, inaccurate emissions estimates, and troubleshooting dashboards or reports. |
-| Security | L36-L40 | Setting up Azure RBAC roles and permissions so users and apps can securely access and manage Azure Carbon Optimization resources. |
-| Integrations & Coding Patterns | L41-L45 | Using the Carbon Service REST API and Python scripts to programmatically export Azure emissions data, authenticate, query, and integrate carbon metrics into external systems. |
+| Troubleshooting | L25-L28 | Diagnosing and resolving common Azure Carbon Optimization issues, including data collection gaps, configuration problems, inaccurate emissions estimates, and troubleshooting dashboards or reports. |
+| Security | L30-L33 | Setting up Azure RBAC roles and permissions so users and apps can securely access and manage Azure Carbon Optimization resources. |
+| Integrations & Coding Patterns | L35-L39 | Using the Carbon Service REST API and Python scripts to programmatically export Azure emissions data, authenticate, query, and integrate carbon metrics into external systems. |
 
 ### Troubleshooting
 | Topic | URL |

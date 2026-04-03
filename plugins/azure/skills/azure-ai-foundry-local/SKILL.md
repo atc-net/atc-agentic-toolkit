@@ -1,12 +1,12 @@
 ---
 name: azure-ai-foundry-local
-description: Expert knowledge for Azure AI Foundry Local development including troubleshooting, best practices, configuration, and integrations & coding patterns. Use when building, debugging, or optimizing Azure AI Foundry Local applications. Not for Azure Machine Learning (use azure-machine-learning), Azure AI services (use azure-ai-services), Azure AI Vision (use azure-ai-vision), Azure AI Document Intelligence (use azure-document-intelligence).
+description: Expert knowledge for Microsoft Foundry Local (aka Azure AI Foundry Local) development including troubleshooting, best practices, decision making, configuration, and integrations & coding patterns. Use when using Foundry Local CLI, chat/transcription APIs, tools, OpenAI/LangChain clients, or upgrading legacy SDKs, and other Microsoft Foundry Local related development tasks. Not for Microsoft Foundry (use microsoft-foundry), Microsoft Foundry Classic (use microsoft-foundry-classic), Microsoft Foundry Tools (use microsoft-foundry-tools), Azure Local (use azure-local).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
 # Azure AI Foundry Local Skill
 
-This skill provides expert guidance for Azure AI Foundry Local. Covers troubleshooting, best practices, configuration, and integrations & coding patterns. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure AI Foundry Local. Covers troubleshooting, best practices, decision making, configuration, and integrations & coding patterns. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
@@ -19,37 +19,43 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L32-L36 | Troubleshooting setup and runtime issues when installing and running Azure AI Foundry Local specifically on Windows Server 2025. |
-| Best Practices | L37-L41 | Best practices for configuring, securing, and operating Foundry Local, plus troubleshooting setup, connectivity, performance, and common runtime or deployment issues. |
-| Configuration | L42-L48 | Installing and configuring Foundry Local, compiling Hugging Face models with Olive, and using the Foundry Local CLI commands and options |
-| Integrations & Coding Patterns | L49-L60 | Patterns and code samples for calling Foundry Local via REST/SDKs, OpenAI-compatible clients, LangChain, Open WebUI, tool calling, transcription, and the Model Catalog API. |
+| Troubleshooting | L27-L30 | Troubleshooting Foundry Local on Windows Server 2025, including setup issues, compatibility, permissions, service startup failures, and common runtime or networking problems. |
+| Best Practices | L32-L35 | Guidance on reliable Foundry Local deployments, performance and configuration best practices, and troubleshooting common setup, runtime, and environment issues. |
+| Decision Making | L37-L40 | Guidance for upgrading apps from the legacy Foundry Local SDK to the current one, including API changes, migration steps, and compatibility considerations. |
+| Configuration | L42-L45 | Using the Foundry Local CLI: installing, configuring settings, authenticating, managing projects/environments, and running local workflows via command-line commands. |
+| Integrations & Coding Patterns | L47-L60 | Patterns and code for calling Foundry Local models/APIs (chat, transcription, tools), integrating with SDKs/REST, OpenAI-compatible clients, LangChain, Open WebUI, and compiling HF models. |
 
 ### Troubleshooting
 | Topic | URL |
 |-------|-----|
-| Run Foundry Local on Windows Server 2025 | https://learn.microsoft.com/en-us/azure/foundry-local/reference/windows-server-frequently-asked-questions |
+| FAQ for running Foundry Local on Windows Server 2025 | https://learn.microsoft.com/en-us/azure/foundry-local/reference/windows-server-frequently-asked-questions |
 
 ### Best Practices
 | Topic | URL |
 |-------|-----|
-| Apply best practices and troubleshoot Foundry Local | https://learn.microsoft.com/en-us/azure/foundry-local/reference/reference-best-practice |
+| Best practices and troubleshooting for Foundry Local deployments | https://learn.microsoft.com/en-us/azure/foundry-local/reference/reference-best-practice |
+
+### Decision Making
+| Topic | URL |
+|-------|-----|
+| Migrate from legacy to current Foundry Local SDK | https://learn.microsoft.com/en-us/azure/foundry-local/reference/reference-sdk-migration |
 
 ### Configuration
 | Topic | URL |
 |-------|-----|
-| Install and configure Foundry Local on your device | https://learn.microsoft.com/en-us/azure/foundry-local/get-started |
-| Compile Hugging Face models for Foundry Local with Olive | https://learn.microsoft.com/en-us/azure/foundry-local/how-to/how-to-compile-hugging-face-models |
-| Use Foundry Local CLI commands and options | https://learn.microsoft.com/en-us/azure/foundry-local/reference/reference-cli |
+| Configure and use the Foundry Local CLI commands | https://learn.microsoft.com/en-us/azure/foundry-local/reference/reference-cli |
 
 ### Integrations & Coding Patterns
 | Topic | URL |
 |-------|-----|
-| Create a chat UI using Open WebUI and Foundry Local | https://learn.microsoft.com/en-us/azure/foundry-local/how-to/how-to-chat-application-with-open-web-ui |
-| Integrate Foundry Local with OpenAI-compatible SDKs | https://learn.microsoft.com/en-us/azure/foundry-local/how-to/how-to-integrate-with-inference-sdks |
-| Transcribe audio using Foundry Local APIs | https://learn.microsoft.com/en-us/azure/foundry-local/how-to/how-to-transcribe-audio |
+| Create a chat app using Open WebUI and Foundry Local | https://learn.microsoft.com/en-us/azure/foundry-local/how-to/how-to-chat-application-with-open-web-ui |
+| Compile Hugging Face models for Foundry Local with Olive | https://learn.microsoft.com/en-us/azure/foundry-local/how-to/how-to-compile-hugging-face-models |
+| Integrate Foundry Local with OpenAI-compatible inference SDKs | https://learn.microsoft.com/en-us/azure/foundry-local/how-to/how-to-integrate-with-inference-sdks |
+| Transcribe audio using Foundry Local transcription API | https://learn.microsoft.com/en-us/azure/foundry-local/how-to/how-to-transcribe-audio |
 | Build a LangChain translation app with Foundry Local | https://learn.microsoft.com/en-us/azure/foundry-local/how-to/how-to-use-langchain-with-foundry-local |
 | Use Foundry Local native chat completions API | https://learn.microsoft.com/en-us/azure/foundry-local/how-to/how-to-use-native-chat-completions |
-| Implement tool calling workflows with Foundry Local | https://learn.microsoft.com/en-us/azure/foundry-local/how-to/how-to-use-tool-calling-with-foundry-local |
-| Integrate with Foundry Local Model Catalog API | https://learn.microsoft.com/en-us/azure/foundry-local/reference/reference-catalog-api |
-| Invoke Foundry Local via REST API endpoints | https://learn.microsoft.com/en-us/azure/foundry-local/reference/reference-rest |
-| Call Foundry Local via SDKs in Python, JS, C#, Rust | https://learn.microsoft.com/en-us/azure/foundry-local/reference/reference-sdk |
+| Implement tool calling in Foundry Local applications | https://learn.microsoft.com/en-us/azure/foundry-local/how-to/how-to-use-tool-calling-with-foundry-local |
+| Use the Foundry Local Model Catalog API | https://learn.microsoft.com/en-us/azure/foundry-local/reference/reference-catalog-api |
+| Call Foundry Local REST API via CLI-hosted server | https://learn.microsoft.com/en-us/azure/foundry-local/reference/reference-rest |
+| Use the current Foundry Local SDK for local AI | https://learn.microsoft.com/en-us/azure/foundry-local/reference/reference-sdk-current |
+| Reference for legacy Foundry Local SDK with CLI dependency | https://learn.microsoft.com/en-us/azure/foundry-local/reference/reference-sdk-legacy |

@@ -1,6 +1,6 @@
 ---
 name: azure-static-web-apps
-description: Expert knowledge for Azure Static Web Apps development including troubleshooting, decision making, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure Static Web Apps applications. Not for Azure App Service (use azure-app-service), Azure Functions (use azure-functions), Azure Container Apps (use azure-container-apps), Azure Kubernetes Service (AKS) (use azure-kubernetes-service).
+description: Expert knowledge for Azure Static Web Apps development including troubleshooting, decision making, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when wiring SWA APIs to Azure DBs, configuring custom domains/auth, CI/CD, preview slots, or Front Door/CDN, and other Azure Static Web Apps related development tasks. Not for Azure App Service (use azure-app-service), Azure Functions (use azure-functions), Azure Container Apps (use azure-container-apps), Azure Kubernetes Service (AKS) (use azure-kubernetes-service).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,13 +19,13 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L35-L39 | Diagnosing and fixing common Static Web Apps deployment and runtime issues, including build failures, configuration problems, and troubleshooting tools/logs. |
-| Decision Making | L40-L47 | Guidance on key architecture choices: Functions hosting model, using Front Door/CDN edge, Next.js deployment options, and comparing Free vs Standard Static Web Apps plans. |
-| Limits & Quotas | L48-L53 | Runtime versions and language support for Static Web Apps, plus plan-specific quotas and limits (storage, bandwidth, functions, concurrency, and resource caps). |
-| Security | L54-L65 | Configuring auth, roles, secrets, and access: Entra ID/Graph roles, auth providers, user info, deployment tokens, Key Vault/managed identity, password protection, and private endpoints. |
-| Configuration | L66-L92 | Configuring domains, DNS, backends (Functions, App Service, Container Apps, APIM), build/runtime settings, local emulation (SWA CLI), monitoring, and database/network for Static Web Apps. |
-| Integrations & Coding Patterns | L93-L101 | How to connect Static Web Apps APIs to Azure databases (Cosmos DB, SQL, MySQL, PostgreSQL), including Mongoose usage, connection strings, and typical integration patterns. |
-| Deployment | L102-L118 | Deploying Static Web Apps via GitHub/GitLab/Bitbucket/CLI/ARM/Bicep, configuring CI/CD, preview environments, traffic splitting, and optional Azure Front Door CDN setup |
+| Troubleshooting | L29-L32 | Diagnosing and fixing common Static Web Apps deployment and runtime issues, including build failures, configuration problems, and troubleshooting tools/logs. |
+| Decision Making | L34-L40 | Guidance on key architecture choices: Functions hosting model, using Front Door/CDN edge, Next.js deployment options, and comparing Free vs Standard Static Web Apps plans. |
+| Limits & Quotas | L42-L46 | Runtime versions and language support for Static Web Apps, plus plan-specific quotas and limits (storage, bandwidth, functions, concurrency, and resource caps). |
+| Security | L48-L58 | Configuring auth, roles, secrets, and access: Entra ID/Graph roles, auth providers, user info, deployment tokens, Key Vault/managed identity, password protection, and private endpoints. |
+| Configuration | L60-L85 | Configuring domains, DNS, backends (Functions, App Service, Container Apps, APIM), build/runtime settings, local emulation (SWA CLI), monitoring, and database/network for Static Web Apps. |
+| Integrations & Coding Patterns | L87-L94 | How to connect Static Web Apps APIs to Azure databases (Cosmos DB, SQL, MySQL, PostgreSQL), including Mongoose usage, connection strings, and typical integration patterns. |
+| Deployment | L96-L112 | Deploying Static Web Apps via GitHub/GitLab/Bitbucket/CLI/ARM/Bicep, configuring CI/CD, preview environments, traffic splitting, and optional Azure Front Door CDN setup |
 
 ### Troubleshooting
 | Topic | URL |

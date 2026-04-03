@@ -1,6 +1,6 @@
 ---
 name: azure-osconfig
-description: Expert knowledge for Azure Osconfig development including troubleshooting, security, configuration, and integrations & coding patterns. Use when building, debugging, or optimizing Azure Osconfig applications. Not for Azure Update Manager (use azure-update-manager), Azure Automation (use azure-automation), Azure Policy (use azure-policy).
+description: Expert knowledge for Azure Osconfig development including troubleshooting, security, configuration, and integrations & coding patterns. Use when running OSConfig via IoT Hub for commands, SSH posture, agent health, Windows baselines, or LAPS, and other Azure Osconfig related development tasks. Not for Azure Update Manager (use azure-update-manager), Azure Automation (use azure-automation), Azure Policy (use azure-policy).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,10 +19,10 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L32-L36 | Diagnosing OSConfig agent status and connectivity issues when using Azure IoT Hub, including checking logs, health, and troubleshooting deployment or reporting problems. |
-| Security | L37-L42 | Configuring Windows security via OSConfig, including App Control for Business policies and applying Windows Server 2025 security baselines. |
-| Configuration | L43-L48 | Tracking OSConfig breaking changes over time and configuring/standardizing sshd settings across fleets using SSH Posture Control. |
-| Integrations & Coding Patterns | L49-L61 | Patterns for using OSConfig with Azure IoT to run custom commands, manage Linux networking, firewall, packages, hostnames, reboots, and report device/OS hardware info. |
+| Troubleshooting | L26-L29 | Diagnosing OSConfig agent status and connectivity issues when using Azure IoT Hub, including checking logs, health, and troubleshooting deployment or reporting problems. |
+| Security | L31-L36 | Configuring Windows security via OSConfig: App Control for Business, Windows Server 2025 security baselines, and Windows LAPS with Azure Arc and Policy. |
+| Configuration | L38-L42 | Tracking OSConfig breaking changes over time and configuring/standardizing sshd settings across fleets using SSH Posture Control. |
+| Integrations & Coding Patterns | L44-L56 | Patterns for using OSConfig with Azure IoT to run custom commands, manage Linux networking, firewall, packages, hostnames, reboots, and report device/OS hardware info. |
 
 ### Troubleshooting
 | Topic | URL |
@@ -34,6 +34,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 |-------|-----|
 | Configure App Control for Business policies via OSConfig | https://learn.microsoft.com/en-us/azure/osconfig/osconfig-how-to-configure-app-control-for-business |
 | Configure Windows Server 2025 security baselines with OSConfig | https://learn.microsoft.com/en-us/azure/osconfig/osconfig-how-to-configure-security-baselines |
+| Configure Windows LAPS with Azure Arc and Policy | https://learn.microsoft.com/en-us/azure/osconfig/overview-laps-azure-arc |
 
 ### Configuration
 | Topic | URL |

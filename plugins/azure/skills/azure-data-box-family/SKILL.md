@@ -1,12 +1,12 @@
 ---
 name: azure-data-box-family
-description: Expert knowledge for Azure Data Box development including troubleshooting, best practices, limits & quotas, security, configuration, and integrations & coding patterns. Use when building, debugging, or optimizing Azure Data Box applications. Not for Azure Import Export (use azure-import-export), Azure Stack Edge (use azure-stack-edge), Azure Virtual Machines (use azure-virtual-machines).
+description: Expert knowledge for Azure Data Box development including troubleshooting, best practices, limits & quotas, security, configuration, and integrations & coding patterns. Use when handling Data Box/Disk orders, SMB/NFS copies, TLS certs/CMK in Key Vault, or VHD-to-managed-disk imports, and other Azure Data Box related development tasks. Not for Azure Import Export (use azure-import-export), Azure Stack Edge (use azure-stack-edge), Azure Blob Storage (use azure-blob-storage), Azure Files (use azure-files).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
-# Azure Data Box Skill
+# Azure Data Box Family Skill
 
-This skill provides expert guidance for Azure Data Box. Covers troubleshooting, best practices, limits & quotas, security, configuration, and integrations & coding patterns. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure Data Box Family. Covers troubleshooting, best practices, limits & quotas, security, configuration, and integrations & coding patterns. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
@@ -19,12 +19,12 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L34-L50 | Diagnosing and fixing Data Box/Disk issues: validation, unlock tool, SMB/REST copy, upload errors, time sync, and using audit/logs to track and troubleshoot import/export orders. |
-| Best Practices | L51-L56 | Guidance on preserving NTFS ACLs, file permissions, and metadata when copying data to Azure Data Box and Data Box Disk using supported tools and settings |
-| Limits & Quotas | L57-L64 | Device capacity, disk size, share/volume and connection limits for Data Box, Disk, and Heavy, plus how usage is calculated and constrained during data import/export. |
-| Security | L65-L74 | Security and compliance for Data Box: custom TLS certs, Customer Lockbox, customer-managed keys in Key Vault, and applying Azure Policy and regulatory controls. |
-| Configuration | L75-L94 | Configuring and operating Data Box/Heavy/Disk: cabling, system/network requirements, local UI/portal admin, SMB/NFS/NAS copy workflows, and setting blob access tiers (Hot/Cool/Archive). |
-| Integrations & Coding Patterns | L95-L104 | Patterns and tools for integrating Data Box with apps and backup products (REST APIs, VHD to managed disks, file share to SharePoint, Commvault, OpenText, Veeam migrations). |
+| Troubleshooting | L28-L43 | Diagnosing and fixing Data Box/Disk issues: validation, unlock tool, SMB/REST copy, upload errors, time sync, and using audit/logs to track and troubleshoot import/export orders. |
+| Best Practices | L45-L49 | Guidance on preserving NTFS ACLs, file permissions, and metadata when copying data to Azure Data Box and Data Box Disk using supported tools and settings |
+| Limits & Quotas | L51-L57 | Device capacity, disk size, share/volume and connection limits for Data Box, Disk, and Heavy, plus how usage is calculated and constrained during data import/export. |
+| Security | L59-L67 | Security and compliance for Data Box: custom TLS certs, Customer Lockbox, customer-managed keys in Key Vault, and applying Azure Policy and regulatory controls. |
+| Configuration | L69-L87 | Configuring and operating Data Box/Heavy/Disk: cabling, system/network requirements, local UI/portal admin, SMB/NFS/NAS copy workflows, and setting blob access tiers (Hot/Cool/Archive). |
+| Integrations & Coding Patterns | L89-L98 | Patterns and tools for integrating Data Box with apps and backup products (REST APIs, VHD to managed disks, file share to SharePoint, Commvault, OpenText, Veeam migrations). |
 
 ### Troubleshooting
 | Topic | URL |

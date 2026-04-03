@@ -1,6 +1,6 @@
 ---
 name: azure-reliability
-description: Expert knowledge for Azure Reliability development including best practices, decision making, architecture & design patterns, limits & quotas, and deployment. Use when building, debugging, or optimizing Azure Reliability applications. Not for Azure Resiliency (use azure-resiliency), Azure Monitor (use azure-monitor), Azure Service Health (use azure-service-health), Azure Site Recovery (use azure-site-recovery).
+description: Expert knowledge for Azure Reliability development including best practices, decision making, architecture & design patterns, limits & quotas, and deployment. Use when designing AZ zone/zone-redundant setups, resilient Functions, AKS, MySQL HA migrations, or Queue Storage limits, and other Azure Reliability related development tasks. Not for Azure Resiliency (use azure-resiliency), Azure Monitor (use azure-monitor), Azure Service Health (use azure-service-health), Azure Sre Agent (use azure-sre-agent).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,11 +19,11 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Best Practices | L33-L61 | Patterns and guidance to design, configure, and harden high-availability, resilient, and disaster‑ready architectures for key Azure PaaS, data, and integration services |
-| Decision Making | L62-L67 | Guidance on picking Azure regions and services for high availability, including zone support, geographic considerations, and how nonregional (global) services affect reliability. |
-| Architecture & Design Patterns | L68-L73 | Designing Azure apps for availability zones, choosing zonal vs zone-redundant resources, and hardening deployments for zone failures and high availability. |
-| Limits & Quotas | L74-L78 | Details on Azure Queue Storage message size limits, including max message size, behavior when limits are exceeded, and best practices for handling large payloads. |
-| Deployment | L79-L82 | Guidance for migrating Azure Functions hosting plans to zone-redundant configurations to improve availability and resilience. |
+| Best Practices | L27-L55 | Patterns and configurations to make Azure services (AKS, Functions, DBs, messaging, IoT, networking, DR) highly available, resilient to failures, and recover quickly from outages. |
+| Decision Making | L57-L61 | Guidance on using availability zones, nonregional services, and resilient Azure Functions architectures to design highly available, fault-tolerant Azure solutions. |
+| Architecture & Design Patterns | L63-L67 | Designing Azure apps for availability zones, choosing zonal vs zone-redundant resources, and hardening deployments for zone failures and high availability. |
+| Limits & Quotas | L69-L72 | Details on Azure Queue Storage message size limits, including max message size, behavior when limits are exceeded, and best practices for handling large payloads. |
+| Deployment | L74-L77 | Guidance for migrating Azure Database for MySQL Flexible Server to zone-redundant high availability, including architecture, prerequisites, and step-by-step migration process. |
 
 ### Best Practices
 | Topic | URL |
@@ -40,16 +40,17 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Implement resilient architectures in Azure Databricks | https://learn.microsoft.com/en-us/azure/reliability/reliability-databricks |
 | Ensure reliability for Azure Device Registry metadata | https://learn.microsoft.com/en-us/azure/reliability/reliability-device-registry |
 | Design high availability for Azure DocumentDB | https://learn.microsoft.com/en-us/azure/reliability/reliability-documentdb |
-| Implement resilient event delivery with Azure Event Grid | https://learn.microsoft.com/en-us/azure/reliability/reliability-event-grid |
+| Design resilient architectures with Azure Event Grid | https://learn.microsoft.com/en-us/azure/reliability/reliability-event-grid |
 | Increase reliability of Azure Event Hubs streaming | https://learn.microsoft.com/en-us/azure/reliability/reliability-event-hubs |
 | Design reliable analytics with Microsoft Fabric | https://learn.microsoft.com/en-us/azure/reliability/reliability-fabric |
-| Architect highly available Azure Functions apps | https://learn.microsoft.com/en-us/azure/reliability/reliability-functions |
+| Implement resilient architectures with Azure Functions | https://learn.microsoft.com/en-us/azure/reliability/reliability-functions |
+| Implement resilient architectures with Azure Functions | https://learn.microsoft.com/en-us/azure/reliability/reliability-functions |
 | Implement disaster recovery for Azure Image Builder | https://learn.microsoft.com/en-us/azure/reliability/reliability-image-builder |
 | Design resilient device connectivity with Azure IoT Hub | https://learn.microsoft.com/en-us/azure/reliability/reliability-iot-hub |
 | Design resilient workflows with Azure Logic Apps | https://learn.microsoft.com/en-us/azure/reliability/reliability-logic-apps |
 | Increase reliability of Azure Managed Redis caches | https://learn.microsoft.com/en-us/azure/reliability/reliability-managed-redis |
 | Improve reliability of Azure Notification Hubs | https://learn.microsoft.com/en-us/azure/reliability/reliability-notification-hubs |
-| Improve reliability for Azure Site Recovery deployments | https://learn.microsoft.com/en-us/azure/reliability/reliability-site-recovery |
+| Design resilient disaster recovery with Azure Site Recovery | https://learn.microsoft.com/en-us/azure/reliability/reliability-site-recovery |
 | Implement resilient architectures in Azure SQL Database | https://learn.microsoft.com/en-us/azure/reliability/reliability-sql-database |
 | Increase reliability of Azure Stream Analytics jobs | https://learn.microsoft.com/en-us/azure/reliability/reliability-stream-analytics |
 | Plan high availability in Azure VMware Solution | https://learn.microsoft.com/en-us/azure/reliability/reliability-vmware-solution |
@@ -74,4 +75,4 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 ### Deployment
 | Topic | URL |
 |-------|-----|
-| Migrate Azure Functions plans to zone redundancy | https://learn.microsoft.com/en-us/azure/reliability/migrate-functions |
+| Migrate MySQL Flexible Server to zone-redundant HA | https://learn.microsoft.com/en-us/azure/reliability/migrate-database-mysql-flex |

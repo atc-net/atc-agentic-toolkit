@@ -1,6 +1,6 @@
 ---
 name: azure-external-attack-surface-management
-description: Expert knowledge for Azure External Attack Surface Management development including limits & quotas, configuration, and integrations & coding patterns. Use when building, debugging, or optimizing Azure External Attack Surface Management applications. Not for Azure Defender For Cloud (use azure-defender-for-cloud), Azure Security (use azure-security), Azure Sentinel (use azure-sentinel), Azure Firewall (use azure-firewall).
+description: Expert knowledge for Azure External Attack Surface Management development including limits & quotas, configuration, and integrations & coding patterns. Use when querying EASM assets, setting policy rules, exporting to Log Analytics or Data Explorer, or estimating billing, and other Azure External Attack Surface Management related development tasks. Not for Azure Defender For Cloud (use azure-defender-for-cloud), Azure Security (use azure-security), Azure Sentinel (use azure-sentinel), Azure Firewall (use azure-firewall).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,9 +19,9 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Limits & Quotas | L31-L35 | Explains how Defender EASM billing works, what counts as a billable asset, and how asset counts affect costs and quotas. |
-| Configuration | L36-L49 | Filtering and querying EASM inventory by asset type (domains, hosts, IPs/blocks, ASNs, pages, contacts, SSL certs) and configuring policy engine automation rules. |
-| Integrations & Coding Patterns | L50-L53 | Configuring Defender EASM to export discovery and asset data into Log Analytics and Azure Data Explorer, including connection setup and data usage for analysis. |
+| Limits & Quotas | L25-L28 | Explains how Defender EASM billing works, what counts as a billable asset, and how asset counts affect costs and quotas. |
+| Configuration | L30-L42 | Filtering and querying EASM inventory by asset type (domains, hosts, IPs/blocks, ASNs, pages, contacts, SSL certs) and configuring policy engine automation rules. |
+| Integrations & Coding Patterns | L44-L47 | Configuring Defender EASM to export discovery and asset data into Log Analytics and Azure Data Explorer, including connection setup and data usage for analysis. |
 
 ### Limits & Quotas
 | Topic | URL |

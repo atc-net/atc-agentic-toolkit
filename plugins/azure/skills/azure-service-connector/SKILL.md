@@ -1,6 +1,6 @@
 ---
 name: azure-service-connector
-description: Expert knowledge for Azure Service Connector development including troubleshooting, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure Service Connector applications. Not for Azure App Service (use azure-app-service), Azure Functions (use azure-functions), Azure Logic Apps (use azure-logic-apps), Azure Kubernetes Service (AKS) (use azure-kubernetes-service).
+description: Expert knowledge for Azure Service Connector development including troubleshooting, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when wiring apps to Azure DBs, messaging, storage, Key Vault, OpenAI, or managing Service Connector auth and configs, and other Azure Service Connector related development tasks. Not for Azure API Management (use azure-api-management), Azure App Service (use azure-app-service), Azure Functions (use azure-functions), Azure Logic Apps (use azure-logic-apps).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,12 +19,12 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L34-L38 | Diagnosing and resolving Service Connector errors and failures, including common error codes, connection issues, and steps to debug and fix failed connections. |
-| Limits & Quotas | L39-L43 | Details on current Service Connector feature gaps, unsupported scenarios, resource limits, and constraints you must consider when designing or troubleshooting connections. |
-| Security | L44-L49 | Details on what Microsoft Entra roles and permissions Service Connector assigns or requires, least-privilege guidance, and how access is granted to target services. |
-| Configuration | L50-L56 | How to view and retrieve Service Connector-generated configs, choose and set up auth methods, and supply correct Azure CLI parameters when creating or managing connections |
-| Integrations & Coding Patterns | L57-L86 | How to connect apps to Azure and external data/services (Cosmos DB variants, SQL, PostgreSQL/MySQL, storage, messaging, AI, Redis, Kafka, MongoDB, Key Vault) using Service Connector patterns |
-| Deployment | L87-L91 | Info on where Service Connector is regionally supported per compute service and how to create connections using infrastructure-as-code tools. |
+| Troubleshooting | L28-L31 | Diagnosing and resolving Service Connector errors and failures, including common error codes, connection issues, and steps to debug and fix failed connections. |
+| Limits & Quotas | L33-L36 | Details on current Service Connector feature gaps, unsupported scenarios, resource limits, and constraints you must consider when designing or troubleshooting connections. |
+| Security | L38-L42 | Details on what Microsoft Entra roles and permissions Service Connector assigns or requires, least-privilege guidance, and how access is granted to target services. |
+| Configuration | L44-L49 | How to view and retrieve Service Connector-generated configs, choose and set up auth methods, and supply correct Azure CLI parameters when creating or managing connections |
+| Integrations & Coding Patterns | L51-L79 | How to use Azure Service Connector to securely connect apps to databases, messaging, storage, AI, and caching services (Cosmos DB, Kafka, SQL, Redis, Key Vault, OpenAI, etc.) |
+| Deployment | L81-L85 | Info on where Service Connector is regionally supported per compute service and how to create connections using infrastructure-as-code tools. |
 
 ### Troubleshooting
 | Topic | URL |
@@ -52,7 +52,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 ### Integrations & Coding Patterns
 | Topic | URL |
 |-------|-----|
-| Integrate Azure AI services using Service Connector | https://learn.microsoft.com/en-us/azure/service-connector/how-to-integrate-ai-services |
+| Integrate Foundry Tools via Azure Service Connector | https://learn.microsoft.com/en-us/azure/service-connector/how-to-integrate-ai-services |
 | Integrate Azure App Configuration via Service Connector | https://learn.microsoft.com/en-us/azure/service-connector/how-to-integrate-app-configuration |
 | Connect Azure AI multi-service via Service Connector | https://learn.microsoft.com/en-us/azure/service-connector/how-to-integrate-cognitive-services |
 | Connect Confluent Cloud Kafka via Service Connector | https://learn.microsoft.com/en-us/azure/service-connector/how-to-integrate-confluent-kafka |
