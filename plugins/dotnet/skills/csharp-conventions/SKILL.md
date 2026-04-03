@@ -139,6 +139,23 @@ public interface INotificationService
 }
 ```
 
+### Source-Generated Regex
+
+Use `[GeneratedRegex]` on a `partial` method instead of `new Regex(...)` or `Regex.IsMatch(...)` with a string literal. The compiler emits optimized, allocation-free matching code at build time:
+
+```csharp
+public sealed partial class EmailValidator
+{
+    [GeneratedRegex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.IgnoreCase)]
+    private static partial Regex EmailPattern();
+
+    public bool IsValid(string email)
+        => EmailPattern().IsMatch(email);
+}
+```
+
+Never pass `RegexOptions.Compiled` to `[GeneratedRegex]` — source generation already produces compiled code and the flag is ignored.
+
 ### Sealed Classes
 
 Mark services, handlers, and test classes as `sealed` to communicate intent and enable devirtualization. Base classes, domain entities, and types designed for inheritance should not be sealed:
@@ -313,16 +330,38 @@ builder.Services.AddProblemDetails();
 
 Use structured logging via `ILogger<T>` (from `Microsoft.Extensions.Logging`) so log entries are machine-parsable and searchable. The logging abstraction decouples application code from any specific provider (Application Insights, Seq, console, etc.).
 
-- Use **source-generated logging** (the `[LoggerMessage]` attribute) for high-performance, allocation-free log calls. Place logger message methods in a dedicated partial class alongside the consuming service:
+- Use **source-generated logging** (the `[LoggerMessage]` attribute) for high-performance, allocation-free log calls. Place logger message methods in a **dedicated partial file** named `{ClassName}.Log.cs` (e.g., `OrderProcessor.Log.cs`) to separate logging concerns from business logic:
 
 ```csharp
+// OrderProcessor.cs — business logic only
 public sealed partial class OrderProcessor(ILogger<OrderProcessor> logger)
+{
+    public async Task ProcessAsync(Order order, CancellationToken ct)
+    {
+        LogOrderPlaced(order.Id);
+        // ... business logic ...
+    }
+}
+```
+
+```csharp
+// OrderProcessor.Log.cs — all [LoggerMessage] methods for this class
+public sealed partial class OrderProcessor
 {
     [LoggerMessage(
         EventId = 1001,
         Level = LogLevel.Information,
         Message = "{CallerMethodName}({CallerLineNumber}) - Order {OrderId} placed")]
     private partial void LogOrderPlaced(
+        int orderId,
+        [CallerMemberName] string callerMethodName = "",
+        [CallerLineNumber] int callerLineNumber = 0);
+
+    [LoggerMessage(
+        EventId = 1002,
+        Level = LogLevel.Error,
+        Message = "{CallerMethodName}({CallerLineNumber}) - Order {OrderId} failed")]
+    private partial void LogOrderFailed(
         int orderId,
         [CallerMemberName] string callerMethodName = "",
         [CallerLineNumber] int callerLineNumber = 0);
