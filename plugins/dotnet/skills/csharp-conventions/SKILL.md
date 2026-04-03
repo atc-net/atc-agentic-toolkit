@@ -156,6 +156,44 @@ public sealed partial class EmailValidator
 
 Never pass `RegexOptions.Compiled` to `[GeneratedRegex]` — source generation already produces compiled code and the flag is ignored.
 
+### Explicit Access Modifiers
+
+Always specify access modifiers explicitly — never rely on C# defaults. This makes intent clear and prevents accidental exposure:
+
+```csharp
+// Good — explicit
+public class OrderService { }
+private readonly ILogger _logger;
+internal static void Reset() { }
+
+// Bad — implicit (compiles but hides intent)
+class OrderService { }        // implicitly internal
+static void Reset() { }       // implicitly private
+```
+
+### Locking and Thread Safety
+
+Prefer `SemaphoreSlim` over the `lock` keyword. It supports async `WaitAsync`, avoids thread pool starvation, and works consistently in both sync and async contexts:
+
+```csharp
+private readonly SemaphoreSlim _gate = new(1, 1);
+
+public async Task ProcessAsync(CancellationToken ct)
+{
+    await _gate.WaitAsync(ct);
+    try
+    {
+        // critical section
+    }
+    finally
+    {
+        _gate.Release();
+    }
+}
+```
+
+Only use `lock` for trivial synchronous-only paths where simplicity outweighs flexibility. Never use `lock` inside an `async` method.
+
 ### Sealed Classes
 
 Mark services, handlers, and test classes as `sealed` to communicate intent and enable devirtualization. Base classes, domain entities, and types designed for inheritance should not be sealed:
@@ -404,6 +442,7 @@ app.MapHealthChecks("/health-extended", HealthCheckOptionsFactory.CreateJson());
 
 ## General Principles
 
+- **Treat warnings as errors.** Enable `<TreatWarningsAsErrors>true</TreatWarningsAsErrors>` in `Directory.Build.props`. Fix all analyzer warnings rather than suppressing them. If suppression is truly necessary, add a comment explaining why and a `TODO` to revisit.
 - **Clarity over cleverness.** Choose clear, descriptive names that make comments unnecessary. If a method needs a comment to explain *what* it does, rename it. Reserve comments for explaining *why* a non-obvious decision was made.
 - **Never remove TODO comments.** They represent intentional technical debt or planned work. Only the author or team lead should decide when a TODO is resolved.
 - **Handle edge cases.** Consider null inputs, empty collections, boundary values, and concurrent access scenarios.
