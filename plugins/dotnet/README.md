@@ -6,6 +6,22 @@ C#/.NET development skills including refactoring, testing, async patterns, docum
 
 This plugin provides skills for C# and .NET development best practices, tooling, and automation.
 
+## MCP Servers
+
+This plugin bundles the NuGet MCP server that starts automatically when the plugin is enabled.
+
+### NuGet
+
+NuGet package management server for resolving vulnerabilities, updating packages, and retrieving package documentation.
+
+- Fix package vulnerabilities by updating to compatible non-vulnerable versions
+- Get latest package versions and package README documentation
+- Update installed packages with compatibility checks
+
+Requires: .NET 10 SDK
+
+Source: [NuGet.Mcp.Server](https://www.nuget.org/packages/NuGet.Mcp.Server)
+
 ## Skills
 
 ### format-params
