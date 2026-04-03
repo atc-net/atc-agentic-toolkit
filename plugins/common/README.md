@@ -18,6 +18,37 @@ Documentation context server that provides up-to-date library documentation dire
 
 Source: [@upstash/context7-mcp](https://www.npmjs.com/package/@upstash/context7-mcp)
 
+### Draw.io
+
+Professional diagramming with 10,000+ shapes including AWS, Azure, GCP, Kubernetes, and UML icons.
+
+- Open diagrams from XML, CSV, or Mermaid syntax
+- Full draw.io editor with export capabilities
+
+Requires: Node.js
+
+Source: [@drawio/mcp](https://www.npmjs.com/package/@drawio/mcp)
+
+### Mermaid
+
+Text-to-diagram generation supporting flowcharts, sequence diagrams, class diagrams, ER diagrams, and more.
+
+- Generate diagrams from Mermaid syntax as PNG, SVG, or base64
+- Configurable themes and backgrounds
+
+Requires: Node.js
+
+Source: [mcp-mermaid](https://www.npmjs.com/package/mcp-mermaid)
+
+### Excalidraw
+
+Hand-drawn style whiteboard and diagramming with real-time streaming.
+
+- Create and edit diagrams with natural language
+- Interactive fullscreen editing with viewport control
+
+Source: [excalidraw-mcp](https://github.com/excalidraw/excalidraw-mcp)
+
 ## Skills
 
 ### interview
