@@ -1,6 +1,6 @@
 ---
 name: azure-communication-services
-description: Expert knowledge for Azure Communication Services development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure Communication Services applications. Not for Azure AI Bot Service (use azure-bot-service), Azure Notification Hubs (use azure-notification-hubs), Azure SignalR Service (use azure-signalr-service), Azure Web PubSub (use azure-web-pubsub).
+description: Expert knowledge for Azure Communication Services development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building ACS calling/chat, SMS/email/WhatsApp, PSTN/phone numbers, Teams interop, or Job Router/contact centers, and other Azure Communication Services related development tasks. Not for Azure AI Bot Service (use azure-bot-service), Azure Notification Hubs (use azure-notification-hubs), Azure SignalR Service (use azure-signalr-service), Azure Web PubSub (use azure-web-pubsub).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,15 +19,15 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L37-L111 | Diagnosing and fixing ACS calling, SMS, email, Teams, PSTN, audio/video, device, network, and SDK issues, plus collecting logs, UFD events, and diagnostics for support. |
-| Best Practices | L112-L137 | Best practices for ACS calling, SMS, email, IDs, auth, Teams interop, network/quality, spam/opt-out compliance, and production-ready virtual visit and meeting experiences. |
-| Decision Making | L138-L153 | Guidance on ACS/Teams design decisions: PSTN options and pricing, phone numbers, Teams interop and licensing, gov cloud usage, and migrating from Twilio Video/Chat to ACS. |
-| Architecture & Design Patterns | L154-L159 | Designing scalable contact center solutions with ACS and patterns for integrating ACS with ExpressRoute for secure, private connectivity and network architecture. |
-| Limits & Quotas | L160-L227 | Limits, quotas, regional availability, and restrictions for ACS calling, phone numbers, Teams interop, email sending, media features, and direct routing (including country‑specific rules). |
-| Security | L228-L253 | Security, auth, and compliance for ACS: encryption, identities, HMAC signing, Teams interop controls, caller ID/CNAM, captions/RTT/transcription data, WhatsApp/email/SMTP setup, and emergency calling. |
-| Configuration | L254-L333 | Monitoring, logging, metrics, and diagnostics for ACS (chat, voice/video, SMS, email, calling, routing), plus configuration for Teams interop, domains, routing, UI library, and SMS/email compliance. |
-| Integrations & Coding Patterns | L334-L480 | Patterns and code to integrate ACS calling, chat, SMS, email, Rooms, Job Router, and WhatsApp with apps, bots, Teams, push/events, media, and Azure AI/Foundry/OpenAI services |
-| Deployment | L481-L485 | Infrastructure and deployment guidance for Azure Communication Services: direct routing requirements and automating ACS/Email resource provisioning with PowerShell. |
+| Troubleshooting | L31-L104 | Diagnosing and fixing ACS calling, SMS, email, Teams, PSTN, audio/video, device, network, and SDK issues, plus collecting logs, UFD events, and diagnostics for support. |
+| Best Practices | L106-L130 | Best practices for ACS calling, SMS, email, IDs, auth, Teams interop, network/quality, spam/opt-out compliance, and production-ready virtual visit and meeting experiences. |
+| Decision Making | L132-L146 | Guidance on ACS/Teams design decisions: PSTN options and pricing, phone numbers, Teams interop and licensing, gov cloud usage, and migrating from Twilio Video/Chat to ACS. |
+| Architecture & Design Patterns | L148-L152 | Designing scalable contact center solutions with ACS and patterns for integrating ACS with ExpressRoute for secure, private connectivity and network architecture. |
+| Limits & Quotas | L154-L220 | Limits, quotas, regional availability, and restrictions for ACS calling, phone numbers, email, Teams interop, media features, and troubleshooting token/metric-related issues. |
+| Security | L222-L246 | Security, auth, and compliance for ACS: encryption, identities, HMAC signing, Teams interop controls, caller ID/CNAM, captions/RTT/transcription data, WhatsApp/email/SMTP setup, and emergency calling. |
+| Configuration | L248-L326 | Monitoring, logging, metrics, and diagnostics for ACS (chat, voice/video, SMS, email, calling, routing), plus configuration for Teams interop, domains, routing, UI library, and SMS/email compliance. |
+| Integrations & Coding Patterns | L328-L473 | End-to-end patterns for integrating ACS calling, chat, SMS, email, WhatsApp, Teams, Job Router, bots, AI, and UI libraries, including media control, events, push, and telephony features. |
+| Deployment | L475-L479 | Infrastructure and deployment guidance for Azure Communication Services: direct routing requirements and automating ACS/Email resource provisioning with PowerShell. |
 
 ### Troubleshooting
 | Topic | URL |
@@ -157,7 +157,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 |-------|-----|
 | Understand Call Automation metrics definitions and units | https://learn.microsoft.com/en-us/azure/communication-services/concepts/analytics/logs/call-automation-metrics |
 | Supported MIME types for ACS email attachments | https://learn.microsoft.com/en-us/azure/communication-services/concepts/email/email-attachment-allowed-mime-types |
-| Request quota increases for ACS email sending | https://learn.microsoft.com/en-us/azure/communication-services/concepts/email/email-quota-increase |
+| Request higher email sending quotas in ACS | https://learn.microsoft.com/en-us/azure/communication-services/concepts/email/email-quota-increase |
 | Review known issues and limitations for ACS Teams external users | https://learn.microsoft.com/en-us/azure/communication-services/concepts/interop/guest/limitations |
 | Argentina ACS phone number availability and restrictions | https://learn.microsoft.com/en-us/azure/communication-services/concepts/numbers/phone-number-management-for-argentina |
 | Australia ACS phone number availability and restrictions | https://learn.microsoft.com/en-us/azure/communication-services/concepts/numbers/phone-number-management-for-australia |
@@ -429,7 +429,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Add PSTN calling to apps with ACS Calling SDK | https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/telephony/pstn-call |
 | Handle Teams Phone Extensibility calls with Call Automation | https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/tpe/teams-phone-extensibility-answer-teams-calls |
 | Place outbound TPE calls using Call Automation | https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/tpe/teams-phone-extensibility-server-outbound-call |
-| Use the Teams Phone Extensibility REST API | https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/tpe/teams-phone-extensiblity-rest-api |
+| Use Teams Phone extensibility REST API with ACS | https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/tpe/teams-phone-extensiblity-rest-api |
 | Integrate Adaptive Cards into ACS chat UI | https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/ui-library/get-started-chat-adaptive-card |
 | Integrate ACS chat UI Library composites into your app | https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/ui-library/get-started-chat-ui-library |
 | Integrate ACS UI Library composites into applications | https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/ui-library/get-started-composites |

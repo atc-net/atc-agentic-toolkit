@@ -1,6 +1,6 @@
 ---
 name: azure-relay
-description: Expert knowledge for Azure Relay development including troubleshooting, security, configuration, and integrations & coding patterns. Use when building, debugging, or optimizing Azure Relay applications. Not for Azure Service Bus (use azure-service-bus), Azure Event Hubs (use azure-event-hubs), Azure Web PubSub (use azure-web-pubsub), Azure Application Gateway (use azure-application-gateway).
+description: Expert knowledge for Azure Relay development including troubleshooting, security, configuration, and integrations & coding patterns. Use when configuring Hybrid Connections, WCF relays, Entra ID/SAS auth, Private Link, or .NET/Node.js Relay clients, and other Azure Relay related development tasks. Not for Azure Service Bus (use azure-service-bus), Azure Event Hubs (use azure-event-hubs), Azure Web PubSub (use azure-web-pubsub), Azure Application Gateway (use azure-application-gateway).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,10 +19,10 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L32-L36 | Diagnosing and fixing common Azure Relay exceptions, including connection, authentication, quota, and configuration errors, with guidance on causes and resolutions. |
-| Security | L37-L46 | Authentication and network security for Azure Relay: Entra ID and SAS auth, managed identities, IP firewall, virtual network rules, and Private Link Service configuration. |
-| Configuration | L47-L51 | Network and firewall requirements for Azure Relay, including which ports/protocols to open for Hybrid Connections and WCF relays and how to configure them. |
-| Integrations & Coding Patterns | L52-L57 | Using Azure Relay Hybrid Connections from .NET and Node.js (WebSockets), plus low-level protocol details for implementing custom clients and integrations |
+| Troubleshooting | L26-L29 | Diagnosing and fixing common Azure Relay exceptions, including connection, authentication, quota, and configuration errors, with guidance on causes and resolutions. |
+| Security | L31-L39 | Authentication and network security for Azure Relay: Entra ID and SAS auth, managed identities, IP firewall, virtual network rules, and Private Link Service configuration. |
+| Configuration | L41-L44 | Network and firewall requirements for Azure Relay, including which ports/protocols to open for Hybrid Connections and WCF relays and how to configure them. |
+| Integrations & Coding Patterns | L46-L51 | Using Azure Relay Hybrid Connections from .NET and Node.js (WebSockets), plus low-level protocol details for implementing custom clients and integrations |
 
 ### Troubleshooting
 | Topic | URL |

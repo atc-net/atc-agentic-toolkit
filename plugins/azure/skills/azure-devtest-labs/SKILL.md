@@ -1,12 +1,12 @@
 ---
 name: azure-devtest-labs
-description: Expert knowledge for Azure DevTest Labs development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure DevTest Labs applications. Not for Azure Lab Services (use azure-lab-services), Azure Dev Box (use azure-dev-box), Azure Virtual Machines (use azure-virtual-machines), Azure Virtual Desktop (use azure-virtual-desktop).
+description: Expert knowledge for Azure DevTest Labs development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when managing DevTest Labs VMs, images/artifacts, ARM/CLI automation, RBAC/Key Vault security, or hub-spoke lab setups, and other Azure DevTest Labs related development tasks. Not for Azure Dev Box (use azure-dev-box), Azure Lab Services (use azure-lab-services), Azure Virtual Machines (use azure-virtual-machines), Azure Virtual Desktop (use azure-virtual-desktop).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
-# Azure DevTest Labs Skill
+# Azure Devtest Labs Skill
 
-This skill provides expert guidance for Azure DevTest Labs. Covers troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure Devtest Labs. Covers troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
@@ -19,15 +19,15 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L37-L45 | Diagnosing and fixing DevTest Labs VM and environment creation/deployment issues, artifact application failures, connectivity problems, and handling Defender for Cloud security alerts. |
-| Best Practices | L46-L50 | Guidance on organizing and collaborating on DevTest Labs infrastructure as code across teams, including branching, environments, and distributed resource development workflows |
-| Decision Making | L51-L59 | Guidance on planning PoCs and enterprise-scale deployments, choosing images and Gen1 vs Gen2 VMs, and setting governance for organization-wide DevTest Labs use. |
-| Architecture & Design Patterns | L60-L64 | Enterprise-scale DevTest Labs architectures: hub-spoke design, network/security layout, governance, cost management, and best practices for large org lab deployments. |
-| Limits & Quotas | L65-L69 | Managing DevTest Labs limits and quotas, viewing current usage, and requesting or configuring quota increases for labs, VMs, and related resources. |
-| Security | L70-L86 | Securing DevTest Labs: identities, RBAC and granular policy permissions, secrets/Key Vault, encrypted storage/disks, Trusted Launch, and secure VM access via Bastion, RD Gateway, or browser |
-| Configuration | L87-L111 | Configuring DevTest Labs environments and VMs: images, networks, policies, costs, tags, ARM templates, artifacts, activity logs, alerts, IPs, and resource groups. |
-| Integrations & Coding Patterns | L112-L131 | Automating DevTest Labs with ARM, PowerShell, CLI, REST, and Functions: user/VM management, VHD/custom image workflows, cross-lab import, reporting, and VM start/stop/start-order control. |
-| Deployment | L132-L139 | Guides for deploying and migrating DevTest Labs: ARM templates, CI/CD and Azure Pipelines integration, region moves, and handling Azure Basic Load Balancer retirement. |
+| Troubleshooting | L31-L38 | Diagnosing and fixing DevTest Labs VM and environment creation/deployment issues, artifact application failures, connectivity problems, and handling Defender for Cloud security alerts. |
+| Best Practices | L40-L43 | Guidance on organizing and collaborating on DevTest Labs infrastructure as code across teams, including branching, environments, and distributed resource development workflows |
+| Decision Making | L45-L52 | Guidance on planning PoCs and enterprise-scale deployments, choosing images and Gen1 vs Gen2 VMs, and setting governance for organization-wide DevTest Labs use. |
+| Architecture & Design Patterns | L54-L57 | Enterprise-scale DevTest Labs architectures: hub-spoke design, network/security layout, governance, cost management, and best practices for large org lab deployments. |
+| Limits & Quotas | L59-L62 | Managing DevTest Labs limits and quotas, viewing current usage, and requesting or configuring quota increases for labs, VMs, and related resources. |
+| Security | L64-L79 | Securing DevTest Labs: identities, RBAC and granular policy permissions, secrets/Key Vault, encrypted storage/disks, Trusted Launch, and secure VM access via Bastion, RD Gateway, or browser |
+| Configuration | L81-L104 | Configuring DevTest Labs environments and VMs: images, networks, policies, costs, tags, ARM templates, artifacts, activity logs, alerts, IPs, and resource groups. |
+| Integrations & Coding Patterns | L106-L124 | Automating DevTest Labs with ARM, PowerShell, CLI, REST, and Functions: user/VM management, VHD/custom image workflows, cross-lab import, reporting, and VM start/stop/start-order control. |
+| Deployment | L126-L133 | Guides for deploying and migrating DevTest Labs: ARM templates, CI/CD and Azure Pipelines integration, region moves, and handling Azure Basic Load Balancer retirement. |
 
 ### Troubleshooting
 | Topic | URL |

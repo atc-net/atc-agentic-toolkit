@@ -1,6 +1,6 @@
 ---
 name: azure-managed-applications
-description: Expert knowledge for Azure Managed Applications development including limits & quotas, security, configuration, and deployment. Use when building, debugging, or optimizing Azure Managed Applications applications. Not for Azure Lighthouse (use azure-lighthouse), Azure Resource Manager (use azure-resource-manager), Azure Portal (use azure-portal), Azure Partner Solutions (use azure-partner-solutions).
+description: Expert knowledge for Azure Managed Applications development including limits & quotas, security, configuration, and deployment. Use when designing createUiDefinition UIs, JIT access, managed identities, Key Vault/CMK, StorageAccountSelector, or Bicep-based catalog deployments, and other Azure Managed Applications related development tasks. Not for Azure Lighthouse (use azure-lighthouse), Azure Partner Solutions (use azure-partner-solutions), Azure Resource Manager (use azure-resource-manager), Azure Blueprints (use azure-blueprints).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,10 +19,10 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Limits & Quotas | L32-L37 | Guidance on storage-related limits: using StorageAccountSelector with naming rules and configuring external storage for large managed application definition packages. |
-| Security | L38-L49 | Security and access control for managed apps: JIT access, Azure Policy associations, managed identities (incl. cross-tenant), Key Vault/CMK use, and avoiding hardcoded credentials. |
-| Configuration | L50-L94 | Designing and configuring managed application UI and deployment: createUiDefinition.json, UI elements, functions, parameters, networking, policies, webhooks, and template/view references. |
-| Deployment | L95-L99 | Creating and publishing Azure Managed Application definitions using Bicep and deploying them into an internal service catalog for reuse. |
+| Limits & Quotas | L26-L30 | Guidance on storage-related limits: using StorageAccountSelector with naming rules and configuring external storage for large managed application definition packages. |
+| Security | L32-L42 | Security and access control for managed apps: JIT access, Azure Policy associations, managed identities (incl. cross-tenant), Key Vault/CMK use, and avoiding hardcoded credentials. |
+| Configuration | L44-L87 | Designing and configuring managed application UI and deployment: createUiDefinition.json, UI elements, functions, parameters, networking, policies, webhooks, and template/view references. |
+| Deployment | L89-L93 | Creating and publishing Azure Managed Application definitions using Bicep and deploying them into an internal service catalog for reuse. |
 
 ### Limits & Quotas
 | Topic | URL |

@@ -1,6 +1,6 @@
 ---
 name: azure-network-function-manager
-description: Expert knowledge for Azure Network Function Manager development including security, and configuration. Use when building, debugging, or optimizing Azure Network Function Manager applications. Not for Azure Firewall Manager (use azure-firewall-manager), Azure Virtual Network Manager (use azure-virtual-network-manager), Azure Virtual Network (use azure-virtual-network), Azure Network Watcher (use azure-network-watcher).
+description: Expert knowledge for Azure Network Function Manager development including security, and configuration. Use when setting up NF Manager prerequisites, resource groups, managed identities, role assignments, or secure NF access, and other Azure Network Function Manager related development tasks. Not for Azure Firewall Manager (use azure-firewall-manager), Azure Virtual Network Manager (use azure-virtual-network-manager), Azure Virtual Network (use azure-virtual-network), Azure Virtual WAN (use azure-virtual-wan).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,8 +19,8 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Security | L30-L34 | Setting up secure access for Network Function Manager by registering required Azure resources, managed identities, and permissions for network functions |
-| Configuration | L35-L38 | Prerequisites, permissions, and Azure resource requirements you must meet before deploying or managing network functions with Azure Network Function Manager. |
+| Security | L24-L27 | Setting up secure access for Network Function Manager by registering required Azure resources, managed identities, and permissions for network functions |
+| Configuration | L29-L32 | Prerequisites, permissions, and Azure resource requirements you must meet before deploying or managing network functions with Azure Network Function Manager. |
 
 ### Security
 | Topic | URL |

@@ -1,6 +1,6 @@
 ---
 name: azure-artifact-signing
-description: Expert knowledge for Azure Artifact Signing development including best practices, decision making, security, configuration, and integrations & coding patterns. Use when building, debugging, or optimizing Azure Artifact Signing applications.
+description: Expert knowledge for Azure Artifact Signing development including best practices, decision making, security, configuration, and integrations & coding patterns. Use when managing signing cert lifecycle, RBAC roles, DGSSv2 migration, diagnostic logs, or CI/CD signing workflows, and other Azure Artifact Signing related development tasks.
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,11 +19,11 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Best Practices | L33-L37 | Guidance on managing signing certificates end-to-end: rotation, renewal, expiration handling, key protection, and lifecycle policies for Azure Artifact Signing. |
-| Decision Making | L38-L43 | Pricing and SKU selection for Azure Artifact Signing and guidance to migrate from DGSSv2, including plan changes and transition steps. |
-| Security | L44-L50 | RBAC roles, permissions, and identity validation for Artifact Signing: how access is granted, secured, and managed for signing resources and operations. |
-| Configuration | L51-L55 | Configuring diagnostic settings for Artifact Signing, enabling and routing logs to destinations like Log Analytics, Storage, and Event Hubs for monitoring and analysis. |
-| Integrations & Coding Patterns | L56-L59 | How to integrate Azure Artifact Signing with supported tools and CI/CD systems, configure signing workflows, and apply recommended coding and automation patterns. |
+| Best Practices | L27-L30 | Guidance on managing signing certificates end-to-end: rotation, renewal, expiration handling, key protection, and lifecycle policies for Azure Artifact Signing. |
+| Decision Making | L32-L36 | Pricing and SKU selection for Azure Artifact Signing and guidance to migrate from DGSSv2, including plan changes and transition steps. |
+| Security | L38-L44 | RBAC roles, identities, and validations for Artifact Signing, plus secure signing of Windows code integrity policies and access control configuration. |
+| Configuration | L46-L49 | Configuring diagnostic settings for Artifact Signing, enabling and routing logs to destinations like Log Analytics, Storage, and Event Hubs for monitoring and analysis. |
+| Integrations & Coding Patterns | L51-L54 | How to integrate Azure Artifact Signing with supported tools and CI/CD systems, configure signing workflows, and apply recommended coding and automation patterns. |
 
 ### Best Practices
 | Topic | URL |
@@ -41,6 +41,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 |-------|-----|
 | Understand Artifact Signing resources and RBAC roles | https://learn.microsoft.com/en-us/azure/artifact-signing/concept-resources-roles |
 | Manage Artifact Signing identity validations securely | https://learn.microsoft.com/en-us/azure/artifact-signing/how-to-renew-identity-validation |
+| Sign Windows code integrity policies with Artifact Signing | https://learn.microsoft.com/en-us/azure/artifact-signing/how-to-sign-ci-policy |
 | Assign Azure RBAC roles for Artifact Signing resources | https://learn.microsoft.com/en-us/azure/artifact-signing/tutorial-assign-roles |
 
 ### Configuration

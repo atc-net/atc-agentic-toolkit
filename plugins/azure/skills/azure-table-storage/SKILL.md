@@ -1,6 +1,6 @@
 ---
 name: azure-table-storage
-description: Expert knowledge for Azure Table Storage development including best practices, architecture & design patterns, limits & quotas, security, configuration, and integrations & coding patterns. Use when building, debugging, or optimizing Azure Table Storage applications. Not for Azure Cosmos DB (use azure-cosmos-db), Azure Blob Storage (use azure-blob-storage), Azure Queue Storage (use azure-queue-storage), Azure Files (use azure-files).
+description: Expert knowledge for Azure Table Storage development including best practices, architecture & design patterns, limits & quotas, security, configuration, and integrations & coding patterns. Use when managing Entra ID/RBAC access, monitoring metrics/logs, tuning partitions/keys, or scripting tables via PowerShell, and other Azure Table Storage related development tasks. Not for Azure Cosmos DB (use azure-cosmos-db), Azure Blob Storage (use azure-blob-storage), Azure Queue Storage (use azure-queue-storage), Azure Files (use azure-files).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,12 +19,12 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Best Practices | L34-L38 | Guidance on designing scalable table schemas, partition/row key strategies, throughput optimization, and performance tuning patterns for Azure Table storage. |
-| Architecture & Design Patterns | L39-L48 | Designing Azure Table Storage schemas: partition/row key strategies, query-optimized models, handling relationships, efficient updates, and common design patterns/anti-patterns. |
-| Limits & Quotas | L49-L53 | Scalability limits, throughput targets, partition/key design, and performance best practices for Azure Table storage workloads. |
-| Security | L54-L59 | Managing access to Azure Table data using Microsoft Entra ID and Azure RBAC, including assigning roles and configuring identity-based authorization. |
-| Configuration | L60-L65 | Configuring Azure Table Storage monitoring: enabling metrics and logs, understanding available telemetry, and setting up alerts for performance, availability, and diagnostics. |
-| Integrations & Coding Patterns | L66-L69 | Using Azure PowerShell to manage Table storage: create/delete tables, insert/query/update/delete entities, and script common data operations. |
+| Best Practices | L28-L31 | Guidance on designing scalable table schemas, partition/row key strategies, throughput optimization, and performance tuning patterns for Azure Table storage. |
+| Architecture & Design Patterns | L33-L41 | Designing Azure Table Storage schemas: partition/row key strategies, query-optimized models, handling relationships, efficient updates, and common design patterns/anti-patterns. |
+| Limits & Quotas | L43-L46 | Scalability limits, throughput targets, partition/key design, and performance best practices for Azure Table storage workloads. |
+| Security | L48-L52 | Managing access to Azure Table data using Microsoft Entra ID and Azure RBAC, including assigning roles and configuring identity-based authorization. |
+| Configuration | L54-L58 | Configuring Azure Table Storage monitoring: enabling metrics and logs, understanding available telemetry, and setting up alerts for performance, availability, and diagnostics. |
+| Integrations & Coding Patterns | L60-L63 | Using Azure PowerShell to manage Table storage: create/delete tables, insert/query/update/delete entities, and script common data operations. |
 
 ### Best Practices
 | Topic | URL |

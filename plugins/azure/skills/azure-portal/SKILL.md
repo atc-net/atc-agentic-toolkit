@@ -1,6 +1,6 @@
 ---
 name: azure-portal
-description: Expert knowledge for Azure Portal development including troubleshooting, limits & quotas, security, and configuration. Use when building, debugging, or optimizing Azure Portal applications. Not for Azure Cloud Shell (use azure-cloud-shell), Azure Resource Manager (use azure-resource-manager), Azure Policy (use azure-policy), Azure Monitor (use azure-monitor).
+description: Expert knowledge for Azure Portal development including troubleshooting, limits & quotas, security, and configuration. Use when setting portal security policies, RBAC dashboards, dashboard JSON, mobile app access/alerts, or browser diagnostics, and other Azure Portal related development tasks. Not for Azure Cloud Shell (use azure-cloud-shell), Azure Resource Manager (use azure-resource-manager), Azure Monitor (use azure-monitor), Azure Policy (use azure-policy).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,10 +19,10 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L32-L36 | How to collect browser network traces, console logs, HAR files, and diagnostics to investigate and report Azure portal performance or UI issues |
-| Limits & Quotas | L37-L41 | Browser compatibility, OS/device requirements, and configuration needed to reliably access and use the Azure portal across different platforms. |
-| Security | L42-L49 | Tenant-wide portal security policies, RBAC-based dashboard sharing, and managing/protecting access to Azure via Intune MAM and the Azure mobile app. |
-| Configuration | L50-L58 | Configuring Azure portal behavior: dashboard JSON/templates, keyboard shortcuts, URL allowlists, mobile app alerts, and built-in Azure Policy definitions for portal governance. |
+| Troubleshooting | L26-L29 | How to collect browser network traces, console logs, HAR files, and diagnostics to investigate and report Azure portal performance or UI issues |
+| Limits & Quotas | L31-L34 | Browser compatibility, OS/device requirements, and configuration needed to reliably access and use the Azure portal across different platforms. |
+| Security | L36-L42 | Tenant-wide portal security policies, RBAC-based dashboard sharing, and managing/protecting access to Azure via Intune MAM and the Azure mobile app. |
+| Configuration | L44-L52 | Configuring Azure portal behavior: dashboard JSON/templates, keyboard shortcuts, URL allowlists, mobile app alerts, and built-in Azure Policy definitions for portal governance. |
 
 ### Troubleshooting
 | Topic | URL |

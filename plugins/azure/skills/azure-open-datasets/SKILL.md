@@ -1,6 +1,6 @@
 ---
 name: azure-open-datasets
-description: Expert knowledge for Azure Open Datasets development including limits & quotas. Use when building, debugging, or optimizing Azure Open Datasets applications. Not for Azure Data Explorer (use azure-data-explorer), Azure Synapse Analytics (use azure-synapse-analytics), Azure Databricks (use azure-databricks), Azure Machine Learning (use azure-machine-learning).
+description: Expert knowledge for Azure Open Datasets development including limits & quotas. Use when handling non-Spark dataset downloads, throttling behavior, quota limits, retry logic, or rate-limit workarounds, and other Azure Open Datasets related development tasks. Not for Azure Data Explorer (use azure-data-explorer), Azure Synapse Analytics (use azure-synapse-analytics), Azure Databricks (use azure-databricks), Azure Machine Learning (use azure-machine-learning).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,7 +19,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Limits & Quotas | L29-L32 | Managing and troubleshooting non-Spark download limits for Azure Open Datasets, including throttling behavior, quotas, and strategies to avoid or handle rate limits |
+| Limits & Quotas | L23-L26 | Managing and troubleshooting non-Spark download limits for Azure Open Datasets, including throttling behavior, quotas, and strategies to avoid or handle rate limits |
 
 ### Limits & Quotas
 | Topic | URL |

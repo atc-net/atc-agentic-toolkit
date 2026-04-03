@@ -1,6 +1,6 @@
 ---
 name: azure-cloud-shell
-description: Expert knowledge for Azure Cloud Shell development including troubleshooting, limits & quotas, and security. Use when building, debugging, or optimizing Azure Cloud Shell applications. Not for Azure Portal (use azure-portal), Azure Virtual Machines (use azure-virtual-machines), Azure Resource Manager (use azure-resource-manager).
+description: Expert knowledge for Azure Cloud Shell development including troubleshooting, limits & quotas, and security. Use when handling Cloud Shell storage mounts, session limits, private VNet access, or secure private endpoints, and other Azure Cloud Shell related development tasks. Not for Azure Portal (use azure-portal), Azure Virtual Machines (use azure-virtual-machines), Azure Kubernetes Service (AKS) (use azure-kubernetes-service), Azure Functions (use azure-functions).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,9 +19,9 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L31-L36 | Diagnosing and fixing common Cloud Shell errors, storage and connectivity issues, plus deployment and network problems when running Cloud Shell in private VNets. |
-| Limits & Quotas | L37-L41 | Details on Cloud Shell session duration, resource and storage limits, quotas, and how persistent storage works and is constrained across Bash and PowerShell. |
-| Security | L42-L46 | Securing Cloud Shell storage accounts, including multi-user access patterns, network isolation, and configuring private endpoints for locked-down access. |
+| Troubleshooting | L25-L29 | Diagnosing and fixing common Cloud Shell errors, storage and connectivity issues, plus deployment and network problems when running Cloud Shell in private VNets. |
+| Limits & Quotas | L31-L34 | Details on Cloud Shell session duration, resource and storage limits, quotas, and how persistent storage works and is constrained across Bash and PowerShell. |
+| Security | L36-L40 | Securing Cloud Shell storage accounts, including multi-user access patterns, network isolation, and configuring private endpoints for locked-down access. |
 
 ### Troubleshooting
 | Topic | URL |

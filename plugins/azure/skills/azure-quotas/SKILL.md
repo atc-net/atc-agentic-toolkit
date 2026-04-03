@@ -1,6 +1,6 @@
 ---
 name: azure-quotas
-description: Expert knowledge for Azure Quotas development including limits & quotas. Use when building, debugging, or optimizing Azure Quotas applications. Not for Azure Monitor (use azure-monitor), Azure Cost Management (use azure-cost-management), Azure Resource Manager (use azure-resource-manager), Azure Policy (use azure-policy).
+description: Expert knowledge for Azure Quotas development including limits & quotas. Use when requesting per-region Storage account quota increases, checking limits, or filing Azure support requests, and other Azure Quotas related development tasks. Not for Azure Cost Management (use azure-cost-management), Azure Monitor (use azure-monitor), Azure Policy (use azure-policy), Azure Resource Manager (use azure-resource-manager).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,7 +19,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Limits & Quotas | L29-L32 | How to request and manage per-region Azure Storage account quota increases, including limits, prerequisites, and support request steps. |
+| Limits & Quotas | L23-L26 | How to request and manage per-region Azure Storage account quota increases, including limits, prerequisites, and support request steps. |
 
 ### Limits & Quotas
 | Topic | URL |

@@ -1,6 +1,6 @@
 ---
 name: azure-impact-reporting
-description: Expert knowledge for Azure Impact Reporting development including troubleshooting, configuration, and integrations & coding patterns. Use when building, debugging, or optimizing Azure Impact Reporting applications. Not for Azure Carbon Optimization (use azure-carbon-optimization), Azure Cost Management (use azure-cost-management), Azure Monitor (use azure-monitor).
+description: Expert knowledge for Azure Impact Reporting development including troubleshooting, configuration, and integrations & coding patterns. Use when wiring Impact Reporting to Monitor alerts, Logic Apps, HPC node health, Service Health, or its insights API, and other Azure Impact Reporting related development tasks. Not for Azure Carbon Optimization (use azure-carbon-optimization), Azure Cost Management (use azure-cost-management), Azure Monitor (use azure-monitor), Azure Policy (use azure-policy).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,9 +19,9 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L31-L35 | Diagnosing and fixing Azure Impact Reporting connector issues, including connection failures, data sync problems, configuration errors, and common troubleshooting steps. |
-| Configuration | L36-L42 | Configuring Azure Impact Reporting: creating alert connectors and retrieving valid impact and HPC Guest Health category values for correct classification. |
-| Integrations & Coding Patterns | L43-L50 | Patterns and APIs for integrating Impact Reporting with Azure Monitor alerts, Logic Apps, HPC VM node health, Service Health, and accessing insights via API and portal |
+| Troubleshooting | L25-L28 | Diagnosing and fixing Azure Impact Reporting connector issues, including connection failures, data sync problems, configuration errors, and common troubleshooting steps. |
+| Configuration | L30-L35 | Configuring Azure Impact Reporting: creating alert connectors and retrieving valid impact and HPC Guest Health category values for correct classification. |
+| Integrations & Coding Patterns | L37-L44 | Patterns and APIs for integrating Impact Reporting with Azure Monitor alerts, Logic Apps, HPC VM node health, Service Health, and accessing insights via API and portal |
 
 ### Troubleshooting
 | Topic | URL |

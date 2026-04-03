@@ -1,6 +1,6 @@
 ---
 name: azure-managed-lustre
-description: Expert knowledge for Azure Managed Lustre development including troubleshooting, best practices, architecture & design patterns, limits & quotas, security, configuration, and integrations & coding patterns. Use when building, debugging, or optimizing Azure Managed Lustre applications. Not for Azure HPC Cache (use azure-hpc-cache), Azure NetApp Files (use azure-netapp-files), Azure Virtual Machines (use azure-virtual-machines).
+description: Expert knowledge for Azure Managed Lustre development including troubleshooting, best practices, architecture & design patterns, limits & quotas, security, configuration, and integrations & coding patterns. Use when mounting AML, integrating with Blob auto-import/export, AKS CSI, quotas, or performance tuning, and other Azure Managed Lustre related development tasks. Not for Azure HPC Cache (use azure-hpc-cache), Azure NetApp Files (use azure-netapp-files), Azure Virtual Machines (use azure-virtual-machines), Azure Virtual Network (use azure-virtual-network).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,13 +19,13 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L35-L40 | Diagnosing and resolving Azure Managed Lustre deployment failures and performance issues, including cluster provisioning errors, throughput/latency problems, and tuning guidance. |
-| Best Practices | L41-L46 | Guidance on tuning Azure Managed Lustre performance via optimal file/directory layout, client striping, and network setup (NICs, throughput, latency, and scaling). |
-| Architecture & Design Patterns | L47-L51 | Designing Azure Managed Lustre for high availability, regional redundancy, disaster recovery, and failover strategies across regions or zones |
-| Limits & Quotas | L52-L56 | Configuring and managing user, group, and project storage quotas in Azure Managed Lustre, including setup steps, commands, and best practices for capacity control. |
-| Security | L57-L66 | Securing Azure Managed Lustre: boot key setup, firewall/NSG access control, CMK encryption, root squash permissions, and virtual network encryption configuration and validation. |
-| Configuration | L67-L78 | Configuring Azure Managed Lustre: network/storage prerequisites, client install/upgrade, mounting (fstab), ARM/Bicep deployment, and monitoring/metrics/logs with Azure Monitor |
-| Integrations & Coding Patterns | L79-L88 | Configuring Azure Managed Lustre with Blob Storage (auto-import/export, manual jobs), Terraform provisioning, and integrating with AKS via the CSI driver. |
+| Troubleshooting | L29-L33 | Diagnosing and resolving Azure Managed Lustre deployment failures and performance issues, including cluster provisioning errors, throughput/latency problems, and tuning guidance. |
+| Best Practices | L35-L39 | Guidance on tuning Azure Managed Lustre performance via optimal file/directory layout, client striping, and network setup (NICs, throughput, latency, and scaling). |
+| Architecture & Design Patterns | L41-L44 | Designing Azure Managed Lustre for high availability, regional redundancy, disaster recovery, and failover strategies across regions or zones |
+| Limits & Quotas | L46-L49 | Configuring and managing user, group, and project storage quotas in Azure Managed Lustre, including setup steps, commands, and best practices for capacity control. |
+| Security | L51-L59 | Securing Azure Managed Lustre: boot key setup, firewall/NSG access control, CMK encryption, root squash permissions, and virtual network encryption configuration and validation. |
+| Configuration | L61-L71 | Configuring Azure Managed Lustre: network/storage prerequisites, client install/upgrade, mounting (fstab), ARM/Bicep deployment, and monitoring/metrics/logs with Azure Monitor |
+| Integrations & Coding Patterns | L73-L82 | Configuring Azure Managed Lustre with Blob Storage (auto-import/export, manual jobs), Terraform provisioning, and integrating with AKS via the CSI driver. |
 
 ### Troubleshooting
 | Topic | URL |

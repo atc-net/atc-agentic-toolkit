@@ -1,6 +1,6 @@
 ---
 name: azure-dev-box
-description: Expert knowledge for Azure Dev Box development including troubleshooting, best practices, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure Dev Box applications. Not for Azure DevTest Labs (use azure-devtest-labs), Azure Virtual Machines (use azure-virtual-machines), Azure Virtual Desktop (use azure-virtual-desktop), Azure Lab Services (use azure-lab-services).
+description: Expert knowledge for Azure Dev Box development including troubleshooting, best practices, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when designing Dev Box images, region moves, networking/policies, RBAC/SSO, or VS Code dev tunnel workflows, and other Azure Dev Box related development tasks. Not for Azure DevTest Labs (use azure-devtest-labs), Azure Virtual Machines (use azure-virtual-machines), Azure Virtual Desktop (use azure-virtual-desktop), Azure Lab Services (use azure-lab-services).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,13 +19,13 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L35-L43 | Diagnosing and fixing Dev Box connectivity/RDP issues, stale or inaccessible boxes, using Troubleshoot and Repair, and monitoring Dev Box health with Azure Monitor logs. |
-| Best Practices | L44-L49 | Guidance on building efficient Dev Box images, including structuring image definitions and pre-warming Visual Studio caches to speed up developer environments. |
-| Limits & Quotas | L50-L55 | Managing Dev Box capacity: requesting quota/core limit increases and configuring per-user Dev Box limits to control usage and costs. |
-| Security | L56-L67 | Securing Dev Box access and sessions: RBAC planning, API auth, conditional access/Intune, Key Vault/service principals, endpoint privilege management, and Windows SSO configuration |
-| Configuration | L68-L95 | Configuring Dev Box environments: networking, images, catalogs, policies, schedules (stop/hibernate/auto-delete), provisioning templates, and monitoring logs/metrics. |
-| Integrations & Coding Patterns | L96-L100 | Using VS Code dev tunnels to securely connect to Azure Dev Box, including setup, authentication, and remote development workflow configuration. |
-| Deployment | L101-L105 | Planning and rolling out Dev Box environments, including architecture and configuration, plus guidance for moving Dev Box pools and individual boxes between Azure regions. |
+| Troubleshooting | L29-L36 | Diagnosing and fixing Dev Box connectivity/RDP issues, stale or inaccessible boxes, using Troubleshoot and Repair, and monitoring Dev Box health with Azure Monitor logs. |
+| Best Practices | L38-L42 | Guidance on building efficient Dev Box images, including structuring image definitions and pre-warming Visual Studio caches to speed up developer environments. |
+| Limits & Quotas | L44-L48 | Managing Dev Box capacity: requesting quota/core limit increases and configuring per-user Dev Box limits to control usage and costs. |
+| Security | L50-L60 | Securing Dev Box access and sessions: RBAC planning, API auth, conditional access/Intune, Key Vault/service principals, endpoint privilege management, and Windows SSO configuration |
+| Configuration | L62-L88 | Configuring Dev Box environments: networking, images, catalogs, policies, schedules (stop/hibernate/auto-delete), provisioning templates, and monitoring logs/metrics. |
+| Integrations & Coding Patterns | L90-L93 | Using VS Code dev tunnels to securely connect to Azure Dev Box, including setup, authentication, and remote development workflow configuration. |
+| Deployment | L95-L99 | Planning and rolling out Dev Box environments, including architecture and configuration, plus guidance for moving Dev Box pools and individual boxes between Azure regions. |
 
 ### Troubleshooting
 | Topic | URL |

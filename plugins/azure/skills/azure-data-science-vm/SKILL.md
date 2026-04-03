@@ -1,12 +1,12 @@
 ---
 name: azure-data-science-vm
-description: Expert knowledge for Azure Data Science Virtual Machines development including troubleshooting, decision making, architecture & design patterns, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure Data Science Virtual Machines applications. Not for Azure Virtual Machines (use azure-virtual-machines), Azure Machine Learning (use azure-machine-learning), Azure Databricks (use azure-databricks), Azure HDInsight (use azure-hdinsight).
+description: Expert knowledge for Azure Data Science Virtual Machines development including troubleshooting, decision making, architecture & design patterns, security, configuration, integrations & coding patterns, and deployment. Use when managing DSVM images/tools, IaC deployment (Bicep/ARM), Key Vault secrets, MLflow, or GPU/Jupyter issues, and other Azure Data Science Virtual Machines related development tasks. Not for Azure Virtual Machines (use azure-virtual-machines), Azure Machine Learning (use azure-machine-learning), Azure Databricks (use azure-databricks), Azure HDInsight (use azure-hdinsight).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
-# Azure Data Science Virtual Machines Skill
+# Azure Data Science VM Skill
 
-This skill provides expert guidance for Azure Data Science Virtual Machines. Covers troubleshooting, decision making, architecture & design patterns, security, configuration, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure Data Science VM. Covers troubleshooting, decision making, architecture & design patterns, security, configuration, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
@@ -19,13 +19,13 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L35-L39 | Diagnosing and resolving common Azure Data Science VM issues, including VM creation, package/environment errors, Jupyter access, GPU/driver problems, and performance or connectivity failures. |
-| Decision Making | L40-L44 | Guidance for upgrading Azure Data Science VMs from Ubuntu 18.04 to 20.04, including migration steps, compatibility considerations, and preserving tools/configurations. |
-| Architecture & Design Patterns | L45-L50 | Designing scalable DSVM-based analytics environments, including architecture patterns, shared VM pools, team workflows, and resource management for data science teams. |
-| Security | L51-L56 | Managing identities and credentials for Azure DSVMs, including shared identity setup, managed identities, and securing secrets with Azure Key Vault. |
-| Configuration | L57-L70 | Details of all preinstalled tools, frameworks, languages, and images on Azure DSVMs, including ML/deep learning, data ingestion, dev/productivity tools, and release/version info. |
-| Integrations & Coding Patterns | L71-L75 | Using MLflow on Azure DSVMs to track experiments, log metrics/artifacts, and integrate runs with Azure Machine Learning for centralized experiment management |
-| Deployment | L76-L80 | How to deploy Azure Data Science VMs using infrastructure-as-code, including Bicep and ARM templates, parameters, and configuration best practices. |
+| Troubleshooting | L29-L32 | Diagnosing and resolving common Azure Data Science VM issues, including VM creation, package/environment errors, Jupyter access, GPU/driver problems, and performance or connectivity failures. |
+| Decision Making | L34-L37 | Guidance for upgrading Azure Data Science VMs from Ubuntu 18.04 to 20.04, including migration steps, compatibility considerations, and preserving tools/configurations. |
+| Architecture & Design Patterns | L39-L43 | Designing scalable DSVM-based analytics environments, including architecture patterns, shared VM pools, team workflows, and resource management for data science teams. |
+| Security | L45-L49 | Managing identities and credentials for Azure DSVMs, including shared identity setup, managed identities, and securing secrets with Azure Key Vault. |
+| Configuration | L51-L63 | Details of all preinstalled tools, frameworks, languages, and images on Azure DSVMs, including ML/deep learning, data ingestion, dev/productivity tools, and release/version info. |
+| Integrations & Coding Patterns | L65-L68 | Using MLflow on Azure DSVMs to track experiments, log metrics/artifacts, and integrate runs with Azure Machine Learning for centralized experiment management |
+| Deployment | L70-L74 | How to deploy Azure Data Science VMs using infrastructure-as-code, including Bicep and ARM templates, parameters, and configuration best practices. |
 
 ### Troubleshooting
 | Topic | URL |

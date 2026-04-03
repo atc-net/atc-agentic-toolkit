@@ -1,12 +1,12 @@
 ---
 name: azure-planetary-computer-pro
-description: Expert knowledge for Microsoft Planetary Computer Pro development including troubleshooting, decision making, limits & quotas, security, configuration, and integrations & coding patterns. Use when building, debugging, or optimizing Microsoft Planetary Computer Pro applications. Not for Azure Open Datasets (use azure-open-datasets), Azure Maps (use azure-maps), Azure Data Explorer (use azure-data-explorer).
+description: Expert knowledge for Microsoft Planetary Computer Pro development including troubleshooting, decision making, limits & quotas, security, configuration, and integrations & coding patterns. Use when managing STAC collections, GeoCatalog ingestion, SAS tokens, Explorer visualization, or QGIS/ArcGIS integration, and other Microsoft Planetary Computer Pro related development tasks. Not for Azure Open Datasets (use azure-open-datasets), Azure Maps (use azure-maps), Azure Data Explorer (use azure-data-explorer), Azure Synapse Analytics (use azure-synapse-analytics).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
-# Microsoft Planetary Computer Pro Skill
+# Azure Planetary Computer Pro Skill
 
-This skill provides expert guidance for Microsoft Planetary Computer Pro. Covers troubleshooting, decision making, limits & quotas, security, configuration, and integrations & coding patterns. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure Planetary Computer Pro. Covers troubleshooting, decision making, limits & quotas, security, configuration, and integrations & coding patterns. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
@@ -19,12 +19,12 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L34-L39 | Diagnosing and resolving Planetary Computer Pro GeoCatalog ingestion failures, including error code meanings, common causes, and step-by-step remediation guidance. |
-| Decision Making | L40-L44 | Guidance on selecting how to access Planetary Computer Pro data, including connection options, integrations with tools/services, and choosing the best method for your workflow. |
-| Limits & Quotas | L45-L49 | Supported file formats, data types, and size/usage limits for datasets and computations in Planetary Computer Pro, including quotas that affect how you process and store data. |
-| Security | L50-L60 | Authenticating apps and services to Planetary Computer Pro, configuring Entra ID, RBAC, managed identities, cross-tenant access, and SAS-based authorization for GeoCatalog access and data ingestion |
-| Configuration | L61-L74 | Configuring Planetary Computer Pro collections: ingestion sources, mosaics, tiles, render/colormap settings, Explorer visualization, queryable filters, and US Gov cloud endpoints. |
-| Integrations & Coding Patterns | L75-L88 | Patterns and APIs for creating/managing STAC collections/items, bulk ingesting data, generating SAS tokens, and integrating Planetary Computer Pro with web apps, QGIS, ArcGIS, and other tools |
+| Troubleshooting | L28-L32 | Diagnosing and resolving Planetary Computer Pro GeoCatalog ingestion failures, including error code meanings, common causes, and step-by-step remediation guidance. |
+| Decision Making | L34-L37 | Guidance on selecting how to access Planetary Computer Pro data, including connection options, integrations with tools/services, and choosing the best method for your workflow. |
+| Limits & Quotas | L39-L42 | Supported file formats, data types, and size/usage limits for datasets and computations in Planetary Computer Pro, including quotas that affect how you process and store data. |
+| Security | L44-L53 | Authenticating apps and services to Planetary Computer Pro, configuring Entra ID, RBAC, managed identities, cross-tenant access, and SAS-based authorization for GeoCatalog access and data ingestion |
+| Configuration | L55-L67 | Configuring Planetary Computer Pro collections: ingestion sources, mosaics, tiles, render/colormap settings, Explorer visualization, queryable filters, and US Gov cloud endpoints. |
+| Integrations & Coding Patterns | L69-L82 | Patterns and APIs for creating/managing STAC collections/items, bulk ingesting data, generating SAS tokens, and integrating Planetary Computer Pro with web apps, QGIS, ArcGIS, and other tools |
 
 ### Troubleshooting
 | Topic | URL |

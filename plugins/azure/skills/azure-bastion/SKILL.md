@@ -1,6 +1,6 @@
 ---
 name: azure-bastion
-description: Expert knowledge for Azure Bastion development including troubleshooting, best practices, decision making, architecture & design patterns, security, configuration, and integrations & coding patterns. Use when building, debugging, or optimizing Azure Bastion applications. Not for Azure Virtual Network (use azure-virtual-network), Azure Virtual Machines (use azure-virtual-machines), Azure VPN Gateway (use azure-vpn-gateway), Azure Firewall (use azure-firewall).
+description: Expert knowledge for Azure Bastion development including troubleshooting, best practices, decision making, architecture & design patterns, security, configuration, and integrations & coding patterns. Use when using Bastion with AKS private clusters, VM scale sets, IP-based access, Kerberos, or hub/spoke VNets, and other Azure Bastion related development tasks. Not for Azure Virtual Network (use azure-virtual-network), Azure Virtual Machines (use azure-virtual-machines), Azure VPN Gateway (use azure-vpn-gateway), Azure Firewall (use azure-firewall).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,13 +19,13 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L35-L39 | Diagnosing and resolving common Azure Bastion problems, including connection failures, RDP/SSH issues, network/configuration misconfigurations, and basic troubleshooting steps. |
-| Best Practices | L40-L44 | Guidance on reducing Azure Bastion costs through sizing, scaling, and usage patterns while maintaining secure remote access and compliance best practices. |
-| Decision Making | L45-L50 | Choosing the right Azure Bastion SKU (Basic/Standard/Developer), understanding feature and cost differences, and viewing or upgrading existing Bastion SKU tiers |
-| Architecture & Design Patterns | L51-L57 | Architectural options and patterns for Azure Bastion: hub/spoke and peered VNets, private-only deployments, network/topology design, and deployment guidance for secure remote access. |
-| Security | L58-L63 | Securing Azure Bastion: configuring NSGs for Bastion-connected VMs, hardening Bastion hosts, locking down access, and following security best practices. |
-| Configuration | L64-L78 | Configuring Azure Bastion settings, scaling, IP-based and Kerberos access, monitoring/metrics, session management/recording, native client use, and shareable links. |
-| Integrations & Coding Patterns | L79-L86 | How to use Azure Bastion with AKS private clusters, VM scale sets, and native Windows/Linux clients, including SSH/RDP connectivity patterns and file transfer via Bastion native clients. |
+| Troubleshooting | L29-L32 | Diagnosing and resolving common Azure Bastion problems, including connection failures, RDP/SSH issues, network/configuration missteps, and steps to collect logs for support. |
+| Best Practices | L34-L37 | Guidance on reducing Azure Bastion costs through sizing, scaling, and usage patterns while maintaining secure remote access and compliance best practices. |
+| Decision Making | L39-L44 | Guidance on choosing and upgrading Bastion SKU tiers and using IP-based Bastion connections across VNets, subscriptions, and environments. |
+| Architecture & Design Patterns | L46-L51 | Architectural options and patterns for Azure Bastion: hub/spoke and peered VNets, private-only deployments, network/topology design, and deployment guidance for secure remote access. |
+| Security | L53-L58 | Configuring secure Azure Bastion access: Entra ID authentication, required NSG rules, and hardening best practices to lock down Bastion hosts and connections. |
+| Configuration | L60-L70 | Configuring Azure Bastion settings, scaling, IP-based and Kerberos access, monitoring/metrics, session management/recording, native client use, and shareable links. |
+| Integrations & Coding Patterns | L72-L79 | How to use Azure Bastion with AKS private clusters, VM scale sets, and native Windows/Linux clients, including SSH/RDP connectivity patterns and file transfer via Bastion native clients. |
 
 ### Troubleshooting
 | Topic | URL |
@@ -41,7 +41,8 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Topic | URL |
 |-------|-----|
 | Select the appropriate Azure Bastion SKU tier | https://learn.microsoft.com/en-us/azure/bastion/bastion-sku-comparison |
-| View and upgrade Azure Bastion SKU tiers | https://learn.microsoft.com/en-us/azure/bastion/upgrade-sku |
+| Use Azure Bastion IP-based connections across environments | https://learn.microsoft.com/en-us/azure/bastion/connect-ip-address |
+| View and upgrade Azure Bastion SKU tiers safely | https://learn.microsoft.com/en-us/azure/bastion/upgrade-sku |
 
 ### Architecture & Design Patterns
 | Topic | URL |
@@ -53,16 +54,14 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 ### Security
 | Topic | URL |
 |-------|-----|
-| Configure NSGs for Azure Bastion-connected VMs | https://learn.microsoft.com/en-us/azure/bastion/bastion-nsg |
+| Configure Microsoft Entra ID auth for Azure Bastion | https://learn.microsoft.com/en-us/azure/bastion/bastion-entra-id-authentication |
+| Configure Azure Bastion NSG rules for secure access | https://learn.microsoft.com/en-us/azure/bastion/bastion-nsg |
 | Harden and secure your Azure Bastion deployment | https://learn.microsoft.com/en-us/azure/bastion/secure-bastion |
 
 ### Configuration
 | Topic | URL |
 |-------|-----|
 | Reference Azure Bastion configuration settings and options | https://learn.microsoft.com/en-us/azure/bastion/configuration-settings |
-| Scale Azure Bastion hosts using the Azure portal | https://learn.microsoft.com/en-us/azure/bastion/configure-host-scaling |
-| Scale Azure Bastion hosts using PowerShell | https://learn.microsoft.com/en-us/azure/bastion/configure-host-scaling-powershell |
-| Configure IP-based private connections through Azure Bastion | https://learn.microsoft.com/en-us/azure/bastion/connect-ip-address |
 | Configure Kerberos authentication for Azure Bastion | https://learn.microsoft.com/en-us/azure/bastion/kerberos-authentication-portal |
 | Configure monitoring and diagnostics for Azure Bastion | https://learn.microsoft.com/en-us/azure/bastion/monitor-bastion |
 | Reference monitoring metrics and logs for Azure Bastion | https://learn.microsoft.com/en-us/azure/bastion/monitor-bastion-reference |

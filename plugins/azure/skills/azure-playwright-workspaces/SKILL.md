@@ -1,12 +1,12 @@
 ---
 name: azure-playwright-workspaces
-description: Expert knowledge for Playwright Workspaces development including troubleshooting, best practices, decision making, limits & quotas, security, and configuration. Use when building, debugging, or optimizing Playwright Workspaces applications.
+description: Expert knowledge for Playwright Workspaces development including troubleshooting, best practices, decision making, limits & quotas, security, and configuration. Use when managing Playwright Testing workspaces, tokens/RBAC, quotas, monitoring/metrics, or run/AADSTS7000112 issues, and other Playwright Workspaces related development tasks.
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
-# Playwright Workspaces Skill
+# Azure Playwright Workspaces Skill
 
-This skill provides expert guidance for Playwright Workspaces. Covers troubleshooting, best practices, decision making, limits & quotas, security, and configuration. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure Playwright Workspaces. Covers troubleshooting, best practices, decision making, limits & quotas, security, and configuration. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
@@ -19,12 +19,12 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L34-L39 | Diagnosing and fixing Playwright Testing run failures and resolving AADSTS7000112/Azure AD sign-in issues for accessing the Playwright portal. |
-| Best Practices | L40-L49 | Optimizing Playwright Testing workspaces for speed, latency, visual regression, remote/private app access, key service features, and reporting/sharding strategies |
-| Decision Making | L50-L54 | Guidance on creating, choosing, organizing, and managing Microsoft Playwright Testing workspaces for different teams, projects, and testing scenarios. |
-| Limits & Quotas | L55-L60 | Details on Playwright Testing workspace limits, free trial quotas, concurrency caps, and how to configure or monitor usage against those limits. |
-| Security | L61-L67 | Managing workspace access tokens, setting up authentication/authorization, and configuring RBAC roles and permissions for Microsoft Playwright Testing workspaces. |
-| Configuration | L68-L73 | Configuring Playwright Testing workspaces: service config file setup, enabling monitoring, and understanding available metrics and logs for observability. |
+| Troubleshooting | L28-L32 | Diagnosing and fixing Playwright Testing run failures and resolving AADSTS7000112/Azure AD sign-in issues for accessing the Playwright portal. |
+| Best Practices | L34-L42 | Optimizing Playwright Testing workspaces for speed, latency, visual regression, remote/private app access, key service features, and reporting/sharding strategies |
+| Decision Making | L44-L47 | Guidance on creating, choosing, organizing, and managing Microsoft Playwright Testing workspaces for different teams, projects, and testing scenarios. |
+| Limits & Quotas | L49-L53 | Details on Playwright Testing workspace limits, free trial quotas, concurrency caps, and how to configure or monitor usage against those limits. |
+| Security | L55-L60 | Managing workspace access tokens, setting up authentication/authorization, and configuring RBAC roles and permissions for Microsoft Playwright Testing workspaces. |
+| Configuration | L62-L67 | Configuring Playwright Testing workspaces: service config file setup, enabling monitoring, and understanding available metrics and logs for observability. |
 
 ### Troubleshooting
 | Topic | URL |

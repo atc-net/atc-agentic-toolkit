@@ -1,12 +1,12 @@
 ---
 name: azure-redhat-openshift
-description: Expert knowledge for Azure Red Hat OpenShift development including troubleshooting, best practices, decision making, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure Red Hat OpenShift applications. Not for Azure Kubernetes Service (AKS) (use azure-kubernetes-service), Azure Container Apps (use azure-container-apps), Azure Container Instances (use azure-container-instances), Azure VMware Solution (use azure-vmware-solution).
+description: Expert knowledge for Azure Red Hat OpenShift development including troubleshooting, best practices, decision making, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when creating ARO clusters, configuring networking/storage, securing with Entra/NSGs, using GPUs/Key Vault, or upgrading, and other Azure Red Hat OpenShift related development tasks. Not for Azure Kubernetes Service (AKS) (use azure-kubernetes-service), Azure Container Apps (use azure-container-apps), Azure Container Instances (use azure-container-instances), Azure VMware Solution (use azure-vmware-solution).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
-# Azure Red Hat OpenShift Skill
+# Azure Redhat Openshift Skill
 
-This skill provides expert guidance for Azure Red Hat OpenShift. Covers troubleshooting, best practices, decision making, limits & quotas, security, configuration, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure Redhat Openshift. Covers troubleshooting, best practices, decision making, limits & quotas, security, configuration, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
@@ -19,20 +19,21 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L36-L42 | Recovering ARO cluster access, manually rotating/updating cluster certificates, and diagnosing/fixing common Azure Red Hat OpenShift cluster issues and failures. |
-| Best Practices | L43-L50 | Guidance on sizing and deploying ARO clusters/infra nodes, optimizing OpenShift Virtualization VMs, and following supportability and scaling best practices for large ARO 4 environments |
-| Decision Making | L51-L55 | Defines the shared responsibility model for Azure Red Hat OpenShift, detailing which operational tasks are handled by Microsoft, Red Hat, and the customer. |
-| Limits & Quotas | L56-L61 | Scaling and capacity limits for ARO clusters, including configuring multiple load balancer IPs and understanding ARO versioning, support lifecycle, and upgrade constraints. |
-| Security | L62-L79 | Securing ARO clusters: identity/auth (Entra, managed identities, service principals, workload identity), disk encryption, NSGs/egress, FIPS, Front Door protection, and support access control. |
-| Configuration | L80-L98 | Configuring ARO clusters: networking (proxy, DNS, egress, MTU), storage (Azure Files, Prometheus), registry/pull secrets, node/subnet layout, Spot VMs, tagging, and health alerts. |
-| Integrations & Coding Patterns | L99-L108 | Running ARO with external services: virtualization, NVIDIA GPUs, Azure NetApp Files, Prometheus→Azure Monitor, ACR auth, and Azure Key Vault secret integration. |
-| Deployment | L109-L122 | Deploying and operating ARO clusters and apps: cluster creation (private/ARM/Bicep), upgrades, networking migration, backups/restores, and app runtimes (JBoss, WebSphere, S2I, serverless). |
+| Troubleshooting | L30-L36 | Fixing common ARO cluster issues, restoring cluster access, and manually updating or troubleshooting cluster certificates and connectivity via CLI |
+| Best Practices | L38-L44 | Guidance on sizing and deploying ARO clusters and infra nodes, optimizing OpenShift Virtualization VMs, and understanding ARO 4 support limits and policies |
+| Decision Making | L46-L49 | Defines the shared responsibility model for Azure Red Hat OpenShift, detailing which operational tasks are handled by Microsoft, Red Hat, and the customer. |
+| Limits & Quotas | L51-L55 | Scaling and capacity limits for ARO clusters, including configuring multiple load balancer IPs and understanding ARO versioning, support lifecycle, and upgrade constraints. |
+| Security | L57-L73 | Identity, auth, and network security for ARO: Entra/managed identities, workload identity, NSGs/egress control, disk encryption, FIPS, Front Door protection, Lockbox, and credential rotation. |
+| Configuration | L75-L92 | Configuring ARO clusters: networking (proxy, DNS, egress, MTU), storage (Azure Files, Prometheus), registry/pull secrets, node/subnet layout, Spot VMs, tagging, and health alerts. |
+| Integrations & Coding Patterns | L94-L101 | Running ARO with external services: virtualization, NVIDIA GPUs, Azure NetApp Files, Prometheus→Azure Monitor, ACR auth, and Azure Key Vault secret integration. |
+| Deployment | L103-L115 | Deploying and operating ARO clusters and apps: cluster creation (private/ARM/Bicep), upgrades, networking migration, backups/restores, and app runtimes (JBoss, WebSphere, S2I, serverless). |
 
 ### Troubleshooting
 | Topic | URL |
 |-------|-----|
 | Regain ARO cluster access using Admin Kubeconfig | https://learn.microsoft.com/en-us/azure/openshift/howto-kubeconfig |
 | Manually update ARO cluster certificates via CLI | https://learn.microsoft.com/en-us/azure/openshift/howto-update-certificates |
+| Resolve common Azure Red Hat OpenShift issues | https://learn.microsoft.com/en-us/azure/openshift/openshift-faq |
 | Troubleshoot common Azure Red Hat OpenShift cluster issues | https://learn.microsoft.com/en-us/azure/openshift/troubleshoot |
 
 ### Best Practices
@@ -41,7 +42,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Optimize VM deployments on OpenShift Virtualization in ARO | https://learn.microsoft.com/en-us/azure/openshift/best-practices-openshift-virtualization |
 | Deploy and size infrastructure nodes in ARO | https://learn.microsoft.com/en-us/azure/openshift/howto-infrastructure-nodes |
 | Apply best practices for large ARO clusters | https://learn.microsoft.com/en-us/azure/openshift/howto-large-clusters |
-| Follow supportability rules for ARO 4 clusters | https://learn.microsoft.com/en-us/azure/openshift/support-policies-v4 |
+| Follow Azure Red Hat OpenShift 4 support policies | https://learn.microsoft.com/en-us/azure/openshift/support-policies-v4 |
 
 ### Decision Making
 | Topic | URL |
@@ -65,8 +66,8 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Create service principal for Azure Red Hat OpenShift deployment | https://learn.microsoft.com/en-us/azure/openshift/howto-create-service-principal |
 | Configure applications with ARO workload identity | https://learn.microsoft.com/en-us/azure/openshift/howto-deploy-configure-application |
 | Enable FIPS-compliant cryptography on Azure Red Hat OpenShift | https://learn.microsoft.com/en-us/azure/openshift/howto-enable-fips-openshift |
-| Reconcile federated identity credentials for ARO operators | https://learn.microsoft.com/en-us/azure/openshift/howto-reconcile-federated-identity-credentials |
-| Replace ARO platform and cluster identities safely | https://learn.microsoft.com/en-us/azure/openshift/howto-replace-cluster-identity |
+| Reconcile federated identity credentials for ARO clusters | https://learn.microsoft.com/en-us/azure/openshift/howto-reconcile-federated-identity-credentials |
+| Replace Azure Red Hat OpenShift cluster identities | https://learn.microsoft.com/en-us/azure/openshift/howto-replace-cluster-identity |
 | Restrict and allow egress traffic for ARO clusters | https://learn.microsoft.com/en-us/azure/openshift/howto-restrict-egress |
 | Secure Azure Red Hat OpenShift apps with Azure Front Door | https://learn.microsoft.com/en-us/azure/openshift/howto-secure-openshift-with-front-door |
 | Rotate service principal credentials for Azure Red Hat OpenShift | https://learn.microsoft.com/en-us/azure/openshift/howto-service-principal-credential-rotation |
@@ -94,7 +95,6 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 ### Integrations & Coding Patterns
 | Topic | URL |
 |-------|-----|
-| Enable OpenShift Virtualization on Azure Red Hat OpenShift | https://learn.microsoft.com/en-us/azure/openshift/howto-create-openshift-virtualization |
 | Run NVIDIA GPU workloads on Azure Red Hat OpenShift | https://learn.microsoft.com/en-us/azure/openshift/howto-gpu-workloads |
 | Configure Azure NetApp Files storage for ARO | https://learn.microsoft.com/en-us/azure/openshift/howto-netapp-files |
 | Send ARO Prometheus metrics to Azure Monitor via remote write | https://learn.microsoft.com/en-us/azure/openshift/howto-remotewrite-prometheus |
@@ -112,6 +112,5 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Deploy applications from source to ARO using S2I | https://learn.microsoft.com/en-us/azure/openshift/howto-deploy-with-s2i |
 | Deploy serverless applications on Azure Red Hat OpenShift | https://learn.microsoft.com/en-us/azure/openshift/howto-deploy-with-serverless |
 | Migrate ARO networking from OpenShift SDN to OVN-Kubernetes | https://learn.microsoft.com/en-us/azure/openshift/howto-sdn-to-ovn |
-| Upgrade ARO clusters using managed identities | https://learn.microsoft.com/en-us/azure/openshift/howto-upgrade-aro-openshift-cluster |
 | Understand Azure Red Hat OpenShift service definitions | https://learn.microsoft.com/en-us/azure/openshift/openshift-service-definitions |
 | Deploy ARO clusters using ARM or Bicep templates | https://learn.microsoft.com/en-us/azure/openshift/quickstart-openshift-arm-bicep-template |

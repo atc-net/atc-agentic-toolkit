@@ -1,6 +1,6 @@
 ---
 name: azure-baremetal-infrastructure
-description: Expert knowledge for Azure Baremetal Infrastructure development including decision making, and architecture & design patterns. Use when building, debugging, or optimizing Azure Baremetal Infrastructure applications. Not for Azure Large Instances (use azure-large-instances), Azure Virtual Machines (use azure-virtual-machines), Azure VMware Solution (use azure-vmware-solution), SAP HANA on Azure Large Instances (use azure-sap).
+description: Expert knowledge for Azure Baremetal Infrastructure development including decision making, and architecture & design patterns. Use when choosing NC2 regions/SKUs, planning BareMetal topologies, or integrating NC2 with Azure networking/services, and other Azure Baremetal Infrastructure related development tasks. Not for Azure Large Instances (use azure-large-instances), Azure Virtual Machines (use azure-virtual-machines), Azure Virtual Machine Scale Sets (use azure-vm-scalesets), SAP HANA on Azure Large Instances (use azure-sap).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,8 +19,8 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Decision Making | L30-L34 | Guidance on selecting NC2 on Azure regions and hardware SKUs, including capacity, performance, and availability considerations for deployment planning. |
-| Architecture & Design Patterns | L35-L38 | NC2 on Azure BareMetal architecture choices, deployment topologies, integration patterns with Azure services, and design considerations for performance, HA, and networking. |
+| Decision Making | L24-L27 | Guidance on selecting NC2 on Azure regions and hardware SKUs, including capacity, performance, and availability considerations for deployment planning. |
+| Architecture & Design Patterns | L29-L32 | NC2 on Azure BareMetal architecture choices, deployment topologies, integration patterns with Azure services, and design considerations for performance, HA, and networking. |
 
 ### Decision Making
 | Topic | URL |

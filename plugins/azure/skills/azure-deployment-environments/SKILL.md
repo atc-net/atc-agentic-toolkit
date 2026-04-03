@@ -1,6 +1,6 @@
 ---
 name: azure-deployment-environments
-description: Expert knowledge for Azure Deployment Environments development including troubleshooting, best practices, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure Deployment Environments applications. Not for Azure DevTest Labs (use azure-devtest-labs), Azure Dev Box (use azure-dev-box), Azure Managed Applications (use azure-managed-applications), Azure Integration Environments (use azure-integration-environments).
+description: Expert knowledge for Azure Deployment Environments development including troubleshooting, best practices, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when designing ADE catalogs, environment.yaml schemas, custom images, RBAC/roles, or CI/CD image pipelines, and other Azure Deployment Environments related development tasks. Not for Azure DevTest Labs (use azure-devtest-labs), Azure Dev Box (use azure-dev-box), Azure Integration Environments (use azure-integration-environments), Azure Managed Applications (use azure-managed-applications).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,13 +19,13 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L35-L39 | Diagnosing and resolving Azure Deployment Environments custom image deployment failures, including common error codes, validation issues, and configuration or image compatibility problems. |
-| Best Practices | L40-L44 | Guidance on structuring ADE catalogs: organizing templates, folders, and repos for reusable, maintainable, and scalable deployment environment definitions. |
-| Limits & Quotas | L45-L49 | How to view current Azure Deployment Environments quotas/capacity, understand default limits, and request increases for org, project, and environment resource usage. |
-| Security | L50-L57 | RBAC and identity for ADE: planning Azure roles/scopes, using Azure CLI auth for REST, configuring managed identities, and assigning built‑in ADE roles and access. |
-| Configuration | L58-L65 | Defining and configuring ADE environment.yaml schemas, environment definitions, and custom container images, plus required CLI environment variables for building and running those images. |
-| Integrations & Coding Patterns | L66-L70 | Using the ADE CLI to build, publish, and manage custom environment images, automate image pipelines, and integrate ADE image workflows into CI/CD and DevOps processes |
-| Deployment | L71-L75 | How to integrate Azure Deployment Environments with CI/CD tools like Azure Pipelines and GitHub Actions, including configuring pipelines to create, update, and delete ADE environments. |
+| Troubleshooting | L29-L32 | Diagnosing and resolving Azure Deployment Environments custom image deployment failures, including common error codes, validation issues, and configuration or image compatibility problems. |
+| Best Practices | L34-L37 | Guidance on structuring ADE catalogs: organizing templates, folders, and repos for reusable, maintainable, and scalable deployment environment definitions. |
+| Limits & Quotas | L39-L42 | How to view current Azure Deployment Environments quotas/capacity, understand default limits, and request increases for org, project, and environment resource usage. |
+| Security | L44-L50 | RBAC and identity for ADE: planning Azure roles/scopes, using Azure CLI auth for REST, configuring managed identities, and assigning built‑in ADE roles and access. |
+| Configuration | L52-L58 | Defining and configuring ADE environment.yaml schemas, environment definitions, and custom container images, plus required CLI environment variables for building and running those images. |
+| Integrations & Coding Patterns | L60-L63 | Using the ADE CLI to build, publish, and manage custom environment images, automate image pipelines, and integrate ADE image workflows into CI/CD and DevOps processes |
+| Deployment | L65-L69 | How to integrate Azure Deployment Environments with CI/CD tools like Azure Pipelines and GitHub Actions, including configuring pipelines to create, update, and delete ADE environments. |
 
 ### Troubleshooting
 | Topic | URL |

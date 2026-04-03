@@ -1,6 +1,6 @@
 ---
 name: azure-service-health
-description: Expert knowledge for Azure Service Health development including troubleshooting, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure Service Health applications. Not for Azure Monitor (use azure-monitor), Azure Reliability (use azure-reliability), Azure Resiliency (use azure-resiliency).
+description: Expert knowledge for Azure Service Health development including troubleshooting, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when configuring Service Health alerts, ARM/Bicep deployments, Resource Graph queries, webhooks, or ITSM integrations, and other Azure Service Health related development tasks. Not for Azure Monitor (use azure-monitor), Azure Reliability (use azure-reliability), Azure Resiliency (use azure-resiliency), Azure Quotas (use azure-quotas).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,12 +19,12 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L34-L38 | Understanding VM Resource Health annotations, causes of degraded/unavailable states, and step-by-step troubleshooting for underlying Azure infrastructure issues |
-| Limits & Quotas | L39-L43 | Details on how long Azure Service Health notifications are kept, their lifecycle stages, and retention behavior for different event types |
-| Security | L44-L53 | Managing Service Health security advisories, RBAC/tenant vs subscription admin access, and routing security notifications to the right users/recipients |
-| Configuration | L54-L65 | Configuring Service/Resource Health alerts and queries using portal, ARM, Bicep, PowerShell, and Resource Graph, plus reference for supported health check resource types. |
-| Integrations & Coding Patterns | L66-L76 | Using APIs, Resource Graph, and webhooks to query Service/Resource Health data and integrate alerts with tools like OpsGenie, PagerDuty, and ServiceNow |
-| Deployment | L77-L80 | Using Azure Policy to create, configure, and manage Service Health alert rules at scale across subscriptions and resource groups |
+| Troubleshooting | L28-L31 | Understanding VM Resource Health annotations, causes of degraded/unavailable states, and step-by-step troubleshooting for underlying Azure infrastructure issues |
+| Limits & Quotas | L33-L36 | Details on how long Azure Service Health notifications are kept, their lifecycle stages, and retention behavior for different event types |
+| Security | L38-L45 | Managing access and roles for Azure Service Health security data: tenant vs subscription admin permissions, RBAC, and how to view and interpret security advisories and health history. |
+| Configuration | L47-L55 | Configuring Azure/Resource Health alerts via ARM, Bicep, and PowerShell, plus using Azure Resource Graph tables and queries to retrieve and automate Service Health data |
+| Integrations & Coding Patterns | L57-L66 | Using APIs, Resource Graph, webhooks, and integrations (OpsGenie, PagerDuty, ServiceNow) to query, route, and automate Azure Service Health and Security advisory alerts. |
+| Deployment | L68-L71 | Using Azure Policy to create, configure, and manage Service Health alert rules at scale across subscriptions and resource groups |
 
 ### Troubleshooting
 | Topic | URL |
@@ -40,23 +40,20 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Topic | URL |
 |-------|-----|
 | Understand tenant admin roles for Service Health access | https://learn.microsoft.com/en-us/azure/service-health/admin-access-reference |
-| Use Health history pane with RBAC for past events | https://learn.microsoft.com/en-us/azure/service-health/health-history-overview |
+| Use Health history and RBAC for Azure Service Health | https://learn.microsoft.com/en-us/azure/service-health/health-history-overview |
 | Configure subscription access for Azure Security advisories | https://learn.microsoft.com/en-us/azure/service-health/security-advisories-add-subscription |
 | Access and interpret Azure Service Health security advisories | https://learn.microsoft.com/en-us/azure/service-health/security-advisories-elevated-access |
-| Route Azure security notifications to correct recipients | https://learn.microsoft.com/en-us/azure/service-health/stay-informed-security |
 | Configure subscription vs tenant admin access in Service Health | https://learn.microsoft.com/en-us/azure/service-health/subscription-vs-tenant |
 
 ### Configuration
 | Topic | URL |
 |-------|-----|
-| Deploy Service Health activity log alerts with ARM templates | https://learn.microsoft.com/en-us/azure/service-health/alerts-activity-log-service-notifications-arm |
-| Define Service Health activity log alerts using Bicep | https://learn.microsoft.com/en-us/azure/service-health/alerts-activity-log-service-notifications-bicep |
-| Configure Service Health alerts for Azure notifications in portal | https://learn.microsoft.com/en-us/azure/service-health/alerts-activity-log-service-notifications-portal |
+| Define Service Health alerts using ARM templates | https://learn.microsoft.com/en-us/azure/service-health/alerts-activity-log-service-notifications-arm |
+| Configure Service Health activity log alerts with Bicep | https://learn.microsoft.com/en-us/azure/service-health/alerts-activity-log-service-notifications-bicep |
 | Understand Azure Resource Graph tables for Service Health | https://learn.microsoft.com/en-us/azure/service-health/azure-resource-graph-overview |
 | Use Azure Resource Graph queries for Service Health data | https://learn.microsoft.com/en-us/azure/service-health/resource-graph-samples |
 | Create Resource Health alert rules using ARM templates | https://learn.microsoft.com/en-us/azure/service-health/resource-health-alert-arm-template-guide |
 | Programmatically create Resource Health alerts with PowerShell and ARM | https://learn.microsoft.com/en-us/azure/service-health/resource-health-alert-powershell-template |
-| Reference health checks for supported Azure Resource Health types | https://learn.microsoft.com/en-us/azure/service-health/resource-health-checks-resource-types |
 
 ### Integrations & Coding Patterns
 | Topic | URL |
@@ -64,10 +61,10 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Access Azure Security advisories via API endpoint | https://learn.microsoft.com/en-us/azure/service-health/access-service-advisories-api |
 | Run Azure Resource Graph queries for Resource Health | https://learn.microsoft.com/en-us/azure/service-health/resource-graph-health-samples |
 | Query Azure Service Health impacted resources with ARG | https://learn.microsoft.com/en-us/azure/service-health/resource-graph-impacted-samples |
-| Integrate Service Health alerts with external systems via webhooks | https://learn.microsoft.com/en-us/azure/service-health/service-health-alert-webhook-guide |
-| Forward Azure Service Health alerts to OpsGenie using webhooks | https://learn.microsoft.com/en-us/azure/service-health/service-health-alert-webhook-opsgenie |
+| Integrate Azure Service Health alerts via webhooks | https://learn.microsoft.com/en-us/azure/service-health/service-health-alert-webhook-guide |
+| Forward Azure Service Health alerts to OpsGenie | https://learn.microsoft.com/en-us/azure/service-health/service-health-alert-webhook-opsgenie |
 | Configure PagerDuty integration for Azure Service Health alerts | https://learn.microsoft.com/en-us/azure/service-health/service-health-alert-webhook-pagerduty |
-| Send Azure Service Health alerts to ServiceNow via webhook | https://learn.microsoft.com/en-us/azure/service-health/service-health-alert-webhook-servicenow |
+| Send Azure Service Health alerts to ServiceNow | https://learn.microsoft.com/en-us/azure/service-health/service-health-alert-webhook-servicenow |
 
 ### Deployment
 | Topic | URL |

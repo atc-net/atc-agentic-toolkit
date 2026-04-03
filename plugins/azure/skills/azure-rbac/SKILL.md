@@ -1,12 +1,12 @@
 ---
 name: azure-rbac
-description: Expert knowledge for Azure Role-based access control development including troubleshooting, best practices, decision making, limits & quotas, security, configuration, and integrations & coding patterns. Use when building, debugging, or optimizing Azure Role-based access control applications. Not for Azure Policy (use azure-policy), Azure Resource Manager (use azure-resource-manager), Azure Security (use azure-security), Azure Lighthouse (use azure-lighthouse).
+description: Expert knowledge for Azure Role-based access control development including troubleshooting, best practices, decision making, limits & quotas, security, configuration, and integrations & coding patterns. Use when managing Azure RBAC roles, ABAC conditions, deny assignments, PIM, policy integration, or role APIs, and other Azure Role-based access control related development tasks. Not for Azure Active Directory B2C (use azure-active-directory-b2c), Azure Information Protection (use azure-information-protection), Azure Policy (use azure-policy), Azure Security (use azure-security).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
-# Azure Role-based access control Skill
+# Azure RBAC Skill
 
-This skill provides expert guidance for Azure Role-based access control. Covers troubleshooting, best practices, decision making, limits & quotas, security, configuration, and integrations & coding patterns. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure RBAC. Covers troubleshooting, best practices, decision making, limits & quotas, security, configuration, and integrations & coding patterns. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
@@ -19,13 +19,13 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L35-L43 | Diagnosing and fixing Azure RBAC issues: access denials, role/condition misconfigurations, role limit errors, and auditing role/condition changes via Activity Log |
-| Best Practices | L44-L50 | Security-focused guidance on designing Azure RBAC: choosing scopes, delegating access with ABAC conditions, and applying least privilege and separation-of-duties best practices. |
-| Decision Making | L51-L58 | Guidance on choosing and migrating role models: moving from classic admins to RBAC, scaling with ABAC, selecting Azure vs Entra vs classic roles, and transferring subscriptions between directories. |
-| Limits & Quotas | L59-L64 | Designing and managing Azure RBAC custom roles, including understanding role structure, permissions, and step-by-step creation using the Azure portal |
-| Security | L65-L129 | Managing and securing Azure RBAC: built‑in security roles, deny assignments, conditional/ABAC access, PIM, privileged access alerts, and policy-based RBAC governance. |
-| Configuration | L130-L141 | Configuring Azure RBAC/ABAC: prerequisites, condition syntax, role assignments, built‑in vs custom roles, and creating/inspecting custom role definitions via CLI and PowerShell |
-| Integrations & Coding Patterns | L142-L158 | How to assign, list, and query Azure RBAC role assignments using portal, CLI, PowerShell, Bicep/ARM templates, REST API, and managed identities |
+| Troubleshooting | L29-L36 | Diagnosing and fixing Azure RBAC issues: access denials, role/condition misconfigurations, role limit errors, and auditing role/condition changes via Activity Log |
+| Best Practices | L38-L43 | Security-focused guidance on designing Azure RBAC: choosing scopes, delegating access with ABAC conditions, and applying least privilege and separation-of-duties best practices. |
+| Decision Making | L45-L51 | Guidance on choosing and migrating role models: moving from classic admins to RBAC, scaling with ABAC, selecting Azure vs Entra vs classic roles, and transferring subscriptions between directories. |
+| Limits & Quotas | L53-L57 | Designing and managing Azure RBAC custom roles, including understanding role structure, permissions, and step-by-step creation using the Azure portal |
+| Security | L59-L123 | Azure RBAC roles, permissions, and conditions: built‑in role references by service, custom roles, ABAC, deny assignments, PIM, policy integration, and secure delegation of access. |
+| Configuration | L125-L135 | Configuring Azure RBAC/ABAC: prerequisites, condition syntax, role assignments, built‑in vs custom roles, and creating/inspecting custom role definitions via CLI and PowerShell |
+| Integrations & Coding Patterns | L137-L152 | How to assign, list, and query Azure RBAC role assignments using portal, CLI, PowerShell, Bicep/ARM templates, REST API, and managed identities |
 
 ### Troubleshooting
 | Topic | URL |
@@ -63,7 +63,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Reference for all Azure RBAC built-in roles | https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles |
 | Azure RBAC AI and ML built-in roles reference | https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/ai-machine-learning |
 | Azure RBAC analytics built-in roles reference | https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/analytics |
-| Azure RBAC compute built-in roles reference | https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/compute |
+| Understand Azure RBAC built-in compute roles and permissions | https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/compute |
 | Azure RBAC containers built-in roles reference | https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/containers |
 | Azure RBAC databases built-in roles reference | https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/databases |
 | Azure RBAC DevOps built-in roles reference | https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/devops |
@@ -97,7 +97,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Elevate Global Administrator access to all subscriptions | https://learn.microsoft.com/en-us/azure/role-based-access-control/elevate-access-global-admin |
 | Use AI and machine learning RBAC permissions | https://learn.microsoft.com/en-us/azure/role-based-access-control/permissions/ai-machine-learning |
 | Use Analytics category Azure RBAC permissions | https://learn.microsoft.com/en-us/azure/role-based-access-control/permissions/analytics |
-| Use Compute category Azure RBAC permissions | https://learn.microsoft.com/en-us/azure/role-based-access-control/permissions/compute |
+| Use Azure Compute RBAC permissions for custom roles | https://learn.microsoft.com/en-us/azure/role-based-access-control/permissions/compute |
 | Use Containers category Azure RBAC permissions | https://learn.microsoft.com/en-us/azure/role-based-access-control/permissions/containers |
 | Use Databases category Azure RBAC permissions | https://learn.microsoft.com/en-us/azure/role-based-access-control/permissions/databases |
 | Use DevOps category Azure RBAC permissions | https://learn.microsoft.com/en-us/azure/role-based-access-control/permissions/devops |
@@ -119,6 +119,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Alert on privileged Azure RBAC role assignments | https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-alert |
 | Activate eligible Azure RBAC roles in the portal | https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-eligible-activate |
 | Grant Azure RBAC access to external B2B users | https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-external-users |
+| Assign Azure RBAC roles in Azure portal | https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal |
 | Assign subscription Owner with constrained RBAC conditions | https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal-subscription-admin |
 | Apply Azure Policy compliance controls to Azure RBAC | https://learn.microsoft.com/en-us/azure/role-based-access-control/security-controls-policy |
 
@@ -144,7 +145,6 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | View Azure RBAC role assignments in the portal | https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-list-portal |
 | List Azure RBAC role assignments using PowerShell | https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-list-powershell |
 | Query Azure RBAC role assignments using REST API | https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-list-rest |
-| Assign Azure RBAC roles using the Azure portal | https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal |
 | Assign Azure RBAC roles starting from a managed identity | https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal-managed-identity |
 | Assign Azure RBAC roles via PowerShell for all principals | https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-powershell |
 | Assign Azure RBAC roles through the REST API | https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-rest |

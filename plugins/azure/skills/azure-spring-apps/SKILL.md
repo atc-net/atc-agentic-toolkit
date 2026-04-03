@@ -1,6 +1,6 @@
 ---
 name: azure-spring-apps
-description: Expert knowledge for Azure Spring Apps development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building, debugging, or optimizing Azure Spring Apps applications. Not for Azure App Service (use azure-app-service), Azure Kubernetes Service (AKS) (use azure-kubernetes-service), Azure Container Apps (use azure-container-apps).
+description: Expert knowledge for Azure Spring Apps development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when configuring ASA networking/security, Tanzu tools, observability/APM, CI/CD deployments, or blue‑green releases, and other Azure Spring Apps related development tasks. Not for Azure App Service (use azure-app-service), Azure Container Apps (use azure-container-apps), Azure Kubernetes Service (AKS) (use azure-kubernetes-service), Azure Functions (use azure-functions).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,15 +19,15 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L37-L54 | Diagnosing and fixing Azure Spring Apps issues: memory/OOM, dumps/JFR, remote debugging, VNet connectivity, logs/diagnostics, exit codes, build failures, and Spring Cloud Gateway. |
-| Best Practices | L55-L60 | Guidance on production-ready monitoring and diagnostics in Azure Spring Apps, including observability setup, metrics/logs/traces, and configuring JVM diagnostic and debugging options. |
-| Decision Making | L61-L81 | Guidance on choosing Azure Spring Apps plans and migrating Spring workloads, configs, gateways, and networking from ASA to Enterprise, AKS, or Container Apps, including logging and Tanzu replacements |
-| Architecture & Design Patterns | L82-L89 | Deployment and resiliency patterns for Azure Spring Apps: zero-downtime and blue-green releases, load balancer integration, zone redundancy, and disaster recovery design. |
-| Limits & Quotas | L90-L100 | Version/Java support, service-specific limits/quotas, storage caps, VNet requirements, and guidance for scaling Azure Spring Apps Enterprise (instances, large CPU/memory apps). |
-| Security | L101-L127 | Securing Azure Spring Apps: TLS/SSL, custom domains, App Gateway, Entra ID SSO/RBAC, managed identities (Key Vault, SQL, Functions), and Azure Policy/regulatory controls. |
-| Configuration | L128-L167 | Configuring Azure Spring Apps runtime: networking, ingress/egress, DNS, storage, logging/metrics, APM, health probes, scaling, gateways, Tanzu tools, and enterprise job/lifecycle settings. |
-| Integrations & Coding Patterns | L168-L192 | Integrating Azure Spring Apps with databases, Redis, Key Vault, gRPC, Tanzu tools, and APM/monitoring (App Insights, AppDynamics, Dynatrace, Elastic, New Relic) and collecting metrics/logs. |
-| Deployment | L193-L212 | Deploying Azure Spring Apps: CI/CD with GitHub/Azure Pipelines/Maven/CLI, container & polyglot deployments, VNet/ARM/Bicep/Terraform setup, blue‑green staging, and region moves. |
+| Troubleshooting | L31-L47 | Diagnosing and fixing Azure Spring Apps issues: memory/OOM, dumps/JFR, remote debugging, VNet connectivity, logs/diagnostics, exit codes, build failures, and Spring Cloud Gateway. |
+| Best Practices | L49-L53 | Guidance on production-ready monitoring and diagnostics in Azure Spring Apps, including observability setup, metrics/logs/traces, and configuring JVM diagnostic and debugging options. |
+| Decision Making | L55-L74 | Guidance on choosing Azure Spring Apps plans and migrating Spring workloads, configs, gateways, and networking from ASA to Enterprise, AKS, or Container Apps, including logging and Tanzu replacements |
+| Architecture & Design Patterns | L76-L82 | Deployment and resiliency patterns for Azure Spring Apps: zero-downtime and blue-green releases, load balancer integration, zone redundancy, and disaster recovery design. |
+| Limits & Quotas | L84-L93 | Version/Java support, service-specific limits/quotas, storage caps, VNet requirements, and guidance for scaling Azure Spring Apps Enterprise (instances, large CPU/memory apps). |
+| Security | L95-L120 | Securing Azure Spring Apps: TLS/SSL, custom domains, App Gateway, Entra ID SSO/RBAC, managed identities (Key Vault, SQL, Functions), and Azure Policy/regulatory controls. |
+| Configuration | L122-L160 | Configuring Azure Spring Apps runtime: networking, ingress/egress, DNS, storage, logging/metrics, APM, health probes, scaling, gateways, Tanzu tools, and enterprise job/lifecycle settings. |
+| Integrations & Coding Patterns | L162-L185 | Integrating Azure Spring Apps with databases, Redis, Key Vault, gRPC, Tanzu tools, and APM/monitoring (App Insights, AppDynamics, Dynatrace, Elastic, New Relic) and collecting metrics/logs. |
+| Deployment | L187-L206 | Deploying Azure Spring Apps: CI/CD with GitHub/Azure Pipelines/Maven/CLI, container & polyglot deployments, VNet/ARM/Bicep/Terraform setup, blue‑green staging, and region moves. |
 
 ### Troubleshooting
 | Topic | URL |

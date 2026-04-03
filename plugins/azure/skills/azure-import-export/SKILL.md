@@ -1,6 +1,6 @@
 ---
 name: azure-import-export
-description: Expert knowledge for Azure Import Export development including troubleshooting, limits & quotas, and security. Use when building, debugging, or optimizing Azure Import Export applications. Not for Azure Data Box (use azure-data-box-family), Azure Blob Storage (use azure-blob-storage), Azure Files (use azure-files).
+description: Expert knowledge for Azure Import Export development including troubleshooting, limits & quotas, and security. Use when setting CMK via Key Vault, validating drive/OS support, or debugging Import/Export job and log issues, and other Azure Import Export related development tasks. Not for Azure Data Box (use azure-data-box-family), Azure Blob Storage (use azure-blob-storage), Azure Files (use azure-files).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,9 +19,9 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L31-L38 | Diagnosing and fixing Azure Import/Export job failures, reading Import/Export logs, and repairing failed v1 import/export jobs and copy issues. |
-| Limits & Quotas | L39-L43 | Hardware specs, supported OS/file systems, drive types, and software prerequisites needed before using Azure Import/Export for data transfer. |
-| Security | L44-L47 | Configuring customer-managed encryption keys (CMK) for Azure Import/Export jobs, including key setup, permissions, and using Azure Key Vault for data-at-rest security. |
+| Troubleshooting | L25-L31 | Diagnosing and fixing Azure Import/Export job failures, reading Import/Export logs, and repairing failed v1 import/export jobs and copy issues. |
+| Limits & Quotas | L33-L36 | Hardware specs, supported OS/file systems, drive types, and software prerequisites needed before using Azure Import/Export for data transfer. |
+| Security | L38-L41 | Configuring customer-managed encryption keys (CMK) for Azure Import/Export jobs, including key setup, permissions, and using Azure Key Vault for data-at-rest security. |
 
 ### Troubleshooting
 | Topic | URL |

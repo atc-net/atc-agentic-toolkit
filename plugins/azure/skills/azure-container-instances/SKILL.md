@@ -1,6 +1,6 @@
 ---
 name: azure-container-instances
-description: Expert knowledge for Azure Container Instances development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, and deployment. Use when building, debugging, or optimizing Azure Container Instances applications. Not for Azure Container Apps (use azure-container-apps), Azure Kubernetes Service (AKS) (use azure-kubernetes-service), Azure App Service (use azure-app-service), Azure Virtual Machines (use azure-virtual-machines).
+description: Expert knowledge for Azure Container Instances development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, and deployment. Use when configuring ACI networking, standby pools, GitHub Actions deploys, Spot containers, or GPU workloads, and other Azure Container Instances related development tasks. Not for Azure Container Apps (use azure-container-apps), Azure Kubernetes Service (AKS) (use azure-kubernetes-service), Azure App Service (use azure-app-service), Azure Virtual Machines (use azure-virtual-machines).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,20 +19,21 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L36-L41 | Diagnosing ACI deployment/runtime failures by viewing container logs/events, interpreting errors, and fixing common issues with images, networking, resources, and configuration. |
-| Best Practices | L42-L46 | Guidance on designing and running ACI workloads reliably: resource sizing, networking, storage, security, scaling, image management, and operational best practices. |
-| Decision Making | L47-L52 | Guidance on cost-optimizing ACI with Spot containers and using prediction-based sizing to configure and right-size Azure Container Instances standby pools. |
-| Architecture & Design Patterns | L53-L59 | Design patterns for giving ACI containers static inbound/outbound IPs using Application Gateway, firewalls, and NAT Gateway for controlled, predictable network egress/ingress. |
-| Limits & Quotas | L60-L67 | ACI CPU/memory limits, regional quota checks, standby pool caps, and VNet-related deployment constraints and planning for container instances |
-| Security | L68-L82 | Securing Azure Container Instances: TLS/HTTPS setup, image and secret protection, managed identities, RBAC, DNS safety, ACR auth, CMK encryption, and Azure Policy enforcement. |
-| Configuration | L83-L116 | Configuring ACI container groups: YAML, env vars, DNS, volumes, probes, GPUs, restart/entrypoint, standby pools, networking, lifecycle, logging, and monitoring. |
-| Deployment | L117-L120 | Using GitHub Actions to build, push, and automatically deploy container images to Azure Container Instances, including workflow YAML setup and authentication configuration. |
+| Troubleshooting | L30-L35 | Diagnosing ACI issues by viewing logs/events, understanding provisioning/runtime states, and troubleshooting common deployment, startup, and container runtime failures. |
+| Best Practices | L37-L40 | Guidance on designing and running ACI workloads reliably: resource sizing, networking, storage, security, scaling, image management, and operational best practices. |
+| Decision Making | L42-L46 | Guidance on cost-optimizing ACI with Spot containers and using prediction-based sizing to configure and right-size Azure Container Instances standby pools. |
+| Architecture & Design Patterns | L48-L53 | Design patterns for giving ACI containers static inbound/outbound IPs using Application Gateway, firewalls, and NAT Gateway for controlled, predictable network egress/ingress. |
+| Limits & Quotas | L55-L61 | ACI limits on CPU/memory (big containers), regional quota checks, standby pool constraints, and networking limits when using virtual networks |
+| Security | L63-L76 | Securing Azure Container Instances: TLS/HTTPS setup, image and secret protection, managed identities, RBAC, DNS safety, ACR auth, CMK encryption, and Azure Policy enforcement. |
+| Configuration | L78-L109 | Configuring ACI container groups: YAML, env vars, DNS, volumes, probes, GPUs, restart/entrypoint, standby pools, networking, lifecycle, logging, and monitoring. |
+| Deployment | L111-L114 | Using GitHub Actions to build, push, and automatically deploy container images to Azure Container Instances, including workflow YAML setup and authentication configuration. |
 
 ### Troubleshooting
 | Topic | URL |
 |-------|-----|
 | Retrieve Azure Container Instances logs and events for troubleshooting | https://learn.microsoft.com/en-us/azure/container-instances/container-instances-get-logs |
 | Troubleshoot common deployment and runtime issues in Azure Container Instances | https://learn.microsoft.com/en-us/azure/container-instances/container-instances-troubleshooting |
+| Interpret Azure Container Instances provisioning and runtime states | https://learn.microsoft.com/en-us/azure/container-instances/container-state |
 
 ### Best Practices
 | Topic | URL |
@@ -58,7 +59,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Use Big Containers with ACI vCPU and memory limits | https://learn.microsoft.com/en-us/azure/container-instances/big-containers |
 | Check ACI resource availability and quota limits by region | https://learn.microsoft.com/en-us/azure/container-instances/container-instances-resource-and-quota-limits |
 | FAQ and limits for Azure Container Instances standby pools | https://learn.microsoft.com/en-us/azure/container-instances/container-instances-standby-pool-faq |
-| Plan ACI deployments into virtual networks with constraints | https://learn.microsoft.com/en-us/azure/container-instances/container-instances-virtual-network-concepts |
+| Use Azure Container Instances with virtual networks | https://learn.microsoft.com/en-us/azure/container-instances/container-instances-virtual-network-concepts |
 
 ### Security
 | Topic | URL |
@@ -103,7 +104,6 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Mount Azure Files volumes in Azure Container Instances | https://learn.microsoft.com/en-us/azure/container-instances/container-instances-volume-azure-files |
 | Use emptyDir volumes to share data in Azure Container Instances | https://learn.microsoft.com/en-us/azure/container-instances/container-instances-volume-emptydir |
 | Mount gitRepo volumes in Azure Container Instances | https://learn.microsoft.com/en-us/azure/container-instances/container-instances-volume-gitrepo |
-| Understand Azure Container Instances provisioning and runtime states | https://learn.microsoft.com/en-us/azure/container-instances/container-state |
 | Configure monitoring and alerts for Azure Container Instances | https://learn.microsoft.com/en-us/azure/container-instances/monitor-azure-container-instances |
 | Configure monitoring and alerts for Azure Container Instances | https://learn.microsoft.com/en-us/azure/container-instances/monitor-azure-container-instances |
 | Monitoring data reference for Azure Container Instances | https://learn.microsoft.com/en-us/azure/container-instances/monitor-azure-container-instances-reference |

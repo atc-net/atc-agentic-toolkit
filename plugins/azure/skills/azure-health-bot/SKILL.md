@@ -1,6 +1,6 @@
 ---
 name: azure-health-bot
-description: Expert knowledge for Azure Health Bot development including best practices, decision making, architecture & design patterns, security, configuration, and integrations & coding patterns. Use when building, debugging, or optimizing Azure Health Bot applications. Not for Azure AI Bot Service (use azure-bot-service), Azure Communication Services (use azure-communication-services), Azure Health Data Services (use azure-health-data-services).
+description: Expert knowledge for Azure Health Bot development including best practices, decision making, architecture & design patterns, security, configuration, and integrations & coding patterns. Use when configuring Health Bot channels, web chat/voice embeds, management APIs, orchestrator flows, or cost estimation, and other Azure Health Bot related development tasks. Not for Azure AI Bot Service (use azure-bot-service), Azure Communication Services (use azure-communication-services), Azure Health Data Services (use azure-health-data-services).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,12 +19,12 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Best Practices | L34-L38 | Guidance on designing robust error-handling flows in Azure Health Bot scenarios, including detecting failures, user-friendly recovery paths, and safe handling of clinical conversation errors. |
-| Decision Making | L39-L43 | Estimating Azure Health Bot costs based on action usage, understanding pricing drivers, and forecasting expenses for different bot scenarios. |
-| Architecture & Design Patterns | L44-L48 | Designing bot architectures using the healthcare orchestrator to route between plugins and flows, manage conversation logic, and structure complex healthcare scenarios |
-| Security | L49-L61 | Configuring security, privacy, and compliance: consent, data export/deletion, auth, encryption keys, abuse safeguards, secrets/keys, and portal access control for healthcare bots. |
-| Configuration | L62-L79 | Configuring bot behavior and conversations: welcome/help messages, feedback, interruptions, human/Teams handoff, terms links, and managing scenarios, variables, cards, and versions. |
-| Integrations & Coding Patterns | L80-L102 | Connecting Health Bot/Agent to channels (Teams, SMS, WhatsApp, Facebook), embedding web chat/voice, calling external APIs/OpenAPI, telemetry, auth, management APIs, and proactive scenario invocation |
+| Best Practices | L28-L31 | Guidance on designing robust error-handling flows in Azure Health Bot scenarios, including detecting failures, user-friendly recovery paths, and safe handling of clinical conversation errors. |
+| Decision Making | L33-L36 | Estimating Azure Health Bot costs based on action usage, understanding pricing drivers, and forecasting expenses for different bot scenarios. |
+| Architecture & Design Patterns | L38-L41 | Designing bot architectures using the healthcare orchestrator to route between plugins and flows, manage conversation logic, and structure complex healthcare scenarios |
+| Security | L43-L54 | Configuring security, privacy, and compliance: consent, data export/deletion, auth, encryption keys, abuse safeguards, secrets/keys, and portal access control for healthcare bots. |
+| Configuration | L56-L72 | Configuring bot behavior and conversations: welcome/help messages, feedback, interruptions, human/Teams handoff, terms links, and managing scenarios, variables, cards, and versions. |
+| Integrations & Coding Patterns | L74-L96 | Connecting Health Bot/Agent to channels (Teams, SMS, WhatsApp, Facebook), embedding web chat/voice, calling external APIs/OpenAPI, telemetry, auth, management APIs, and proactive scenario invocation |
 
 ### Best Practices
 | Topic | URL |

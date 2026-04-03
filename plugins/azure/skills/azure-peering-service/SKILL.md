@@ -1,6 +1,6 @@
 ---
 name: azure-peering-service
-description: Expert knowledge for Azure Peering Service development including best practices. Use when building, debugging, or optimizing Azure Peering Service applications. Not for Azure Internet Peering (use azure-internet-peering), Azure Virtual Network (use azure-virtual-network), Azure Virtual WAN (use azure-virtual-wan), Azure ExpressRoute (use azure-expressroute).
+description: Expert knowledge for Azure Peering Service development including best practices. Use when designing Peering Service prefixes, routing policies, prefix validation rules, or connectivity constraints, and other Azure Peering Service related development tasks. Not for Azure Internet Peering (use azure-internet-peering), Azure Virtual Network (use azure-virtual-network), Azure Virtual WAN (use azure-virtual-wan), Azure ExpressRoute (use azure-expressroute).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -19,7 +19,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Best Practices | L29-L32 | Technical requirements and best practices for configuring Azure Peering Service prefixes, including routing, prefix validation, and connectivity constraints. |
+| Best Practices | L23-L26 | Technical requirements and best practices for configuring Azure Peering Service prefixes, including routing, prefix validation, and connectivity constraints. |
 
 ### Best Practices
 | Topic | URL |
