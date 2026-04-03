@@ -1,6 +1,6 @@
 {
   "name": "common",
-  "version": "2.2.0",
-  "description": "Common base skills including documentation generators, implementation planning, and utility tools",
+  "version": "2.3.0",
+  "description": "Common base skills including documentation generators, implementation planning, diagramming, and utility tools",
   "skills": "./skills/"
 }
