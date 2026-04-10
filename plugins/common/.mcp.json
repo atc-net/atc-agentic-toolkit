@@ -14,10 +14,6 @@
       "type": "stdio",
       "command": "npx",
       "args": ["-y", "mcp-mermaid"]
-    },
-    "excalidraw": {
-      "type": "remote",
-      "url": "https://mcp.excalidraw.com"
     }
   }
 }

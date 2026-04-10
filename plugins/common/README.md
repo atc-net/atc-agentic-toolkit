@@ -40,15 +40,6 @@ Requires: Node.js
 
 Source: [mcp-mermaid](https://www.npmjs.com/package/mcp-mermaid)
 
-### Excalidraw
-
-Hand-drawn style whiteboard and diagramming with real-time streaming.
-
-- Create and edit diagrams with natural language
-- Interactive fullscreen editing with viewport control
-
-Source: [excalidraw-mcp](https://github.com/excalidraw/excalidraw-mcp)
-
 ## Skills
 
 ### interview
@@ -78,6 +69,10 @@ Update an existing llms.txt file to reflect documentation changes.
 ### repo-story-time
 
 Generate a comprehensive repository summary and narrative from commit history.
+
+### excalidraw
+
+Create, edit, and export Excalidraw diagrams using the bundled MCP server or direct JSON generation.
 
 ### markdown-to-html
 
