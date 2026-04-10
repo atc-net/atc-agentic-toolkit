@@ -63,9 +63,9 @@ Produce a markdown summary with these sections:
 
 #### Required Sections
 
-**Summary** - A brief overview (2-4 sentences) of what this PR accomplishes and why.
+`# Summary` — A brief overview of what this PR accomplishes and why, written as **bullet points** (not a paragraph). Each bullet should be a single short line. Must be rendered as a markdown heading with a single `#`.
 
-**Changes** - Categorized list of all changes. Group and prefix with emojis:
+`# Changes` — Categorized list of all changes. Must be rendered as a markdown heading with a single `#`. Group and prefix with emojis:
 
 | Category | Emoji | When to Use |
 |----------|-------|-------------|
@@ -84,25 +84,37 @@ Produce a markdown summary with these sections:
 
 #### Optional Sections (include when relevant)
 
-**Breaking Changes** - Detail any breaking changes with migration steps.
+`# Breaking Changes` — Detail any breaking changes with migration steps.
 
-**Notes** - Any additional context reviewers should know.
+`# Notes` — Any additional context reviewers should know.
 
 ### Step 6: Output Format
 
-Present the output as a clean markdown block that can be directly copy-pasted:
+Wrap the entire PR suggestion inside a **markdown code fence** (triple backticks). This prevents the terminal from rendering `#` signs as headings — the user needs them as literal characters for copy-paste into a PR description.
 
-```markdown
-# PR Title Here
+**Every line must be self-contained — never break a sentence or bullet across multiple lines.** The output is displayed in a terminal code block. If a line exceeds the terminal width, the terminal soft-wraps it and injects whitespace. When the user copies that text, those extra spaces and line breaks come along, requiring manual cleanup. To prevent this:
 
-## Summary
+- Use bullet points everywhere (including Summary) — not flowing paragraphs
+- Keep each bullet under 72 characters
+- If a bullet is too long, split into two separate bullets or shorten the wording
+- Never continue a bullet point on a second line
 
-Brief overview of the PR purpose and motivation.
+Use this structure:
 
-## Changes
+````
+```
+PR Title: <the suggested title>
+
+# Summary
+
+- Improve git skills for staged-only changes
+- Fix copy-paste issues in PR output format
+- Bump git plugin version to 3.1.0
+
+# Changes
 
 ### :sparkles: Features
-- Add new authentication endpoint for OAuth2 flow
+- Add new auth endpoint for OAuth2 flow
 - Implement token refresh mechanism
 
 ### :bug: Fixes
@@ -116,6 +128,7 @@ Brief overview of the PR purpose and motivation.
 ### :memo: Documentation
 - Update API reference for new auth endpoints
 ```
+````
 
 ## Rules
 
@@ -133,6 +146,9 @@ Brief overview of the PR purpose and motivation.
 - Implementation details that are obvious from the code
 - File-by-file listings (summarize by feature/area instead)
 - Empty categories (only show categories that have changes)
+- Flowing paragraphs — use bullet points for everything
+- Lines longer than 72 characters — shorten or split
+- Multi-line bullets — each bullet must be one line only
 
 ## Guidelines
 
