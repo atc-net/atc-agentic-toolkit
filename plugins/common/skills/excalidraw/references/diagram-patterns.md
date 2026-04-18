@@ -2,6 +2,17 @@
 
 Patterns and techniques for creating beautiful, professional diagrams based on Excalidraw best practices.
 
+## Contents
+
+- [Flowcharts](#flowcharts)
+- [Sequence Diagrams](#sequence-diagrams)
+- [Mind Maps](#mind-maps)
+- [Software Architecture Diagrams](#software-architecture-diagrams)
+- [Data Flow Diagrams (DFD)](#data-flow-diagrams-dfd)
+- [Entity Relationship Diagrams](#entity-relationship-diagrams)
+- [Common Professional Patterns](#common-professional-patterns)
+- [Quick Reference: Diagram Types](#quick-reference-diagram-types)
+
 ## Flowcharts
 
 ### Standard Flowchart Symbols

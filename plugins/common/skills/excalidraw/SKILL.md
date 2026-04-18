@@ -20,7 +20,9 @@ This skill includes detailed reference files. Read them when you need deeper gui
 | Reference | When to read |
 |-----------|-------------|
 | [references/element-reference.md](references/element-reference.md) | Need exact properties for a specific element type (text fields, arrow points, image embedding, frames, groups, freedraw) |
-| [references/diagram-patterns.md](references/diagram-patterns.md) | Building a flowchart, sequence diagram, mind map, architecture diagram, ERD, or DFD — includes layout patterns, color schemes, and shape conventions |
+| [references/diagram-patterns.md](references/diagram-patterns.md) | Building a flowchart, sequence diagram, mind map, architecture diagram, ERD, or DFD — includes layout patterns and shape conventions |
+| [references/color-palette.md](references/color-palette.md) | Choosing colors — semantic fills/strokes, text hierarchy, evidence-artifact palette. **Single source of truth for all colors.** |
+| [references/design-methodology.md](references/design-methodology.md) | Diagram needs to teach or argue (technical architectures, tutorials, documentation). Covers evidence artifacts, multi-zoom, visual patterns, container discipline, and section-by-section authoring for large diagrams |
 
 For most simple diagrams the information in this SKILL.md is sufficient. Consult the references for complex or specific diagram types.
 
@@ -187,9 +189,13 @@ Specify changes ------------> Apply changes to JSON
 ### Styling
 
 - Use `roughness: 0` for technical/formal diagrams (hand-drawn feel only when explicitly requested)
-- Use `fontFamily: 2` (Helvetica) for professional diagrams, `1` (Virgil) for casual/sketch
-- Stick to Excalidraw's built-in colors — avoid custom hex values
+- Use `fontFamily: 2` (Helvetica) for professional diagrams, `1` (Virgil) for casual/sketch, `3` (Cascadia) for code-heavy diagrams
+- Pull colors from [`references/color-palette.md`](references/color-palette.md) — don't invent ad-hoc hex values. Edit that file to customize for a brand.
 - For containers with children, use `opacity: 25-40` on the background to avoid obscuring contents
+
+### Large Diagrams
+
+For comprehensive/technical diagrams that would exceed a single output response, build section by section instead of all at once — see the *Section-by-Section for Large Diagrams* section in [`references/design-methodology.md`](references/design-methodology.md).
 
 ### Font Sizing
 
@@ -207,9 +213,41 @@ Calculate width: `max(160, charCount * 9)` for Latin text. Height: 60px for sing
 
 ---
 
+## Render & Validate
+
+You cannot judge a diagram from JSON alone. For anything beyond a trivial sketch, render the file to PNG and read the image back so you can see what you produced.
+
+### Running the renderer
+
+From the skill's `scripts/` directory:
+
+```bash
+python render_excalidraw.py <path-to-file.excalidraw>
+```
+
+The PNG is written next to the `.excalidraw` file. **Use the Read tool on the PNG** to actually see the result — the JSON output alone doesn't tell you whether text is clipped, arrows overlap shapes, or spacing is unbalanced.
+
+### First-time setup
+
+```bash
+pip install -r requirements.txt
+playwright install chromium
+```
+
+Both commands run from the skill's `scripts/` directory. Python 3.11+ is required.
+
+### The render-view-fix loop
+
+After rendering:
+
+1. **Audit against intent** — does the structure match what you designed? Does the eye flow in the intended order? Is hierarchy correct (hero elements dominant)?
+2. **Check for visual defects** — text clipped or overflowing, shapes overlapping, arrows crossing through elements or landing in empty space, uneven spacing, whitespace lopsided between sections, text too small.
+3. **Fix** — widen containers when text is clipped, adjust x/y for spacing, add waypoints to arrow `points` arrays to route around elements, rebalance sizes across sections.
+4. **Re-render, re-read, repeat.** Typically 2–4 iterations. Don't stop after one pass just because nothing is broken — improve composition if it can be improved.
+
 ## Exporting
 
-Drag and drop any `.excalidraw` file into [excalidraw.com](https://excalidraw.com) to open, edit, and export to PNG/SVG.
+Drag and drop any `.excalidraw` file into [excalidraw.com](https://excalidraw.com) to open, edit, and export to PNG/SVG. Or use the renderer above for programmatic PNG export.
 
 ---
 

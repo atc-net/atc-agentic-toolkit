@@ -4,6 +4,21 @@ Complete property reference for all Excalidraw element types.
 
 > **Note:** IDs in examples below are simplified for readability. In real diagrams, use random nanoid-style strings (e.g., `"V1StGXR8_Z5jdHi6B-myT"`), not sequential names like `"rect-1"`.
 
+## Contents
+
+- [Common Properties (All Elements)](#common-properties-all-elements)
+- [Rectangle](#rectangle)
+- [Ellipse](#ellipse)
+- [Diamond](#diamond)
+- [Text](#text)
+- [Arrow](#arrow)
+- [Line](#line)
+- [Freedraw](#freedraw)
+- [Frame](#frame)
+- [Image](#image)
+- [Bound Elements](#bound-elements)
+- [Groups](#groups)
+
 ## Common Properties (All Elements)
 
 Every element must include these properties:
