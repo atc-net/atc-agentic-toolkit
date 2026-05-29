@@ -200,6 +200,7 @@ git --version       # Should show Git version
 
 ### 📖 Reference
 
+- [.claude/ Folder Structure](docs/reference/claude-folder-structure.md) - Every canonical file Claude Code reads
 - [Plugin Structure](docs/reference/plugin-structure.md) - Directory layout
 - [Skill Anatomy](docs/reference/skill-anatomy.md) - SKILL.md format
 - [Marketplace Config](docs/reference/marketplace-config.md) - marketplace.json schema
