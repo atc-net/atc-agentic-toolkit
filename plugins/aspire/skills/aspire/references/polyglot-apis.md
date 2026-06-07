@@ -114,6 +114,16 @@ Chaining methods:
 
 **`AddNextJsApp(name, appDirectory)`** — Next.js with run/publish defaults. Marked `[Experimental]`; in C# AppHosts suppress `ASPIREJAVASCRIPT001`. Requires `output: "standalone"` in `next.config.*` for publish (opt out with `.DisableBuildValidation()`).
 
+**`.WithBrowserLogs()` (browser console + screenshots, 13.3+).** Attaches a tracked Chromium session to any resource that exposes an HTTP/HTTPS endpoint (not just JS frontends). Browser console logs, errors, and network events stream into the resource's log view in the dashboard, and you can capture screenshots as command artifacts. Ships in the `Aspire.Hosting.Browsers` package (`aspire add browsers`). The API is experimental — in C# AppHosts suppress `ASPIREBROWSERLOGS001`.
+
+```csharp
+#pragma warning disable ASPIREBROWSERLOGS001
+builder.AddViteApp("web", "../frontend")
+    .WithBrowserLogs(browser: "msedge", userDataMode: BrowserUserDataMode.Isolated);
+```
+
+> This is distinct from **browser telemetry** (the OpenTelemetry JS SDK sending traces/metrics from inside the app — see [Dashboard](dashboard.md)). The two can be used together.
+
 **JS/TS service discovery:** Environment variables are injected. Use `process.env`:
 ```javascript
 const redisUrl = process.env.ConnectionStrings__cache;

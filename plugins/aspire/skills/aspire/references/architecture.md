@@ -28,6 +28,21 @@ The DCP is the **runtime engine** that Aspire uses in `aspire start` / `aspire r
 
 The Kubernetes-compatible API means Aspire understands the same resource abstractions, but DCP is **not** a Kubernetes distribution — it's a lightweight local runtime.
 
+### CLI backchannel (local-only)
+
+When you run `aspire start` / `aspire run`, the CLI connects to the running AppHost over a **local
+backchannel** (an on-machine IPC channel). This is how `aspire describe`, `aspire wait`, `aspire logs`,
+`aspire otel`, `aspire resource`, and `aspire export` reach a running app.
+
+Consequences:
+
+- The backchannel is **local only** — these commands work against an AppHost running on your machine, not
+  against a **deployed** app. For deployed apps, use platform tooling (`kubectl`, `az containerapp logs`,
+  Application Insights) — see [Troubleshooting → Local vs. deployed diagnostics](troubleshooting.md).
+- The one exception is a **standalone or remote dashboard**: `aspire otel` and `aspire export` accept
+  `--dashboard-url <url>` (plus `--api-key` for ApiKey-secured dashboards) to query it over its telemetry
+  API instead of the local backchannel.
+
 ---
 
 ## Resource Model
