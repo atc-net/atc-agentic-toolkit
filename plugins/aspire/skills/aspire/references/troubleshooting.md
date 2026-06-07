@@ -29,6 +29,8 @@ These codes indicate usage of experimental/preview APIs. They may require `#prag
 | ASPIRE_HOSTINGX_0006–0010 | Experimental integration APIs    |
 | ASPIRE_HOSTINGX_0011–0015 | Experimental deployment APIs     |
 | ASPIRE_HOSTINGX_0016–0022 | Experimental resource model APIs |
+| `ASPIREPERSISTENCE001`    | Shared resource-lifetime APIs (`WithPersistentLifetime`/`WithSessionLifetime`/`WithParentProcessLifetime`/`WithLifetimeOf`) for executables/projects (13.4) |
+| `ASPIREPROCESSCOMMAND001` | Process-backed resource commands — `WithProcessCommand`, `ProcessCommandSpec`, `ProcessCommandOptions` (13.4) |
 
 To suppress experimental warnings:
 
@@ -51,7 +53,8 @@ var resource = builder.AddExperimentalResource("test");
 
 | Code                   | Notes                                                                                    |
 | ---------------------- | ---------------------------------------------------------------------------------------- |
-| **ASPIREJAVASCRIPT001** | Experimental JavaScript/TypeScript hosting APIs. Renamed from `ASPIREEXTENSION001` in 13.3 — update any existing `<NoWarn>`/`#pragma` suppressions. |
+| **ASPIREJAVASCRIPT001** | Experimental JavaScript/TypeScript hosting APIs (e.g. `AddNextJsApp`). Renamed from `ASPIREEXTENSION001` in 13.3 — update any existing `<NoWarn>`/`#pragma` suppressions. |
+| **ASPIREATS001** | **Removed in 13.4** when the TypeScript AppHost went GA — it was the experimental TS-AppHost SDK warning. If you still see it, drop any `<NoWarn>`/`#pragma` suppression for it. |
 
 ---
 
@@ -91,7 +94,7 @@ var resource = builder.AddExperimentalResource("test");
 
 | Problem                       | Solution                                                         |
 | ----------------------------- | ---------------------------------------------------------------- |
-| "node_modules not found"      | Use `.WithNpmPackageInstallation()` to auto-install              |
+| "node_modules not found"      | Packages auto-install by default (13.4+); verify `package.json` is valid. Pick a package manager with `.WithNpm()`/`.WithYarn()`/`.WithPnpm()`/`.WithBun()` |
 | npm install fails             | Check `package.json` is valid; check npm registry connectivity   |
 | Vite dev server won't start   | Verify `vite` is in devDependencies; check Vite config           |
 | Port mismatch                 | Ensure `targetPort` matches the port in your JS framework config |
@@ -155,7 +158,7 @@ var resource = builder.AddExperimentalResource("test");
 | `aspire wait` times out               | Check resource health with `aspire describe`; inspect logs with `aspire logs <resource>` |
 | `aspire describe` shows no resources  | AppHost may not be running; check with `aspire ps`                                   |
 | Port conflict with `--isolated`       | Ensure no other instances conflict; check with `aspire ps`                           |
-| TypeScript AppHost `.modules/` missing| Run `aspire restore` to regenerate TypeScript SDKs                                   |
+| TypeScript AppHost `.aspire/modules/` missing| Run `aspire restore` to regenerate TypeScript SDKs (path was `.modules/` before 13.4) |
 | `aspire.config.json` migration issues | CLI auto-migrates legacy files on first command; check for merge conflicts           |
 
 ### Deployment
