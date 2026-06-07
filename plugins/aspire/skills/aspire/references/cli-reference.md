@@ -2,7 +2,7 @@
 
 The Aspire CLI (`aspire`) is the primary interface for creating, running, and publishing distributed applications. It is cross-platform and installed standalone (not coupled to the .NET CLI, though `dotnet` commands also work).
 
-**Tested against:** Aspire CLI 13.3+ (commands verified against the 13.4.x CLI)
+**Tested against:** Aspire CLI 13.4 (commands verified against the 13.4.2 CLI)
 
 ---
 
@@ -86,7 +86,7 @@ Available templates:
 - `aspire-starter` — ASP.NET Core/Blazor starter + AppHost + tests (C# AppHost)
 - `aspire-ts-cs-starter` — ASP.NET Core/React starter, **C# AppHost**
 - `aspire-ts-starter` — Express/React starter, **TypeScript AppHost**
-- `aspire-py-starter` — FastAPI/React starter, **TypeScript AppHost** (13.3+: moved off `dotnet new`, no .NET SDK needed to scaffold; supports `--use-redis-cache`, uses `addUvicornApp`)
+- `aspire-py-starter` — FastAPI/React starter, **TypeScript AppHost** (13.3+: moved off `dotnet new`, no .NET authoring needed — the .NET SDK is still required under the hood; supports `--use-redis-cache`, uses `addUvicornApp`)
 - `aspire-empty` — Empty AppHost (choose language)
 - `aspire-ts-empty` — Empty TypeScript AppHost
 
@@ -251,10 +251,16 @@ aspire logs [resource] [options]
 
 # Options:
 #   --apphost <path>       Path to AppHost project file
+#   -f, --follow           Stream logs in real time
+#   -n, --tail <n>         Show the last n lines
+#   -t, --timestamps       Show a timestamp per line
+#   --search <query>       Full-text filter on log content (13.4+; see https://aka.ms/aspire/cli-search)
+#   --include-hidden       Include hidden resources
 
 # Examples:
 aspire logs             # all resources
 aspire logs myapi       # specific resource
+aspire logs --search "error"   # only lines matching the query (13.4+)
 ```
 
 ### `aspire otel` (13.2+)
@@ -290,6 +296,22 @@ aspire ps [options]
 # Examples:
 aspire ps
 aspire ps --resources --format Json
+```
+
+### `aspire ls` (13.4+)
+
+List candidate AppHost project files in the workspace. This is about **discovering AppHosts on disk** — use `aspire ps` for *running* AppHosts.
+
+```bash
+aspire ls [options]
+
+# Options:
+#   --format <Json|Table>  Output format
+#   --all                  Include all candidates, ignoring .gitignore and built-in filters
+#   --stream               Emit discovered AppHosts as newline-delimited JSON (requires --format json)
+
+# Example:
+aspire ls
 ```
 
 ### `aspire doctor` (13.2+)
@@ -405,7 +427,22 @@ aspire add postgresql
 aspire add mongodb
 ```
 
-> **TypeScript AppHosts (13.2+):** `aspire add` also generates TypeScript SDKs into `.modules/` when used with a TypeScript AppHost.
+> **TypeScript AppHosts:** `aspire add` also generates TypeScript SDKs into `.aspire/modules/` when used with a TypeScript AppHost (TS AppHost is GA in 13.4).
+
+### `aspire integration` (13.4+)
+
+Discover and add hosting integrations. `aspire add` remains the shorthand for `aspire integration add`.
+
+```bash
+aspire integration list                # List available hosting integrations
+aspire integration search <query>      # Search available hosting integrations
+aspire integration add <integration>   # Add an integration (same as `aspire add`)
+
+# Examples:
+aspire integration list
+aspire integration search postgres
+aspire integration add redis
+```
 
 ### `aspire restore` (13.2+)
 
@@ -550,12 +587,14 @@ aspire update [options]
 # Options:
 #   --apphost <path>       Path to AppHost project file
 #   --self                 Update the Aspire CLI itself to the latest version
+#   -y, --yes              Auto-confirm prompts (required for non-interactive use, 13.4+)
 #   --channel <channel>    Channel to update to (stable, daily)
 
 # Examples:
 aspire update                          # Update project integrations
 aspire update --self                   # Update the CLI itself
 aspire update --self --channel daily   # Update CLI to daily build
+aspire update -y                       # Non-interactive (CI)
 ```
 
 ### `aspire mcp`
@@ -634,7 +673,7 @@ The following commands are **not valid**. Use alternatives:
 | `aspire build`                     | Use `dotnet build ./AppHost`                                         |
 | `aspire test`                      | Use `dotnet test ./Tests`                                            |
 | `aspire dev`                       | Use `aspire start` (13.2+) or `aspire run` (background/foreground)   |
-| `aspire list`                      | Use `aspire new --help` for templates, `aspire add` for integrations |
+| `aspire list`                      | Use `aspire ls` (candidate AppHosts), `aspire integration list` (integrations), or `aspire new --help` (templates) |
 | `aspire start` (on 13.1)          | Use `aspire run` (foreground only on 13.1)                           |
 | `aspire describe` (on 13.1)       | Use MCP `list_resources` tool or dashboard                           |
 | `aspire logs` (on 13.1)           | Use MCP `list_console_logs` tool or dashboard                        |
@@ -653,4 +692,4 @@ The `dotnet` CLI can perform some Aspire tasks:
 | N/A                         | `dotnet build ./AppHost`         |
 | N/A                         | `dotnet test ./Tests`            |
 
-The Aspire CLI adds value with `start`, `stop`, `wait`, `describe`, `resource`, `logs`, `otel`, `ps`, `doctor`, `docs`, `export`, `secret`, `certs`, `publish`, `deploy`, `add`, `mcp`, `agent`, `config`, `cache`, `do`, `restore`, and `update` — commands that have no direct `dotnet` equivalent.
+The Aspire CLI adds value with `start`, `stop`, `wait`, `describe`, `resource`, `logs`, `otel`, `ps`, `ls`, `doctor`, `docs`, `export`, `secret`, `certs`, `publish`, `deploy`, `destroy`, `add`, `integration`, `mcp`, `agent`, `config`, `cache`, `do`, `restore`, and `update` — commands that have no direct `dotnet` equivalent.

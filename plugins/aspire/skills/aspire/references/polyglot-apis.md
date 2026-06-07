@@ -1,6 +1,6 @@
 # Polyglot APIs — Complete Reference
 
-Aspire supports 10+ languages/runtimes. The AppHost is written in C# (all versions) or TypeScript (13.2+ preview), and orchestrated workloads can be any language. Each language has a hosting method that returns a resource you wire into the dependency graph.
+Aspire supports 10+ languages/runtimes. The AppHost is written in C# (all versions) or TypeScript (preview in 13.2/13.3, **GA in 13.4**), and orchestrated workloads can be any language. Each language has a hosting method that returns a resource you wire into the dependency graph.
 
 ---
 
@@ -52,12 +52,13 @@ builder.AddUvicornApp("fastapi", "../fastapi-app", "app:app")
 Chaining methods:
 - `.WithHttpEndpoint(port?, targetPort?, name?)` — expose HTTP
 - `.WithVirtualEnvironment(path?)` — use venv (default: `.venv`)
+- `.WithUv()` / `.WithPip()` — select the package manager (13.4+; otherwise auto-detected: `pyproject.toml` → uv, `requirements.txt` → pip)
 - `.WithPipPackages(packages)` — install pip packages on start
 - `.WithReference(resource)` — wire dependency
 - `.WithEnvironment(key, value)` — set env var
 - `.WaitFor(resource)` — wait for dependency health
 
-**`AddUvicornApp(name, projectDirectory, appModule, args?)`**
+**`AddUvicornApp(name, projectDirectory, appName, args?)`**
 
 Chaining methods:
 - `.WithHttpEndpoint(port?, targetPort?, name?)` — expose HTTP
@@ -75,39 +76,43 @@ api_url = os.environ["services__api__http__0"]
 
 ### JavaScript / TypeScript
 
+**Package:** `Aspire.Hosting.JavaScript` (renamed from `Aspire.Hosting.NodeJs` in 13.0; install via `aspire add javascript`)
+
 ```csharp
-// Generic JavaScript app (npm start)
+// Generic JavaScript app (runs the "dev" script by default)
 builder.AddJavaScriptApp("frontend", "../web-app")
 
 // Vite dev server
 builder.AddViteApp("spa", "../vite-app")
 
-// Node.js script
-builder.AddNodeApp("worker", "server.js", "../node-worker")
+// Node.js script (run a JS file directly)
+builder.AddNodeApp("worker", "../node-worker", "server.js")
 ```
 
-**`AddJavaScriptApp(name, workingDirectory)`**
+**`AddJavaScriptApp(name, appDirectory, runScriptName?)`** — runs the `dev` script during development, `build` when publishing.
 
 Chaining methods:
 - `.WithHttpEndpoint(port?, targetPort?, name?)` — expose HTTP
-- `.WithNpmPackageInstallation()` — run `npm install` before start
 - `.WithReference(resource)` — wire dependency
 - `.WithEnvironment(key, value)` — set env var
 - `.WaitFor(resource)` — wait for dependency health
+- `.WithRunScript(name)` / `.WithBuildScript(name)` — override the dev/build script names
+- `.WithArgs(...)` — pass CLI args to the script
 
-**`AddViteApp(name, workingDirectory)`**
+**`AddViteApp(name, appDirectory, runScriptName?)`**
 
-Chaining methods (same as `AddJavaScriptApp` plus):
-- `.WithNpmPackageInstallation()` — run `npm install` before start
-- `.WithHttpEndpoint(port?, targetPort?, name?)` — Vite defaults to 5173
+Auto-registers an `http` endpoint bound to the `PORT` env var — don't call `.WithHttpEndpoint()` yourself (it causes a duplicate-endpoint error). Same chaining as `AddJavaScriptApp`, plus `.WithViteConfig(path)`.
 
-**`AddNodeApp(name, scriptPath, workingDirectory)`**
+**`AddNodeApp(name, appDirectory, scriptPath)`**
 
 Chaining methods:
 - `.WithHttpEndpoint(port?, targetPort?, name?)` — expose HTTP
-- `.WithNpmPackageInstallation()` — run `npm install` before start
 - `.WithReference(resource)` — wire dependency
 - `.WithEnvironment(key, value)` — set env var
+
+> **Package managers (13.4+):** JS resources auto-install dependencies by default and use **npm** unless told otherwise. Select another with `.WithNpm()`, `.WithYarn()`, `.WithPnpm()`, or `.WithBun()` (each accepts custom install args). Publish-time installs are deterministic (e.g. `npm ci`, `yarn install --immutable`, `pnpm install --frozen-lockfile`, `bun install --frozen-lockfile`) when a lockfile is present.
+
+**`AddNextJsApp(name, appDirectory)`** — Next.js with run/publish defaults. Marked `[Experimental]`; in C# AppHosts suppress `ASPIREJAVASCRIPT001`. Requires `output: "standalone"` in `next.config.*` for publish (opt out with `.DisableBuildValidation()`).
 
 **JS/TS service discovery:** Environment variables are injected. Use `process.env`:
 ```javascript
@@ -129,15 +134,50 @@ Choose a production serving model based on **which resource owns the public HTTP
 
 13.3 also adds first-class **Bun**, **Yarn**, and **pnpm** support for JS/TS resources.
 
+### Go (official — `Aspire.Hosting.Go`, 13.4+)
+
+Go graduated from the CommunityToolkit into core Aspire in 13.4. Use `Aspire.Hosting.Go` and `AddGoApp`; the old `CommunityToolkit.Aspire.Hosting.Golang` / `AddGolangApp` package is **deprecated**.
+
+```csharp
+builder.AddGoApp("go-api", "../go-service")
+    .WithHttpEndpoint(env: "PORT")
+    .WithReference(redis)
+    .WithEnvironment("LOG_LEVEL", "debug")
+    .WaitFor(redis);
+```
+
+Chaining methods:
+- `.WithHttpEndpoint(port?, targetPort?, name?)`
+- `.WithReference(resource)`
+- `.WithEnvironment(key, value)`
+- `.WaitFor(resource)`
+
+**Go service discovery:** Standard env vars via `os.Getenv()`:
+```go
+redisAddr := os.Getenv("ConnectionStrings__cache")
+```
+
+### Bun (official — `Aspire.Hosting.JavaScript`, 13.4+)
+
+Bun graduated into core Aspire in 13.4. `AddBunApp` now lives in `Aspire.Hosting.JavaScript` (the old `CommunityToolkit.Aspire.Hosting.Bun` package is superseded). Packages auto-install with Bun when a `package.json` is present.
+
+```csharp
+builder.AddBunApp("bun-api", "../bun-service", "server.ts")
+    .WithHttpEndpoint(port: 3000, env: "PORT")
+    .WithReference(redis);
+```
+
+**`AddBunApp(name, appDirectory, scriptPath)`** — run a Bun app directly. (To use Bun only as the *package manager* for a JS/Vite resource, call `.WithBun()` on that resource instead.)
+
 ---
 
-## TypeScript AppHost (13.2+ preview)
+## TypeScript AppHost (GA in 13.4; preview in 13.2/13.3)
 
-In Aspire CLI 13.2+, the AppHost itself can be written in **TypeScript** as an alternative to C#. The TypeScript code runs as a guest process communicating with Aspire's .NET orchestration host via JSON-RPC over local transport — .NET SDK is still required under the hood, but you write the orchestration in TypeScript.
+The AppHost itself can be written in **TypeScript** as an alternative to C#. The TypeScript code runs as a guest process communicating with Aspire's .NET orchestration host via JSON-RPC over local transport — .NET SDK is still required under the hood, but you write the orchestration in TypeScript (`apphost.mts`).
 
 ### How it works
 
-- `aspire add` inspects integration assemblies and generates TypeScript SDKs into `.modules/`
+- `aspire add` inspects integration assemblies and generates TypeScript SDKs into `.aspire/modules/`
 - `aspire restore` regenerates SDKs after upgrades or branch switches (also runs automatically on `aspire start` / `aspire run`)
 - `aspire.config.json` enables automatic TypeScript AppHost discovery (no `.csproj` needed)
 - VS Code extension provides CodeLens, gutter decorations, and debugging support for `createBuilder()` calls
@@ -147,11 +187,11 @@ In Aspire CLI 13.2+, the AppHost itself can be written in **TypeScript** as an a
 ```json
 {
   "appHost": {
-    "path": "apphost.ts",
+    "path": "apphost.mts",
     "language": "typescript/nodejs"
   },
   "sdk": {
-    "version": "13.2.0"
+    "version": "13.4.0"
   },
   "channel": "stable"
 }
@@ -162,7 +202,7 @@ In Aspire CLI 13.2+, the AppHost itself can be written in **TypeScript** as an a
 The API mirrors C# but in idiomatic TypeScript (camelCase):
 
 ```typescript
-import { createBuilder } from './.modules/aspire.js';
+import { createBuilder } from './.aspire/modules/aspire.mjs';
 
 const builder = await createBuilder();
 
@@ -179,8 +219,7 @@ const api = await builder.addProject("api", "../api")
 
 // React frontend (Vite)
 const web = await builder.addViteApp("web", "../frontend")
-    .withHttpEndpoint({ targetPort: 5173 })
-    .withReference(api);
+    .withReference(api);   // addViteApp auto-registers its http endpoint (PORT)
 
 await builder.build().run();
 ```
@@ -200,36 +239,13 @@ await builder.build().run();
 
 > **Deprecated in 13.3:** The per-kind `withEnvironment*` helpers (`withEnvironmentExpression`, `withEnvironmentEndpoint`, `withEnvironmentParameter`, `withEnvironmentConnectionString`, `withEnvironmentFromOutput`, `withEnvironmentFromKeyVaultSecret`) are superseded by the unified `withEnvironment(name, value)` shown above — pass an expression, endpoint, parameter, or connection string as the value. Prefer the unified form.
 
-> **Note:** TypeScript AppHost is in preview. The API surface may evolve. Use `aspire docs search "typescript apphost"` for the latest API reference.
+> **Note:** TypeScript AppHost is **GA as of 13.4** (preview in 13.2/13.3). Use `aspire docs search "typescript apphost"` for the latest API reference.
 
 ---
 
 ## Community (CommunityToolkit/Aspire)
 
 All community integrations follow the same pattern: install the NuGet package in your AppHost, then use the `Add*App()` method.
-
-### Go
-
-**Package:** `CommunityToolkit.Aspire.Hosting.Golang`
-
-```csharp
-builder.AddGolangApp("go-api", "../go-service")
-    .WithHttpEndpoint(targetPort: 8080)
-    .WithReference(redis)
-    .WithEnvironment("LOG_LEVEL", "debug")
-    .WaitFor(redis);
-```
-
-Chaining methods:
-- `.WithHttpEndpoint(port?, targetPort?, name?)`
-- `.WithReference(resource)`
-- `.WithEnvironment(key, value)`
-- `.WaitFor(resource)`
-
-**Go service discovery:** Standard env vars via `os.Getenv()`:
-```go
-redisAddr := os.Getenv("ConnectionStrings__cache")
-```
 
 ### Java (Spring Boot)
 
@@ -272,23 +288,6 @@ Chaining methods:
 - `.WithEnvironment(key, value)`
 - `.WaitFor(resource)`
 - `.WithCargoBuild()` — run `cargo build` before start
-
-### Bun
-
-**Package:** `CommunityToolkit.Aspire.Hosting.Bun`
-
-```csharp
-builder.AddBunApp("bun-api", "../bun-service")
-    .WithHttpEndpoint(targetPort: 3000)
-    .WithReference(redis);
-```
-
-Chaining methods:
-- `.WithHttpEndpoint(port?, targetPort?, name?)`
-- `.WithReference(resource)`
-- `.WithEnvironment(key, value)`
-- `.WaitFor(resource)`
-- `.WithBunPackageInstallation()` — run `bun install` before start
 
 ### Deno
 
@@ -353,13 +352,11 @@ var ml = builder.AddUvicornApp("ml", "../ml-service", "app:app")
     .WaitFor(redis);
 
 // TypeScript frontend (Vite + React)
-var web = builder.AddViteApp("web", "../frontend")
-    .WithNpmPackageInstallation()
-    .WithHttpEndpoint(targetPort: 5173)
+var web = builder.AddViteApp("web", "../frontend")   // npm packages auto-install; http endpoint auto-registered
     .WithReference(api);
 
 // Go event processor
-var processor = builder.AddGolangApp("processor", "../go-processor")
+var processor = builder.AddGoApp("processor", "../go-processor")
     .WithReference(rabbit)
     .WithReference(mongo)
     .WaitFor(rabbit);

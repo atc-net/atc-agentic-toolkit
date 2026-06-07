@@ -103,6 +103,39 @@ RabbitMQ ──→ Worker
 
 `.WaitFor()` adds a health-check gate to the dependency edge. Without it, the dependency starts but the downstream doesn't wait for health.
 
+### Resource lifetimes (13.4+)
+
+By default a resource has a **session lifetime** — created when the AppHost starts, disposed when it stops. A **persistent lifetime** leaves the resource running between AppHost runs (reusing it on the next run), which is ideal for slow-to-start databases, brokers, and emulators.
+
+| Method | Effect |
+|---|---|
+| `WithSessionLifetime()` | Default — torn down with the AppHost session. |
+| `WithPersistentLifetime()` | Keep running across AppHost restarts; reused if config is unchanged. |
+| `WithParentProcessLifetime(processId)` | Persist, but clean up when a given parent process (IDE/tool) exits. |
+| `WithLifetimeOf(resource)` | Match another resource's effective lifetime (sidecars/helpers). |
+| `WithLifetime(ContainerLifetime.Persistent\|Session)` | Older container-only API; still supported. |
+
+```csharp
+var postgres = builder.AddPostgres("postgres")
+    .WithPersistentLifetime()   // survives AppHost restarts → fast startup
+    .WithDataVolume();          // + durable data across container recreation
+```
+
+- The shared lifetime APIs work for containers, executables, and projects, but are **experimental for executables/projects** — they emit `ASPIREPERSISTENCE001` (suppress to use). The container-only `WithLifetime(...)` API is not gated.
+- Persistent ≠ durable data: pair `WithPersistentLifetime()` with `WithDataVolume()` for stateful services. Persistent executables need a concrete `port`/`targetPort` and don't support replicas.
+- The dashboard marks persistent resources with a pin icon; they are **not** auto-removed on stop — clean up via your container runtime / OS.
+
+### Hidden resources
+
+Resources can be hidden from the default dashboard/CLI resource lists (useful for infrastructure helpers and one-shot setup tasks). They still run — they're just filtered out unless you ask for them.
+
+| Method | Effect |
+|---|---|
+| `WithHidden()` | Hide the resource from default resource lists. |
+| `WithHiddenOnCompletion(exitCode?, exitCodes?)` | Hide the resource *after* it completes successfully (optionally scoped to specific exit codes). |
+
+Show hidden resources on demand: `aspire describe --include-hidden` (or `aspire logs --include-hidden`). Naming a specific resource always includes it regardless of the flag.
+
 ---
 
 ## Service Discovery
@@ -186,8 +219,9 @@ Browser → Proxy (auto-assigned port) → Actual Service (target port)
 builder.AddPythonApp("ml", "../ml", "main.py")
     .WithHttpEndpoint(targetPort: 8000);
 
-// Fix the external port to 3000
-builder.AddViteApp("web", "../frontend")
+// Fix the external port to 3000 (AddViteApp auto-registers its own PORT endpoint,
+// so this port/targetPort pattern is shown on a Node app instead)
+builder.AddNodeApp("web", "../frontend", "server.js")
     .WithHttpEndpoint(port: 3000, targetPort: 5173);
 ```
 
@@ -310,6 +344,25 @@ builder.Eventing.Subscribe<BeforeResourceStartedEvent>("db", async (evt, ct) =>
 | `ResourceStateChangedEvent` | Any state transition |
 | `BeforeStartEvent` | Before the entire application starts |
 | `AfterEndpointsAllocatedEvent` | After all ports are assigned |
+
+---
+
+## Custom resource commands
+
+Resources can expose custom commands that appear in the dashboard and run via `aspire resource <resource> <command>`. In 13.4, `WithProcessCommand(...)` backs a command with a local process (binary or shell script on the AppHost machine):
+
+```csharp
+#pragma warning disable ASPIREPROCESSCOMMAND001
+builder.AddRedis("cache")
+    .WithProcessCommand(
+        name: "flush",
+        displayName: "Flush cache",
+        executablePath: "redis-cli",
+        arguments: ["FLUSHALL"]);
+#pragma warning restore ASPIREPROCESSCOMMAND001
+```
+
+`WithProcessCommand`, `ProcessCommandSpec` (executable path, args, env, working dir, stdin), and `ProcessCommandOptions` (captured-output limit, success exit codes, result display) are **experimental** — they emit `ASPIREPROCESSCOMMAND001`.
 
 ---
 

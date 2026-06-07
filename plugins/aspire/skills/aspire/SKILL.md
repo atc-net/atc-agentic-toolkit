@@ -7,7 +7,7 @@ description: 'Aspire skill covering the Aspire CLI (start, stop, describe, wait,
 
 Aspire is a **code-first, polyglot toolchain** for building observable, production-ready distributed applications. It orchestrates containers, executables, and cloud resources from a single AppHost project — regardless of whether the workloads are C#, Python, JavaScript/TypeScript, Go, Java, Rust, Bun, Deno, or PowerShell.
 
-> **Mental model:** The AppHost is a *conductor* — it doesn't play the instruments, it tells every service when to start, how to find each other, and watches for problems. The AppHost can be written in C# (all versions) or TypeScript (13.2+ preview).
+> **Mental model:** The AppHost is a *conductor* — it doesn't play the instruments, it tells every service when to start, how to find each other, and watches for problems. The AppHost can be written in C# (all versions) or TypeScript (preview in 13.2/13.3, **GA in 13.4**).
 
 Detailed reference material lives in the `references/` folder — load on demand.
 
@@ -133,7 +133,7 @@ dotnet new install Aspire.ProjectTemplates
 | **aspire-starter** | `aspire new aspire-starter` | ASP.NET Core/Blazor starter + AppHost + tests (C# AppHost) |
 | **aspire-ts-cs-starter** | `aspire new aspire-ts-cs-starter` | ASP.NET Core/React starter, **C# AppHost** |
 | **aspire-ts-starter** | `aspire new aspire-ts-starter` | Express/React starter, **TypeScript AppHost** |
-| **aspire-py-starter** | `aspire new aspire-py-starter` | FastAPI/React starter, **TypeScript AppHost** (13.3+: no .NET SDK needed to scaffold; `--use-redis-cache` option; uses `addUvicornApp`) |
+| **aspire-py-starter** | `aspire new aspire-py-starter` | FastAPI/React starter, **TypeScript AppHost** (no .NET authoring needed — the .NET SDK is still required under the hood; `--use-redis-cache` option; uses `addUvicornApp`) |
 | **aspire-empty** | `aspire new aspire-empty` | Empty AppHost (choose language) |
 | **aspire-ts-empty** | `aspire new aspire-ts-empty` | Empty TypeScript AppHost |
 
@@ -160,21 +160,21 @@ var api = builder.AddProject<Projects.CatalogApi>("api")
 var ml = builder.AddPythonApp("ml-service", "../ml-service", "main.py")
     .WithHttpEndpoint(targetPort: 8000).WithReference(redis);
 
-// React frontend (Vite)
+// React frontend (Vite) — AddViteApp auto-registers its http endpoint (PORT)
 var web = builder.AddViteApp("web", "../frontend")
-    .WithHttpEndpoint(targetPort: 5173).WithReference(api);
+    .WithReference(api);
 
-// Go worker
-var worker = builder.AddGolangApp("worker", "../go-worker")
+// Go worker (official Aspire.Hosting.Go package, 13.4+)
+var worker = builder.AddGoApp("worker", "../go-worker")
     .WithReference(redis);
 
 builder.Build().Run();
 ```
 
-### TypeScript AppHost (13.2+ preview)
+### TypeScript AppHost (GA in 13.4; preview in 13.2/13.3)
 
 ```typescript
-import { createBuilder } from './.modules/aspire.js';
+import { createBuilder } from './.aspire/modules/aspire.mjs';
 
 const builder = await createBuilder();
 const cache = await builder.addRedis("cache");
@@ -182,11 +182,11 @@ const postgres = await builder.addPostgres("pg").addDatabase("catalog");
 const api = await builder.addProject("api", "../api")
     .withReference(postgres).withReference(cache);
 const web = await builder.addViteApp("web", "../frontend")
-    .withHttpEndpoint({ targetPort: 5173 }).withReference(api);
+    .withReference(api);   // addViteApp auto-registers its http endpoint (PORT)
 await builder.build().run();
 ```
 
-> TypeScript AppHost uses `aspire.config.json` for discovery (no `.csproj`). Run `aspire add` to generate TypeScript SDKs into `.modules/`, and `aspire restore` to regenerate after upgrades. See [Polyglot APIs](references/polyglot-apis.md) for full details.
+> TypeScript AppHost uses `aspire.config.json` for discovery (no `.csproj`); the orchestrator file is `apphost.mts`. Run `aspire add` to generate TypeScript SDKs into `.aspire/modules/`, and `aspire restore` to regenerate after upgrades. See [Polyglot APIs](references/polyglot-apis.md) for full details.
 
 For complete API signatures, see [Polyglot APIs](references/polyglot-apis.md).
 
@@ -199,12 +199,13 @@ For complete API signatures, see [Polyglot APIs](references/polyglot-apis.md).
 | **Run vs Publish** | `aspire start` = background dev (13.2+, recommended). `aspire run` = foreground dev (legacy). `aspire publish` = generate deployment manifests. |
 | **Service discovery** | Automatic via env vars: `ConnectionStrings__<name>`, `services__<name>__http__0` |
 | **Resource lifecycle** | DAG ordering — dependencies start first. `.WaitFor()` gates on health checks. |
+| **Resource lifetimes** | Session (default) vs **persistent** (`WithPersistentLifetime()` — survives AppHost restarts; pair with `WithDataVolume()` for data). 13.4 extends shared lifetime APIs to executables/projects (experimental). See [Architecture](references/architecture.md). |
 | **Resource types** | `ProjectResource`, `ContainerResource`, `ExecutableResource`, `ParameterResource` |
 | **Integrations** | 144+ across 13 categories. Hosting package (AppHost) + Client package (service). |
 | **Dashboard** | Real-time logs, traces, metrics, GenAI visualizer. Runs automatically with `aspire start` / `aspire run`. |
 | **MCP Server** | AI assistants can query running apps, search docs, and invoke resource MCP tools via CLI (STDIO). |
 | **Resource MCP tools** | Resources can expose MCP tools (e.g., `WithPostgresMcp()`). Discover with `aspire mcp tools`. (13.2+) |
-| **TypeScript AppHost** | Preview in 13.2+. Write AppHost in TypeScript via `createBuilder()`. Uses `.modules/` for generated SDKs. |
+| **TypeScript AppHost** | GA in 13.4 (preview in 13.2/13.3). Write AppHost in TypeScript (`apphost.mts`) via `createBuilder()`. Uses `.aspire/modules/` for generated SDKs. |
 | **Testing** | `Aspire.Hosting.Testing` — spin up full AppHost in xUnit/MSTest/NUnit. |
 | **Deployment** | Docker, Kubernetes, Azure Container Apps, Azure App Service. Tear down with `aspire destroy` (13.3+). |
 | **Container tunnel** | Enabled by default (13.3+) for uniform connectivity across Docker Desktop, Docker Engine, and Podman. Disable with `ASPIRE_ENABLE_CONTAINER_TUNNEL=false`. |
@@ -225,13 +226,16 @@ For complete API signatures, see [Polyglot APIs](references/polyglot-apis.md).
 | List resources | `aspire describe` or `aspire resources` (add `--include-hidden` to show hidden resources, 13.3+) |
 | Run resource command | `aspire resource <resource> <command>` |
 | Start/stop/restart resource | `aspire resource <resource> start\|stop\|restart` |
-| View console logs | `aspire logs [resource]` |
+| View console logs | `aspire logs [resource]` (full-text filter with `--search <query>`, 13.4+) |
 | View structured logs | `aspire otel logs [resource]` |
 | View traces | `aspire otel traces [resource]` |
 | Logs for a trace | `aspire otel logs --trace-id <id>` |
 | Add an integration | `aspire add` |
+| List/search integrations | `aspire integration list` / `aspire integration search <query>` (13.4+) |
+| List candidate AppHosts in workspace | `aspire ls` (13.4+; vs `aspire ps` = running) |
 | List running AppHosts | `aspire ps` |
-| Update AppHost packages | `aspire update` |
+| Update AppHost packages | `aspire update` (`-y/--yes` to skip prompts non-interactively, 13.4+) |
+| Update the CLI itself | `aspire update --self` (13.4+) |
 | Search docs | `aspire docs search <query>` |
 | Get doc page | `aspire docs get <slug>` |
 | List doc pages | `aspire docs list` |
@@ -300,7 +304,7 @@ Full command reference with flags: [CLI Reference](references/cli-reference.md).
 
 ### Adding integrations
 
-Use `aspire docs search` (13.2+) to find integration documentation, then `aspire docs get` to read the full guide. Use `aspire add` to install the integration package. Restart with `aspire start` for the new resource to take effect.
+Discover hosting integrations with `aspire integration list` / `aspire integration search <query>` (13.4+), and use `aspire docs search` (13.2+) → `aspire docs get` to read the full guide. Use `aspire add` (or `aspire integration add <integration>`) to install the integration package. Restart with `aspire start` for the new resource to take effect.
 
 ### Using resource MCP tools (13.2+)
 
