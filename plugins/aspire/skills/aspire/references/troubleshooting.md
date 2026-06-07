@@ -47,6 +47,12 @@ var resource = builder.AddExperimentalResource("test");
 #pragma warning restore ASPIRE_HOSTINGX_0001
 ```
 
+### JavaScript diagnostics
+
+| Code                   | Notes                                                                                    |
+| ---------------------- | ---------------------------------------------------------------------------------------- |
+| **ASPIREJAVASCRIPT001** | Experimental JavaScript/TypeScript hosting APIs. Renamed from `ASPIREEXTENSION001` in 13.3 — update any existing `<NoWarn>`/`#pragma` suppressions. |
+
 ---
 
 ## Common Issues & Solutions
@@ -60,6 +66,7 @@ var resource = builder.AddExperimentalResource("test");
 | Port already in use               | Another process is using the port; Aspire auto-assigns, but `targetPort` must be free on the container |
 | Container image pull fails        | Check network connectivity; verify image name and tag                                                  |
 | "Permission denied" on Linux      | Add user to `docker` group: `sudo usermod -aG docker $USER`                                            |
+| Container connectivity issues (13.3+) | The container tunnel is on by default. To rule it out, disable it: set `ASPIRE_ENABLE_CONTAINER_TUNNEL=false` before starting the AppHost |
 
 ### Service discovery
 

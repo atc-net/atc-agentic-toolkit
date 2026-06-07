@@ -2,7 +2,7 @@
 
 The Aspire CLI (`aspire`) is the primary interface for creating, running, and publishing distributed applications. It is cross-platform and installed standalone (not coupled to the .NET CLI, though `dotnet` commands also work).
 
-**Tested against:** Aspire CLI 13.2.0
+**Tested against:** Aspire CLI 13.3+ (commands verified against the 13.4.x CLI)
 
 ---
 
@@ -20,6 +20,12 @@ aspire --version
 
 # Update the CLI itself
 aspire update --self
+```
+
+Alternatively, on a machine with the .NET 10 SDK, install the CLI as a NativeAOT .NET global tool (13.3+):
+
+```bash
+dotnet tool install -g Aspire.Cli
 ```
 
 ---
@@ -43,6 +49,12 @@ Many commands also support:
 | `--format Json`       | Machine-readable JSON output (stdout); status messages go to stderr |
 | `--apphost <path>`    | Target a specific AppHost project                            |
 
+### Environment variables
+
+| Variable                          | Effect                                                                 |
+| --------------------------------- | ---------------------------------------------------------------------- |
+| `ASPIRE_ENABLE_CONTAINER_TUNNEL`  | Container tunnel is enabled by default (13.3+) for uniform container connectivity across Docker Desktop, Docker Engine, and Podman. Set to `false` before starting the AppHost to disable it. |
+
 ---
 
 ## Command Reference
@@ -65,16 +77,18 @@ aspire new [<template>] [options]
 aspire new aspire-starter
 aspire new aspire-starter -n MyApp -o ./my-app
 aspire new aspire-ts-cs-starter
-aspire new aspire-py-starter
-aspire new aspire-apphost-singlefile
+aspire new aspire-py-starter --use-redis-cache
+aspire new aspire-empty
 ```
 
 Available templates:
 
-- `aspire-starter` — ASP.NET Core/Blazor starter + AppHost + tests
-- `aspire-ts-cs-starter` — ASP.NET Core/React + TypeScript AppHost
-- `aspire-py-starter` — FastAPI/React + AppHost
-- `aspire-apphost-singlefile` — Empty single-file AppHost
+- `aspire-starter` — ASP.NET Core/Blazor starter + AppHost + tests (C# AppHost)
+- `aspire-ts-cs-starter` — ASP.NET Core/React starter, **C# AppHost**
+- `aspire-ts-starter` — Express/React starter, **TypeScript AppHost**
+- `aspire-py-starter` — FastAPI/React starter, **TypeScript AppHost** (13.3+: moved off `dotnet new`, no .NET SDK needed to scaffold; supports `--use-redis-cache`, uses `addUvicornApp`)
+- `aspire-empty` — Empty AppHost (choose language)
+- `aspire-ts-empty` — Empty TypeScript AppHost
 
 ### `aspire init`
 
@@ -105,14 +119,14 @@ Start all resources locally using the DCP (Developer Control Plane). Runs in the
 aspire run [options] [-- <additional arguments>]
 
 # Options:
-#   --project <path>       Path to AppHost project file
+#   --apphost <path>       Path to AppHost project file
 #   --detach               Run in background (equivalent to `aspire start`) (13.2+)
 #   --isolated             Randomized ports, isolated secrets (for worktrees) (13.2+)
 #   --no-build             Skip build when artifacts already up-to-date (13.2+)
 
 # Examples:
 aspire run
-aspire run --project ./src/MyApp.AppHost
+aspire run --apphost ./src/MyApp.AppHost
 aspire run --detach --isolated    # equivalent to: aspire start --isolated
 ```
 
@@ -196,13 +210,15 @@ aspire resources [options]
 
 # Options:
 #   --apphost <path>       Path to AppHost project file
-#   --follow               Continuous streaming of resource state changes
+#   -f, --follow           Continuous streaming of resource state changes
 #   --format Json          Machine-readable output
+#   --include-hidden       Include hidden resources (filtered out by default since 13.3)
 
 # Examples:
 aspire describe
 aspire describe --format Json
-aspire describe --follow    # live updates (used by VS Code extension)
+aspire describe --follow             # live updates (used by VS Code extension)
+aspire describe --include-hidden     # show resources hidden by default
 ```
 
 ### `aspire resource` (13.2+)
@@ -262,7 +278,7 @@ aspire otel logs --trace-id abc123       # logs for a specific trace
 
 ### `aspire ps` (13.2+)
 
-List running AppHosts.
+List running AppHosts. Since 13.3, the output also includes each AppHost's dashboard URL.
 
 ```bash
 aspire ps [options]
@@ -291,6 +307,19 @@ aspire doctor
 #   - Agent configuration status
 ```
 
+### `aspire dashboard run` (Preview, 13.3+)
+
+Run the Aspire Dashboard in standalone mode — no AppHost required. Useful for viewing OTLP telemetry from any OpenTelemetry source.
+
+```bash
+aspire dashboard run [options]
+
+# Example:
+aspire dashboard run
+```
+
+> The dashboard is also available as a standalone container image — see [Dashboard](dashboard.md).
+
 ### `aspire docs` (13.2+)
 
 Search and read Aspire documentation from the CLI.
@@ -299,6 +328,7 @@ Search and read Aspire documentation from the CLI.
 aspire docs search <query> [options]
 aspire docs get <slug> [options]
 aspire docs list [options]
+aspire docs api [options]              # search/read the Aspire API reference (13.3+)
 
 # Options:
 #   --limit <n>            Limit search results
@@ -311,6 +341,7 @@ aspire docs search "service discovery" --limit 5
 aspire docs get getting-started
 aspire docs get getting-started --section "prerequisites"
 aspire docs list
+aspire docs api                        # browse/search the API reference from the terminal
 ```
 
 ### `aspire export` (13.2+)
@@ -364,7 +395,7 @@ Add a hosting integration to the AppHost.
 aspire add [<integration>] [options]
 
 # Options:
-#   --project <path>         Target project file
+#   --apphost <path>         AppHost project file (or directory) to add the integration to
 #   -v, --version <version>  Version of integration to add
 #   -s, --source <source>    NuGet source for integration
 
@@ -398,16 +429,19 @@ Generate deployment manifests from the AppHost resource model.
 aspire publish [options] [-- <additional arguments>]
 
 # Options:
-#   --project <path>                   Path to AppHost project file
+#   --apphost <path>                   Path to AppHost project file
 #   -o, --output-path <path>           Output directory (default: ./aspire-output)
-#   --log-level <level>                Log level (trace, debug, information, warning, error, critical)
+#   --pipeline-log-level <level>       Pipeline log level (trace, debug, information, warning, error, critical)
+#                                      (renamed from --log-level in 13.3; -l/--log-level still sets console output)
 #   -e, --environment <env>            Environment (default: Production)
 #   --include-exception-details        Include stack traces in pipeline logs
+#   --list-steps                       List pipeline steps without running them
 
 # Examples:
 aspire publish
 aspire publish --output-path ./deploy
 aspire publish -e Staging
+aspire publish --list-steps
 ```
 
 ### `aspire config`
@@ -452,15 +486,17 @@ Deploy the contents of an Aspire apphost to its defined deployment targets.
 aspire deploy [options] [-- <additional arguments>]
 
 # Options:
-#   --project <path>                   Path to AppHost project file
+#   --apphost <path>                   Path to AppHost project file
 #   -o, --output-path <path>           Output path for deployment artifacts
-#   --log-level <level>                Log level (trace, debug, information, warning, error, critical)
+#   --pipeline-log-level <level>       Pipeline log level (trace, debug, information, warning, error, critical)
+#                                      (renamed from --log-level in 13.3; -l/--log-level still sets console output)
 #   -e, --environment <env>            Environment (default: Production)
 #   --include-exception-details        Include stack traces in pipeline logs
+#   --list-steps                       List pipeline steps without running them
 #   --clear-cache                      Clear deployment cache for current environment
 
 # Example:
-aspire deploy --project ./src/MyApp.AppHost
+aspire deploy --apphost ./src/MyApp.AppHost
 ```
 
 ### `aspire do` (Preview)
@@ -471,14 +507,37 @@ Execute a specific pipeline step and its dependencies.
 aspire do <step> [options] [-- <additional arguments>]
 
 # Options:
-#   --project <path>                   Path to AppHost project file
+#   --apphost <path>                   Path to AppHost project file
 #   -o, --output-path <path>           Output path for artifacts
-#   --log-level <level>                Log level (trace, debug, information, warning, error, critical)
+#   --pipeline-log-level <level>       Pipeline log level (trace, debug, information, warning, error, critical)
+#                                      (renamed from --log-level in 13.3; -l/--log-level still sets console output)
 #   -e, --environment <env>            Environment (default: Production)
 #   --include-exception-details        Include stack traces in pipeline logs
+#   --list-steps                       List pipeline steps without running them
 
-# Example:
-aspire do build-images --project ./src/MyApp.AppHost
+# Examples:
+aspire do build-images --apphost ./src/MyApp.AppHost
+aspire do --list-steps                 # show pipeline steps without executing
+```
+
+### `aspire destroy` (Preview, 13.3+)
+
+Tear down what `aspire deploy` provisioned. Works across Azure, Kubernetes, and Docker Compose targets.
+
+```bash
+aspire destroy [options] [-- <additional arguments>]
+
+# Options:
+#   --apphost <path>                   Path to AppHost project file
+#   -o, --output-path <path>           Path containing the deployment artifacts to destroy
+#   --pipeline-log-level <level>       Pipeline log level (trace, debug, information, warning, error, critical)
+#   -e, --environment <env>            Environment (default: Production)
+#   --list-steps                       List the steps without running them
+#   -y, --yes                          Do not prompt for confirmation before destroying
+
+# Examples:
+aspire destroy
+aspire destroy -e Staging -y
 ```
 
 ### `aspire update` (Preview)
@@ -489,7 +548,7 @@ Update integrations in the Aspire project, or update the CLI itself.
 aspire update [options]
 
 # Options:
-#   --project <path>       Path to AppHost project file
+#   --apphost <path>       Path to AppHost project file
 #   --self                 Update the Aspire CLI itself to the latest version
 #   --channel <channel>    Channel to update to (stable, daily)
 

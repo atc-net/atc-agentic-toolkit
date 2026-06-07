@@ -115,6 +115,20 @@ const redisUrl = process.env.ConnectionStrings__cache;
 const apiUrl = process.env.services__api__http__0;
 ```
 
+### Publishing JS/TS apps (13.3+)
+
+Choose a production serving model based on **which resource owns the public HTTP surface** (see [Deploy JavaScript apps](https://aspire.dev/deploy-javascript-apps/)):
+
+| Production entrypoint | API |
+|---|---|
+| Static frontend served by its own JS resource | `PublishAsStaticWebsite` (preview; SPA, with optional API reverse-proxy) |
+| Built Node/SSR server artifact | `PublishAsNodeServer` |
+| Node/SSR app started by a package script | `PublishAsPackageScript` |
+| Next.js standalone app | `AddNextJsApp` |
+| Static frontend served by a backend/gateway | `PublishWithContainerFiles` / `PublishWithStaticFiles` |
+
+13.3 also adds first-class **Bun**, **Yarn**, and **pnpm** support for JS/TS resources.
+
 ---
 
 ## TypeScript AppHost (13.2+ preview)
@@ -183,6 +197,8 @@ await builder.build().run();
 | `.WithEnvironment(key, value)`   | `.withEnvironment(key, value)`     |
 | `.WaitFor(resource)`             | `.waitFor(resource)`               |
 | `builder.Build().Run()`          | `builder.build().run()`            |
+
+> **Deprecated in 13.3:** The per-kind `withEnvironment*` helpers (`withEnvironmentExpression`, `withEnvironmentEndpoint`, `withEnvironmentParameter`, `withEnvironmentConnectionString`, `withEnvironmentFromOutput`, `withEnvironmentFromKeyVaultSecret`) are superseded by the unified `withEnvironment(name, value)` shown above — pass an expression, endpoint, parameter, or connection string as the value. Prefer the unified form.
 
 > **Note:** TypeScript AppHost is in preview. The API surface may evolve. Use `aspire docs search "typescript apphost"` for the latest API reference.
 

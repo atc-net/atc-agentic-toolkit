@@ -122,16 +122,20 @@ aspire --version
 dotnet new install Aspire.ProjectTemplates
 ```
 
+> **13.3+ alternative install:** with the .NET 10 SDK present, install the CLI as a NativeAOT .NET global tool: `dotnet tool install -g Aspire.Cli`.
+
 ---
 
 ## 3. Project Templates
 
 | Template | Command | Description |
 |---|---|---|
-| **aspire-starter** | `aspire new aspire-starter` | ASP.NET Core/Blazor starter + AppHost + tests |
-| **aspire-ts-cs-starter** | `aspire new aspire-ts-cs-starter` | ASP.NET Core/React + TypeScript AppHost |
-| **aspire-py-starter** | `aspire new aspire-py-starter` | FastAPI/React starter + AppHost |
-| **aspire-apphost-singlefile** | `aspire new aspire-apphost-singlefile` | Empty single-file AppHost |
+| **aspire-starter** | `aspire new aspire-starter` | ASP.NET Core/Blazor starter + AppHost + tests (C# AppHost) |
+| **aspire-ts-cs-starter** | `aspire new aspire-ts-cs-starter` | ASP.NET Core/React starter, **C# AppHost** |
+| **aspire-ts-starter** | `aspire new aspire-ts-starter` | Express/React starter, **TypeScript AppHost** |
+| **aspire-py-starter** | `aspire new aspire-py-starter` | FastAPI/React starter, **TypeScript AppHost** (13.3+: no .NET SDK needed to scaffold; `--use-redis-cache` option; uses `addUvicornApp`) |
+| **aspire-empty** | `aspire new aspire-empty` | Empty AppHost (choose language) |
+| **aspire-ts-empty** | `aspire new aspire-ts-empty` | Empty TypeScript AppHost |
 
 ---
 
@@ -202,7 +206,8 @@ For complete API signatures, see [Polyglot APIs](references/polyglot-apis.md).
 | **Resource MCP tools** | Resources can expose MCP tools (e.g., `WithPostgresMcp()`). Discover with `aspire mcp tools`. (13.2+) |
 | **TypeScript AppHost** | Preview in 13.2+. Write AppHost in TypeScript via `createBuilder()`. Uses `.modules/` for generated SDKs. |
 | **Testing** | `Aspire.Hosting.Testing` — spin up full AppHost in xUnit/MSTest/NUnit. |
-| **Deployment** | Docker, Kubernetes, Azure Container Apps, Azure App Service. |
+| **Deployment** | Docker, Kubernetes, Azure Container Apps, Azure App Service. Tear down with `aspire destroy` (13.3+). |
+| **Container tunnel** | Enabled by default (13.3+) for uniform connectivity across Docker Desktop, Docker Engine, and Podman. Disable with `ASPIRE_ENABLE_CONTAINER_TUNNEL=false`. |
 
 ---
 
@@ -217,7 +222,7 @@ For complete API signatures, see [Polyglot APIs](references/polyglot-apis.md).
 | Restart the app | `aspire start` (stops previous automatically) |
 | Wait for resource healthy | `aspire wait <resource>` |
 | Stop the app | `aspire stop` |
-| List resources | `aspire describe` or `aspire resources` |
+| List resources | `aspire describe` or `aspire resources` (add `--include-hidden` to show hidden resources, 13.3+) |
 | Run resource command | `aspire resource <resource> <command>` |
 | Start/stop/restart resource | `aspire resource <resource> start\|stop\|restart` |
 | View console logs | `aspire logs [resource]` |
@@ -230,6 +235,8 @@ For complete API signatures, see [Polyglot APIs](references/polyglot-apis.md).
 | Search docs | `aspire docs search <query>` |
 | Get doc page | `aspire docs get <slug>` |
 | List doc pages | `aspire docs list` |
+| Search API reference | `aspire docs api` (13.3+) |
+| Run dashboard standalone | `aspire dashboard run` (13.3+) |
 | Environment diagnostics | `aspire doctor` |
 | List resource MCP tools | `aspire mcp tools` |
 | Call resource MCP tool | `aspire mcp call <resource> <tool> --input <json>` |
@@ -242,6 +249,7 @@ For complete API signatures, see [Polyglot APIs](references/polyglot-apis.md).
 | Initialize in existing project | `aspire init` |
 | Generate deployment manifests | `aspire publish` |
 | Deploy to targets | `aspire deploy` |
+| Tear down a deployment | `aspire destroy` (Azure/Kubernetes/Docker Compose, 13.3+) |
 | Configure MCP for AI assistants | `aspire agent init` |
 
 Most commands support `--format Json` for machine-readable output. Use `--apphost <path>` to target a specific AppHost.
@@ -306,7 +314,7 @@ aspire mcp call <resource> <tool> --input '{"key":"value"}'   # invoke a tool
 
 ### Migrating from Docker Compose
 
-1. `aspire new aspire-apphost-singlefile` (empty AppHost)
+1. `aspire new aspire-empty` (empty AppHost)
 2. Replace each `docker-compose` service with an Aspire resource
 3. `depends_on` → `.WithReference()` + `.WaitFor()`
 4. `ports` → `.WithHttpEndpoint()`
