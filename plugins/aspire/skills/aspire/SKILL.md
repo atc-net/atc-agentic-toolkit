@@ -26,6 +26,40 @@ Detailed reference material lives in the `references/` folder — load on demand
 | [Deployment](references/deployment.md) | Docker, Kubernetes, Azure Container Apps, App Service |
 | [Testing](references/testing.md) | Integration tests against the AppHost |
 | [Troubleshooting](references/troubleshooting.md) | Diagnostic codes, common errors, and fixes |
+| [Migration](references/migration.md) | Per-version breaking changes (13.2 → 13.3 → 13.4) to scrub from code, scripts, and CI |
+
+---
+
+## Agent Safety Guardrails
+
+When an AI agent drives Aspire, these rules prevent self-inflicted breakage. They apply to **every** Aspire task — read them before acting.
+
+| ✅ Do | ❌ Don't | Why |
+|---|---|---|
+| `aspire start` an AppHost (13.2+) | `dotnet run` an AppHost | `dotnet run` bypasses orchestration, the dashboard, and the CLI backchannel. |
+| `aspire wait <resource>` before interacting | `curl`/HTTP polling loops | Polling ignores dynamic ports and DAG ordering, producing false negatives. |
+| `aspire stop` first if you hit a file lock | `pkill dotnet`, `rm -rf bin obj`, or declare a permanent build failure | A running AppHost holds locks; `MSB3491`/`CS2012` clear once it stops. |
+| Pass `--non-interactive` on agent commands | Assume an interactive terminal | Prompts/spinners hang in non-interactive shells. |
+| Read `--format Json` for machine output | Scrape human-readable text | Text formatting is not a stable contract. |
+| `aspire start --isolated` in worktrees / shared-state risk | Run multiple non-isolated AppHosts | Avoids port and state collisions. |
+| Add `--include-hidden` when a resource is missing from `ps`/`describe` | Assume the resource doesn't exist | Proxies, helpers, and migration/seed jobs are hidden by default. |
+| Regenerate TS SDKs with `aspire add` / `aspire restore` | Edit `.aspire/modules/` by hand | Generated SDKs are overwritten; hand edits are lost. |
+| `aspire stop` when the task is done | Leave orphaned processes/containers running | Prevents port conflicts, locks, and stale state. |
+
+See the consolidated lifecycle tips in [§7 Common Patterns](#7-common-patterns) and the per-version scrub list in [Migration](references/migration.md).
+
+### Detecting an Aspire workspace
+
+Confirm it's an Aspire app before applying these rules:
+
+| Signal | Detect | Notes |
+|---|---|---|
+| C# project AppHost | `.csproj` referencing `Aspire.AppHost.Sdk` | Definitive |
+| File-based C# AppHost | `apphost.cs` with `#:sdk Aspire.AppHost.Sdk` and `#:property IsAspireHost=true` | Definitive (.NET 10) |
+| TypeScript AppHost | `apphost.mts` / `apphost.ts` | Definitive |
+| Aspire config | `aspire.config.json` (`appHost.language` = `"csharp"` or `"typescript/nodejs"`, `appHost.path` = where the AppHost lives) | High (13.2+; replaces legacy `aspire.json`) |
+| Generated TS SDKs | `.aspire/modules/` directory present | High (TypeScript AppHost) |
+| Service defaults | `Aspire.ServiceDefaults` project reference | Medium |
 
 ---
 
@@ -227,8 +261,8 @@ For complete API signatures, see [Polyglot APIs](references/polyglot-apis.md).
 | Run resource command | `aspire resource <resource> <command>` |
 | Start/stop/restart resource | `aspire resource <resource> start\|stop\|restart` |
 | View console logs | `aspire logs [resource]` (full-text filter with `--search <query>`, 13.4+) |
-| View structured logs | `aspire otel logs [resource]` |
-| View traces | `aspire otel traces [resource]` |
+| View structured logs | `aspire otel logs [resource]` (field-aware `--search`, 13.4+) |
+| View traces / spans | `aspire otel traces [resource]` / `aspire otel spans [resource]` |
 | Logs for a trace | `aspire otel logs --trace-id <id>` |
 | Add an integration | `aspire add` |
 | List/search integrations | `aspire integration list` / `aspire integration search <query>` (13.4+) |
@@ -239,7 +273,7 @@ For complete API signatures, see [Polyglot APIs](references/polyglot-apis.md).
 | Search docs | `aspire docs search <query>` |
 | Get doc page | `aspire docs get <slug>` |
 | List doc pages | `aspire docs list` |
-| Search API reference | `aspire docs api` (13.3+) |
+| Search API reference | `aspire docs api search <query> [--language csharp\|typescript]` (13.3+) |
 | Run dashboard standalone | `aspire dashboard run` (13.3+) |
 | Environment diagnostics | `aspire doctor` |
 | List resource MCP tools | `aspire mcp tools` |

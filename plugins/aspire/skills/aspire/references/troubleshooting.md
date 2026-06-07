@@ -31,6 +31,7 @@ These codes indicate usage of experimental/preview APIs. They may require `#prag
 | ASPIRE_HOSTINGX_0016–0022 | Experimental resource model APIs |
 | `ASPIREPERSISTENCE001`    | Shared resource-lifetime APIs (`WithPersistentLifetime`/`WithSessionLifetime`/`WithParentProcessLifetime`/`WithLifetimeOf`) for executables/projects (13.4) |
 | `ASPIREPROCESSCOMMAND001` | Process-backed resource commands — `WithProcessCommand`, `ProcessCommandSpec`, `ProcessCommandOptions` (13.4) |
+| `ASPIREBROWSERLOGS001`    | Browser logs — `WithBrowserLogs` (`Aspire.Hosting.Browsers`), tracked Chromium console/network capture (13.3+) |
 
 To suppress experimental warnings:
 
@@ -207,6 +208,52 @@ Run just the failing resource by commenting out others in the AppHost. This narr
 Run `aspire doctor` to check your environment (SDK versions, container runtime, HTTPS certs, WSL2, agent config).
 
 Use `aspire describe` + `aspire otel logs <resource>` + `aspire otel traces <resource>` for quick command-line inspection without needing the dashboard or MCP.
+
+---
+
+## Local vs. deployed diagnostics
+
+The Aspire CLI talks to a **locally running** AppHost over a local backchannel (see
+[Architecture](architecture.md)). It **cannot** reach an app that's deployed to Azure, Kubernetes, or a
+remote Docker host — route those to the platform's own tooling instead.
+
+| Need | Local (`aspire start`) | Deployed |
+|---|---|---|
+| Console logs | `aspire logs <resource>` | `az containerapp logs show` / `kubectl logs <pod>` / `docker logs` |
+| Structured logs | `aspire otel logs <resource>` | Application Insights query / platform logs |
+| Traces / spans | `aspire otel traces` / `aspire otel spans` | App Insights Transaction Search |
+| Resource state | `aspire describe` (add `--include-hidden`) | `kubectl describe pod` / Azure Portal |
+| Telemetry snapshot | `aspire export` | App Insights export / KQL |
+| Metrics | Dashboard (or `aspire dashboard run`) | Azure Monitor / Container Insights |
+
+**Exception — a standalone or remote dashboard:** `aspire otel` and `aspire export` can query one directly
+with `--dashboard-url <url>` (a base URL or a `…/login?t=<token>` URL) and, for ApiKey-secured dashboards,
+`--api-key <key>`.
+
+## Endpoint discovery for browser testing (Playwright handoff)
+
+Don't guess a frontend's URL — Aspire assigns ports dynamically. Discover the live endpoint from Aspire
+state, then hand it to your browser-testing tool (e.g. the Playwright skill/MCP):
+
+```bash
+aspire describe --format Json     # extract the resource's http/https endpoint
+# pass the discovered URL to Playwright (browser_navigate / baseURL)
+```
+
+Use `--apphost <path>` to disambiguate when multiple AppHosts are present.
+
+## Agent operational gotchas
+
+Lower-level quirks worth knowing when scripting against the CLI. These are **reported upstream by
+Microsoft's `aspire-skills`** (issue links below) rather than independently re-verified here — treat the
+symptom/workaround as the value and confirm the issue status against your CLI version:
+
+| Symptom | Handling |
+|---|---|
+| `aspire start --format json` emits human-readable text before the JSON | Strip everything before the first `{`/`[` ([aspire#15843](https://github.com/microsoft/aspire/issues/15843)). |
+| `aspire ps --format Json` has both `name` and `displayName` | Use `displayName` when passing a resource to `aspire wait` ([aspire#15842](https://github.com/microsoft/aspire/issues/15842)). |
+| TypeScript AppHost telemetry "No such host" for `*.dev.localhost` | Query the dashboard directly with `--dashboard-url localhost:<port>` ([aspire#15782](https://github.com/microsoft/aspire/issues/15782)). |
+| `--isolated` telemetry not reachable | The OTLP port isn't randomized under `--isolated`; avoid `--isolated` when you need telemetry ([aspire#16107](https://github.com/microsoft/aspire/issues/16107)). |
 
 ---
 

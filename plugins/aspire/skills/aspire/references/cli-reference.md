@@ -265,22 +265,56 @@ aspire logs --search "error"   # only lines matching the query (13.4+)
 
 ### `aspire otel` (13.2+)
 
-View OpenTelemetry structured logs and distributed traces.
+View OpenTelemetry structured logs, distributed traces, and individual spans from the dashboard telemetry API.
 
 ```bash
 aspire otel logs [resource] [options]
 aspire otel traces [resource] [options]
-aspire otel logs --trace-id <id> [options]
+aspire otel spans [resource] [options]
 
 # Options:
 #   --apphost <path>       Path to AppHost project file
-#   --format Json          Machine-readable output
+#   -f, --follow           Stream telemetry in real time
+#   --format <Table|Json>  Output format
+#   -n, --limit <n>        Maximum number of items to return
+#   --trace-id <id>        Filter by trace ID
+#   --severity <level>     (logs) Minimum severity: Trace|Debug|Information|Warning|Error|Critical
+#   --has-error <bool>     (spans) Show only / exclude error spans
+#   --search <query>       Field-aware search (see syntax below)
+#   --dashboard-url <url>  Query a standalone/remote dashboard instead of an AppHost
+#   --api-key <key>        API key for a dashboard secured with ApiKey auth
 
 # Examples:
-aspire otel logs myapi                   # structured logs for a resource
-aspire otel traces myapi                 # distributed traces
-aspire otel logs --trace-id abc123       # logs for a specific trace
+aspire otel logs myapi                          # structured logs for a resource
+aspire otel logs --severity Error --format Json # error logs as JSON
+aspire otel traces myapi                        # distributed traces
+aspire otel spans --has-error true              # only error spans
+aspire otel logs --trace-id abc123              # logs for a specific trace
 ```
+
+**`--search` syntax (13.4+).** Search, tail, and resource filters are applied **server-side before**
+data streams to the CLI — prefer it over piping into `grep`. Full reference:
+https://aspire.dev/reference/cli/search-filter/
+
+| Syntax | Meaning |
+|---|---|
+| `word` | Free-text fragment — matches any searchable field |
+| `"quoted phrase"` | A single fragment containing spaces |
+| `field:value` | Field qualifier — value must match the named field |
+| `-field:value` | Negated qualifier — excludes matches |
+| `@attr:value` | Custom attribute qualifier (e.g. `@http.method:GET`) |
+| `field:>N` `field:>=N` `field:<N` `field:<=N` | Numeric comparison (spans/traces, e.g. `duration:>100`) |
+
+- **Structured-log fields:** `severity`, `resource`, `scope`, `message`, `trace-id`, `span-id`, `event`.
+- **Span/trace fields:** `resource`, `name`, `span-id`, `trace-id`, `status`, `kind`, `duration`.
+
+```bash
+aspire otel logs --search "scope:Microsoft.EntityFrameworkCore severity:Warning"
+aspire otel spans --search "@http.method:GET status:error duration:>100"
+aspire otel traces --search "POST /orders -resource:cache"
+```
+
+`aspire logs` (console logs) also accepts `--search`, but only as free-text over the log line and resource name.
 
 ### `aspire ps` (13.2+)
 
@@ -350,11 +384,16 @@ Search and read Aspire documentation from the CLI.
 aspire docs search <query> [options]
 aspire docs get <slug> [options]
 aspire docs list [options]
-aspire docs api [options]              # search/read the Aspire API reference (13.3+)
+
+# API reference subcommands (13.3+):
+aspire docs api search <query> [options]   # search the API reference
+aspire docs api list <scope>               # list API entries under a parent scope
+aspire docs api get <id>                    # get the markdown for an API item
 
 # Options:
 #   --limit <n>            Limit search results
 #   --section <name>       Get a specific section of a doc page
+#   --language <lang>      (docs api search) limit results to a language, e.g. csharp / typescript
 #   --format Json          Machine-readable output
 
 # Examples:
@@ -363,23 +402,29 @@ aspire docs search "service discovery" --limit 5
 aspire docs get getting-started
 aspire docs get getting-started --section "prerequisites"
 aspire docs list
-aspire docs api                        # browse/search the API reference from the terminal
+aspire docs api search WithReference --language csharp
 ```
 
 ### `aspire export` (13.2+)
 
-Capture telemetry and resource data into a zip file for sharing or analysis.
+Capture telemetry and resource data into a **zip file** for sharing or offline analysis. The bundle
+holds, per resource, the resource definition (state, endpoints, environment), console logs, structured
+logs, and traces.
 
 ```bash
-aspire export [options]
+aspire export [resource] [options]
 
 # Options:
 #   --apphost <path>       Path to AppHost project file
-#   --resource <name>      Scope to a single resource
+#   -o, --output <path>    Output zip file path
+#   --include-hidden       Include hidden resources
+#   --dashboard-url <url>  Export from a standalone/remote dashboard
+#   --api-key <key>        API key for a dashboard secured with ApiKey auth
 
-# Example:
-aspire export
-aspire export --resource myapi
+# Examples:
+aspire export                          # export everything
+aspire export myapi                    # scope to one resource (positional argument)
+aspire export -o ./diagnostics.zip
 ```
 
 ### `aspire secret` (13.2+)

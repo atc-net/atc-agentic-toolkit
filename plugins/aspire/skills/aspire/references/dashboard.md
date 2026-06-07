@@ -70,6 +70,13 @@ For applications using AI/LLM integrations:
 
 A notification center surfaces resource command results and lifecycle events (e.g. the outcome of a Rebuild or a custom resource command) directly in the dashboard UI.
 
+### Browser logs vs. browser telemetry (13.3+)
+
+Two complementary client-side features surface in the dashboard:
+
+- **Browser logs** — `Aspire.Hosting.Browsers` + `.WithBrowserLogs()` in the AppHost (`aspire add browsers`). Aspire attaches a tracked Chromium session to a resource's URL over the Chrome DevTools Protocol and streams console output, errors, and network events into that resource's **console log** view; the dashboard exposes **Open tracked browser**, **Configure tracked browser**, and **Capture screenshot** commands. Experimental — suppress `ASPIREBROWSERLOGS001` in C#. See [Polyglot APIs](polyglot-apis.md).
+- **Browser telemetry** — the OpenTelemetry **JavaScript SDK** running inside your front-end app, sending client-side traces/logs/metrics to the dashboard's OTLP endpoint. Configured in the front-end app code (not the AppHost), and enabled on the dashboard via OTLP/CORS settings.
+
 ---
 
 ## Dashboard URL
