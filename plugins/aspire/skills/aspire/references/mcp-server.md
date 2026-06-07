@@ -4,6 +4,8 @@ Aspire exposes an **MCP (Model Context Protocol) server** that lets AI coding as
 
 Reference: https://aspire.dev/get-started/ai-coding-agents/
 
+> **Changed in 13.3:** This **AppHost-level** MCP server (configured via `aspire agent init`) is the one and only MCP integration. The older **dashboard-embedded** MCP server — and its `ASPIRE_DASHBOARD_MCP_ENDPOINT_URL` setting — was removed in 13.3, along with the in-dashboard GitHub Copilot chat UI.
+
 ---
 
 ## Setup: `aspire agent init` (13.2+) / `aspire mcp init` (13.1)
@@ -229,5 +231,4 @@ If you run into issues, check the [open MCP issues on GitHub](https://github.com
 - [AI coding agents guide](https://aspire.dev/get-started/ai-coding-agents/)
 - [aspire agent init command](https://aspire.dev/reference/cli/commands/aspire-agent-init/)
 - [aspire agent mcp command](https://aspire.dev/reference/cli/commands/aspire-agent-mcp/)
-- [GitHub Copilot in the Dashboard](https://aspire.dev/dashboard/copilot/)
 - [How I taught AI to read Aspire docs](https://davidpine.dev/posts/aspire-docs-mcp-tools/)

@@ -15,7 +15,7 @@ Displays all resources (projects, containers, executables) with:
 - **Start time** and **uptime**
 - **Endpoints** — clickable URLs for each exposed endpoint
 - **Source** — project path, container image, or executable path
-- **Actions** — Stop, Start, Restart buttons
+- **Actions** — Stop, Start, Restart buttons, plus a built-in **Rebuild** command for containers and projects (13.3+)
 
 ### Console logs
 
@@ -66,6 +66,10 @@ For applications using AI/LLM integrations:
 - **Latency** — time per AI call
 - Requires services to emit [GenAI semantic conventions](https://opentelemetry.io/docs/specs/semconv/gen-ai/) via OpenTelemetry
 
+### Notification center (13.3+)
+
+A notification center surfaces resource command results and lifecycle events (e.g. the outcome of a Rebuild or a custom resource command) directly in the dashboard UI.
+
 ---
 
 ## Dashboard URL
@@ -87,7 +91,15 @@ aspire run --dashboard-port 18888
 
 ## Standalone Dashboard
 
-Run the dashboard without an AppHost — useful for existing applications that already emit OpenTelemetry:
+Run the dashboard without an AppHost — useful for existing applications that already emit OpenTelemetry.
+
+**Via the CLI (13.3+):**
+
+```bash
+aspire dashboard run
+```
+
+**Via the container image:**
 
 ```bash
 docker run --rm -d \
@@ -180,13 +192,11 @@ docker run --rm -d \
 
 ---
 
-## Copilot integration
+## AI / agentic integration
 
-The dashboard integrates with GitHub Copilot in VS Code:
+> **Changed in 13.3:** The in-dashboard GitHub Copilot chat UI (and the dashboard-embedded MCP server, along with `ASPIRE_DASHBOARD_MCP_ENDPOINT_URL`) was **removed** in favor of an agentic development model.
 
-- Ask questions about resource status
-- Query logs and traces in natural language
-- The MCP server (see [MCP Server](mcp-server.md)) provides the bridge
+To query resource status, logs, and traces with an AI assistant, configure the **AppHost-level MCP server** via `aspire agent init` and use your assistant (Claude Code, VS Code + GitHub Copilot, Copilot CLI, etc.). See [MCP Server](mcp-server.md).
 
 ---
 

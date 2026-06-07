@@ -11,7 +11,19 @@ Aspire separates **orchestration** (what to run) from **deployment** (where to r
 | **`aspire publish`** | Generates deployment artifacts (Dockerfiles, Helm charts, Bicep, etc.) |
 | **Deploy** | You run the generated artifacts through your CI/CD pipeline |
 
-Aspire does NOT deploy directly. It generates the manifests — you deploy them.
+Aspire does NOT deploy directly via `aspire publish`. It generates the manifests — you deploy them through CI/CD.
+
+### Direct deploy & teardown (Preview, 13.3+)
+
+For supported targets (Azure, Kubernetes, Docker Compose), the CLI can also deploy and tear down directly:
+
+```bash
+aspire deploy                 # provision + deploy to the target environment
+aspire destroy                # tear down what `aspire deploy` provisioned
+aspire destroy -e Staging -y  # target an environment, skip the confirmation prompt
+```
+
+> Since 13.3, a container-runtime health check runs before `aspire deploy` so missing/stopped Docker/Podman is caught early. Use `--list-steps` on `deploy`/`destroy` to preview the pipeline without executing it.
 
 ---
 
@@ -38,6 +50,8 @@ var api = builder.AddProject<Projects.Api>("api")
     .PublishAsDockerFile();  // override default publish behavior
 ```
 
+> **13.3+:** Docker Compose deployments also support **Podman** as the container runtime, plus privileged-mode publishing.
+
 ### Kubernetes
 
 **Package:** `Aspire.Hosting.Kubernetes`
@@ -58,6 +72,8 @@ var api = builder.AddProject<Projects.Api>("api")
     .WithReplicas(3)                    // maps to K8s replicas
     .WithExternalHttpEndpoints();       // maps to Ingress/LoadBalancer
 ```
+
+> **13.3+:** A Helm-based Kubernetes deployment engine is available via `AddKubernetesEnvironment(...)`. Declare external traffic with first-class routing resources — `AddIngress(...)` (legacy) or `AddGateway(...)` (preferred for new clusters) — which generate the matching Ingress / Gateway API YAML in the Helm chart output. For AKS specifically, use `AddAzureKubernetesEnvironment(...)`.
 
 ### Azure Container Apps
 
