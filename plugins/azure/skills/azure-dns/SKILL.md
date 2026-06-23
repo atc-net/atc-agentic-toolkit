@@ -1,36 +1,31 @@
 ---
 name: azure-dns
-description: Expert knowledge for Azure DNS development including troubleshooting, decision making, architecture & design patterns, limits & quotas, security, configuration, and integrations & coding patterns. Use when managing Azure DNS zones/records, DNSSEC, Private DNS + Resolvers, reverse DNS, or large-scale zone design, and other Azure DNS related development tasks. Not for Azure Traffic Manager (use azure-traffic-manager), Azure Front Door (use azure-front-door), Azure Virtual Network (use azure-virtual-network), Azure Virtual Network Manager (use azure-virtual-network-manager).
+description: Expert knowledge for Azure DNS development including decision making, architecture & design patterns, limits & quotas, security, configuration, and integrations & coding patterns. Use when managing DNS zones/records, DNSSEC, Private DNS/resolvers, reverse DNS, or migrating legacy Private DNS, and other Azure DNS related development tasks. Not for Azure Traffic Manager (use azure-traffic-manager), Azure Front Door (use azure-front-door), Azure Virtual Network (use azure-virtual-network), Azure Private Link (use azure-private-link).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
 # Azure DNS Skill
 
-This skill provides expert guidance for Azure DNS. Covers troubleshooting, decision making, architecture & design patterns, limits & quotas, security, configuration, and integrations & coding patterns. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure DNS. Covers decision making, architecture & design patterns, limits & quotas, security, configuration, and integrations & coding patterns. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L29-L32 | Diagnosing and fixing common Azure DNS issues like record resolution failures, misconfigurations, propagation delays, and permission or zone-related errors. |
-| Decision Making | L34-L37 | Guidance for planning and executing migration of legacy Azure Private DNS zones to the new DNS zone model, including compatibility, steps, and considerations. |
-| Architecture & Design Patterns | L39-L43 | Designing resilient private DNS architectures in Azure, including when to use centralized vs distributed DNS Private Resolvers and how to shard Private DNS zones for high availability. |
-| Limits & Quotas | L45-L48 | Private DNS zone scale limits, record count and name constraints, performance and subscription quotas, and design considerations when planning large private DNS deployments |
-| Security | L50-L59 | Protecting DNS zones/records from deletion, configuring DNS security policies and logging, using DNSSEC for public zones, and securing Azure DNS with RBAC, alerts, and built-in protections. |
-| Configuration | L61-L72 | Configuring Azure DNS behavior: reverse DNS, private DNS zones and resolvers, zone file import/export, monitoring/metrics/logs, and query/ResolutionPolicy settings for name resolution. |
-| Integrations & Coding Patterns | L74-L83 | Using Azure CLI, PowerShell, or portal to create/manage DNS zones and records, and to delegate subdomains or import/export DNS zone files for automation and integration. |
-
-### Troubleshooting
-| Topic | URL |
-|-------|-----|
-| Troubleshoot common Azure DNS issues and errors | https://learn.microsoft.com/en-us/azure/dns/dns-troubleshoot |
+| Decision Making | L30-L34 | Guidance for planning and executing migration of legacy Azure Private DNS zones to the new DNS zone model, including compatibility, steps, and considerations. |
+| Architecture & Design Patterns | L35-L40 | Designing resilient private DNS architectures in Azure, including when to use centralized vs distributed DNS Private Resolvers and how to shard Private DNS zones for high availability. |
+| Limits & Quotas | L41-L47 | DNS record, zone, and query limits for Azure DNS and Private DNS, including quotas, scaling behaviors, usage constraints, and how many zones/records you can create and manage. |
+| Security | L48-L58 | Protecting DNS zones/records from deletion, configuring DNS security policies and logging, using DNSSEC for public zones, and securing Azure DNS with RBAC, alerts, and built-in protections. |
+| Configuration | L59-L71 | Configuring Azure DNS behavior: reverse DNS, private DNS zones and resolvers, zone file import/export, monitoring/metrics/logs, and query/ResolutionPolicy settings for name resolution. |
+| Integrations & Coding Patterns | L72-L81 | Using Azure CLI, PowerShell, or portal to create/manage DNS zones and records, and to delegate subdomains or import/export DNS zone files for automation and integration. |
 
 ### Decision Making
 | Topic | URL |
@@ -46,6 +41,8 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 ### Limits & Quotas
 | Topic | URL |
 |-------|-----|
+| Azure DNS FAQs on limits and behaviors | https://learn.microsoft.com/en-us/azure/dns/dns-faq |
+| Azure Private DNS FAQs on limits and usage | https://learn.microsoft.com/en-us/azure/dns/dns-faq-private |
 | Understand Azure Private DNS zones and limits | https://learn.microsoft.com/en-us/azure/dns/private-dns-privatednszone |
 
 ### Security

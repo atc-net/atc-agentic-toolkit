@@ -4,26 +4,27 @@ description: Expert knowledge for Azure AI Immersive Reader development includin
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
-# Azure Immersive Reader Skill
+# Azure AI Immersive Reader Skill
 
-This skill provides expert guidance for Azure Immersive Reader. Covers best practices, limits & quotas, security, configuration, and integrations & coding patterns. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure AI Immersive Reader. Covers best practices, limits & quotas, security, configuration, and integrations & coding patterns. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Best Practices | L27-L30 | Guidance on improving Immersive Reader performance by caching authentication tokens, including token reuse patterns and reducing auth overhead. |
-| Limits & Quotas | L32-L35 | Supported languages and feature availability for Immersive Reader (e.g., which languages work with read-aloud, translation, and other capabilities). |
-| Security | L37-L42 | Configuring Immersive Reader security: creating the resource with Entra auth, managing Entra role assignments, and setting cookie policy and user consent. |
-| Configuration | L44-L49 | Configuring Immersive Reader behavior: read-aloud voice/speed, translation languages and behavior, and storing/managing per-user reading and language preferences. |
-| Integrations & Coding Patterns | L51-L60 | Implementing Immersive Reader in web/iOS apps: launch flows, JS SDK usage, HTML/MathML prep, custom buttons, multi-resource setups, and Vision Read integration. |
+| Best Practices | L29-L33 | Guidance on improving Immersive Reader performance by caching authentication tokens, including token reuse patterns and reducing auth overhead. |
+| Limits & Quotas | L34-L38 | Supported languages and feature availability for Immersive Reader (e.g., which languages work with read-aloud, translation, and other capabilities). |
+| Security | L39-L45 | Configuring Immersive Reader security: creating the resource with Entra auth, managing Entra role assignments, and setting cookie policy and user consent. |
+| Configuration | L46-L52 | Configuring Immersive Reader behavior: read-aloud voice/speed, translation languages and behavior, and storing/managing per-user reading and language preferences. |
+| Integrations & Coding Patterns | L53-L62 | Implementing Immersive Reader in web/iOS apps: launch flows, JS SDK usage, HTML/MathML prep, custom buttons, multi-resource setups, and Vision Read integration. |
 
 ### Best Practices
 | Topic | URL |

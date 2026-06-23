@@ -1,70 +1,89 @@
 ---
 name: azure-deployment-environments
-description: Expert knowledge for Azure Deployment Environments development including troubleshooting, best practices, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when designing ADE catalogs, environment.yaml schemas, custom images, RBAC/roles, or CI/CD image pipelines, and other Azure Deployment Environments related development tasks. Not for Azure DevTest Labs (use azure-devtest-labs), Azure Dev Box (use azure-dev-box), Azure Integration Environments (use azure-integration-environments), Azure Managed Applications (use azure-managed-applications).
+description: Expert knowledge for Azure Deployment Environments development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when configuring ADE catalogs, RBAC/managed identities, Git/ARM catalogs, custom images, or CI/CD environment automation, and other Azure Deployment Environments related development tasks. Not for Azure DevTest Labs (use azure-devtest-labs), Azure Dev Box (use azure-dev-box), Azure Integration Environments (use azure-integration-environments), Azure Managed Applications (use azure-managed-applications).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
 # Azure Deployment Environments Skill
 
-This skill provides expert guidance for Azure Deployment Environments. Covers troubleshooting, best practices, limits & quotas, security, configuration, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure Deployment Environments. Covers troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L29-L32 | Diagnosing and resolving Azure Deployment Environments custom image deployment failures, including common error codes, validation issues, and configuration or image compatibility problems. |
-| Best Practices | L34-L37 | Guidance on structuring ADE catalogs: organizing templates, folders, and repos for reusable, maintainable, and scalable deployment environment definitions. |
-| Limits & Quotas | L39-L42 | How to view current Azure Deployment Environments quotas/capacity, understand default limits, and request increases for org, project, and environment resource usage. |
-| Security | L44-L50 | RBAC and identity for ADE: planning Azure roles/scopes, using Azure CLI auth for REST, configuring managed identities, and assigning built‑in ADE roles and access. |
-| Configuration | L52-L58 | Defining and configuring ADE environment.yaml schemas, environment definitions, and custom container images, plus required CLI environment variables for building and running those images. |
-| Integrations & Coding Patterns | L60-L63 | Using the ADE CLI to build, publish, and manage custom environment images, automate image pipelines, and integrate ADE image workflows into CI/CD and DevOps processes |
-| Deployment | L65-L69 | How to integrate Azure Deployment Environments with CI/CD tools like Azure Pipelines and GitHub Actions, including configuring pipelines to create, update, and delete ADE environments. |
+| Troubleshooting | L33-L37 | Diagnosing and resolving custom image deployment failures in Azure Deployment Environments, including common error patterns, logs to inspect, and remediation steps. |
+| Best Practices | L38-L42 | Guidance on organizing and structuring Azure Deployment Environments catalogs, including repo layout, template grouping, naming, and governance for scalable, maintainable catalogs. |
+| Decision Making | L43-L47 | Guidance on planning for Azure Deployment Environments entering maintenance mode, including impact, timelines, alternatives, and migration/transition considerations. |
+| Architecture & Design Patterns | L48-L52 | Guidance on designing resilient, scalable Azure Deployment Environments architectures, including fault tolerance, high availability, redundancy, and best practices for robust environment design. |
+| Limits & Quotas | L53-L57 | Requesting and managing quota increases for Azure Deployment Environments resource limits, including how to handle capacity constraints and raise support requests. |
+| Security | L58-L65 | RBAC and identity setup for Deployment Environments: planning and assigning roles, configuring managed identities, and authenticating to the REST APIs. |
+| Configuration | L66-L77 | Defining ADE environments and types, configuring Git catalogs and ARM provisioning, using the devcenter CLI, auto-deletion, and environment variables for custom images. |
+| Integrations & Coding Patterns | L78-L84 | Using Azure Developer CLI and ADE CLI to create environments, build custom container images, and manage custom image workflows for Azure Deployment Environments |
+| Deployment | L85-L89 | Using Azure Deployment Environments with CI/CD tools (Azure Pipelines, GitHub Actions) to automate environment creation, updates, and deployments from templates. |
 
 ### Troubleshooting
 | Topic | URL |
 |-------|-----|
-| Troubleshoot ADE custom image deployment errors | https://learn.microsoft.com/en-us/azure/deployment-environments/troubleshoot-custom-image-logs-errors |
+| Diagnose custom image deployment failures in Azure Deployment Environments | https://learn.microsoft.com/en-us/azure/deployment-environments/troubleshoot-custom-image-logs-errors |
 
 ### Best Practices
 | Topic | URL |
 |-------|-----|
-| Apply catalog structure best practices in ADE | https://learn.microsoft.com/en-us/azure/deployment-environments/best-practice-catalog-structure |
+| Structure Azure Deployment Environments catalogs efficiently | https://learn.microsoft.com/en-us/azure/deployment-environments/best-practice-catalog-structure |
+
+### Decision Making
+| Topic | URL |
+|-------|-----|
+| Plan for Azure Deployment Environments maintenance mode | https://learn.microsoft.com/en-us/azure/deployment-environments/maintenance-mode |
+
+### Architecture & Design Patterns
+| Topic | URL |
+|-------|-----|
+| Design resilient Azure Deployment Environments architectures | https://learn.microsoft.com/en-us/azure/deployment-environments/concept-reliability-deployment-environments |
 
 ### Limits & Quotas
 | Topic | URL |
 |-------|-----|
-| Request ADE quota and capacity limit increases | https://learn.microsoft.com/en-us/azure/deployment-environments/how-to-request-quota-increase |
+| Request quota increases for ADE resource limits | https://learn.microsoft.com/en-us/azure/deployment-environments/how-to-request-quota-increase |
 
 ### Security
 | Topic | URL |
 |-------|-----|
 | Plan Azure RBAC roles for Deployment Environments | https://learn.microsoft.com/en-us/azure/deployment-environments/concept-deployment-environments-role-based-access-control |
-| Authenticate to ADE REST APIs using Azure CLI | https://learn.microsoft.com/en-us/azure/deployment-environments/how-to-authenticate |
-| Configure managed identities for ADE deployments | https://learn.microsoft.com/en-us/azure/deployment-environments/how-to-configure-managed-identity |
-| Assign ADE built-in roles and access scopes | https://learn.microsoft.com/en-us/azure/deployment-environments/how-to-manage-deployment-environments-access |
+| Authenticate to Azure Deployment Environments REST APIs | https://learn.microsoft.com/en-us/azure/deployment-environments/how-to-authenticate |
+| Configure managed identity for Azure Deployment Environments dev center | https://learn.microsoft.com/en-us/azure/deployment-environments/how-to-configure-managed-identity |
+| Assign RBAC roles for Azure Deployment Environments access | https://learn.microsoft.com/en-us/azure/deployment-environments/how-to-manage-deployment-environments-access |
 
 ### Configuration
 | Topic | URL |
 |-------|-----|
-| Configure environment.yaml schema for ADE definitions | https://learn.microsoft.com/en-us/azure/deployment-environments/concept-environment-yaml |
-| Configure ADE environment definitions and container images | https://learn.microsoft.com/en-us/azure/deployment-environments/configure-environment-definition |
-| Configure custom container images in ADE extensibility | https://learn.microsoft.com/en-us/azure/deployment-environments/how-to-configure-extensibility-model-custom-image |
+| Define Azure Deployment Environments with environment.yaml schema | https://learn.microsoft.com/en-us/azure/deployment-environments/concept-environment-yaml |
+| Configure Git-based catalogs for Azure Deployment Environments | https://learn.microsoft.com/en-us/azure/deployment-environments/how-to-configure-catalog |
+| Configure dev center environment types in Azure Deployment Environments | https://learn.microsoft.com/en-us/azure/deployment-environments/how-to-configure-devcenter-environment-types |
+| Configure project-level environment types in Azure Deployment Environments | https://learn.microsoft.com/en-us/azure/deployment-environments/how-to-configure-project-environment-types |
+| Install and use the devcenter Azure CLI extension | https://learn.microsoft.com/en-us/azure/deployment-environments/how-to-install-devcenter-cli-extension |
+| Configure automatic deletion for ADE environments | https://learn.microsoft.com/en-us/azure/deployment-environments/how-to-schedule-environment-deletion |
+| Provision dev center and project via ARM template | https://learn.microsoft.com/en-us/azure/deployment-environments/quickstart-create-dev-center-project-azure-resource-manager |
 | Reference ADE CLI environment variables for custom images | https://learn.microsoft.com/en-us/azure/deployment-environments/reference-deployment-environment-variables |
 
 ### Integrations & Coding Patterns
 | Topic | URL |
 |-------|-----|
+| Create ADE environments using Azure Developer CLI | https://learn.microsoft.com/en-us/azure/deployment-environments/how-to-configure-azure-developer-cli-deployment-environments |
+| Use custom container images with Azure Deployment Environments | https://learn.microsoft.com/en-us/azure/deployment-environments/how-to-configure-extensibility-model-custom-image |
 | Use ADE CLI commands for custom image workflows | https://learn.microsoft.com/en-us/azure/deployment-environments/reference-deployment-environment-cli |
 
 ### Deployment
 | Topic | URL |
 |-------|-----|
-| Use Azure Pipelines to deploy ADE environments | https://learn.microsoft.com/en-us/azure/deployment-environments/tutorial-deploy-environments-in-cicd-azure-devops |
-| Integrate ADE with GitHub Actions CI/CD pipelines | https://learn.microsoft.com/en-us/azure/deployment-environments/tutorial-deploy-environments-in-cicd-github |
+| Integrate ADE with Azure Pipelines for CI/CD | https://learn.microsoft.com/en-us/azure/deployment-environments/tutorial-deploy-environments-in-cicd-azure-devops |
+| Deploy Azure environments via GitHub CI/CD pipelines | https://learn.microsoft.com/en-us/azure/deployment-environments/tutorial-deploy-environments-in-cicd-github |

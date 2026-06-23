@@ -1,30 +1,31 @@
 ---
 name: azure-playwright-workspaces
-description: Expert knowledge for Playwright Workspaces development including troubleshooting, best practices, decision making, limits & quotas, security, and configuration. Use when managing Playwright Testing workspaces, tokens/RBAC, quotas, monitoring/metrics, or run/AADSTS7000112 issues, and other Playwright Workspaces related development tasks.
+description: Expert knowledge for Playwright Workspaces development including troubleshooting, best practices, decision making, limits & quotas, security, and configuration. Use when managing Playwright Testing workspaces, tokens/RBAC, quotas, monitoring/metrics, or run/AADSTS7000112 issues, and other Playwright Workspaces related development tasks. Not for Azure App Testing (use azure-app-testing), Azure DevOps (use azure-devops), Azure Pipelines (use azure-pipelines), Azure Test Plans (use azure-test-plans).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
-# Azure Playwright Workspaces Skill
+# Playwright Workspaces Skill
 
-This skill provides expert guidance for Azure Playwright Workspaces. Covers troubleshooting, best practices, decision making, limits & quotas, security, and configuration. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Playwright Workspaces. Covers troubleshooting, best practices, decision making, limits & quotas, security, and configuration. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L28-L32 | Diagnosing and fixing Playwright Testing run failures and resolving AADSTS7000112/Azure AD sign-in issues for accessing the Playwright portal. |
-| Best Practices | L34-L42 | Optimizing Playwright Testing workspaces for speed, latency, visual regression, remote/private app access, key service features, and reporting/sharding strategies |
-| Decision Making | L44-L47 | Guidance on creating, choosing, organizing, and managing Microsoft Playwright Testing workspaces for different teams, projects, and testing scenarios. |
-| Limits & Quotas | L49-L53 | Details on Playwright Testing workspace limits, free trial quotas, concurrency caps, and how to configure or monitor usage against those limits. |
-| Security | L55-L60 | Managing workspace access tokens, setting up authentication/authorization, and configuring RBAC roles and permissions for Microsoft Playwright Testing workspaces. |
-| Configuration | L62-L67 | Configuring Playwright Testing workspaces: service config file setup, enabling monitoring, and understanding available metrics and logs for observability. |
+| Troubleshooting | L30-L35 | Diagnosing and fixing Playwright Testing run failures and resolving AADSTS7000112/Azure AD sign-in issues for accessing the Playwright portal. |
+| Best Practices | L36-L45 | Optimizing Playwright Testing workspaces for speed, latency, visual regression, remote/private app access, key service features, and reporting/sharding strategies |
+| Decision Making | L46-L50 | Guidance on creating, choosing, organizing, and managing Microsoft Playwright Testing workspaces for different teams, projects, and testing scenarios. |
+| Limits & Quotas | L51-L56 | Details on Playwright Testing workspace limits, free trial quotas, concurrency caps, and how to configure or monitor usage against those limits. |
+| Security | L57-L63 | Managing workspace access tokens, setting up authentication/authorization, and configuring RBAC roles and permissions for Microsoft Playwright Testing workspaces. |
+| Configuration | L64-L69 | Configuring Playwright Testing workspaces: service config file setup, enabling monitoring, and understanding available metrics and logs for observability. |
 
 ### Troubleshooting
 | Topic | URL |

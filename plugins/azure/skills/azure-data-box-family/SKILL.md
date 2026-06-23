@@ -1,30 +1,31 @@
 ---
 name: azure-data-box-family
-description: Expert knowledge for Azure Data Box development including troubleshooting, best practices, limits & quotas, security, configuration, and integrations & coding patterns. Use when handling Data Box/Disk orders, SMB/NFS copies, TLS certs/CMK in Key Vault, or VHD-to-managed-disk imports, and other Azure Data Box related development tasks. Not for Azure Import Export (use azure-import-export), Azure Stack Edge (use azure-stack-edge), Azure Blob Storage (use azure-blob-storage), Azure Files (use azure-files).
+description: Expert knowledge for Azure Data Box development including troubleshooting, best practices, limits & quotas, security, configuration, and integrations & coding patterns. Use when using Data Box/Heavy/Disk for bulk uploads, SMB/NFS copy, REST APIs, Key Vault CMKs, or VHD-to-managed-disk, and other Azure Data Box related development tasks. Not for Azure Import Export (use azure-import-export), Azure Stack Edge (use azure-stack-edge), Azure Blob Storage (use azure-blob-storage), Azure Files (use azure-files).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
-# Azure Data Box Family Skill
+# Azure Data Box Skill
 
-This skill provides expert guidance for Azure Data Box Family. Covers troubleshooting, best practices, limits & quotas, security, configuration, and integrations & coding patterns. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure Data Box. Covers troubleshooting, best practices, limits & quotas, security, configuration, and integrations & coding patterns. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L28-L43 | Diagnosing and fixing Data Box/Disk issues: validation, unlock tool, SMB/REST copy, upload errors, time sync, and using audit/logs to track and troubleshoot import/export orders. |
-| Best Practices | L45-L49 | Guidance on preserving NTFS ACLs, file permissions, and metadata when copying data to Azure Data Box and Data Box Disk using supported tools and settings |
-| Limits & Quotas | L51-L57 | Device capacity, disk size, share/volume and connection limits for Data Box, Disk, and Heavy, plus how usage is calculated and constrained during data import/export. |
-| Security | L59-L67 | Security and compliance for Data Box: custom TLS certs, Customer Lockbox, customer-managed keys in Key Vault, and applying Azure Policy and regulatory controls. |
-| Configuration | L69-L87 | Configuring and operating Data Box/Heavy/Disk: cabling, system/network requirements, local UI/portal admin, SMB/NFS/NAS copy workflows, and setting blob access tiers (Hot/Cool/Archive). |
-| Integrations & Coding Patterns | L89-L98 | Patterns and tools for integrating Data Box with apps and backup products (REST APIs, VHD to managed disks, file share to SharePoint, Commvault, OpenText, Veeam migrations). |
+| Troubleshooting | L30-L46 | Diagnosing and fixing Azure Data Box and Data Box Disk issues: audit/order logs, validation and unlock errors, SMB/REST/upload copy failures, and time sync or connection problems. |
+| Best Practices | L47-L52 | Guidance on preserving NTFS ACLs, file permissions, and metadata when copying data to Azure Data Box and Data Box Disk using supported tools and settings |
+| Limits & Quotas | L53-L62 | Device capacities, disk/file size limits, and connection constraints for Azure Data Box, Data Box Disk, and Data Box Heavy, including usage rules and FAQs on quotas. |
+| Security | L63-L73 | Securing Azure Data Box: certificates, CMKs in Key Vault, Customer Lockbox, built‑in protections, and applying Azure Policy (including regulatory controls) to Data Box and Data Box Disk. |
+| Configuration | L74-L93 | Configuring and operating Data Box/Heavy/Disk: cabling, system/network requirements, local UI/portal admin, SMB/NFS/NAS copy workflows, and setting blob access tiers (Hot/Cool/Archive). |
+| Integrations & Coding Patterns | L94-L103 | Patterns and tools for integrating Data Box with apps and backup products (REST APIs, VHD to managed disks, file share to SharePoint, Commvault, OpenText, Veeam migrations). |
 
 ### Troubleshooting
 | Topic | URL |
@@ -38,7 +39,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Track and audit Azure Data Box export orders and logs | https://learn.microsoft.com/en-us/azure/databox/data-box-export-logs |
 | Track and audit Azure Data Box import orders and logs | https://learn.microsoft.com/en-us/azure/databox/data-box-logs |
 | Troubleshoot Azure Data Box data copy errors | https://learn.microsoft.com/en-us/azure/databox/data-box-troubleshoot |
-| Resolve Azure Data Box upload copy errors | https://learn.microsoft.com/en-us/azure/databox/data-box-troubleshoot-data-upload |
+| Troubleshoot Azure Data Box upload copy errors | https://learn.microsoft.com/en-us/azure/databox/data-box-troubleshoot-data-upload |
 | Troubleshoot Azure Data Box REST copy issues | https://learn.microsoft.com/en-us/azure/databox/data-box-troubleshoot-rest |
 | Fix SMB share connection failures to Azure Data Box | https://learn.microsoft.com/en-us/azure/databox/data-box-troubleshoot-share-access |
 | Fix time synchronization issues on Azure Data Box | https://learn.microsoft.com/en-us/azure/databox/data-box-troubleshoot-time-sync |
@@ -52,7 +53,9 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 ### Limits & Quotas
 | Topic | URL |
 |-------|-----|
-| Capacity and usage limits for Azure Data Box Disk | https://learn.microsoft.com/en-us/azure/databox/data-box-disk-limits |
+| Azure Data Box Disk capacity and usage limits FAQ | https://learn.microsoft.com/en-us/azure/databox/data-box-disk-faq |
+| Review Azure Data Box Disk capacity and file limits | https://learn.microsoft.com/en-us/azure/databox/data-box-disk-limits |
+| Azure Data Box and Data Box Heavy limits and usage FAQs | https://learn.microsoft.com/en-us/azure/databox/data-box-faq |
 | Capacity and connection limits for Azure Data Box Heavy | https://learn.microsoft.com/en-us/azure/databox/data-box-heavy-limits |
 | Azure Data Box device and connection limits | https://learn.microsoft.com/en-us/azure/databox/data-box-limits |
 | Understand Azure Data Box device capacities and usage | https://learn.microsoft.com/en-us/azure/databox/data-box-overview |
@@ -64,6 +67,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Configure Customer Lockbox approvals for Azure Data Box | https://learn.microsoft.com/en-us/azure/databox/data-box-customer-lockbox |
 | Manage customer-managed keys for Azure Data Box in Key Vault | https://learn.microsoft.com/en-us/azure/databox/data-box-customer-managed-encryption-key-portal |
 | Security features and protections in Azure Data Box Disk | https://learn.microsoft.com/en-us/azure/databox/data-box-disk-security |
+| Understand and manage Azure Data Box security features | https://learn.microsoft.com/en-us/azure/databox/data-box-security |
 | Apply Azure Policy built-ins to Azure Data Box | https://learn.microsoft.com/en-us/azure/databox/policy-reference |
 | Apply Azure Policy regulatory controls to Data Box | https://learn.microsoft.com/en-us/azure/databox/security-controls-policy |
 

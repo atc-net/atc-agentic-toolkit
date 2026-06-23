@@ -1,38 +1,33 @@
 ---
 name: azure-portal
-description: Expert knowledge for Azure Portal development including troubleshooting, limits & quotas, security, and configuration. Use when setting portal security policies, RBAC dashboards, dashboard JSON, mobile app access/alerts, or browser diagnostics, and other Azure Portal related development tasks. Not for Azure Cloud Shell (use azure-cloud-shell), Azure Resource Manager (use azure-resource-manager), Azure Monitor (use azure-monitor), Azure Policy (use azure-policy).
+description: Expert knowledge for Azure Portal development including troubleshooting, security, and configuration. Use when managing portal RBAC sharing, Intune/Entra mobile access, dashboard JSON, portal policies, or HAR diagnostics, and other Azure Portal related development tasks. Not for Azure Cloud Shell (use azure-cloud-shell), Azure Resource Manager (use azure-resource-manager), Azure Monitor (use azure-monitor), Azure Security (use azure-security).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
 # Azure Portal Skill
 
-This skill provides expert guidance for Azure Portal. Covers troubleshooting, limits & quotas, security, and configuration. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure Portal. Covers troubleshooting, security, and configuration. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L26-L29 | How to collect browser network traces, console logs, HAR files, and diagnostics to investigate and report Azure portal performance or UI issues |
-| Limits & Quotas | L31-L34 | Browser compatibility, OS/device requirements, and configuration needed to reliably access and use the Azure portal across different platforms. |
-| Security | L36-L42 | Tenant-wide portal security policies, RBAC-based dashboard sharing, and managing/protecting access to Azure via Intune MAM and the Azure mobile app. |
-| Configuration | L44-L52 | Configuring Azure portal behavior: dashboard JSON/templates, keyboard shortcuts, URL allowlists, mobile app alerts, and built-in Azure Policy definitions for portal governance. |
+| Troubleshooting | L27-L31 | How to collect browser network traces, console logs, HAR files, and diagnostics to investigate and report Azure portal performance or UI issues |
+| Security | L32-L40 | Tenant-wide admin/security policies, RBAC-based dashboard sharing, mobile app protection and user management with Intune/Entra ID, and roles needed to manage Azure support requests. |
+| Configuration | L41-L49 | Configuring Azure portal behavior: dashboard JSON/templates, keyboard shortcuts, URL allowlists, mobile app alerts, and built-in Azure Policy definitions for portal governance. |
 
 ### Troubleshooting
 | Topic | URL |
 |-------|-----|
 | Capture browser traces and diagnostics for Azure portal issues | https://learn.microsoft.com/en-us/azure/azure-portal/capture-browser-trace |
-
-### Limits & Quotas
-| Topic | URL |
-|-------|-----|
-| Supported browsers and device requirements for Azure portal | https://learn.microsoft.com/en-us/azure/azure-portal/azure-portal-supported-browsers-devices |
 
 ### Security
 | Topic | URL |
@@ -41,6 +36,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Share Azure dashboards using Azure RBAC roles | https://learn.microsoft.com/en-us/azure/azure-portal/azure-portal-dashboard-share-access |
 | Apply Intune MAM app protection policies to Azure mobile app | https://learn.microsoft.com/en-us/azure/azure-portal/mobile-app/intune-management |
 | Manage Microsoft Entra ID users via Azure mobile app | https://learn.microsoft.com/en-us/azure/azure-portal/mobile-app/microsoft-entra-id |
+| Manage Azure support requests and required roles | https://learn.microsoft.com/en-us/azure/azure-portal/supportability/how-to-manage-azure-support-request |
 
 ### Configuration
 | Topic | URL |

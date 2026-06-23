@@ -1,6 +1,6 @@
 ---
 name: azure-communication-services
-description: Expert knowledge for Azure Communication Services development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building ACS calling/chat, SMS/email/WhatsApp, PSTN/phone numbers, Teams interop, or Job Router/contact centers, and other Azure Communication Services related development tasks. Not for Azure AI Bot Service (use azure-bot-service), Azure Notification Hubs (use azure-notification-hubs), Azure SignalR Service (use azure-signalr-service), Azure Web PubSub (use azure-web-pubsub).
+description: Expert knowledge for Azure Communication Services development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building ACS calling, chat, SMS, email, Teams interop, or contact center/Job Router solutions, and other Azure Communication Services related development tasks. Not for Azure Notification Hubs (use azure-notification-hubs), Azure Web PubSub (use azure-web-pubsub), Azure SignalR Service (use azure-signalr-service), Azure AI Bot Service (use azure-bot-service).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -10,24 +10,25 @@ This skill provides expert guidance for Azure Communication Services. Covers tro
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L31-L104 | Diagnosing and fixing ACS calling, SMS, email, Teams, PSTN, audio/video, device, network, and SDK issues, plus collecting logs, UFD events, and diagnostics for support. |
-| Best Practices | L106-L130 | Best practices for ACS calling, SMS, email, IDs, auth, Teams interop, network/quality, spam/opt-out compliance, and production-ready virtual visit and meeting experiences. |
-| Decision Making | L132-L146 | Guidance on ACS/Teams design decisions: PSTN options and pricing, phone numbers, Teams interop and licensing, gov cloud usage, and migrating from Twilio Video/Chat to ACS. |
-| Architecture & Design Patterns | L148-L152 | Designing scalable contact center solutions with ACS and patterns for integrating ACS with ExpressRoute for secure, private connectivity and network architecture. |
-| Limits & Quotas | L154-L220 | Limits, quotas, regional availability, and restrictions for ACS calling, phone numbers, email, Teams interop, media features, and troubleshooting token/metric-related issues. |
-| Security | L222-L246 | Security, auth, and compliance for ACS: encryption, identities, HMAC signing, Teams interop controls, caller ID/CNAM, captions/RTT/transcription data, WhatsApp/email/SMTP setup, and emergency calling. |
-| Configuration | L248-L326 | Monitoring, logging, metrics, and diagnostics for ACS (chat, voice/video, SMS, email, calling, routing), plus configuration for Teams interop, domains, routing, UI library, and SMS/email compliance. |
-| Integrations & Coding Patterns | L328-L473 | End-to-end patterns for integrating ACS calling, chat, SMS, email, WhatsApp, Teams, Job Router, bots, AI, and UI libraries, including media control, events, push, and telephony features. |
-| Deployment | L475-L479 | Infrastructure and deployment guidance for Azure Communication Services: direct routing requirements and automating ACS/Email resource provisioning with PowerShell. |
+| Troubleshooting | L33-L107 | Diagnosing and fixing ACS calling, SMS, email, Teams, PSTN, audio/video, device, network, and SDK issues, plus collecting logs, UFD events, and diagnostics for support. |
+| Best Practices | L108-L133 | Best practices for ACS calling, SMS, email, IDs, auth, Teams interop, network/quality, spam/opt-out compliance, and production-ready virtual visit and meeting experiences. |
+| Decision Making | L134-L149 | Guidance on ACS/Teams design decisions: PSTN options and pricing, phone numbers, Teams interop and licensing, gov cloud usage, and migrating from Twilio Video/Chat to ACS. |
+| Architecture & Design Patterns | L150-L155 | Designing scalable contact center solutions with ACS and patterns for integrating ACS with ExpressRoute for secure, private connectivity and network architecture. |
+| Limits & Quotas | L156-L223 | Limits, quotas, regional availability, and restrictions for ACS calling, phone numbers, email, Teams interop, media features, and troubleshooting token/metric-related issues. |
+| Security | L224-L250 | Security, auth, and compliance for ACS: encryption, identities, HMAC, caller ID, email/SMTP, Teams interop, captions/transcription, emergency calling, and secure webhooks/Rooms. |
+| Configuration | L251-L329 | Monitoring, logging, metrics, and diagnostics for ACS (chat, voice/video, SMS, email, calling, routing), plus configuration for Teams interop, domains, routing, UI library, and SMS/email compliance. |
+| Integrations & Coding Patterns | L330-L476 | Patterns and code to integrate ACS calling, chat, SMS, email, Rooms, Job Router, and WhatsApp with apps, bots, Teams, OpenAI, push/events, media, and telephony features. |
+| Deployment | L477-L481 | Infrastructure and deployment guidance for Azure Communication Services: direct routing requirements and automating ACS/Email resource provisioning with PowerShell. |
 
 ### Troubleshooting
 | Topic | URL |
@@ -228,6 +229,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Understand ACS call flow topologies and encryption | https://learn.microsoft.com/en-us/azure/communication-services/concepts/detailed-call-flows |
 | Apply sender authentication best practices in Azure | https://learn.microsoft.com/en-us/azure/communication-services/concepts/email/email-authentication-best-practice |
 | Configure Azure email domains and authentication | https://learn.microsoft.com/en-us/azure/communication-services/concepts/email/email-domain-and-sender-authentication |
+| Use Azure Communication Services in US Government clouds | https://learn.microsoft.com/en-us/azure/communication-services/concepts/government |
 | Configure authentication for single-tenant and multitenant ACS Teams apps | https://learn.microsoft.com/en-us/azure/communication-services/concepts/interop/custom-teams-endpoint-authentication-overview |
 | Configure closed captions for ACS–Teams interop calls | https://learn.microsoft.com/en-us/azure/communication-services/concepts/interop/enable-closed-captions |
 | Enable and license Teams interoperability for ACS users | https://learn.microsoft.com/en-us/azure/communication-services/concepts/interop/enable-interoperability-teams |
@@ -293,7 +295,6 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Configure SIP parameters for ACS direct routing | https://learn.microsoft.com/en-us/azure/communication-services/concepts/telephony/direct-routing-sip-specification |
 | Configure inbound PSTN and direct routing endpoints in ACS | https://learn.microsoft.com/en-us/azure/communication-services/concepts/telephony/inbound-calling-capabilities |
 | Monitor ACS direct routing components and trunks | https://learn.microsoft.com/en-us/azure/communication-services/concepts/telephony/monitoring-troubleshooting-telephony/monitor-direct-routing |
-| Configure and use Azure Communication Services call recording | https://learn.microsoft.com/en-us/azure/communication-services/concepts/voice-video-calling/call-recording |
 | Access media quality statistics via ACS Calling SDK | https://learn.microsoft.com/en-us/azure/communication-services/concepts/voice-video-calling/media-quality-sdk |
 | Configure and use ACS pre-call diagnostics API | https://learn.microsoft.com/en-us/azure/communication-services/concepts/voice-video-calling/pre-call-diagnostics |
 | Validate domains for ACS direct routing SBCs | https://learn.microsoft.com/en-us/azure/communication-services/how-tos/telephony/domain-validation |
@@ -394,7 +395,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Integrate Android TelecomManager with ACS UI Library | https://learn.microsoft.com/en-us/azure/communication-services/how-tos/ui-library-sdk/telecommanager |
 | Download WhatsApp media from ACS Event Grid messages | https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/advanced-messaging/whatsapp/download-media |
 | Integrate app with WhatsApp text and media messaging | https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/advanced-messaging/whatsapp/get-started |
-| Subscribe to WhatsApp Advanced Messaging Event Grid events | https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/advanced-messaging/whatsapp/handle-advanced-messaging-events |
+| Subscribe to WhatsApp Advanced Messaging events with Event Grid | https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/advanced-messaging/whatsapp/handle-advanced-messaging-events |
 | Implement interactive WhatsApp messages with ACS SDK | https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/advanced-messaging/whatsapp/send-interactive-messages |
 | Send WhatsApp reaction messages using ACS SDK | https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/advanced-messaging/whatsapp/send-reaction-messages |
 | Send WhatsApp sticker messages with Advanced Messages SDK | https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/advanced-messaging/whatsapp/send-sticker-messages |

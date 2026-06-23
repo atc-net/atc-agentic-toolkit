@@ -1,6 +1,6 @@
 ---
 name: azure-ai-vision
-description: Expert knowledge for Azure AI Vision development including decision making, limits & quotas, configuration, integrations & coding patterns, and deployment. Use when using Image Analysis, Read OCR containers, Blob Storage image access, smart-crop thumbnails, or video frame analysis, and other Azure AI Vision related development tasks. Not for Azure AI services (use microsoft-foundry-tools), Azure AI Custom Vision (use azure-custom-vision), Azure AI Video Indexer (use azure-video-indexer), Azure AI Document Intelligence (use azure-document-intelligence).
+description: Expert knowledge for Azure AI Vision development including decision making, limits & quotas, configuration, integrations & coding patterns, and deployment. Use when using Image Analysis, Read OCR containers, smart-crop thumbnails, background removal, or video frame analysis, and other Azure AI Vision related development tasks. Not for Azure AI Custom Vision (use azure-custom-vision), Azure AI Video Indexer (use azure-video-indexer), Azure AI Document Intelligence (use azure-document-intelligence), Azure AI Immersive Reader (use azure-immersive-reader).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -10,25 +10,26 @@ This skill provides expert guidance for Azure AI Vision. Covers decision making,
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Decision Making | L27-L32 | Guides for planning and executing migrations and upgrades between Azure Vision Image Analysis and Read OCR versions/containers, including breaking changes and app update steps. |
-| Limits & Quotas | L34-L44 | Limits, thresholds, and taxonomies for Image Analysis: category lists, adult content scores, object/people detection constraints, smart-crop behavior, and OCR language support. |
-| Configuration | L46-L50 | Configuring Vision Read OCR containers and setting up Azure Blob Storage access for image retrieval, including environment settings, networking, and storage connection details. |
-| Integrations & Coding Patterns | L52-L61 | How to call and configure Azure Vision/Read APIs and SDKs for OCR, embeddings, thumbnails, background removal, domain models, and live video frame analysis. |
-| Deployment | L63-L66 | Installing, configuring, and running the Azure AI Vision Read OCR container locally or on-premises, including prerequisites, deployment steps, and runtime settings. |
+| Decision Making | L29-L35 | Guidance on migrating and upgrading Azure Vision Image Analysis and Read OCR apps/containers, including choosing migration paths and moving from v2.x to v3.x APIs. |
+| Limits & Quotas | L36-L46 | Limits, thresholds, and taxonomies for Image Analysis: category lists, adult content scores, object/people detection constraints, smart-crop behavior, and OCR language support. |
+| Configuration | L47-L52 | Configuring Vision Read OCR containers and setting up Azure Blob Storage access for image input, including environment settings, storage permissions, and connection details. |
+| Integrations & Coding Patterns | L53-L63 | How to call and configure Azure Vision/Read APIs and SDKs for OCR, embeddings, thumbnails, background removal, domain models, and live video frame analysis. |
+| Deployment | L64-L67 | Installing, configuring, and running the Azure AI Vision Read OCR container locally or on-premises, including prerequisites, deployment steps, and runtime settings. |
 
 ### Decision Making
 | Topic | URL |
 |-------|-----|
-| Plan migration from Azure Vision Image Analysis | https://learn.microsoft.com/en-us/azure/ai-services/computer-vision/migration-options |
+| Choose migration path from Azure Vision Image Analysis | https://learn.microsoft.com/en-us/azure/ai-services/computer-vision/migration-options |
 | Migrate to Azure Vision Read OCR container v3.x | https://learn.microsoft.com/en-us/azure/ai-services/computer-vision/read-container-migration-guide |
 | Upgrade applications from Read v2.x to v3.0 | https://learn.microsoft.com/en-us/azure/ai-services/computer-vision/upgrade-api-versions |
 
@@ -38,7 +39,6 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Reference taxonomy categories for Azure Vision | https://learn.microsoft.com/en-us/azure/ai-services/computer-vision/category-taxonomy |
 | Understand Image Analysis 3.2 categorization taxonomy limits | https://learn.microsoft.com/en-us/azure/ai-services/computer-vision/concept-categorizing-images |
 | Interpret adult content detection scores and thresholds | https://learn.microsoft.com/en-us/azure/ai-services/computer-vision/concept-detecting-adult-content |
-| Use smart-cropped thumbnails with Image Analysis 4.0 | https://learn.microsoft.com/en-us/azure/ai-services/computer-vision/concept-generate-thumbnails-40 |
 | Use object detection and understand feature limits | https://learn.microsoft.com/en-us/azure/ai-services/computer-vision/concept-object-detection |
 | Understand Image Analysis 4.0 object detection limits | https://learn.microsoft.com/en-us/azure/ai-services/computer-vision/concept-object-detection-40 |
 | Use people detection and understand its limits | https://learn.microsoft.com/en-us/azure/ai-services/computer-vision/concept-people-detection |

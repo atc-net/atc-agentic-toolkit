@@ -1,6 +1,6 @@
 ---
 name: azure-table-storage
-description: Expert knowledge for Azure Table Storage development including best practices, architecture & design patterns, limits & quotas, security, configuration, and integrations & coding patterns. Use when managing Entra ID/RBAC access, monitoring metrics/logs, tuning partitions/keys, or scripting tables via PowerShell, and other Azure Table Storage related development tasks. Not for Azure Cosmos DB (use azure-cosmos-db), Azure Blob Storage (use azure-blob-storage), Azure Queue Storage (use azure-queue-storage), Azure Files (use azure-files).
+description: Expert knowledge for Azure Table Storage development including best practices, architecture & design patterns, limits & quotas, security, configuration, and integrations & coding patterns. Use when designing partition/row keys, tuning throughput, configuring metrics/logs, or scripting tables via PowerShell, and other Azure Table Storage related development tasks. Not for Azure Cosmos DB (use azure-cosmos-db), Azure Blob Storage (use azure-blob-storage), Azure Queue Storage (use azure-queue-storage), Azure Files (use azure-files).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -10,21 +10,22 @@ This skill provides expert guidance for Azure Table Storage. Covers best practic
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Best Practices | L28-L31 | Guidance on designing scalable table schemas, partition/row key strategies, throughput optimization, and performance tuning patterns for Azure Table storage. |
-| Architecture & Design Patterns | L33-L41 | Designing Azure Table Storage schemas: partition/row key strategies, query-optimized models, handling relationships, efficient updates, and common design patterns/anti-patterns. |
-| Limits & Quotas | L43-L46 | Scalability limits, throughput targets, partition/key design, and performance best practices for Azure Table storage workloads. |
-| Security | L48-L52 | Managing access to Azure Table data using Microsoft Entra ID and Azure RBAC, including assigning roles and configuring identity-based authorization. |
-| Configuration | L54-L58 | Configuring Azure Table Storage monitoring: enabling metrics and logs, understanding available telemetry, and setting up alerts for performance, availability, and diagnostics. |
-| Integrations & Coding Patterns | L60-L63 | Using Azure PowerShell to manage Table storage: create/delete tables, insert/query/update/delete entities, and script common data operations. |
+| Best Practices | L30-L34 | Guidance on designing scalable table schemas, partition/row key strategies, throughput optimization, and performance tuning patterns for Azure Table storage. |
+| Architecture & Design Patterns | L35-L44 | Designing Azure Table Storage schemas: partition/row key strategies, query-optimized models, handling relationships, efficient updates, and common design patterns/anti-patterns. |
+| Limits & Quotas | L45-L49 | Scalability limits, throughput targets, and performance constraints for Azure Table Storage, including partition key design, request rates, and capacity planning. |
+| Security | L50-L55 | Managing access to Azure Table data using Microsoft Entra ID and Azure RBAC, including assigning roles and configuring identity-based authorization. |
+| Configuration | L56-L61 | Configuring Azure Table Storage monitoring: enabling metrics and logs, understanding available telemetry, and setting up alerts for performance, availability, and diagnostics. |
+| Integrations & Coding Patterns | L62-L65 | Using Azure PowerShell to manage Table storage: create/delete tables, insert/query/update/delete entities, and script common data operations. |
 
 ### Best Practices
 | Topic | URL |
@@ -44,7 +45,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 ### Limits & Quotas
 | Topic | URL |
 |-------|-----|
-| Understand scalability and performance targets for Azure Table storage | https://learn.microsoft.com/en-us/azure/storage/tables/scalability-targets |
+| Azure Table storage scalability and performance limits | https://learn.microsoft.com/en-us/azure/storage/tables/scalability-targets |
 
 ### Security
 | Topic | URL |

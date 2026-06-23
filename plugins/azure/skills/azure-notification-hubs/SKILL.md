@@ -1,6 +1,6 @@
 ---
 name: azure-notification-hubs
-description: Expert knowledge for Azure Notification Hubs development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, and integrations & coding patterns. Use when integrating FCM/APNS/WNS, targeting devices/users with tags/templates, scheduling pushes, or securing hubs with Private Link, and other Azure Notification Hubs related development tasks. Not for Azure Event Hubs (use azure-event-hubs), Azure Service Bus (use azure-service-bus), Azure Web PubSub (use azure-web-pubsub), Azure Communication Services (use azure-communication-services).
+description: Expert knowledge for Azure Notification Hubs development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, and integrations & coding patterns. Use when integrating FCM/APNS/WNS, configuring PNS creds, targeting devices/tags, scheduling pushes, or scaling multi-tenant hubs, and other Azure Notification Hubs related development tasks. Not for Azure Event Hubs (use azure-event-hubs), Azure Service Bus (use azure-service-bus), Azure Web PubSub (use azure-web-pubsub), Azure Communication Services (use azure-communication-services).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -10,33 +10,34 @@ This skill provides expert guidance for Azure Notification Hubs. Covers troubles
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L30-L33 | Diagnosing why push notifications are dropped or not delivered in Notification Hubs, including common causes, logging, and step-by-step troubleshooting and fixes. |
-| Best Practices | L35-L41 | Guidance on designing Notification Hubs apps: registration patterns, tags and routing, templates, and implementation FAQs for scalable, targeted push notifications. |
-| Decision Making | L43-L46 | Guidance on choosing and switching Notification Hubs pricing tiers, comparing feature limits, scale, and cost implications for different workloads. |
-| Architecture & Design Patterns | L48-L51 | Guidance on designing large-scale, multi-tenant, and geo-distributed push notification architectures with Azure Notification Hubs, including patterns, best practices, and integration approaches. |
-| Limits & Quotas | L53-L56 | Scheduling push notifications in Azure Notification Hubs, including creating, managing, and sending time-based or recurring notifications across platforms |
-| Security | L58-L65 | Security, encryption, TLS, and network isolation for Notification Hubs: data-at-rest encryption, EU data boundary, SAS/role-based access, TLS version planning, and Private Link setup. |
-| Configuration | L67-L85 | Configuring Notification Hubs: PNS credentials (APNS, FCM/FCM v1, WNS, MPNS, Baidu), IaC setup (Bicep/ARM/Terraform), monitoring/logging, iOS push changes, and PowerShell management. |
-| Integrations & Coding Patterns | L87-L113 | Implementing and migrating push notification integrations (FCM v1, APNS, WNS), device/user targeting, templates, localization, and using REST/SDKs (Java, PHP, Python, UWP, Android, iOS). |
+| Troubleshooting | L32-L37 | Diagnosing and fixing common Notification Hubs issues, including delivery failures, dropped notifications, platform-specific errors, and steps to trace, test, and resolve send problems. |
+| Best Practices | L38-L44 | Guidance on designing Notification Hubs apps: registration patterns, tags and routing, templates, and implementation FAQs for scalable, targeted push notifications. |
+| Decision Making | L45-L49 | Guidance on choosing and switching Notification Hubs pricing tiers, comparing feature limits, scale, and cost implications for different workloads. |
+| Architecture & Design Patterns | L50-L54 | Guidance on designing large-scale, multi-tenant, and geo-distributed push notification architectures with Azure Notification Hubs, including patterns, best practices, and integration approaches. |
+| Limits & Quotas | L55-L59 | Scheduling push notifications in Azure Notification Hubs, including creating, managing, and sending time-based or recurring notifications across platforms |
+| Security | L60-L68 | Security, encryption, TLS, and network isolation for Notification Hubs: data-at-rest encryption, EU data boundary, SAS/role-based access, TLS version planning, and Private Link setup. |
+| Configuration | L69-L88 | Configuring Notification Hubs: PNS credentials (APNS, FCM/FCM v1, WNS, MPNS, Baidu), IaC setup (Bicep/ARM/Terraform), monitoring/logging, iOS push changes, and PowerShell management. |
+| Integrations & Coding Patterns | L89-L115 | Implementing and migrating push notification integrations (FCM v1, APNS, WNS), device/user targeting, templates, localization, and using REST/SDKs (Java, PHP, Python, UWP, Android, iOS). |
 
 ### Troubleshooting
 | Topic | URL |
 |-------|-----|
+| Diagnose and resolve common Azure Notification Hubs issues | https://learn.microsoft.com/en-us/azure/notification-hubs/notification-hubs-push-notification-faq |
 | Diagnose and fix dropped notifications in Notification Hubs | https://learn.microsoft.com/en-us/azure/notification-hubs/notification-hubs-push-notification-fixer |
 
 ### Best Practices
 | Topic | URL |
 |-------|-----|
-| Design and implementation FAQs for Azure Notification Hubs | https://learn.microsoft.com/en-us/azure/notification-hubs/notification-hubs-push-notification-faq |
 | Choose registration patterns for Azure Notification Hubs | https://learn.microsoft.com/en-us/azure/notification-hubs/notification-hubs-push-notification-registration-management |
 | Use tags and routing expressions in Azure Notification Hubs | https://learn.microsoft.com/en-us/azure/notification-hubs/notification-hubs-tags-segment-push-message |
 | Design and use Notification Hubs templates for push | https://learn.microsoft.com/en-us/azure/notification-hubs/notification-hubs-templates-cross-platform-push-messages |

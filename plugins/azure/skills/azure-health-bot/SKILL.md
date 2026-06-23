@@ -1,6 +1,6 @@
 ---
 name: azure-health-bot
-description: Expert knowledge for Azure Health Bot development including best practices, decision making, architecture & design patterns, security, configuration, and integrations & coding patterns. Use when configuring Health Bot channels, web chat/voice embeds, management APIs, orchestrator flows, or cost estimation, and other Azure Health Bot related development tasks. Not for Azure AI Bot Service (use azure-bot-service), Azure Communication Services (use azure-communication-services), Azure Health Data Services (use azure-health-data-services).
+description: Expert knowledge for Azure Health Bot development including best practices, decision making, architecture & design patterns, security, configuration, and integrations & coding patterns. Use when wiring Health Bot to channels/APIs, configuring scenarios/cards, securing PHI, using orchestrator, or estimating costs, and other Azure Health Bot related development tasks. Not for Azure AI Bot Service (use azure-bot-service), Azure Communication Services (use azure-communication-services), Azure Functions (use azure-functions).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -10,21 +10,22 @@ This skill provides expert guidance for Azure Health Bot. Covers best practices,
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Best Practices | L28-L31 | Guidance on designing robust error-handling flows in Azure Health Bot scenarios, including detecting failures, user-friendly recovery paths, and safe handling of clinical conversation errors. |
-| Decision Making | L33-L36 | Estimating Azure Health Bot costs based on action usage, understanding pricing drivers, and forecasting expenses for different bot scenarios. |
-| Architecture & Design Patterns | L38-L41 | Designing bot architectures using the healthcare orchestrator to route between plugins and flows, manage conversation logic, and structure complex healthcare scenarios |
-| Security | L43-L54 | Configuring security, privacy, and compliance: consent, data export/deletion, auth, encryption keys, abuse safeguards, secrets/keys, and portal access control for healthcare bots. |
-| Configuration | L56-L72 | Configuring bot behavior and conversations: welcome/help messages, feedback, interruptions, human/Teams handoff, terms links, and managing scenarios, variables, cards, and versions. |
-| Integrations & Coding Patterns | L74-L96 | Connecting Health Bot/Agent to channels (Teams, SMS, WhatsApp, Facebook), embedding web chat/voice, calling external APIs/OpenAPI, telemetry, auth, management APIs, and proactive scenario invocation |
+| Best Practices | L30-L34 | Guidance on designing robust error-handling flows in Azure Health Bot scenarios, including detecting failures, user-friendly recovery paths, and safe handling of clinical conversation errors. |
+| Decision Making | L35-L39 | Estimating Azure Health Bot costs based on action usage, understanding pricing drivers, and forecasting expenses for different bot scenarios. |
+| Architecture & Design Patterns | L40-L44 | Designing bot architectures using the healthcare orchestrator to route between plugins and flows, manage conversation logic, and structure complex healthcare scenarios |
+| Security | L45-L57 | Configuring security, privacy, and compliance: user consent, data access/deletion, encryption keys, abuse safeguards, authentication, secrets management, and portal permissions for Healthcare bots/agents. |
+| Configuration | L58-L75 | Configuring bot behavior and conversations: welcome/help messages, feedback, interruptions, human/Teams handoff, terms links, and managing scenarios, variables, cards, and versions. |
+| Integrations & Coding Patterns | L76-L98 | Connecting Health Bot/Agent to channels (Teams, SMS, WhatsApp, Facebook), embedding web chat/voice, calling external APIs/OpenAPI, telemetry, auth, management APIs, and proactive scenario invocation |
 
 ### Best Practices
 | Topic | URL |
@@ -50,8 +51,8 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Configure customer-managed encryption keys for healthcare bots | https://learn.microsoft.com/en-us/azure/health-bot/cmk |
 | Monitor and manage abuse in generative healthcare scenarios | https://learn.microsoft.com/en-us/azure/health-bot/copilot/abuse-monitoring |
 | Configure health safeguards for generative healthcare agents | https://learn.microsoft.com/en-us/azure/health-bot/copilot/safeguards |
-| Enable end-user authentication in healthcare agent service | https://learn.microsoft.com/en-us/azure/health-bot/end-user-authentication |
-| Manage secrets, endpoints, and telemetry keys in healthcare bots | https://learn.microsoft.com/en-us/azure/health-bot/keys |
+| Configure end-user authentication for Healthcare agent service | https://learn.microsoft.com/en-us/azure/health-bot/end-user-authentication |
+| Manage secrets, keys, and endpoints in Healthcare agent service | https://learn.microsoft.com/en-us/azure/health-bot/keys |
 | Manage portal user permissions with Microsoft Entra ID | https://learn.microsoft.com/en-us/azure/health-bot/portal-users |
 
 ### Configuration

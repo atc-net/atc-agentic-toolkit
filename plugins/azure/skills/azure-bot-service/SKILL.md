@@ -1,33 +1,34 @@
 ---
 name: azure-bot-service
-description: Expert knowledge for Azure AI Bot Service development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building Azure bots with Web Chat/Direct Line, Teams, OAuth/SSO, QnA/LUIS, or proactive messaging, and other Azure AI Bot Service related development tasks. Not for Azure Health Bot (use azure-health-bot), Azure Web PubSub (use azure-web-pubsub), Azure Communication Services (use azure-communication-services), Azure App Service (use azure-app-service).
+description: Expert knowledge for Azure AI Bot Service development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building Azure AI bots with Direct Line/Web Chat, Teams, OAuth/SSO, human handoff, or proactive messaging, and other Azure AI Bot Service related development tasks. Not for Azure Health Bot (use azure-health-bot), Azure Functions (use azure-functions), Azure App Service (use azure-app-service), Azure Logic Apps (use azure-logic-apps).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
-# Azure Bot Service Skill
+# Azure AI Bot Service Skill
 
-This skill provides expert guidance for Azure Bot Service. Covers troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure AI Bot Service. Covers troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L31-L44 | Debugging and troubleshooting bots: using Emulator, transcripts, Dev Tunnels, inspection middleware, fixing HTTP 500, auth, config/channel issues, and skill/consumer problems. |
-| Best Practices | L46-L59 | Guidance on designing, testing, and managing bot conversations: greetings, flow, navigation, interruptions, expirations, multimodal UX, debugging, unit testing, and Virtual Assistant best practices. |
-| Decision Making | L61-L66 | Guidance on selecting the right Microsoft bot platform, choosing Azure channels vs adapters, and picking the best Direct Line option based on integration, control, and hosting needs. |
-| Architecture & Design Patterns | L68-L79 | Designing bot architectures: dialog modularization, branching/looping flows, multi-LUIS/QnA routing, embedding bots in apps/web, human handoff, knowledge bots, and reusable skills. |
-| Limits & Quotas | L81-L85 | Handling long-running bot operations (deferred replies, proactive messages) and checking which channels support specific features, attachments, and card types. |
-| Security | L87-L105 | Securing bots: auth & SSO (OAuth, Web Chat, skills), Direct Line security, network isolation/VNET, encryption, and privacy/security best practices for Azure Bot Service. |
-| Configuration | L107-L150 | Configuring Azure bots: dialogs, memory, LG/LU/QnA files, storage, telemetry/Insights, Web Chat, channels/Direct Line, skills, environments, and monitoring/debug settings. |
-| Integrations & Coding Patterns | L152-L210 | Connecting bots to channels (Teams, SMS, web, social), using Direct Line/Web Chat, REST/Connector APIs, dialogs, prompts, skills, OAuth, QnA/LUIS, media, TTS, and channel-specific features |
-| Deployment | L212-L218 | Deploying bots to Azure using ARM/CLI, setting up App Service resources, and configuring continuous integration/continuous deployment pipelines for Bot Framework bots. |
+| Troubleshooting | L33-L47 | Debugging and troubleshooting bots: using Emulator, transcripts, Dev Tunnels, inspection middleware, fixing HTTP 500, auth, config/channel issues, and skill/consumer problems. |
+| Best Practices | L48-L62 | Guidance on designing, testing, and managing bot conversations: greetings, flow, navigation, interruptions, expirations, multimodal UX, debugging, unit testing, and Virtual Assistant best practices. |
+| Decision Making | L63-L69 | Guidance on selecting the right Microsoft bot platform, choosing Azure channels vs adapters, and picking the best Direct Line option based on integration, control, and hosting needs. |
+| Architecture & Design Patterns | L70-L82 | Designing bot architectures: dialog modularization, branching/looping flows, multi-LUIS/QnA routing, embedding bots in apps/web, human handoff, knowledge bots, and reusable skills. |
+| Limits & Quotas | L83-L88 | Handling long-running bot operations (deferred replies, proactive messages) and checking which channels support specific features, attachments, and card types. |
+| Security | L89-L108 | Securing Azure bots: auth/SSO (OAuth, Web Chat, skills), Direct Line security, network isolation/VNET, encryption, privacy, and configuring bot/connector authentication. |
+| Configuration | L109-L153 | Configuring Azure AI bots: dialogs, language generation/understanding, memory/state, channels (Web Chat, Direct Line), telemetry/monitoring, skills, and environment-specific settings. |
+| Integrations & Coding Patterns | L154-L213 | Connecting bots to channels (Teams, SMS, web, social), using Direct Line/Web Chat, handling activities/messages, media, cards, prompts, OAuth, state, skills, and channel-specific features. |
+| Deployment | L214-L219 | Guides for provisioning App Service, deploying Bot Framework bots to Azure, and setting up CI/CD pipelines for automated bot deployment. |
 
 ### Troubleshooting
 | Topic | URL |
@@ -98,7 +99,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Implement single sign-on for Web Chat bots | https://learn.microsoft.com/en-us/azure/bot-service/bot-builder-webchat-sso?view=azure-bot-service-4.0 |
 | Use Direct Line App Service extension in a VNET | https://learn.microsoft.com/en-us/azure/bot-service/bot-service-channel-directline-extension-vnet?view=azure-bot-service-4.0 |
 | Understand Azure AI Bot Service data encryption | https://learn.microsoft.com/en-us/azure/bot-service/bot-service-encryption?view=azure-bot-service-4.0 |
-| Address security and privacy concerns in Bot Framework | https://learn.microsoft.com/en-us/azure/bot-service/bot-service-resources-faq-security?view=azure-bot-service-4.0 |
+| Configure security and privacy for Azure Bot Framework | https://learn.microsoft.com/en-us/azure/bot-service/bot-service-resources-faq-security?view=azure-bot-service-4.0 |
 | Network isolation concepts for Azure bots | https://learn.microsoft.com/en-us/azure/bot-service/dl-network-isolation-concept?view=azure-bot-service-4.0 |
 | Configure network isolation for Direct Line bots | https://learn.microsoft.com/en-us/azure/bot-service/dl-network-isolation-how-to?view=azure-bot-service-4.0 |
 | Configure authentication for Bot Connector and Bot State APIs | https://learn.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-connector-authentication?view=azure-bot-service-4.0 |
@@ -117,7 +118,6 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Use prebuilt adaptive expression functions in bots | https://learn.microsoft.com/en-us/azure/bot-service/adaptive-expressions/adaptive-expressions-prebuilt-functions?view=azure-bot-service-4.0 |
 | Use adaptive expressions in Bot Framework dialogs | https://learn.microsoft.com/en-us/azure/bot-service/bot-builder-concept-adaptive-expressions?view=azure-bot-service-4.0 |
 | Configure Language Generation templates for bots | https://learn.microsoft.com/en-us/azure/bot-service/bot-builder-concept-language-generation?view=azure-bot-service-4.0 |
-| Implement custom storage for Bot Framework state | https://learn.microsoft.com/en-us/azure/bot-service/bot-builder-custom-storage?view=azure-bot-service-4.0 |
 | Configure and use state storage in Azure bots | https://learn.microsoft.com/en-us/azure/bot-service/bot-builder-howto-v4-state?view=azure-bot-service-4.0 |
 | Write bot data directly to storage providers | https://learn.microsoft.com/en-us/azure/bot-service/bot-builder-howto-v4-storage?view=azure-bot-service-4.0 |
 | Analyze bot telemetry with Kusto queries | https://learn.microsoft.com/en-us/azure/bot-service/bot-builder-telemetry-analytics-queries?view=azure-bot-service-4.0 |
@@ -143,6 +143,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Define structured response templates with Language Generation | https://learn.microsoft.com/en-us/azure/bot-service/language-generation/language-generation-structured-response-template?view=azure-bot-service-4.0 |
 | Reference monitoring metrics and logs for Azure Bot Service | https://learn.microsoft.com/en-us/azure/bot-service/monitor-bot-service-reference?view=azure-bot-service-4.0 |
 | Configure and analyze monitoring for Azure bots | https://learn.microsoft.com/en-us/azure/bot-service/monitor-bot-service?view=azure-bot-service-4.0 |
+| Provision Azure Bot resources using Azure CLI and ARM | https://learn.microsoft.com/en-us/azure/bot-service/provision-azure-bot?view=azure-bot-service-4.0 |
 | Select correct OAuth and redirect URLs for bots | https://learn.microsoft.com/en-us/azure/bot-service/ref-oauth-redirect-urls?view=azure-bot-service-4.0 |
 | Convert Bot Framework skills to single-tenant use | https://learn.microsoft.com/en-us/azure/bot-service/skill-pva-convert-skill-single-tenant?view=azure-bot-service-4.0 |
 | Configure skills for both single- and multitenant agents | https://learn.microsoft.com/en-us/azure/bot-service/skill-pva-update-skill-single-tenant?view=azure-bot-service-4.0 |
@@ -156,12 +157,12 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Handle Microsoft Teams activities in bots | https://learn.microsoft.com/en-us/azure/bot-service/bot-builder-basics-teams?view=azure-bot-service-4.0 |
 | Use channelData for channel-specific bot features | https://learn.microsoft.com/en-us/azure/bot-service/bot-builder-channeldata?view=azure-bot-service-4.0 |
 | Proxy custom OAuth2 identity providers for bots | https://learn.microsoft.com/en-us/azure/bot-service/bot-builder-concept-identity-providers-proxy?view=azure-bot-service-4.0 |
+| Implement custom state storage for Azure bots | https://learn.microsoft.com/en-us/azure/bot-service/bot-builder-custom-storage?view=azure-bot-service-4.0 |
 | Implement sequential dialogs in Bot Framework | https://learn.microsoft.com/en-us/azure/bot-service/bot-builder-dialog-manage-conversation-flow?view=azure-bot-service-4.0 |
 | Send media attachments with Azure Bot Framework | https://learn.microsoft.com/en-us/azure/bot-service/bot-builder-howto-add-media-attachments?view=azure-bot-service-4.0 |
 | Use suggested action buttons in Bot Framework | https://learn.microsoft.com/en-us/azure/bot-service/bot-builder-howto-add-suggested-actions?view=azure-bot-service-4.0 |
 | Use Azure question answering in bots | https://learn.microsoft.com/en-us/azure/bot-service/bot-builder-howto-answer-questions?view=azure-bot-service-4.0 |
 | Send proactive notifications from Azure bots | https://learn.microsoft.com/en-us/azure/bot-service/bot-builder-howto-proactive-message?view=azure-bot-service-4.0 |
-| Integrate QnA Maker with Azure bots | https://learn.microsoft.com/en-us/azure/bot-service/bot-builder-howto-qna?view=azure-bot-service-4.0 |
 | Send and receive text messages in Bot Framework | https://learn.microsoft.com/en-us/azure/bot-service/bot-builder-howto-send-messages?view=azure-bot-service-4.0 |
 | Integrate LUIS language understanding with bots | https://learn.microsoft.com/en-us/azure/bot-service/bot-builder-howto-v4-luis?view=azure-bot-service-4.0 |
 | Implement primitive prompts for bot user input | https://learn.microsoft.com/en-us/azure/bot-service/bot-builder-primitive-prompts?view=azure-bot-service-4.0 |
@@ -215,5 +216,4 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 |-------|-----|
 | Set up continuous deployment for Azure bots | https://learn.microsoft.com/en-us/azure/bot-service/bot-service-build-continuous-deployment?view=azure-bot-service-4.0 |
 | Provision and deploy Bot Framework bots to Azure | https://learn.microsoft.com/en-us/azure/bot-service/provision-and-publish-a-bot?view=azure-bot-service-4.0 |
-| Create App Service for bots with Azure CLI and ARM | https://learn.microsoft.com/en-us/azure/bot-service/provision-app-service?view=azure-bot-service-4.0 |
-| Create or update Azure Bot with Azure CLI | https://learn.microsoft.com/en-us/azure/bot-service/provision-azure-bot?view=azure-bot-service-4.0 |
+| Provision Azure App Service for bot deployment via CLI | https://learn.microsoft.com/en-us/azure/bot-service/provision-app-service?view=azure-bot-service-4.0 |

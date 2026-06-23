@@ -10,20 +10,21 @@ This skill provides expert guidance for Azure Data Share. Covers troubleshooting
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L27-L30 | Diagnosing and fixing Azure Data Share invitation issues, common error codes/messages, permission and configuration problems when sending or accepting shares |
-| Decision Making | L32-L35 | Guidance on estimating Azure Data Share costs, understanding pricing factors (shares, snapshots, storage), and planning budgets for data sharing scenarios. |
-| Security | L37-L42 | Managing access and security for Data Share: RBAC roles, permissions, invitations/recipients, and configuring security controls for shared datasets. |
-| Configuration | L44-L55 | Configuring Azure Data Share: adding datasets, mapping received data, integrating with SQL/Synapse/Blob/Data Lake, setting up monitoring/metrics, and automating via PowerShell, ARM, and Bicep. |
-| Deployment | L57-L61 | Guides for deploying Azure Data Share across regions, including disaster recovery setup, regional failover, and moving Data Share accounts between Azure regions. |
+| Troubleshooting | L29-L33 | Diagnosing and fixing Azure Data Share invitation issues, common error codes/messages, permission and configuration problems when sending or accepting shares |
+| Decision Making | L34-L38 | Guidance on estimating Azure Data Share costs, understanding pricing factors (shares, snapshots, storage), and planning budgets for data sharing scenarios. |
+| Security | L39-L45 | Managing access and security for Data Share: RBAC roles, permissions, invitations/recipients, and configuring security controls for shared datasets. |
+| Configuration | L46-L58 | Configuring Azure Data Share: adding datasets, mapping received data, integrating with SQL/Synapse/Blob/Data Lake, setting up monitoring/metrics, and automating via PowerShell, ARM, and Bicep. |
+| Deployment | L59-L63 | Guides for deploying Azure Data Share across regions, including disaster recovery setup, regional failover, and moving Data Share accounts between Azure regions. |
 
 ### Troubleshooting
 | Topic | URL |

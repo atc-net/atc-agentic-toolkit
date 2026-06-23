@@ -1,6 +1,6 @@
 ---
 name: azure-lighthouse
-description: Expert knowledge for Azure Lighthouse development including decision making, security, configuration, integrations & coding patterns, and deployment. Use when designing multi-tenant delegations, RBAC/AOBO/PIM access, policy-based onboarding, Arc/Sentinel integrations, or Marketplace offers, and other Azure Lighthouse related development tasks. Not for Azure Arc (use azure-arc), Azure Managed Applications (use azure-managed-applications), Azure Resource Manager (use azure-resource-manager).
+description: Expert knowledge for Azure Lighthouse development including decision making, security, configuration, integrations & coding patterns, and deployment. Use when configuring Lighthouse delegations, AOBO/PIM access, Arc/Sentinel integrations, policies/remediation, or Marketplace offers, and other Azure Lighthouse related development tasks. Not for Azure Arc (use azure-arc), Azure Managed Applications (use azure-managed-applications), Azure Resource Manager (use azure-resource-manager), Azure Role-based access control (use azure-rbac).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -10,25 +10,25 @@ This skill provides expert guidance for Azure Lighthouse. Covers decision making
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Decision Making | L27-L33 | Guidance on when and how to use Azure Lighthouse: multi-tenant enterprise setups, ISV SaaS patterns, comparing Lighthouse vs managed apps, and designing Managed Service offers. |
-| Security | L35-L41 | Securing Azure Lighthouse: tenant/user/role mapping, RBAC and AOBO controls, PIM and eligible authorizations, and recommended security hardening practices. |
-| Configuration | L43-L54 | Configuring and managing Azure Lighthouse delegations: onboarding via ARM/policy, updating/removing access, deploying/using policies (incl. built-ins), remediation with managed identities, and monitoring changes. |
-| Integrations & Coding Patterns | L56-L62 | Cross-tenant integration patterns for managing Arc servers, Sentinel workspaces, Migrate projects, and Monitor Logs at scale using Azure Lighthouse. |
-| Deployment | L64-L67 | Guidance for packaging, publishing, and managing Azure Lighthouse managed service offers in Azure Marketplace, including requirements, steps, and configuration details. |
+| Decision Making | L29-L35 | Guidance on when and how to use Azure Lighthouse: multi-tenant enterprise setups, ISV SaaS patterns, comparing Lighthouse vs managed apps, and designing Managed Service offers. |
+| Security | L36-L43 | Managing secure access in Azure Lighthouse: roles, tenants, AOBO, PIM eligible authorizations, and recommended security controls/practices for cross-tenant management. |
+| Configuration | L44-L56 | Configuring and managing Azure Lighthouse delegations: onboarding via ARM/policy, updating/removing access, deploying/using policies (incl. built-ins), remediation with managed identities, and monitoring changes. |
+| Integrations & Coding Patterns | L57-L64 | Cross-tenant integration patterns for managing Arc servers, Sentinel workspaces, Migrate projects, and Monitor Logs at scale using Azure Lighthouse. |
+| Deployment | L65-L68 | Guidance for packaging, publishing, and managing Azure Lighthouse managed service offers in Azure Marketplace, including requirements, steps, and configuration details. |
 
 ### Decision Making
 | Topic | URL |
 |-------|-----|
-| Use Azure Lighthouse in multi-tenant enterprises | https://learn.microsoft.com/en-us/azure/lighthouse/concepts/enterprise |
 | Apply Azure Lighthouse in ISV SaaS scenarios | https://learn.microsoft.com/en-us/azure/lighthouse/concepts/isv-scenarios |
 | Choose between Azure Lighthouse and managed applications | https://learn.microsoft.com/en-us/azure/lighthouse/concepts/managed-applications |
 | Design Managed Service offers for Azure Lighthouse | https://learn.microsoft.com/en-us/azure/lighthouse/concepts/managed-services-offers |
@@ -38,8 +38,8 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 |-------|-----|
 | Apply CSP AOBO and Lighthouse security controls | https://learn.microsoft.com/en-us/azure/lighthouse/concepts/cloud-solution-provider |
 | Implement recommended security practices for Azure Lighthouse | https://learn.microsoft.com/en-us/azure/lighthouse/concepts/recommended-security-practices |
-| Map tenants, users, and roles for Azure Lighthouse | https://learn.microsoft.com/en-us/azure/lighthouse/concepts/tenants-users-roles |
-| Configure eligible authorizations and PIM for Lighthouse | https://learn.microsoft.com/en-us/azure/lighthouse/how-to/create-eligible-authorizations |
+| Use tenants, users, and roles with Azure Lighthouse | https://learn.microsoft.com/en-us/azure/lighthouse/concepts/tenants-users-roles |
+| Configure eligible authorizations with Azure Lighthouse and PIM | https://learn.microsoft.com/en-us/azure/lighthouse/how-to/create-eligible-authorizations |
 
 ### Configuration
 | Topic | URL |

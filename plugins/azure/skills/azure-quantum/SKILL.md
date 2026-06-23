@@ -1,6 +1,6 @@
 ---
 name: azure-quantum
-description: Expert knowledge for Azure Quantum development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when using QDK/qdk.azure, hybrid jobs, IonQ/PASQAL/Quantinuum/Rigetti targets, QIR/OpenQASM, or Resource Estimator, and other Azure Quantum related development tasks. Not for Azure HPC Cache (use azure-hpc-cache), Azure Batch (use azure-batch), Azure Databricks (use azure-databricks), Azure Machine Learning (use azure-machine-learning).
+description: Expert knowledge for Azure Quantum development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when using QDK with Azure Quantum workspaces, IonQ/Quantinuum/Rigetti targets, QIR/OpenQASM jobs, or Resource Estimator, and other Azure Quantum related development tasks. Not for Azure HPC Cache (use azure-hpc-cache), Azure Batch (use azure-batch), Azure Databricks (use azure-databricks), Azure Machine Learning (use azure-machine-learning).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -10,50 +10,45 @@ This skill provides expert guidance for Azure Quantum. Covers troubleshooting, b
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L31-L38 | Diagnosing Azure Quantum connection/job failures and understanding support, escalation, and issue-handling policies for IonQ, PASQAL, Quantinuum, and Rigetti providers. |
-| Best Practices | L40-L45 | Best practices for using QDK in VS Code with Copilot, optimizing large Q# programs via resource estimation, and systematically testing and debugging quantum code. |
-| Decision Making | L47-L55 | Guidance on Azure Quantum costs, provider pricing and regions, workspace migration, choosing Q# dev tools, and planning quantum-safe cryptography with the resource estimator. |
-| Architecture & Design Patterns | L57-L60 | Guidance on designing hybrid quantum-classical workflows in Azure Quantum, including architecture options, orchestration patterns, and when to offload tasks to quantum hardware. |
-| Limits & Quotas | L62-L67 | Provider-specific job limits, quotas, and timeouts, plus how to run long Q# experiments and manage sessions to avoid interruptions or failures. |
-| Security | L69-L78 | Managing secure access to Azure Quantum workspaces: RBAC and access control, bulk user assignment, ARM locks, managed identities, service principals, and secure handling of access keys. |
-| Configuration | L80-L97 | Setting up QDK tools and environments, configuring simulators and hardware targets (IonQ, PASQAL, Quantinuum, Rigetti), and tuning/optimizing Quantum Resource Estimator runs and parameters |
-| Integrations & Coding Patterns | L99-L107 | Integrating QDK with Azure Quantum: connecting via qdk.azure, running hybrid jobs, and submitting QIR/OpenQASM/Pulser, Qiskit, and Cirq circuits through QDK to Azure Quantum. |
-| Deployment | L109-L114 | Deploying and managing Azure Quantum workspaces via ARM/Bicep and Azure CLI, and configuring VS Code to submit, run, and manage Q# programs on Azure Quantum. |
+| Troubleshooting | L33-L40 | Troubleshooting Azure Quantum provider issues: diagnosing job failures and support/escalation policies and limits for IonQ, Quantinuum, and Rigetti hardware on Azure Quantum. |
+| Best Practices | L41-L45 | Best practices for using QDK in VS Code with Copilot, optimizing large Q# programs via resource estimation, and systematically testing and debugging quantum code. |
+| Decision Making | L46-L52 | Guidance on Azure Quantum costs, provider pricing and regions, workspace migration, choosing Q# dev tools, and planning quantum-safe cryptography with the resource estimator. |
+| Architecture & Design Patterns | L53-L57 | Guidance on designing hybrid quantum-classical workflows in Azure Quantum, including architecture options, orchestration patterns, and when to offload tasks to quantum hardware. |
+| Limits & Quotas | L58-L64 | Managing Azure Quantum quotas, job/session limits, timeouts, and Rigetti-specific hardware constraints and target capabilities. |
+| Security | L65-L75 | Managing secure access to Azure Quantum workspaces: RBAC and access control, bulk user assignment, ARM locks, managed identities, service principals, and secure handling of access keys. |
+| Configuration | L76-L88 | Configuring Azure Quantum workspaces, QDK tools, simulators, and hardware targets, plus setting up and customizing Quantum Resource Estimator models and outputs. |
+| Integrations & Coding Patterns | L89-L99 | Integrating QDK with Azure Quantum: connecting workspaces, submitting Cirq/OpenQASM/QIR/Pulser jobs, building noise and application models, and running adaptive hybrid quantum workflows. |
+| Deployment | L100-L104 | Deploying Azure Quantum workspaces with Bicep and running/submitting Q# quantum programs from VS Code to Azure Quantum backends |
 
 ### Troubleshooting
 | Topic | URL |
 |-------|-----|
-| Troubleshoot common Azure Quantum connection and job issues | https://learn.microsoft.com/en-us/azure/quantum/azure-quantum-common-issues |
+| Diagnose and resolve common Azure Quantum issues | https://learn.microsoft.com/en-us/azure/quantum/azure-quantum-common-issues |
 | Support and escalation policy for IonQ on Azure Quantum | https://learn.microsoft.com/en-us/azure/quantum/provider-support-ionq |
-| Support policy for PASQAL on Azure Quantum | https://learn.microsoft.com/en-us/azure/quantum/provider-support-pasqal |
 | Support policy for Quantinuum on Azure Quantum | https://learn.microsoft.com/en-us/azure/quantum/provider-support-quantinuum |
 | Support policy for Rigetti on Azure Quantum | https://learn.microsoft.com/en-us/azure/quantum/provider-support-rigetti |
 
 ### Best Practices
 | Topic | URL |
 |-------|-----|
-| Use Copilot agent mode effectively with QDK in VS Code | https://learn.microsoft.com/en-us/azure/quantum/qdk-vscode-agent-setup |
-| Optimize large Q# programs with the Quantum resource estimator | https://learn.microsoft.com/en-us/azure/quantum/resource-estimator-handle-large-programs |
 | Test and debug quantum programs with the Quantum Development Kit | https://learn.microsoft.com/en-us/azure/quantum/testing-debugging |
 
 ### Decision Making
 | Topic | URL |
 |-------|-----|
-| Understand Azure Quantum job costs and billing | https://learn.microsoft.com/en-us/azure/quantum/azure-quantum-job-cost-billing |
 | Migrate Azure Quantum workspace data between regions | https://learn.microsoft.com/en-us/azure/quantum/migration-guide |
 | Compare Azure Quantum provider pricing plans | https://learn.microsoft.com/en-us/azure/quantum/pricing |
 | Check regional availability of Azure Quantum providers | https://learn.microsoft.com/en-us/azure/quantum/provider-global-availability |
-| Select development environments for Q# and the Quantum Development Kit | https://learn.microsoft.com/en-us/azure/quantum/qsharp-ways-to-work |
-| Plan quantum-safe cryptography with the Quantum resource estimator | https://learn.microsoft.com/en-us/azure/quantum/resource-estimator-quantum-safe-planning |
 
 ### Architecture & Design Patterns
 | Topic | URL |
@@ -63,9 +58,9 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 ### Limits & Quotas
 | Topic | URL |
 |-------|-----|
-| Azure Quantum provider limits and quotas | https://learn.microsoft.com/en-us/azure/quantum/azure-quantum-quotas |
-| Run long-duration Q# experiments on Azure Quantum | https://learn.microsoft.com/en-us/azure/quantum/how-to-long-running-experiments |
+| Review and manage Azure Quantum usage quotas | https://learn.microsoft.com/en-us/azure/quantum/azure-quantum-quotas |
 | Manage Azure Quantum sessions and avoid timeouts | https://learn.microsoft.com/en-us/azure/quantum/how-to-work-with-sessions |
+| Rigetti provider targets and hardware limits in Azure Quantum | https://learn.microsoft.com/en-us/azure/quantum/provider-rigetti |
 
 ### Security
 | Topic | URL |
@@ -81,35 +76,29 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 ### Configuration
 | Topic | URL |
 |-------|-----|
-| Run Microsoft Quantum resource estimator locally and online | https://learn.microsoft.com/en-us/azure/quantum/how-to-submit-re-jobs |
-| Install and use the QDK molecule visualizer in Jupyter | https://learn.microsoft.com/en-us/azure/quantum/how-to-use-molecule-visualizer |
-| Generate and view quantum circuit diagrams with Q# tools | https://learn.microsoft.com/en-us/azure/quantum/how-to-visualize-circuits |
+| Configure Azure Quantum workspaces with Azure CLI | https://learn.microsoft.com/en-us/azure/quantum/how-to-manage-quantum-workspaces-with-the-azure-cli |
+| Use the QDK neutral atom device visualizer | https://learn.microsoft.com/en-us/azure/quantum/how-to-use-neutral-atom-visualizer |
 | Set up QDK VS Code extension and environment | https://learn.microsoft.com/en-us/azure/quantum/install-overview-qdk |
-| Install QDK Chemistry Python library on all platforms | https://learn.microsoft.com/en-us/azure/quantum/install-qdk-chemistry |
-| Install and run neutral atom device simulators in QDK | https://learn.microsoft.com/en-us/azure/quantum/install-qdk-neutral-atom-simulators |
-| Configure target parameters for the Quantum resource estimator | https://learn.microsoft.com/en-us/azure/quantum/overview-resources-estimator |
+| Install and configure QDK quantum simulators | https://learn.microsoft.com/en-us/azure/quantum/install-qdk-quantum-simulators |
 | Configure and use IonQ targets in Azure Quantum | https://learn.microsoft.com/en-us/azure/quantum/provider-ionq |
-| Configure PASQAL simulators and QPUs in Azure Quantum | https://learn.microsoft.com/en-us/azure/quantum/provider-pasqal |
-| Configure Quantinuum quantum targets in Azure Quantum | https://learn.microsoft.com/en-us/azure/quantum/provider-quantinuum |
-| Configure Rigetti quantum processors and targets | https://learn.microsoft.com/en-us/azure/quantum/provider-rigetti |
-| Configure noise models for neutral atom simulations in QDK | https://learn.microsoft.com/en-us/azure/quantum/qdk-simulator-noise-models |
-| Batch and compare multiple resource estimator configurations | https://learn.microsoft.com/en-us/azure/quantum/resource-estimator-batching |
-| Use known estimates to optimize Quantum resource estimator runs | https://learn.microsoft.com/en-us/azure/quantum/resource-estimator-known-estimates |
-| Use QDK extension commands and features in Visual Studio Code | https://learn.microsoft.com/en-us/azure/quantum/vscode-qsharp-reference |
+| Configure hardware architecture models for the Quantum resource estimator | https://learn.microsoft.com/en-us/azure/quantum/qre-build-architecture-models |
+| Define error correction and magic state models for resource estimation | https://learn.microsoft.com/en-us/azure/quantum/qre-build-error-correction-models |
+| Build custom application models for the Quantum resource estimator | https://learn.microsoft.com/en-us/azure/quantum/qre-custom-applications |
+| Access and customize Quantum resource estimator output | https://learn.microsoft.com/en-us/azure/quantum/qre-estimation-results |
 
 ### Integrations & Coding Patterns
 | Topic | URL |
 |-------|-----|
 | Connect to Azure Quantum workspace via qdk.azure | https://learn.microsoft.com/en-us/azure/quantum/how-to-connect-workspace |
 | Run integrated hybrid quantum jobs with Adaptive RI in Azure Quantum | https://learn.microsoft.com/en-us/azure/quantum/hybrid-computing-integrated |
-| Run OpenQASM programs in the Quantum Development Kit | https://learn.microsoft.com/en-us/azure/quantum/qdk-openqasm-integration |
-| Use Qiskit and Cirq with the Quantum Development Kit | https://learn.microsoft.com/en-us/azure/quantum/qdk-qiskit-cirq-overview |
+| Run OpenQASM programs with the Quantum Development Kit | https://learn.microsoft.com/en-us/azure/quantum/qdk-openqasm-integration |
+| Build noise models with QDK neutral atom simulators | https://learn.microsoft.com/en-us/azure/quantum/qdk-simulator-noise-models |
+| Create application models from quantum frameworks for resource estimation | https://learn.microsoft.com/en-us/azure/quantum/qre-supported-applications |
 | Submit Cirq circuits to Azure Quantum with QDK | https://learn.microsoft.com/en-us/azure/quantum/quickstart-microsoft-cirq |
 | Submit QIR, OpenQASM, and Pulser circuits to Azure Quantum | https://learn.microsoft.com/en-us/azure/quantum/quickstart-microsoft-provider-format |
 
 ### Deployment
 | Topic | URL |
 |-------|-----|
-| Deploy Azure Quantum workspaces using ARM/Bicep | https://learn.microsoft.com/en-us/azure/quantum/how-to-manage-quantum-workspaces-with-azure-resource-manager |
-| Manage Azure Quantum workspaces with Azure CLI | https://learn.microsoft.com/en-us/azure/quantum/how-to-manage-quantum-workspaces-with-the-azure-cli |
+| Deploy Azure Quantum workspaces using Bicep templates | https://learn.microsoft.com/en-us/azure/quantum/how-to-manage-quantum-workspaces-using-bicep |
 | Submit and run Q# programs on Azure Quantum from VS Code | https://learn.microsoft.com/en-us/azure/quantum/how-to-submit-jobs |

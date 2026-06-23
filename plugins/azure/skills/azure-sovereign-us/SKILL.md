@@ -4,27 +4,28 @@ description: Expert knowledge for Azure US Government development including deci
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
-# Azure Sovereign Us Skill
+# Azure US Government Skill
 
-This skill provides expert guidance for Azure Sovereign Us. Covers decision making, architecture & design patterns, security, configuration, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure US Government. Covers decision making, architecture & design patterns, security, configuration, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Decision Making | L28-L39 | Guidance on choosing Azure Government vs global, FedRAMP/DoD scope and ATO, CSP reseller options, marketplace and DoD regions, and sector-specific compliance (NERC CIP, public safety, worldwide public sector). |
-| Architecture & Design Patterns | L41-L44 | Guidance on applying Secure Azure Computing Architecture (SACA) patterns to design compliant, secure, and resilient solutions in Azure Sovereign Cloud environments. |
-| Security | L46-L57 | Security and compliance for Azure Government: FedRAMP/DoD scope, IL5 isolation, TIC, secure configuration, identity/Entra auth, naming to avoid data leaks, and protecting workloads/data. |
-| Configuration | L59-L66 | Guidance for configuring and operating Azure Government: app deployment, VM extensions, EA billing, marketplace images, and Azure Monitor logs in sovereign US regions. |
-| Integrations & Coding Patterns | L68-L73 | Coding patterns and connection guidance for Azure Government: building Foundry Tools apps, connecting SSMS to Gov SQL, and using Azure Storage APIs in sovereign clouds. |
-| Deployment | L75-L81 | Guides for deploying apps and solutions to Azure Government: CI/CD with Azure Pipelines, ASE baseline with DISA CAP, App Service deployment, and publishing to Gov Marketplace. |
+| Decision Making | L30-L42 | Guidance on choosing Azure Government vs global, FedRAMP/DoD scope and ATO, CSP reseller options, marketplace and DoD regions, and sector-specific compliance (NERC CIP, public safety, worldwide public sector). |
+| Architecture & Design Patterns | L43-L47 | Guidance on applying Secure Azure Computing Architecture (SACA) patterns to design compliant, secure, and resilient solutions in Azure Sovereign Cloud environments. |
+| Security | L48-L60 | Security and compliance for Azure Government: FedRAMP/DoD scope, IL5 isolation, TIC, secure configuration, identity/Entra auth, naming to avoid data leaks, and protecting workloads/data. |
+| Configuration | L61-L69 | Guidance for configuring and operating Azure Government: app deployment, VM extensions, EA billing, marketplace images, and Azure Monitor logs in sovereign US regions. |
+| Integrations & Coding Patterns | L70-L76 | Coding patterns and connection guidance for Azure Government: building Foundry Tools apps, connecting SSMS to Gov SQL, and using Azure Storage APIs in sovereign clouds. |
+| Deployment | L77-L83 | Guides for deploying apps and solutions to Azure Government: CI/CD with Azure Pipelines, ASE baseline with DISA CAP, App Service deployment, and publishing to Gov Marketplace. |
 
 ### Decision Making
 | Topic | URL |

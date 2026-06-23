@@ -10,19 +10,20 @@ This skill provides expert guidance for Azure Firewall Manager. Covers best prac
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Best Practices | L26-L29 | Details on how Azure Firewall evaluates and processes rules, rule collection groups, and policies, including priority, matching logic, and traffic filtering behavior |
-| Decision Making | L31-L34 | Guidance on choosing between a secured virtual hub and a hub virtual network in Azure Firewall Manager, including architecture, security, routing, and management trade-offs. |
-| Security | L36-L41 | Configuring Azure Firewall Manager for security: DDoS Protection plans, centralized WAF policy management, and threat intelligence-based traffic filtering. |
-| Configuration | L43-L51 | Configuring Azure Firewall policies: DNS/DNS proxy, FQDN filtering, IP Groups, rule migration, rule hierarchy/inheritance, and securing private endpoint traffic in Virtual WAN. |
+| Best Practices | L28-L32 | Details on how Azure Firewall evaluates and processes rules, rule collection groups, and policies, including priority, matching logic, and traffic filtering behavior |
+| Decision Making | L33-L37 | Guidance on choosing between a secured virtual hub and a hub virtual network in Azure Firewall Manager, including architecture, security, routing, and management trade-offs. |
+| Security | L38-L44 | Configuring Azure Firewall Manager for security: DDoS Protection plans, centralized WAF policy management, and threat intelligence-based traffic filtering. |
+| Configuration | L45-L53 | Configuring Azure Firewall policies: DNS/DNS proxy, FQDN filtering, IP Groups, rule migration, rule hierarchy/inheritance, and securing private endpoint traffic in Virtual WAN. |
 
 ### Best Practices
 | Topic | URL |

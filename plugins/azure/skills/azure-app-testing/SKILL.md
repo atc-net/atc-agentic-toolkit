@@ -1,6 +1,6 @@
 ---
 name: azure-app-testing
-description: Expert knowledge for Azure App Testing development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when using Azure Load Testing with VNets/private endpoints, JMeter/Locust/Playwright, CI/CD pipelines, or Playwright Workspaces, and other Azure App Testing related development tasks. Not for Azure Test Plans (use azure-test-plans), Playwright Workspaces (use azure-playwright-workspaces), Azure DevOps (use azure-devops), Azure App Service (use azure-app-service).
+description: Expert knowledge for Azure App Testing development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when running Azure Load Testing, Playwright Workspaces, JMeter/Locust tests, VNet/private endpoint tests, or CI/CD test pipelines, and other Azure App Testing related development tasks. Not for Azure Test Plans (use azure-test-plans), Azure DevOps (use azure-devops), Azure Pipelines (use azure-pipelines), Playwright Workspaces (use azure-playwright-workspaces).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -10,24 +10,25 @@ This skill provides expert guidance for Azure App Testing. Covers troubleshootin
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L31-L39 | Diagnosing and fixing Azure Load Testing issues (failures, debug runs, private endpoints) and troubleshooting Playwright Workspaces errors and test run problems. |
-| Best Practices | L41-L48 | Guidance on load testing App Service apps, tuning high-scale tests, finding performance bottlenecks, and optimizing Playwright Workspace tests for reliability and low latency. |
-| Decision Making | L50-L56 | Guides for deciding load test resource moves (regions, groups, subscriptions) and tuning performance settings like Azure Functions configs and Playwright parallelism. |
-| Architecture & Design Patterns | L58-L62 | Designing Azure Load Testing setups with virtual networks and private endpoints, including VNet-injected tests, network isolation, and testing services over private connectivity. |
-| Limits & Quotas | L64-L70 | Usage caps, service limits, quotas, and configuration details for Azure Load Testing and Playwright Workspaces, including free trial constraints and how to set monthly usage limits. |
-| Security | L72-L83 | Securing Azure Load Testing and Playwright Workspaces: RBAC, auth for endpoints, managed identities, Key Vault, CMK encryption, certificates, access tokens, and Azure Policy controls. |
-| Configuration | L85-L105 | Configuring and running Azure Load Testing: test definitions/runs, HTTP/JMeter/Playwright settings, baselines, auto-stop, scheduling, multi-region, monitoring, exports, and CI/CD YAML. |
-| Integrations & Coding Patterns | L107-L116 | Authoring and running load tests with JMeter, Locust, and Playwright, using CSV data and plugins, integrating with VS Code/Copilot, and testing local or private apps via Azure Load Testing. |
-| Deployment | L118-L122 | Setting up and automating CI/CD for Azure Load Testing, including manual pipeline configuration and integration with Azure Pipelines for automated test runs. |
+| Troubleshooting | L33-L42 | Diagnosing and fixing Azure Load Testing issues (failures, debug runs, private endpoints) and troubleshooting Playwright Workspaces errors and test run problems. |
+| Best Practices | L43-L51 | Guidance on load testing App Service apps, tuning high-scale tests, finding performance bottlenecks, and optimizing Playwright Workspace tests for reliability and low latency. |
+| Decision Making | L52-L59 | Guides for deciding load test resource moves (regions, groups, subscriptions) and tuning performance settings like Azure Functions configs and Playwright parallelism. |
+| Architecture & Design Patterns | L60-L65 | Designing Azure Load Testing setups with virtual networks and private endpoints, including VNet-injected tests, network isolation, and testing services over private connectivity. |
+| Limits & Quotas | L66-L73 | Usage caps, service limits, quotas, and configuration details for Azure Load Testing and Playwright Workspaces, including free trial constraints and how to set monthly usage limits. |
+| Security | L74-L86 | Securing Azure Load Testing and Playwright Workspaces: RBAC, auth for endpoints, managed identities, Key Vault, CMK encryption, certificates, access tokens, and Azure Policy controls. |
+| Configuration | L87-L108 | Configuring and running Azure Load Testing and Playwright Workspaces: test definitions, HTTP/JMeter settings, secrets, monitoring, baselines, reporting/export, CI/CD YAML, scheduling, and multi-region load. |
+| Integrations & Coding Patterns | L109-L119 | Authoring and running load tests with JMeter, Locust, and Playwright, using CSV data and plugins, integrating with VS Code/Copilot, and testing local or private apps via Azure Load Testing. |
+| Deployment | L120-L124 | Setting up and automating CI/CD for Azure Load Testing, including manual pipeline configuration and integration with Azure Pipelines for automated test runs. |
 
 ### Troubleshooting
 | Topic | URL |

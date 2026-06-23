@@ -1,6 +1,6 @@
 ---
 name: azure-managed-applications
-description: Expert knowledge for Azure Managed Applications development including limits & quotas, security, configuration, and deployment. Use when designing createUiDefinition UIs, JIT access, managed identities, Key Vault/CMK, StorageAccountSelector, or Bicep-based catalog deployments, and other Azure Managed Applications related development tasks. Not for Azure Lighthouse (use azure-lighthouse), Azure Partner Solutions (use azure-partner-solutions), Azure Resource Manager (use azure-resource-manager), Azure Blueprints (use azure-blueprints).
+description: Expert knowledge for Azure Managed Applications development including limits & quotas, security, configuration, and deployment. Use when designing createUiDefinition UIs, JIT access, managed identities, StorageAccountSelector, or Bicep-based catalog publishing, and other Azure Managed Applications related development tasks. Not for Azure Blueprints (use azure-blueprints), Azure Resource Manager (use azure-resource-manager), Azure Lighthouse (use azure-lighthouse), Azure Partner Solutions (use azure-partner-solutions).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -10,19 +10,20 @@ This skill provides expert guidance for Azure Managed Applications. Covers limit
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Limits & Quotas | L26-L30 | Guidance on storage-related limits: using StorageAccountSelector with naming rules and configuring external storage for large managed application definition packages. |
-| Security | L32-L42 | Security and access control for managed apps: JIT access, Azure Policy associations, managed identities (incl. cross-tenant), Key Vault/CMK use, and avoiding hardcoded credentials. |
-| Configuration | L44-L87 | Designing and configuring managed application UI and deployment: createUiDefinition.json, UI elements, functions, parameters, networking, policies, webhooks, and template/view references. |
-| Deployment | L89-L93 | Creating and publishing Azure Managed Application definitions using Bicep and deploying them into an internal service catalog for reuse. |
+| Limits & Quotas | L28-L33 | Guidance on storage-related limits: using StorageAccountSelector with naming rules and configuring external storage for large managed application definition packages. |
+| Security | L34-L45 | Security and access control for managed apps: JIT access, Azure Policy associations, managed identities (incl. cross-tenant), Key Vault/CMK use, and avoiding hardcoded credentials. |
+| Configuration | L46-L90 | Designing and configuring managed app deployments: createUiDefinition UI schema, functions, built-in controls, networking/VNet use, policies, webhooks, and ARM template/view references. |
+| Deployment | L91-L95 | Creating and publishing Azure Managed Application definitions using Bicep and deploying them into an internal service catalog for reuse. |
 
 ### Limits & Quotas
 | Topic | URL |
@@ -53,9 +54,9 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Use math functions in UI definitions | https://learn.microsoft.com/en-us/azure/azure-resource-manager/managed-applications/create-ui-definition-math-functions |
 | Use referencing functions in UI definitions | https://learn.microsoft.com/en-us/azure/azure-resource-manager/managed-applications/create-ui-definition-referencing-functions |
 | Use string functions in UI definitions | https://learn.microsoft.com/en-us/azure/azure-resource-manager/managed-applications/create-ui-definition-string-functions |
-| Configure elements in createUiDefinition.json | https://learn.microsoft.com/en-us/azure/azure-resource-manager/managed-applications/create-uidefinition-elements |
+| Use CreateUiDefinition elements in Azure portal UIs | https://learn.microsoft.com/en-us/azure/azure-resource-manager/managed-applications/create-uidefinition-elements |
 | Use functions in createUiDefinition.json | https://learn.microsoft.com/en-us/azure/azure-resource-manager/managed-applications/create-uidefinition-functions |
-| Author createUiDefinition.json for managed apps | https://learn.microsoft.com/en-us/azure/azure-resource-manager/managed-applications/create-uidefinition-overview |
+| Author createUiDefinition.json for Azure managed apps | https://learn.microsoft.com/en-us/azure/azure-resource-manager/managed-applications/create-uidefinition-overview |
 | Configure managed apps to use existing virtual networks | https://learn.microsoft.com/en-us/azure/azure-resource-manager/managed-applications/existing-vnet-integration |
 | Configure Microsoft.Common.CheckBox UI element | https://learn.microsoft.com/en-us/azure/azure-resource-manager/managed-applications/microsoft-common-checkbox |
 | Configure Microsoft.Common.DropDown UI element | https://learn.microsoft.com/en-us/azure/azure-resource-manager/managed-applications/microsoft-common-dropdown |

@@ -10,22 +10,23 @@ This skill provides expert guidance for Azure Fluid Relay. Covers troubleshootin
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L29-L32 | Recovering from corrupted Azure Fluid Relay container data, including detection, mitigation steps, and restoring or reconstructing data to resume collaboration. |
-| Best Practices | L34-L37 | Guidance on integrating Azure Fluid Relay with test automation frameworks, setting up automated tests, and validating Fluid collaboration scenarios in CI/CD workflows. |
-| Limits & Quotas | L39-L42 | Details on Azure Fluid Relay capacity limits, throttling behavior, quotas per tenant/container, and guidance to avoid or handle rate limiting and overuse scenarios. |
-| Security | L44-L53 | Securing Fluid Relay apps: auth/JWT design, token providers, key rotation, CMK and data encryption, and validating container creator identity. |
-| Configuration | L55-L59 | Configuring compatible Fluid Framework client/server versions with Azure Fluid Relay and deleting Fluid Relay containers via Azure CLI. |
-| Integrations & Coding Patterns | L61-L66 | Building Fluid apps with AzureClient: connecting to Azure Fluid Relay, configuring local dev/test mode, and using audience APIs with React for presence and user management |
-| Deployment | L68-L71 | Guidance for deploying Fluid Framework apps with Azure Fluid Relay to Azure Static Web Apps, including setup, configuration, and integration steps for hosting collaborative apps. |
+| Troubleshooting | L31-L35 | Recovering from corrupted Azure Fluid Relay container data, including detection, mitigation steps, and restoring or reconstructing data to resume collaboration. |
+| Best Practices | L36-L40 | Guidance on integrating Azure Fluid Relay with test automation frameworks, setting up automated tests, and validating Fluid collaboration scenarios in CI/CD workflows. |
+| Limits & Quotas | L41-L45 | Details on Azure Fluid Relay capacity limits, throttling behavior, quotas per tenant/container, and guidance to avoid or handle rate limiting and overuse scenarios. |
+| Security | L46-L56 | Securing Fluid Relay apps: auth/JWT design, token providers, key rotation, CMK and data encryption, and validating container creator identity. |
+| Configuration | L57-L62 | Configuring compatible Fluid Framework client/server versions with Azure Fluid Relay and deleting Fluid Relay containers via Azure CLI. |
+| Integrations & Coding Patterns | L63-L69 | Building Fluid apps with AzureClient: connecting to Azure Fluid Relay, configuring local dev/test mode, and using audience APIs with React for presence and user management |
+| Deployment | L70-L73 | Guidance for deploying Fluid Framework apps with Azure Fluid Relay to Azure Static Web Apps, including setup, configuration, and integration steps for hosting collaborative apps. |
 
 ### Troubleshooting
 | Topic | URL |

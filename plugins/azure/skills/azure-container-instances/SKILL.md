@@ -1,6 +1,6 @@
 ---
 name: azure-container-instances
-description: Expert knowledge for Azure Container Instances development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, and deployment. Use when configuring ACI networking, standby pools, GitHub Actions deploys, Spot containers, or GPU workloads, and other Azure Container Instances related development tasks. Not for Azure Container Apps (use azure-container-apps), Azure Kubernetes Service (AKS) (use azure-kubernetes-service), Azure App Service (use azure-app-service), Azure Virtual Machines (use azure-virtual-machines).
+description: Expert knowledge for Azure Container Instances development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, and deployment. Use when configuring ACI networking/VNet IPs, standby pools, GitHub Actions deploys, TLS/ACR auth, or logs/events, and other Azure Container Instances related development tasks. Not for Azure Container Apps (use azure-container-apps), Azure Kubernetes Service (AKS) (use azure-kubernetes-service), Azure Virtual Machines (use azure-virtual-machines), Azure Batch (use azure-batch).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -10,23 +10,24 @@ This skill provides expert guidance for Azure Container Instances. Covers troubl
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L30-L35 | Diagnosing ACI issues by viewing logs/events, understanding provisioning/runtime states, and troubleshooting common deployment, startup, and container runtime failures. |
-| Best Practices | L37-L40 | Guidance on designing and running ACI workloads reliably: resource sizing, networking, storage, security, scaling, image management, and operational best practices. |
-| Decision Making | L42-L46 | Guidance on cost-optimizing ACI with Spot containers and using prediction-based sizing to configure and right-size Azure Container Instances standby pools. |
-| Architecture & Design Patterns | L48-L53 | Design patterns for giving ACI containers static inbound/outbound IPs using Application Gateway, firewalls, and NAT Gateway for controlled, predictable network egress/ingress. |
-| Limits & Quotas | L55-L61 | ACI limits on CPU/memory (big containers), regional quota checks, standby pool constraints, and networking limits when using virtual networks |
-| Security | L63-L76 | Securing Azure Container Instances: TLS/HTTPS setup, image and secret protection, managed identities, RBAC, DNS safety, ACR auth, CMK encryption, and Azure Policy enforcement. |
-| Configuration | L78-L109 | Configuring ACI container groups: YAML, env vars, DNS, volumes, probes, GPUs, restart/entrypoint, standby pools, networking, lifecycle, logging, and monitoring. |
-| Deployment | L111-L114 | Using GitHub Actions to build, push, and automatically deploy container images to Azure Container Instances, including workflow YAML setup and authentication configuration. |
+| Troubleshooting | L32-L38 | Diagnosing ACI issues by viewing logs/events, understanding provisioning/runtime states, and troubleshooting common deployment, startup, and container runtime failures. |
+| Best Practices | L39-L43 | Guidance on designing and running ACI workloads reliably: resource sizing, networking, storage, security, scaling, image management, and operational best practices. |
+| Decision Making | L44-L49 | Guidance on cost-optimizing ACI with Spot containers and using prediction-based sizing to configure and right-size Azure Container Instances standby pools. |
+| Architecture & Design Patterns | L50-L56 | Design patterns for giving ACI containers static inbound/outbound IPs using Application Gateway, firewalls, and NAT Gateway for controlled, predictable network egress/ingress. |
+| Limits & Quotas | L57-L65 | ACI limits on CPU/memory, quotas by region, standby pool constraints, behavior FAQs, and networking/VNet considerations that affect container capacity and availability |
+| Security | L66-L80 | Securing Azure Container Instances: TLS/HTTPS setup, image and secret protection, managed identities, RBAC, DNS safety, ACR auth, CMK encryption, and Azure Policy enforcement. |
+| Configuration | L81-L113 | Configuring ACI container groups: YAML, env vars, DNS, volumes, probes, GPUs, restart/entrypoint, standby pools, networking, lifecycle, logging, and monitoring. |
+| Deployment | L114-L117 | Using GitHub Actions to build, push, and automatically deploy container images to Azure Container Instances, including workflow YAML setup and authentication configuration. |
 
 ### Troubleshooting
 | Topic | URL |
@@ -57,6 +58,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Topic | URL |
 |-------|-----|
 | Use Big Containers with ACI vCPU and memory limits | https://learn.microsoft.com/en-us/azure/container-instances/big-containers |
+| Azure Container Instances FAQs on limits and behavior | https://learn.microsoft.com/en-us/azure/container-instances/container-instances-faq |
 | Check ACI resource availability and quota limits by region | https://learn.microsoft.com/en-us/azure/container-instances/container-instances-resource-and-quota-limits |
 | FAQ and limits for Azure Container Instances standby pools | https://learn.microsoft.com/en-us/azure/container-instances/container-instances-standby-pool-faq |
 | Use Azure Container Instances with virtual networks | https://learn.microsoft.com/en-us/azure/container-instances/container-instances-virtual-network-concepts |

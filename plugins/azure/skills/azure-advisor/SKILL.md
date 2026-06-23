@@ -1,6 +1,6 @@
 ---
 name: azure-advisor
-description: Expert knowledge for Azure Advisor development including best practices, decision making, limits & quotas, security, configuration, and integrations & coding patterns. Use when configuring Advisor alerts, workbooks, RBAC access, bulk fixes, or Resource Graph/Kusto queries, and other Azure Advisor related development tasks. Not for Azure Cost Management (use azure-cost-management), Azure Monitor (use azure-monitor), Azure Policy (use azure-policy), Azure Service Health (use azure-service-health).
+description: Expert knowledge for Azure Advisor development including best practices, decision making, limits & quotas, security, configuration, and integrations & coding patterns. Use when creating Advisor alerts, workbooks, Resource Graph queries, migration risk views, or sovereign-cloud setups, and other Azure Advisor related development tasks. Not for Azure Cost Management (use azure-cost-management), Azure Monitor (use azure-monitor), Azure Policy (use azure-policy), Azure Security (use azure-security).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -10,21 +10,22 @@ This skill provides expert guidance for Azure Advisor. Covers best practices, de
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Best Practices | L28-L40 | Guidance on using Azure Advisor to assess architectures and apply cost, performance, operational excellence, and reliability recommendations, including bulk fixes and cost-savings calculations. |
-| Decision Making | L42-L49 | Using Advisor workbooks and critical risk views to evaluate reliability, assess and optimize costs, and plan migrations based on service retirement and recommendation impact |
-| Limits & Quotas | L51-L54 | Advisor feature availability, limits, and differences when running in Azure sovereign clouds (e.g., Azure Government, China), including which recommendations are supported. |
-| Security | L56-L60 | Managing who can view or dismiss Azure Advisor recommendations using Azure RBAC, including configuring roles, permissions, and access control for Advisor. |
-| Configuration | L62-L70 | Setting up and customizing Azure Advisor: creating alerts (portal, ARM, Bicep), email digests, tag-based filtering, and using workbooks for monitoring and insights. |
-| Integrations & Coding Patterns | L72-L76 | Querying Azure Advisor recommendations via Azure Resource Graph, using Kusto queries and sample patterns to filter, analyze, and report on Advisor data at scale |
+| Best Practices | L30-L42 | Guidance on using Azure Advisor for Well-Architected assessments and bulk fixes to optimize cost, performance, reliability, and operational excellence across VMs and other services. |
+| Decision Making | L43-L51 | Using Advisor workbooks and critical risk views to assess reliability, plan migrations, and estimate cost impact of Azure Advisor recommendations across key resources |
+| Limits & Quotas | L52-L56 | Advisor feature availability, limits, and differences when running in Azure sovereign clouds (e.g., Azure Government, China), including which recommendations are supported. |
+| Security | L57-L61 | Managing Azure Advisor permissions, roles, and RBAC settings so users and apps have appropriate access to Advisor recommendations and data |
+| Configuration | L62-L71 | Setting up and customizing Azure Advisor: creating alerts (portal, ARM, Bicep), email digests, tag-based filtering, and using workbooks for monitoring and insights. |
+| Integrations & Coding Patterns | L72-L77 | Querying Azure Advisor data via Resource Graph, using sample Kusto queries, and integrating Advisor MCP tools with AI/LLM clients for automated insights |
 
 ### Best Practices
 | Topic | URL |
@@ -35,10 +36,9 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Improve high-usage VM performance with Azure Advisor | https://learn.microsoft.com/en-us/azure/advisor/advisor-how-to-performance-resize-high-usage-vm-recommendations |
 | Use Quick Fix for bulk remediation of Advisor recommendations | https://learn.microsoft.com/en-us/azure/advisor/advisor-quick-fix |
 | Apply Azure Advisor cost recommendations across services | https://learn.microsoft.com/en-us/azure/advisor/advisor-reference-cost-recommendations |
-| Use Azure Advisor operational excellence recommendations | https://learn.microsoft.com/en-us/azure/advisor/advisor-reference-operational-excellence-recommendations |
+| Apply Azure Advisor operational excellence recommendations | https://learn.microsoft.com/en-us/azure/advisor/advisor-reference-operational-excellence-recommendations |
 | Leverage Azure Advisor performance recommendations | https://learn.microsoft.com/en-us/azure/advisor/advisor-reference-performance-recommendations |
-| Apply Azure Advisor reliability recommendations for workloads | https://learn.microsoft.com/en-us/azure/advisor/advisor-reference-reliability-recommendations |
-| Use Azure Advisor resiliency reviews to improve reliability | https://learn.microsoft.com/en-us/azure/advisor/advisor-resiliency-reviews |
+| Apply Azure Advisor reliability recommendations | https://learn.microsoft.com/en-us/azure/advisor/advisor-reference-reliability-recommendations |
 
 ### Decision Making
 | Topic | URL |
@@ -57,8 +57,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 ### Security
 | Topic | URL |
 |-------|-----|
-| Control who can dismiss Azure Advisor recommendations | https://learn.microsoft.com/en-us/azure/advisor/advisor-dismiss-postpone |
-| Configure Azure Advisor access roles and permissions | https://learn.microsoft.com/en-us/azure/advisor/permissions |
+| Configure Azure Advisor roles and access control | https://learn.microsoft.com/en-us/azure/advisor/permissions |
 
 ### Configuration
 | Topic | URL |
@@ -73,5 +72,6 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 ### Integrations & Coding Patterns
 | Topic | URL |
 |-------|-----|
-| Query Azure Advisor data with Azure Resource Graph | https://learn.microsoft.com/en-us/azure/advisor/advisor-azure-resource-graph |
+| Query Azure Advisor data with Resource Graph | https://learn.microsoft.com/en-us/azure/advisor/advisor-azure-resource-graph |
+| Integrate Azure Advisor MCP tools with AI clients | https://learn.microsoft.com/en-us/azure/advisor/advisor-mcp-tools |
 | Use Resource Graph sample queries for Azure Advisor data | https://learn.microsoft.com/en-us/azure/advisor/resource-graph-samples |

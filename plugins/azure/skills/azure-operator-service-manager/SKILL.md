@@ -1,6 +1,6 @@
 ---
 name: azure-operator-service-manager
-description: Expert knowledge for Azure Operator Service Manager development including troubleshooting, best practices, security, configuration, and integrations & coding patterns. Use when onboarding CNFs/VNFs, designing config groups, using ACR-backed artifacts, Private Link, or AOSM CLI, and other Azure Operator Service Manager related development tasks. Not for Azure Operator Insights (use azure-operator-insights), Azure Operator Nexus (use azure-operator-nexus), Azure Network Function Manager (use azure-network-function-manager), Azure Networking (use azure-networking).
+description: Expert knowledge for Azure Operator Service Manager development including troubleshooting, best practices, security, configuration, and integrations & coding patterns. Use when onboarding CNFs/VNFs, designing config groups, managing ACR artifacts, securing with Private Link/RBAC, or debugging Helm-based deployments, and other Azure Operator Service Manager related development tasks. Not for Azure Operator Insights (use azure-operator-insights), Azure Operator Nexus (use azure-operator-nexus), Azure Network Function Manager (use azure-network-function-manager), Azure Resource Manager (use azure-resource-manager).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -10,20 +10,21 @@ This skill provides expert guidance for Azure Operator Service Manager. Covers t
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L27-L31 | Diagnosing and fixing AOSM onboarding issues with the Azure CLI extension and troubleshooting Helm chart installation failures in AOSM CNF deployments. |
-| Best Practices | L33-L40 | Best practices for AOSM onboarding, config group design, Helm chart usage, artifact cleanup, and controlling CNF upgrade behavior and failure handling |
-| Security | L42-L48 | Securing AOSM with Private Link, custom RBAC/roles, and User Assigned Managed Identities for controlled, least-privilege access and secure SNS/service operator deployments. |
-| Configuration | L50-L58 | Configuring AOSM runtime behavior: cluster registry for edge resiliency, pausing/resuming deployments, Helm cleanup/test settings, NFO extension cluster commands, and geo-replicated artifact stores. |
-| Integrations & Coding Patterns | L60-L69 | Using CLI/ARM/Helm with AOSM to onboard CNFs/VNFs, manage images and artifacts (ACR/storage-backed stores), and add ARM resources to network service designs |
+| Troubleshooting | L29-L34 | Diagnosing and fixing AOSM onboarding issues with the Azure CLI extension and troubleshooting Helm chart installation failures in AOSM CNF deployments. |
+| Best Practices | L35-L43 | Best practices for AOSM onboarding, config group design, Helm packaging, artifact cleanup, and controlling CNF upgrade behavior and failure handling. |
+| Security | L44-L51 | Securing AOSM with Private Link, custom RBAC/roles, and User Assigned Managed Identities for controlled, least-privilege access and secure SNS/service operator deployments. |
+| Configuration | L52-L61 | Configuring AOSM runtime behavior: cluster registry for edge resiliency, pausing/resuming deployments, Helm cleanup/test settings, NFO extension cluster commands, and geo-replicated artifact stores. |
+| Integrations & Coding Patterns | L62-L71 | Using CLI/ARM/Helm with AOSM to onboard CNFs/VNFs, manage images and artifacts (ACR/storage-backed stores), and add ARM resources to network service designs |
 
 ### Troubleshooting
 | Topic | URL |
@@ -36,7 +37,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 |-------|-----|
 | Apply onboarding and deployment best practices for AOSM | https://learn.microsoft.com/en-us/azure/operator-service-manager/best-practices-onboard-deploy |
 | Design configuration groups effectively in Azure Operator Service Manager | https://learn.microsoft.com/en-us/azure/operator-service-manager/configuration-guide |
-| Implement Helm chart best practices for AOSM | https://learn.microsoft.com/en-us/azure/operator-service-manager/helm-requirements |
+| Apply Helm chart best practices for Azure Operator Service Manager | https://learn.microsoft.com/en-us/azure/operator-service-manager/helm-requirements |
 | Manage AOSM publisher artifact cleanup efficiently | https://learn.microsoft.com/en-us/azure/operator-service-manager/resource-cleanup-management |
 | Control CNF upgrade failure behavior in AOSM | https://learn.microsoft.com/en-us/azure/operator-service-manager/safe-upgrades-nf-level-rollback |
 

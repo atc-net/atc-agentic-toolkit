@@ -10,21 +10,22 @@ This skill provides expert guidance for Azure Copilot. Covers troubleshooting, d
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L28-L32 | Using Copilot to diagnose and resolve Azure App Service/Functions issues and analyze Azure VM disk performance problems, including slow I/O and bottlenecks. |
-| Decision Making | L34-L42 | Using Copilot to compare options and make cost‑efficient Azure decisions: VM sizing, workload templates, Marketplace offers, storage estate insights, and Load Balancer SKU selection. |
-| Architecture & Design Patterns | L44-L47 | Using Copilot to design, validate, and troubleshoot Azure network architectures, including connectivity, routing, security, and performance issues across VNets and hybrid setups. |
-| Security | L49-L56 | Security and access control for Azure Copilot: storage hardening, user/tenant access, agent access policies, attack surface insights, and responsible AI/data use. |
-| Configuration | L58-L61 | How to set up and configure Azure Cosmos DB as the storage backend for Azure Copilot conversation data, including required settings and integration steps. |
-| Integrations & Coding Patterns | L63-L70 | Using Azure Copilot to generate and refine infra-as-code and automation: APIM policies, Azure CLI/PowerShell scripts, Kubernetes YAML for AKS, and Terraform/Bicep templates. |
+| Troubleshooting | L30-L35 | Using Copilot to diagnose and resolve Azure App Service/Functions issues and analyze Azure VM disk performance problems, including slow I/O and bottlenecks. |
+| Decision Making | L36-L44 | Using Copilot to compare options and make cost‑efficient Azure decisions: VM sizing, workload templates, Marketplace offers, storage estate insights, and Load Balancer SKU selection. |
+| Architecture & Design Patterns | L45-L49 | Using Copilot to design, validate, and troubleshoot Azure network architectures, including connectivity, routing, security, and performance issues across VNets and hybrid setups. |
+| Security | L50-L58 | Security and access control for Azure Copilot: storage hardening, user/tenant access, agent access policies, attack surface insights, and responsible AI/data use. |
+| Configuration | L59-L63 | How to set up and configure Azure Cosmos DB as the storage backend for Azure Copilot conversation data, including required settings and integration steps. |
+| Integrations & Coding Patterns | L64-L69 | Using Azure Copilot to generate and refine infra-as-code and automation: APIM policies, Azure CLI/PowerShell scripts, Kubernetes YAML for AKS, and Terraform/Bicep templates. |
 
 ### Troubleshooting
 | Topic | URL |
@@ -39,7 +40,6 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Choose and deploy cost-efficient Azure VMs with Copilot | https://learn.microsoft.com/en-us/azure/copilot/deploy-vms-effectively |
 | Find and deploy workload templates using Azure Copilot | https://learn.microsoft.com/en-us/azure/copilot/deploy-workload-templates |
 | Find suitable Azure Marketplace solutions with Copilot | https://learn.microsoft.com/en-us/azure/copilot/discover-marketplace |
-| Use Copilot and Storage Discovery for storage estate insights | https://learn.microsoft.com/en-us/azure/copilot/discover-storage-estate-insights |
 | Select and manage Azure Load Balancer SKUs with Copilot | https://learn.microsoft.com/en-us/azure/copilot/work-load-balancer |
 
 ### Architecture & Design Patterns
@@ -65,7 +65,5 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Topic | URL |
 |-------|-----|
 | Author Azure API Management policies using Copilot | https://learn.microsoft.com/en-us/azure/copilot/author-api-management-policies |
-| Generate and customize Azure CLI scripts with Copilot | https://learn.microsoft.com/en-us/azure/copilot/generate-cli-scripts |
 | Generate Kubernetes YAML for AKS with Azure Copilot | https://learn.microsoft.com/en-us/azure/copilot/generate-kubernetes-yaml |
-| Generate and customize PowerShell scripts with Copilot | https://learn.microsoft.com/en-us/azure/copilot/generate-powershell-scripts |
 | Create Terraform and Bicep configurations with Azure Copilot | https://learn.microsoft.com/en-us/azure/copilot/generate-terraform-bicep |
