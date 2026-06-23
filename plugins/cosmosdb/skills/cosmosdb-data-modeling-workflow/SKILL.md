@@ -1,5 +1,5 @@
 ---
-name: azure-cosmosdb-datamodeling
+name: cosmosdb-data-modeling-workflow
 description: 'Step-by-step guide for designing Azure Cosmos DB NoSQL data models. Captures application requirements, access patterns, volumetrics, and concurrency details into a cosmosdb_requirements.md file, then produces an optimized Cosmos DB NoSQL data model design using best practices and common patterns, saved to a cosmosdb_data_model.md file. Use when the user wants to design, model, or plan a Cosmos DB NoSQL database schema, partition strategy, or container layout, or when they need help with NoSQL data modeling for Azure Cosmos DB.'
 ---
 
