@@ -1,0 +1,6 @@
+{
+  "name": "cosmosdb",
+  "version": "1.0.0",
+  "description": "Azure Cosmos DB skills: an interactive NoSQL data-modeling workflow plus impact-ranked best-practice rules for partition keys, queries, SDK usage, indexing, throughput, global distribution, vector & full-text search, security, monitoring, and tooling",
+  "skills": "./skills/"
+}
