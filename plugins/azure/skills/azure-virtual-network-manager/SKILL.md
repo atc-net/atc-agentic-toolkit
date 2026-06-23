@@ -1,6 +1,6 @@
 ---
 name: azure-virtual-network-manager
-description: Expert knowledge for Azure Virtual Network Manager development including troubleshooting, limits & quotas, security, configuration, and integrations & coding patterns. Use when managing AVNM IPAM pools, network groups, cross-tenant connectivity, security admin rules, or ARG queries, and other Azure Virtual Network Manager related development tasks. Not for Azure Virtual Network (use azure-virtual-network), Azure Virtual WAN (use azure-virtual-wan), Azure Network Watcher (use azure-network-watcher), Azure Networking (use azure-networking).
+description: Expert knowledge for Azure Virtual Network Manager development including troubleshooting, limits & quotas, security, configuration, and integrations & coding patterns. Use when managing AVNM IPAM pools, network groups, security admin rules, cross‑tenant connectivity, or Resource Graph queries, and other Azure Virtual Network Manager related development tasks. Not for Azure Virtual Network (use azure-virtual-network), Azure Virtual WAN (use azure-virtual-wan), Azure Network Watcher (use azure-network-watcher), Azure Firewall Manager (use azure-firewall-manager).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -10,20 +10,21 @@ This skill provides expert guidance for Azure Virtual Network Manager. Covers tr
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L27-L31 | Diagnosing and fixing common Azure Virtual Network Manager issues, including deployment/configuration failures and verifying that AVNM-applied network configurations work as intended. |
-| Limits & Quotas | L33-L37 | IPAM features, supported regions, and key Azure Virtual Network Manager limits (scale, resources, configurations) that affect design and deployment decisions. |
-| Security | L39-L48 | Configuring and applying Azure Virtual Network Manager security admin rules to block or protect traffic (incl. high‑risk ports) using network groups, portal, and PowerShell. |
-| Configuration | L50-L62 | Configuring AVNM: IPAM pools, network groups (static/dynamic via Policy), cross-tenant connections, event logs, and managing UDRs/topologies and reachability analysis. |
-| Integrations & Coding Patterns | L64-L67 | Using Azure Resource Graph to query, filter, and report on Azure Virtual Network Manager resources, configurations, and deployments at scale across subscriptions |
+| Troubleshooting | L29-L34 | Diagnosing and fixing common Azure Virtual Network Manager issues, including deployment/configuration errors and verifying that AVNM-applied network configurations work as intended. |
+| Limits & Quotas | L35-L39 | IPAM features, supported regions, and key Azure Virtual Network Manager limits (scale, resources, configurations) that affect design and deployment decisions. |
+| Security | L40-L51 | Configuring and enforcing AVNM security admin rules: creating/applying via network groups, blocking/simulating inbound/outbound traffic, and protecting high‑risk ports using portal and PowerShell. |
+| Configuration | L52-L65 | Configuring AVNM: IPAM pools, network groups (static/dynamic via Policy), cross-tenant connections, event logs, and managing UDRs/topologies and reachability analysis. |
+| Integrations & Coding Patterns | L66-L69 | Using Azure Resource Graph to query, filter, and report on Azure Virtual Network Manager resources, configurations, and deployments at scale across subscriptions |
 
 ### Troubleshooting
 | Topic | URL |
@@ -34,7 +35,6 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 ### Limits & Quotas
 | Topic | URL |
 |-------|-----|
-| Understand IPAM capabilities and regional availability in AVNM | https://learn.microsoft.com/en-us/azure/virtual-network-manager/concept-ip-address-management |
 | Understand Azure Virtual Network Manager limitations | https://learn.microsoft.com/en-us/azure/virtual-network-manager/concept-limitations |
 
 ### Security
@@ -47,6 +47,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Block network traffic with AVNM security admin rules (portal) | https://learn.microsoft.com/en-us/azure/virtual-network-manager/how-to-block-network-traffic-portal |
 | Block outbound traffic with AVNM security rules (PowerShell) | https://learn.microsoft.com/en-us/azure/virtual-network-manager/how-to-block-network-traffic-powershell |
 | Create AVNM security admin rules using network groups | https://learn.microsoft.com/en-us/azure/virtual-network-manager/how-to-create-security-admin-rule-network-group |
+| Simulate Azure Virtual Network Manager security admin rules | https://learn.microsoft.com/en-us/azure/virtual-network-manager/how-to-simulate-security-admin-rules |
 
 ### Configuration
 | Topic | URL |

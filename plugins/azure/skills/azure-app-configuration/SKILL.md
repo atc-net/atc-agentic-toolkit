@@ -1,6 +1,6 @@
 ---
 name: azure-app-configuration
-description: Expert knowledge for Azure App Configuration development including troubleshooting, best practices, decision making, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when using feature flags, dynamic refresh, snapshots, Key Vault integration, or App Configuration REST APIs, and other Azure App Configuration related development tasks. Not for Azure App Service (use azure-app-service), Azure Key Vault (use azure-key-vault), Azure Automation (use azure-automation).
+description: Expert knowledge for Azure App Configuration development including troubleshooting, best practices, decision making, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when using feature flags, dynamic refresh, snapshots, geo-replication, or App Configuration REST APIs, and other Azure App Configuration related development tasks. Not for Azure App Service (use azure-app-service), Azure Key Vault (use azure-key-vault), Azure Automation (use azure-automation).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -10,28 +10,29 @@ This skill provides expert guidance for Azure App Configuration. Covers troubles
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L30-L33 | Diagnosing and fixing Azure App Configuration network access issues, including firewall/VNet restrictions, private endpoints, DNS, and connectivity errors from client apps. |
-| Best Practices | L35-L38 | Guidance on designing and using App Configuration efficiently: key/value organization, labeling, feature flags, performance, security, and cost-optimized access patterns. |
-| Decision Making | L40-L44 | Guidance on App Configuration client library support lifecycles and how to upgrade Spring Boot apps to use App Configuration library v6. |
-| Limits & Quotas | L46-L53 | Limits on key-value retention, point-in-time reads, soft delete behavior, preview API lifecycles, and REST API throttling/quotas for Azure App Configuration. |
-| Security | L55-L74 | Securing App Configuration: encryption, network isolation, private endpoints, managed identities, Entra ID/RBAC, HMAC/auth models for REST, and Azure Policy/compliance controls. |
-| Configuration | L76-L93 | Configuring App Configuration behavior: feature flags, filters, snapshots, geo-replication, soft delete, Kubernetes provider, emulator, dynamic refresh, and AI/chat completion settings. |
-| Integrations & Coding Patterns | L95-L182 | Patterns and code samples for integrating Azure App Configuration into .NET, Go, JavaScript, Python, AKS, and AI apps, including dynamic config, feature flags, Key Vault, and REST API usage. |
-| Deployment | L184-L192 | Using App Configuration in CI/CD: exporting/importing settings, creating snapshots, integrating with Azure Pipelines, GitHub Actions, and Helm/Kubernetes deployment workflows. |
+| Troubleshooting | L32-L36 | Diagnosing and fixing Azure App Configuration network access issues, including connectivity failures, firewall/VNet restrictions, private endpoints, and common error patterns. |
+| Best Practices | L37-L41 | Guidance on designing and using App Configuration efficiently: key/value organization, labeling, feature flags, performance, security, and cost-optimized access patterns. |
+| Decision Making | L42-L47 | Guidance on App Configuration client library support lifecycles and how to upgrade Spring Boot apps to use App Configuration library v6. |
+| Limits & Quotas | L48-L56 | Limits on key-value retention, point-in-time reads, soft delete behavior, preview API lifecycles, and REST API throttling/quotas for Azure App Configuration. |
+| Security | L57-L75 | Securing App Configuration: encryption with customer-managed keys, Entra ID RBAC, managed identities, keys/HMAC, REST auth/authorization models, network perimeters, and Azure Policy compliance. |
+| Configuration | L76-L94 | Configuring App Configuration behavior: feature flags, filters, snapshots, geo-replication, soft delete, Kubernetes provider, emulator, dynamic refresh, and AI/chat completion settings. |
+| Integrations & Coding Patterns | L95-L184 | Patterns and code samples for integrating Azure App Configuration into .NET, Go, JavaScript, Python, AKS, Front Door, and AI apps, including dynamic config, feature flags, filters, and REST usage. |
+| Deployment | L185-L193 | Using App Configuration in CI/CD: exporting/importing settings, creating snapshots, integrating with Azure Pipelines, GitHub Actions, and Helm/Kubernetes deployment workflows. |
 
 ### Troubleshooting
 | Topic | URL |
 |-------|-----|
-| Troubleshoot Azure App Configuration network access errors | https://learn.microsoft.com/en-us/azure/azure-app-configuration/network-access-errors |
+| Diagnose Azure App Configuration network access errors | https://learn.microsoft.com/en-us/azure/azure-app-configuration/network-access-errors |
 
 ### Best Practices
 | Topic | URL |
@@ -57,12 +58,10 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Topic | URL |
 |-------|-----|
 | Encrypt App Configuration data with customer-managed keys | https://learn.microsoft.com/en-us/azure/azure-app-configuration/concept-customer-managed-keys |
-| Configure Entra ID and RBAC access for App Configuration | https://learn.microsoft.com/en-us/azure/azure-app-configuration/concept-enable-rbac |
-| Use private endpoints to secure Azure App Configuration access | https://learn.microsoft.com/en-us/azure/azure-app-configuration/concept-private-endpoint |
+| Configure Entra ID RBAC for Azure App Configuration access | https://learn.microsoft.com/en-us/azure/azure-app-configuration/concept-enable-rbac |
+| Configure network security perimeter for App Configuration | https://learn.microsoft.com/en-us/azure/azure-app-configuration/concept-network-security-perimeter |
 | Manage access key authentication for Azure App Configuration | https://learn.microsoft.com/en-us/azure/azure-app-configuration/howto-disable-access-key-authentication |
-| Disable public network access for Azure App Configuration | https://learn.microsoft.com/en-us/azure/azure-app-configuration/howto-disable-public-access |
 | Use managed identities to access Azure App Configuration | https://learn.microsoft.com/en-us/azure/azure-app-configuration/howto-integrate-azure-managed-service-identity |
-| Set up private access to an Azure App Configuration store | https://learn.microsoft.com/en-us/azure/azure-app-configuration/howto-set-up-private-access |
 | Configure managed identities for Azure App Configuration | https://learn.microsoft.com/en-us/azure/azure-app-configuration/overview-managed-identity |
 | Apply built-in Azure Policy definitions to App Configuration | https://learn.microsoft.com/en-us/azure/azure-app-configuration/policy-reference |
 | Configure roles and permissions for App Configuration deployments | https://learn.microsoft.com/en-us/azure/azure-app-configuration/quickstart-deployment-overview |
@@ -121,6 +120,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Use targeting filter in Python with App Configuration | https://learn.microsoft.com/en-us/azure/azure-app-configuration/how-to-targeting-filter-python |
 | Use feature flag telemetry in ASP.NET Core with App Configuration | https://learn.microsoft.com/en-us/azure/azure-app-configuration/how-to-telemetry-aspnet-core |
 | Use variant feature flags in Spring Boot with App Configuration | https://learn.microsoft.com/en-us/azure/azure-app-configuration/how-to-variant-feature-flags-spring-boot |
+| Integrate .NET Agent Framework with Azure App Configuration | https://learn.microsoft.com/en-us/azure/azure-app-configuration/howto-ai-agent-config-dotnet |
 | Load Agent Framework YAML configs from App Configuration in Python | https://learn.microsoft.com/en-us/azure/azure-app-configuration/howto-ai-agent-config-python |
 | Configure App Configuration data change notifications with Event Grid | https://learn.microsoft.com/en-us/azure/azure-app-configuration/howto-app-configuration-event |
 | Implement custom feature filters in ASP.NET Core with App Configuration | https://learn.microsoft.com/en-us/azure/azure-app-configuration/howto-feature-filters-aspnet-core |
@@ -165,9 +165,9 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Use Azure App Configuration from Python SDK | https://learn.microsoft.com/en-us/azure/azure-app-configuration/quickstart-python |
 | Use Azure App Configuration Python provider in apps | https://learn.microsoft.com/en-us/azure/azure-app-configuration/quickstart-python-provider |
 | Use .NET configuration provider for App Configuration | https://learn.microsoft.com/en-us/azure/azure-app-configuration/reference-dotnet-provider |
-| Use Go configuration provider for App Configuration | https://learn.microsoft.com/en-us/azure/azure-app-configuration/reference-go-provider |
+| Use Go provider with Azure App Configuration | https://learn.microsoft.com/en-us/azure/azure-app-configuration/reference-go-provider |
 | Use JavaScript configuration provider for App Configuration | https://learn.microsoft.com/en-us/azure/azure-app-configuration/reference-javascript-provider |
-| Use Python configuration provider for App Configuration | https://learn.microsoft.com/en-us/azure/azure-app-configuration/reference-python-provider |
+| Use Azure App Configuration Python provider for centralized settings | https://learn.microsoft.com/en-us/azure/azure-app-configuration/reference-python-provider |
 | Automatically reload Key Vault secrets via App Configuration in .NET | https://learn.microsoft.com/en-us/azure/azure-app-configuration/reload-key-vault-secrets-dotnet |
 | Call Azure App Configuration data-plane REST APIs | https://learn.microsoft.com/en-us/azure/azure-app-configuration/rest-api |
 | Ensure consistency using App Configuration REST sync tokens | https://learn.microsoft.com/en-us/azure/azure-app-configuration/rest-api-consistency |

@@ -1,36 +1,37 @@
 ---
 name: azure-traffic-manager
-description: Expert knowledge for Azure Traffic Manager development including troubleshooting, best practices, decision making, architecture & design patterns, configuration, and integrations & coding patterns. Use when configuring profiles/endpoints, routing methods, RUM JS, nested designs, or Traffic View–based tuning, and other Azure Traffic Manager related development tasks. Not for Azure Front Door (use azure-front-door), Azure Load Balancer (use azure-load-balancer), Azure Virtual WAN (use azure-virtual-wan), Azure Application Gateway (use azure-application-gateway).
+description: Expert knowledge for Azure Traffic Manager development including troubleshooting, best practices, decision making, architecture & design patterns, security, configuration, and integrations & coding patterns. Use when configuring profiles/endpoints, routing methods, RUM scripts, nested profiles, or Traffic View analytics, and other Azure Traffic Manager related development tasks. Not for Azure Front Door (use azure-front-door), Azure Load Balancer (use azure-load-balancer), Azure Virtual Network (use azure-virtual-network), Azure Virtual WAN (use azure-virtual-wan).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
 # Azure Traffic Manager Skill
 
-This skill provides expert guidance for Azure Traffic Manager. Covers troubleshooting, best practices, decision making, architecture & design patterns, configuration, and integrations & coding patterns. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure Traffic Manager. Covers troubleshooting, best practices, decision making, architecture & design patterns, security, configuration, and integrations & coding patterns. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L28-L32 | Testing Traffic Manager routing behavior, verifying endpoint health, and diagnosing/fixing degraded profiles, misconfigurations, and routing issues. |
-| Best Practices | L34-L37 | Guidance on optimizing Traffic Manager profiles, endpoint configuration, monitoring, and routing settings for high performance, reliability, and low-latency global traffic distribution |
-| Decision Making | L39-L43 | Guidance on choosing the right Traffic Manager routing method and using Traffic View analytics to optimize routing decisions and traffic distribution |
-| Architecture & Design Patterns | L45-L51 | Architectural patterns for combining Traffic Manager with other Azure load balancers, nested profiles, App Service integration, and Traffic Manager + Application Gateway designs. |
-| Configuration | L53-L73 | Configuring Traffic Manager profiles, endpoints, routing methods (weighted, geographic, subnet, multivalue), DNS/IPv6, monitoring/logs, and using ARM, Bicep, Terraform, CLI, and PowerShell. |
-| Integrations & Coding Patterns | L75-L79 | Using Traffic Manager Real User Measurements (RUM) in apps and web pages, including integrating with Visual Studio App Center and adding the RUM JavaScript to collect user latency data. |
+| Troubleshooting | L31-L35 | Testing Traffic Manager routing behavior, verifying endpoint health, and diagnosing/fixing degraded profiles, misconfigurations, and routing issues. |
+| Best Practices | L36-L40 | Guidance on optimizing Traffic Manager profiles, endpoint configuration, monitoring, and routing settings for high performance, reliability, and low-latency global traffic distribution |
+| Decision Making | L41-L46 | Guidance on choosing the right Traffic Manager routing method and using Traffic View analytics to optimize routing decisions and traffic distribution |
+| Architecture & Design Patterns | L47-L54 | Architectural patterns for combining Traffic Manager with other Azure load balancers, nested profiles, App Service integration, and Traffic Manager + Application Gateway designs. |
+| Security | L55-L59 | Best practices for securely configuring Traffic Manager profiles, endpoints, access controls, and monitoring to protect traffic routing and DNS-based load balancing. |
+| Configuration | L60-L81 | Configuring Traffic Manager profiles, endpoints, routing methods (weighted, geographic, subnet, multivalue), DNS/IPv6, monitoring/logs, and using ARM, Bicep, Terraform, CLI, and PowerShell. |
+| Integrations & Coding Patterns | L82-L86 | Using Traffic Manager Real User Measurements (RUM) in apps and web pages, including integrating with Visual Studio App Center and adding the RUM JavaScript to collect user latency data. |
 
 ### Troubleshooting
 | Topic | URL |
 |-------|-----|
 | Verify and test Azure Traffic Manager routing configuration | https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-testing-settings |
-| Diagnose and fix degraded Azure Traffic Manager profiles | https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-troubleshooting-degraded |
 
 ### Best Practices
 | Topic | URL |
@@ -50,6 +51,11 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Design nested Traffic Manager profile architectures | https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-nested-profiles |
 | Integrate Azure App Service with Traffic Manager routing | https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-use-azure-app-service |
 | Architect solutions combining Traffic Manager and Application Gateway | https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-use-with-application-gateway |
+
+### Security
+| Topic | URL |
+|-------|-----|
+| Secure configuration practices for Azure Traffic Manager | https://learn.microsoft.com/en-us/azure/traffic-manager/secure-traffic-manager |
 
 ### Configuration
 | Topic | URL |

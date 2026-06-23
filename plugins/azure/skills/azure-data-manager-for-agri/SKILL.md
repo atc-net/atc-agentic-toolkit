@@ -4,25 +4,26 @@ description: Expert knowledge for Azure Data Manager for Agriculture development
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
-# Azure Data Manager For Agri Skill
+# Azure Data Manager for Agriculture Skill
 
-This skill provides expert guidance for Azure Data Manager For Agri. Covers limits & quotas, security, configuration, and integrations & coding patterns. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure Data Manager for Agriculture. Covers limits & quotas, security, configuration, and integrations & coding patterns. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Limits & Quotas | L26-L29 | Guidance on API throttling behavior and limits in Azure Data Manager for Agriculture, plus strategies to plan capacity, avoid rate-limit errors, and manage high-volume workloads. |
-| Security | L31-L35 | Managing secure BYOL credential storage and configuring Azure Private Link private endpoints for Azure Data Manager for Agriculture services. |
-| Configuration | L37-L42 | Configuring diagnostics and Event Grid for Data Manager for Agriculture, including enabling logs, choosing event schemas, and understanding sample event payloads. |
-| Integrations & Coding Patterns | L44-L58 | Integrating external ag data sources (farm activities, sensors, weather, satellite imagery, ISVs), configuring ingestion jobs/IoT, and using AI/copilot and nutrient APIs with Azure Data Manager for Agriculture |
+| Limits & Quotas | L28-L32 | Guidance on API throttling behavior and limits in Azure Data Manager for Agriculture, plus strategies to plan capacity, avoid rate-limit errors, and manage high-volume workloads. |
+| Security | L33-L38 | Managing secure BYOL credential storage and configuring Azure Private Link private endpoints for Azure Data Manager for Agriculture services. |
+| Configuration | L39-L45 | Configuring diagnostics and Event Grid for Data Manager for Agriculture, including enabling logs, choosing event schemas, and understanding sample event payloads. |
+| Integrations & Coding Patterns | L46-L60 | Integrating external ag data sources (farm activities, sensors, weather, satellite imagery, ISVs), configuring ingestion jobs/IoT, and using AI/copilot and nutrient APIs with Azure Data Manager for Agriculture |
 
 ### Limits & Quotas
 | Topic | URL |

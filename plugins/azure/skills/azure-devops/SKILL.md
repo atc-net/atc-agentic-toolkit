@@ -1,48 +1,48 @@
 ---
 name: azure-devops
-description: Expert knowledge for Azure DevOps development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when managing org/project structure, Boards, pipelines, repos, Analytics/OData, or Azure DevOps Server deployments, and other Azure DevOps related development tasks. Not for Azure Boards (use azure-boards), Azure Pipelines (use azure-pipelines), Azure Repos (use azure-repos), Azure Test Plans (use azure-test-plans).
+description: Expert knowledge for Azure DevOps development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when managing org/projects, Boards/work items, repos/pipelines, Analytics/OData/Power BI, or Azure DevOps Server, and other Azure DevOps related development tasks. Not for Azure Boards (use azure-boards), Azure Pipelines (use azure-pipelines), Azure Repos (use azure-repos), Azure Test Plans (use azure-test-plans).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
-# Azure Devops Skill
+# Azure DevOps Skill
 
-This skill provides expert guidance for Azure Devops. Covers troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure DevOps. Covers troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L31-L47 | Diagnosing and fixing Azure DevOps issues: logs, performance, notifications, connectivity/IP allowlists, permissions, dashboards/Analytics, wikis restore, and server/upgrade problems. |
-| Best Practices | L49-L65 | Guidance on optimizing Azure DevOps performance, analytics, and reporting: cost-efficient pools, fast OData queries, Power BI reports, dashboards, and data cleanup/maintenance. |
-| Decision Making | L67-L81 | Guidance for high-level Azure DevOps design choices: org/project/team structure, geography, work tracking and wikis, analytics/reporting, agent pools, and Azure DevOps Server topology and upgrades |
-| Architecture & Design Patterns | L83-L93 | Architectural guidance for Azure DevOps/Server: pool architecture, reliability/DR, SQL/database dependencies, and design patterns for simple to complex multi-server topologies and analytics modeling. |
-| Limits & Quotas | L95-L108 | Org/project deletion & recovery windows, user access limits, naming/work item/wiki constraints, pipeline/ARM size limits, dashboard widgets, and Analytics data availability/latency. |
-| Security | L110-L169 | Managing Azure DevOps security: identities, auth, permissions, access levels, groups, auditing, project/repo/pipeline rights, server service accounts, SSL, and download integrity. |
-| Configuration | L171-L258 | Configuring Azure DevOps/Server: managed pools, networking, scaling, notifications, Boards/process customization, Analytics/Power BI, dashboards, backups, SQL, services, and admin console settings. |
-| Integrations & Coding Patterns | L260-L314 | Integrating Azure DevOps with tools (VS, SIEM, clients), using Analytics OData, and building detailed Power BI reports for work items, pipelines, and tests. |
-| Deployment | L316-L347 | Installing, configuring, scaling, moving, backing up, restoring, and upgrading Azure DevOps Server/TFS deployments, including SQL, SharePoint, domains, and project collections |
+| Troubleshooting | L33-L49 | Diagnosing and fixing Azure DevOps issues: Managed DevOps Pools, MCP servers, performance, notifications/email, connectivity/IP allowlists, permissions, wikis restore, Analytics/Power BI, and upgrades. |
+| Best Practices | L50-L64 | Guidance on optimizing Azure DevOps performance, analytics, and reporting: cost-efficient pools, fast OData queries, Power BI reports, dashboards, and data cleanup/maintenance. |
+| Decision Making | L65-L82 | Guidance for high-level Azure DevOps choices: org/project structure, geography, team and Agile tools, wikis and work tracking, analytics/reporting, server topology/lifecycle, and Managed DevOps Pools vs agents. |
+| Architecture & Design Patterns | L83-L94 | Architectural guidance for Azure DevOps/Server: pool architecture, reliability/DR, SQL/database dependencies, and design patterns for simple to complex multi-server topologies and analytics modeling. |
+| Limits & Quotas | L95-L110 | Limits, quotas, and rules for Azure DevOps orgs/projects (naming, images, delete/recover), work tracking, backlogs, dashboards, wiki follows, Analytics data, Pipelines ARM size, and Managed DevOps Pools. |
+| Security | L111-L167 | Managing Azure DevOps security: identities, auth, org/project permissions, groups/roles, access levels, auditing, repo/pipeline/test/work item rights, and server/service account security. |
+| Configuration | L168-L244 | Configuring Azure DevOps/Server: managed DevOps pools, networking, storage, notifications, work items/Boards, Analytics/OData, dashboards, search, backups, SQL, services, and server administration. |
+| Integrations & Coding Patterns | L245-L289 | Integrating Azure DevOps with tools (VS, SIEM, notifications, clients) and building Analytics/OData- and Power BI–based reports for work items, pipelines, and test/requirements metrics. |
+| Deployment | L290-L321 | Installing, configuring, scaling, moving, backing up, restoring, and upgrading Azure DevOps Server/TFS deployments, including SQL, SharePoint, domains, and project collections |
 
 ### Troubleshooting
 | Topic | URL |
 |-------|-----|
 | Use diagnostic logs for Managed DevOps Pools troubleshooting | https://learn.microsoft.com/en-us/azure/devops/managed-devops-pools/diagnostics?view=azure-devops |
-| Troubleshoot common Managed DevOps Pools issues | https://learn.microsoft.com/en-us/azure/devops/managed-devops-pools/troubleshooting?view=azure-devops |
+| Diagnose and fix Azure Managed DevOps Pools issues | https://learn.microsoft.com/en-us/azure/devops/managed-devops-pools/troubleshooting?view=azure-devops |
+| Troubleshoot remote Azure DevOps MCP Server issues | https://learn.microsoft.com/en-us/azure/devops/mcp-server/remote-mcp-server-troubleshooting?view=azure-devops |
 | Investigate Azure DevOps usage and performance issues | https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/usage-monitoring?view=azure-devops |
-| Investigate delayed Azure DevOps notification emails | https://learn.microsoft.com/en-us/azure/devops/organizations/notifications/troubleshoot-delayed-email?view=azure-devops |
-| Troubleshoot missing Azure DevOps notification emails | https://learn.microsoft.com/en-us/azure/devops/organizations/notifications/troubleshoot-not-getting-email?view=azure-devops |
-| Troubleshoot unexpected Azure DevOps notification emails | https://learn.microsoft.com/en-us/azure/devops/organizations/notifications/troubleshoot-unexpected-email?view=azure-devops |
+| Troubleshoot and configure Azure DevOps notifications | https://learn.microsoft.com/en-us/azure/devops/organizations/notifications/faq-notifications?view=azure-devops |
+| Troubleshoot Azure DevOps notification email issues | https://learn.microsoft.com/en-us/azure/devops/organizations/notifications/troubleshoot-not-getting-email?view=azure-devops |
 | Use subscription logging to debug Azure DevOps notifications | https://learn.microsoft.com/en-us/azure/devops/organizations/notifications/use-subscription-logging?view=azure-devops |
 | Allowlist IPs and URLs for Azure DevOps connectivity | https://learn.microsoft.com/en-us/azure/devops/organizations/security/allow-list-ip-url?view=azure-devops |
 | Troubleshoot Azure DevOps access and permission issues | https://learn.microsoft.com/en-us/azure/devops/organizations/security/troubleshoot-permissions?view=azure-devops |
 | Restore deleted Azure DevOps wikis using REST API and recycle bin | https://learn.microsoft.com/en-us/azure/devops/project/wiki/restore-deleted-wiki?view=azure-devops |
-| Troubleshoot Azure DevOps dashboards and charts issues | https://learn.microsoft.com/en-us/azure/devops/report/dashboards/faqs?view=azure-devops |
 | Troubleshoot Azure DevOps Analytics views for Power BI | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/troubleshooting-views?view=azure-devops |
 | Azure DevOps Server administration FAQ and support guidance | https://learn.microsoft.com/en-us/azure/devops/server/faq?view=azure-devops-server |
 | Troubleshoot Azure DevOps project collection upgrade failures | https://learn.microsoft.com/en-us/azure/devops/server/troubleshooting/collection-upgrade-failure?view=azure-devops-server |
@@ -54,14 +54,11 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Apply best practices when querying Azure DevOps Analytics | https://learn.microsoft.com/en-us/azure/devops/report/analytics/analytics-best-practices?view=azure-devops |
 | Choose and use Azure DevOps burndown and burnup charts | https://learn.microsoft.com/en-us/azure/devops/report/dashboards/burndown-guidance?view=azure-devops |
 | Use CFDs, cycle time, and lead time to improve flow | https://learn.microsoft.com/en-us/azure/devops/report/dashboards/cumulative-flow-cycle-lead-time-guidance?view=azure-devops |
-| Design effective Azure DevOps project dashboards | https://learn.microsoft.com/en-us/azure/devops/report/dashboards/dashboard-focus?view=azure-devops |
 | Design efficient OData batch requests for Analytics | https://learn.microsoft.com/en-us/azure/devops/report/extend-analytics/odata-batch?view=azure-devops |
 | Optimize OData Analytics queries for performance limits | https://learn.microsoft.com/en-us/azure/devops/report/extend-analytics/odata-query-guidelines?view=azure-devops |
 | Add last refresh timestamp to Azure DevOps Power BI reports | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/add-last-refresh-time?view=azure-devops |
 | Apply team-based filtering in Azure DevOps Power BI reports | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/create-team-filter?view=azure-devops |
 | Add time-in-state DAX measures for Azure DevOps work items | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/create-timeinstate-report?view=azure-devops |
-| Add team slicer to Azure DevOps Power BI reports | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-boards-teamslicer?view=azure-devops |
-| Transform Azure DevOps Analytics data in Power BI | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/transform-analytics-data-report-generation?view=azure-devops |
 | Refresh Azure DevOps client caches after maintenance | https://learn.microsoft.com/en-us/azure/devops/server/admin/backup/refresh-data-caches?view=azure-devops-server |
 | Clean up Azure DevOps Server data for performance and upgrades | https://learn.microsoft.com/en-us/azure/devops/server/upgrade/clean-up-data?view=azure-devops-server |
 
@@ -69,13 +66,15 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Topic | URL |
 |-------|-----|
 | Choose between Managed DevOps Pools and VM scale-set agents | https://learn.microsoft.com/en-us/azure/devops/managed-devops-pools/migrate-from-scale-set-agents?view=azure-devops |
-| Estimate and plan Managed DevOps Pools pricing | https://learn.microsoft.com/en-us/azure/devops/managed-devops-pools/pricing?view=azure-devops |
+| Estimate and compare Managed DevOps Pools costs | https://learn.microsoft.com/en-us/azure/devops/managed-devops-pools/pricing?view=azure-devops |
 | Choose and manage Azure DevOps organization geography | https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/change-organization-location?view=azure-devops |
 | Plan Azure DevOps project structure and scaling | https://learn.microsoft.com/en-us/azure/devops/organizations/projects/about-projects?view=azure-devops |
+| Migrate Azure DevOps public projects to GitHub | https://learn.microsoft.com/en-us/azure/devops/organizations/projects/migrate-public-project?view=azure-devops |
+| Plan for Azure DevOps public projects retirement | https://learn.microsoft.com/en-us/azure/devops/organizations/projects/public-projects-retirement?view=azure-devops |
 | Decide team structure and Agile tools in Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/organizations/settings/about-teams-and-settings?view=azure-devops |
 | Choose between provisioned and code-published Azure DevOps wikis | https://learn.microsoft.com/en-us/azure/devops/project/wiki/provisioned-vs-published-wiki?view=azure-devops |
 | Choose customization approaches for Azure DevOps work tracking | https://learn.microsoft.com/en-us/azure/devops/reference/customize-work?view=azure-devops |
-| Choose tools to query Azure DevOps Analytics data | https://learn.microsoft.com/en-us/azure/devops/report/analytics/analytics-query-tools?view=azure-devops |
+| Choose Azure DevOps Analytics query tools | https://learn.microsoft.com/en-us/azure/devops/report/analytics/analytics-query-tools?view=azure-devops |
 | Plan Azure DevOps reporting migration to Analytics | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/reporting-roadmap?view=azure-devops |
 | Choose and plan Azure DevOps Server deployment topology | https://learn.microsoft.com/en-us/azure/devops/server/install/get-started?view=azure-devops-server |
 | Understand Azure DevOps Server lifecycle and servicing options | https://learn.microsoft.com/en-us/azure/devops/server/install/servicing?view=azure-devops-server |
@@ -96,31 +95,31 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 ### Limits & Quotas
 | Topic | URL |
 |-------|-----|
+| Understand quotas and SKUs for Managed DevOps Pools | https://learn.microsoft.com/en-us/azure/devops/managed-devops-pools/faq?view=azure-devops |
 | Change Azure DevOps organization image within size limits | https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/change-organization-image?view=azure-devops |
-| Delete Azure DevOps organizations and understand retention windows | https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/delete-your-organization?view=azure-devops |
+| Delete Azure DevOps organization and data retention | https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/delete-your-organization?view=azure-devops |
 | Recover deleted Azure DevOps organizations within retention limits | https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/recover-your-organization?view=azure-devops |
-| Stakeholder access capabilities and limits in Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/organizations/security/stakeholder-access?view=azure-devops |
+| Rename Azure DevOps projects and notification behavior | https://learn.microsoft.com/en-us/azure/devops/organizations/projects/rename-project?view=azure-devops |
 | Azure DevOps naming rules and restrictions | https://learn.microsoft.com/en-us/azure/devops/organizations/settings/naming-restrictions?view=azure-devops |
 | Azure DevOps work tracking and process limits | https://learn.microsoft.com/en-us/azure/devops/organizations/settings/work/object-limits?view=azure-devops |
 | Configure and understand Azure DevOps wiki page follow notifications | https://learn.microsoft.com/en-us/azure/devops/project/wiki/follow-notifications-wiki-pages?view=azure-devops |
+| Add additional portfolio backlogs in Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/reference/add-portfolio-backlogs?view=azure-devops |
 | Azure Pipelines ARM integration size limit changes | https://learn.microsoft.com/en-us/azure/devops/release-notes/2023/sprint-225-update |
 | Add and configure widgets on Azure DevOps dashboards | https://learn.microsoft.com/en-us/azure/devops/report/dashboards/add-widget-to-dashboard?view=azure-devops |
 | Understand Azure DevOps Analytics data availability by platform | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/data-available-in-analytics?view=azure-devops |
-| Understand Analytics data latency and query performance | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/performance-latency?view=azure-devops |
 
 ### Security
 | Topic | URL |
 |-------|-----|
 | Configure managed identities for Managed DevOps Pools | https://learn.microsoft.com/en-us/azure/devops/managed-devops-pools/configure-identity?view=azure-devops |
 | Configure security settings for Managed DevOps Pools | https://learn.microsoft.com/en-us/azure/devops/managed-devops-pools/configure-security?view=azure-devops |
-| Configure privacy policy URL for Azure DevOps public projects | https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/add-privacy-policy-url?view=azure-devops |
-| Configure Azure DevOps application access and security policies | https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/change-application-access-policies?view=azure-devops |
+| Configure Azure DevOps organization access security policies | https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/change-application-access-policies?view=azure-devops |
 | Change Azure DevOps organization ownership and permissions | https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/change-organization-ownership?view=azure-devops |
-| Manage Azure DevOps access via Microsoft Entra ID | https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/faq-azure-access?view=azure-devops |
-| Understand Azure DevOps user and permissions management details | https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/faq-user-and-permissions-management?view=azure-devops |
-| Recover and reassign ownership of orphaned Azure DevOps organizations | https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/resolve-orphaned-organization?view=azure-devops |
-| Configure and use Azure DevOps audit logging securely | https://learn.microsoft.com/en-us/azure/devops/organizations/audit/azure-devops-auditing?view=azure-devops |
-| Configure Azure DevOps project public visibility and access | https://learn.microsoft.com/en-us/azure/devops/organizations/projects/make-project-public?view=azure-devops |
+| Configure Azure DevOps access via Microsoft Entra ID | https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/faq-azure-access?view=azure-devops |
+| Administer Azure DevOps organizations and permissions | https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/faq-configure-customize-organization?view=azure-devops |
+| Set up Visual Studio authentication with Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/faq-set-up-vs?view=azure-devops |
+| Manage Azure DevOps user roles and permissions | https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/faq-user-and-permissions-management?view=azure-devops |
+| Enable and use Azure DevOps audit logging securely | https://learn.microsoft.com/en-us/azure/devops/organizations/audit/azure-devops-auditing?view=azure-devops |
 | Understand Azure DevOps permissions and security groups | https://learn.microsoft.com/en-us/azure/devops/organizations/security/about-permissions?view=azure-devops |
 | Azure DevOps authentication, authorization, and security policies | https://learn.microsoft.com/en-us/azure/devops/organizations/security/about-security-identity?view=azure-devops |
 | Understand and configure Azure DevOps pipeline security roles | https://learn.microsoft.com/en-us/azure/devops/organizations/security/about-security-roles?view=azure-devops |
@@ -137,25 +136,25 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Download and interpret pipeline release permissions report | https://learn.microsoft.com/en-us/azure/devops/organizations/security/download-permissions-report-release?view=azure-devops |
 | Download Azure DevOps repository permissions report | https://learn.microsoft.com/en-us/azure/devops/organizations/security/download-permissions-report?view=azure-devops |
 | Export Azure DevOps users and access levels | https://learn.microsoft.com/en-us/azure/devops/organizations/security/export-users-audit-log?view=azure-devops |
-| Use Stakeholder access permissions in Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/organizations/security/get-started-stakeholder?view=azure-devops |
 | Identify Azure DevOps Administrators via Microsoft Entra | https://learn.microsoft.com/en-us/azure/devops/organizations/security/look-up-azure-devops-administrator?view=azure-devops |
 | Find and manage Azure DevOps project administrators | https://learn.microsoft.com/en-us/azure/devops/organizations/security/look-up-project-administrators?view=azure-devops |
 | Identify Project Collection Administrators in Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/organizations/security/look-up-project-collection-administrators?view=azure-devops |
 | Request higher Azure DevOps permissions to resolve access errors | https://learn.microsoft.com/en-us/azure/devops/organizations/security/request-changes-permissions?view=azure-devops |
 | Manage feature-level access control in Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/organizations/security/restrict-access?view=azure-devops |
 | Restrict user invitation permissions in Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/organizations/security/restrict-invitations?view=azure-devops |
-| Automate Azure DevOps security auditing with PowerShell | https://learn.microsoft.com/en-us/azure/devops/organizations/security/security-scripts?view=azure-devops |
+| Automate Azure DevOps security auditing with scripts | https://learn.microsoft.com/en-us/azure/devops/organizations/security/security-scripts?view=azure-devops |
 | Configure object-level permissions in Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/organizations/security/set-object-level-permissions?view=azure-devops |
 | Set permissions and access for Azure DevOps manual testing | https://learn.microsoft.com/en-us/azure/devops/organizations/security/set-permissions-access-test?view=azure-devops |
 | Set permissions for Azure DevOps work tracking | https://learn.microsoft.com/en-us/azure/devops/organizations/security/set-permissions-access-work-tracking?view=azure-devops |
+| Understand Azure DevOps Stakeholder access permissions | https://learn.microsoft.com/en-us/azure/devops/organizations/security/stakeholder-access?view=azure-devops |
 | View and troubleshoot Azure DevOps effective permissions | https://learn.microsoft.com/en-us/azure/devops/organizations/security/view-permissions?view=azure-devops |
 | Manage Azure DevOps team administrator role assignments | https://learn.microsoft.com/en-us/azure/devops/organizations/settings/add-team-administrator?view=azure-devops |
 | Configure OAuth service authorizations in Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/organizations/settings/manage-authorizations?view=azure-devops |
 | Manage Azure DevOps wiki and README permissions via Git security | https://learn.microsoft.com/en-us/azure/devops/project/wiki/manage-readme-wiki-permissions?view=azure-devops |
-| Meet permissions and prerequisites for Azure DevOps Analytics | https://learn.microsoft.com/en-us/azure/devops/report/analytics/analytics-permissions-prerequisites?view=azure-devops |
+| Configure permissions to access Azure DevOps Analytics | https://learn.microsoft.com/en-us/azure/devops/report/analytics/analytics-permissions-prerequisites?view=azure-devops |
 | Set Azure DevOps dashboard permissions for team members | https://learn.microsoft.com/en-us/azure/devops/report/dashboards/dashboard-permissions?view=azure-devops |
 | Configure Analytics permissions and security for Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/analytics-security?view=azure-devops |
-| Secure Azure DevOps analytics and reporting access | https://learn.microsoft.com/en-us/azure/devops/report/secure-your-analytics-reporting?view=azure-devops |
+| Configure security and access for Azure DevOps analytics | https://learn.microsoft.com/en-us/azure/devops/report/secure-your-analytics-reporting?view=azure-devops |
 | Configure Azure DevOps Server service accounts securely | https://learn.microsoft.com/en-us/azure/devops/server/account-requirements?view=azure-devops-server |
 | Add Azure DevOps Server administrators to built-in groups | https://learn.microsoft.com/en-us/azure/devops/server/admin/add-administrator?view=azure-devops-server |
 | Change SQL Reporting service account for Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/server/admin/change-service-account-or-password-sql-reporting?view=azure-devops-server |
@@ -165,17 +164,14 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Configure HTTPS and SSL for Azure DevOps Server | https://learn.microsoft.com/en-us/azure/devops/server/admin/setup-secure-sockets-layer?view=azure-devops-server |
 | Manage Azure DevOps groups and permissions with TFSSecurity | https://learn.microsoft.com/en-us/azure/devops/server/command-line/tfssecurity-cmd?view=azure-devops-server |
 | Assign SQL Reporting Services roles for Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/server/install/sql-server/reporting-services-roles?view=azure-devops-server |
-| Validate Azure DevOps Server 2019 downloads with SHA hashes | https://learn.microsoft.com/en-us/azure/devops/server/release-notes/azuredevops2019-sha?view=azure-devops |
-| Verify Azure DevOps Server 2020 downloads with SHA hashes | https://learn.microsoft.com/en-us/azure/devops/server/release-notes/azuredevops2020-sha?view=azure-devops |
-| Validate Azure DevOps Server 2022 ISOs with SHA hashes | https://learn.microsoft.com/en-us/azure/devops/server/release-notes/azuredevops2022-sha?view=azure-devops |
 
 ### Configuration
 | Topic | URL |
 |-------|-----|
 | Configure advanced settings for Managed DevOps Pools | https://learn.microsoft.com/en-us/azure/devops/managed-devops-pools/configure-advanced-settings?view=azure-devops |
-| Configure VM images for Azure Managed DevOps Pools | https://learn.microsoft.com/en-us/azure/devops/managed-devops-pools/configure-images?view=azure-devops |
-| Configure networking for Managed DevOps Pools agents | https://learn.microsoft.com/en-us/azure/devops/managed-devops-pools/configure-networking?view=azure-devops |
-| Configure basic settings for Managed DevOps Pools | https://learn.microsoft.com/en-us/azure/devops/managed-devops-pools/configure-pool-settings?view=azure-devops |
+| Configure VM images for Managed DevOps Pools agents | https://learn.microsoft.com/en-us/azure/devops/managed-devops-pools/configure-images?view=azure-devops |
+| Configure networking for Azure Managed DevOps Pools | https://learn.microsoft.com/en-us/azure/devops/managed-devops-pools/configure-networking?view=azure-devops |
+| Configure settings for Managed DevOps Pools | https://learn.microsoft.com/en-us/azure/devops/managed-devops-pools/configure-pool-settings?view=azure-devops |
 | Configure scaling settings for Managed DevOps Pools | https://learn.microsoft.com/en-us/azure/devops/managed-devops-pools/configure-scaling?view=azure-devops |
 | Configure additional storage for Managed DevOps Pools agents | https://learn.microsoft.com/en-us/azure/devops/managed-devops-pools/configure-storage?view=azure-devops |
 | Configure demands and capabilities in Managed DevOps Pools | https://learn.microsoft.com/en-us/azure/devops/managed-devops-pools/demands?view=azure-devops |
@@ -189,44 +185,34 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Reference event types for Azure DevOps notifications | https://learn.microsoft.com/en-us/azure/devops/organizations/notifications/oob-supported-event-types?view=azure-devops |
 | View and unsubscribe from Azure DevOps notifications | https://learn.microsoft.com/en-us/azure/devops/organizations/notifications/unsubscribe-default-notification?view=azure-devops |
 | View and interpret Azure DevOps notification statistics | https://learn.microsoft.com/en-us/azure/devops/organizations/notifications/view-organization-notification-statistics?view=azure-devops |
-| Configure backlog and portfolio levels for Azure Boards | https://learn.microsoft.com/en-us/azure/devops/organizations/settings/select-backlog-navigation-levels?view=azure-devops |
 | Configure bug visibility on Azure Boards backlogs | https://learn.microsoft.com/en-us/azure/devops/organizations/settings/show-bugs-on-backlog?view=azure-devops |
 | Use Azure DevOps and Team Explorer keyboard shortcuts efficiently | https://learn.microsoft.com/en-us/azure/devops/project/navigation/keyboard-shortcuts?view=azure-devops |
 | Use Azure DevOps and Team Explorer keyboard shortcuts efficiently | https://learn.microsoft.com/en-us/azure/devops/project/navigation/keyboard-shortcuts?view=azure-devops |
-| Enable and manage Azure DevOps preview features | https://learn.microsoft.com/en-us/azure/devops/project/navigation/preview-features?view=azure-devops |
 | Install, configure, and secure Azure DevOps Server search | https://learn.microsoft.com/en-us/azure/devops/project/search/install-configure-search?view=azure-devops-server |
 | Manage Azure DevOps Server search indexing and repositories | https://learn.microsoft.com/en-us/azure/devops/project/search/manage-search?view=azure-devops-server |
-| Use Azure DevOps-specific Markdown syntax for wikis and dashboards | https://learn.microsoft.com/en-us/azure/devops/project/wiki/markdown-guidance?view=azure-devops |
 | Configure publishing of Git Markdown files to Azure DevOps wiki | https://learn.microsoft.com/en-us/azure/devops/project/wiki/publish-repo-to-wiki?view=azure-devops |
 | Configure publishing of Git Markdown files to Azure DevOps wiki | https://learn.microsoft.com/en-us/azure/devops/project/wiki/publish-repo-to-wiki?view=azure-devops |
 | Understand Azure DevOps wiki Git file and folder structure | https://learn.microsoft.com/en-us/azure/devops/project/wiki/wiki-file-structure?view=azure-devops |
 | Add or modify Azure DevOps Server work item fields | https://learn.microsoft.com/en-us/azure/devops/reference/add-modify-field?view=azure-devops-server |
-| Add or modify work item types in Azure DevOps Server XML model | https://learn.microsoft.com/en-us/azure/devops/reference/add-modify-wit?view=azure-devops-server |
+| Configure and customize Azure DevOps work item types | https://learn.microsoft.com/en-us/azure/devops/reference/add-modify-wit?view=azure-devops-server |
+| Configure work item types on Azure DevOps backlogs and boards | https://learn.microsoft.com/en-us/azure/devops/reference/add-wits-to-backlogs-and-boards?view=azure-devops |
 | Configure on-premises XML process model for Azure DevOps Server | https://learn.microsoft.com/en-us/azure/devops/reference/on-premises-xml-process-model?view=azure-devops-server |
 | Access Azure Boards configuration and customization settings quickly | https://learn.microsoft.com/en-us/azure/devops/reference/quick-reference-index-boards-settings?view=azure-devops |
 | Manage Azure DevOps work item fields using witadmin | https://learn.microsoft.com/en-us/azure/devops/reference/witadmin/manage-work-item-fields?view=azure-devops |
 | Use witadmin to customize Azure DevOps work tracking objects | https://learn.microsoft.com/en-us/azure/devops/reference/witadmin/witadmin-customize-and-manage-objects-for-tracking-work?view=azure-devops |
 | Import, export, and manage work item types with witadmin | https://learn.microsoft.com/en-us/azure/devops/reference/witadmin/witadmin-import-export-manage-wits?view=azure-devops |
 | Import and export Azure Boards process configuration with witadmin | https://learn.microsoft.com/en-us/azure/devops/reference/witadmin/witadmin-import-export-process-configuration?view=azure-devops |
-| Customize workflow states and transitions for Azure DevOps work item types | https://learn.microsoft.com/en-us/azure/devops/reference/xml/change-workflow-wit?view=azure-devops-server |
 | Reference for ProcessConfiguration XML in Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/reference/xml/process-configuration-xml-element?view=azure-devops-server |
-| Configure help text and web content in Azure DevOps work item forms | https://learn.microsoft.com/en-us/azure/devops/reference/xml/provide-help-text-hyperlinks-web-content-form?view=azure-devops-server |
+| Configure help text and web content on work item forms | https://learn.microsoft.com/en-us/azure/devops/reference/xml/provide-help-text-hyperlinks-web-content-form?view=azure-devops-server |
 | Azure Boards Analytics entity and property reference | https://learn.microsoft.com/en-us/azure/devops/report/analytics/entity-reference-boards?view=azure-devops |
 | Use CalendarDate, Project, and User metadata in Analytics | https://learn.microsoft.com/en-us/azure/devops/report/analytics/entity-reference-general?view=azure-devops |
 | Azure Pipelines Analytics properties and enums reference | https://learn.microsoft.com/en-us/azure/devops/report/analytics/entity-reference-pipelines?view=azure-devops |
 | Azure Test Plans Analytics metadata and properties | https://learn.microsoft.com/en-us/azure/devops/report/analytics/entity-reference-test-plans?view=azure-devops |
 | Add built-in charts to Azure DevOps dashboards | https://learn.microsoft.com/en-us/azure/devops/report/dashboards/add-charts-to-dashboard?view=azure-devops |
-| Configure Markdown widget content on Azure DevOps dashboards | https://learn.microsoft.com/en-us/azure/devops/report/dashboards/add-markdown-to-dashboard?view=azure-devops |
 | Install or enable Azure DevOps Server Analytics service | https://learn.microsoft.com/en-us/azure/devops/report/dashboards/analytics-extension?view=azure-devops-server |
-| Configure Azure DevOps Analytics dashboard widgets | https://learn.microsoft.com/en-us/azure/devops/report/dashboards/analytics-widgets?view=azure-devops |
-| Configure Azure DevOps query-based status and trend charts | https://learn.microsoft.com/en-us/azure/devops/report/dashboards/charts?view=azure-devops |
-| Configure burndown and burnup widgets across teams | https://learn.microsoft.com/en-us/azure/devops/report/dashboards/configure-burndown-burnup-widgets?view=azure-devops |
 | Configure Chart for Work Items widget in Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/report/dashboards/configure-chart-work-items-widget?view=azure-devops |
-| Configure sprint burndown charts and widgets in Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/report/dashboards/configure-sprint-burndown?view=azure-devops |
 | Configure Test Results Trend (Advanced) Analytics widget | https://learn.microsoft.com/en-us/azure/devops/report/dashboards/configure-test-results-trend?view=azure-devops |
-| Copy and reuse Azure DevOps dashboards across teams | https://learn.microsoft.com/en-us/azure/devops/report/dashboards/copy-dashboard?view=azure-devops |
 | View and configure cumulative flow diagrams in Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/report/dashboards/cumulative-flow?view=azure-devops |
-| Configure cycle time and lead time charts in Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/report/dashboards/cycle-time-and-lead-time?view=azure-devops |
 | Configure and manage Azure DevOps team dashboards | https://learn.microsoft.com/en-us/azure/devops/report/dashboards/dashboards?view=azure-devops |
 | Configure and interpret team velocity reports in Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/report/dashboards/team-velocity?view=azure-devops |
 | Use built-in Azure DevOps dashboard widgets | https://learn.microsoft.com/en-us/azure/devops/report/dashboards/widget-catalog?view=azure-devops |
@@ -234,10 +220,8 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Understand Azure DevOps Analytics data model entities | https://learn.microsoft.com/en-us/azure/devops/report/extend-analytics/data-model-analytics-service?view=azure-devops |
 | Configure and select OData API versions for Analytics | https://learn.microsoft.com/en-us/azure/devops/report/extend-analytics/odata-api-version?view=azure-devops |
 | Supported OData functions and clauses in Analytics | https://learn.microsoft.com/en-us/azure/devops/report/extend-analytics/odata-supported-features?view=azure-devops |
-| Create custom Analytics views for Azure DevOps Power BI reports | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/analytics-views-create?view=azure-devops |
 | Manage Azure DevOps Analytics views lifecycle | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/analytics-views-manage?view=azure-devops |
 | Understand Power BI datasets from Azure DevOps Analytics views | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/data-connector-dataset?view=azure-devops |
-| Understand and use Azure DevOps Analytics views with Power BI | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/what-are-analytics-views?view=azure-devops |
 | Configure Azure DevOps Server scheduled database backups | https://learn.microsoft.com/en-us/azure/devops/server/admin/backup/config-backup-sched-plan?view=azure-devops-server |
 | Manually configure Azure DevOps Server SQL backups | https://learn.microsoft.com/en-us/azure/devops/server/admin/backup/manually-backup-tfs?view=azure-devops-server |
 | Tune Azure DevOps Server application-tier version control cache | https://learn.microsoft.com/en-us/azure/devops/server/admin/change-caching-app-tier?view=azure-devops-server |
@@ -261,58 +245,47 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 ### Integrations & Coding Patterns
 | Topic | URL |
 |-------|-----|
-| Set up Visual Studio integration with Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/faq-set-up-vs?view=azure-devops |
 | Stream Azure DevOps audit logs to external SIEM | https://learn.microsoft.com/en-us/azure/devops/organizations/audit/auditing-streaming?view=azure-devops |
 | Integrate Azure DevOps notifications with third-party services | https://learn.microsoft.com/en-us/azure/devops/organizations/notifications/integrate-third-party-services?view=azure-devops |
 | Connect various clients to Azure DevOps projects | https://learn.microsoft.com/en-us/azure/devops/organizations/projects/connect-to-projects?view=azure-devops |
 | Automate Azure DevOps wiki management using CLI commands | https://learn.microsoft.com/en-us/azure/devops/project/wiki/manage-wikis?view=azure-devops |
 | Clone and edit Azure DevOps wiki Git repos offline | https://learn.microsoft.com/en-us/azure/devops/project/wiki/wiki-update-offline?view=azure-devops |
-| Construct OData queries for Azure DevOps Analytics | https://learn.microsoft.com/en-us/azure/devops/report/analytics/analytics-query-parts?view=azure-devops |
+| Construct Azure DevOps Analytics OData query URLs | https://learn.microsoft.com/en-us/azure/devops/report/analytics/analytics-query-parts?view=azure-devops |
 | Write project and organization-scoped OData queries | https://learn.microsoft.com/en-us/azure/devops/report/extend-analytics/account-scoped-queries?view=azure-devops |
-| Aggregate Azure DevOps work tracking data with OData Analytics | https://learn.microsoft.com/en-us/azure/devops/report/extend-analytics/aggregated-data-analytics?view=azure-devops |
+| Aggregate Azure DevOps work data with OData | https://learn.microsoft.com/en-us/azure/devops/report/extend-analytics/aggregated-data-analytics?view=azure-devops |
 | Use sample Analytics OData queries for Azure DevOps work tracking | https://learn.microsoft.com/en-us/azure/devops/report/extend-analytics/analytics-recipes?view=azure-devops |
-| Query Azure DevOps Analytics trend data with OData | https://learn.microsoft.com/en-us/azure/devops/report/extend-analytics/querying-for-trend-data?view=azure-devops |
+| Query Azure DevOps trend data with OData | https://learn.microsoft.com/en-us/azure/devops/report/extend-analytics/querying-for-trend-data?view=azure-devops |
 | Extract OData queries from Azure DevOps Analytics reports | https://learn.microsoft.com/en-us/azure/devops/report/extend-analytics/view-odata-query-analytics-report?view=azure-devops |
-| Use sample OData queries for Azure DevOps Analytics | https://learn.microsoft.com/en-us/azure/devops/report/extend-analytics/wit-analytics?view=azure-devops |
+| Define Azure DevOps work item OData queries | https://learn.microsoft.com/en-us/azure/devops/report/extend-analytics/wit-analytics?view=azure-devops |
 | Query linked Azure DevOps work items via Analytics OData | https://learn.microsoft.com/en-us/azure/devops/report/extend-analytics/work-item-links?view=azure-devops |
 | Access Azure DevOps Analytics OData from Power BI Desktop | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/access-analytics-power-bi?view=azure-devops |
-| Create Power BI reports using Azure DevOps OData queries | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/create-quick-report-odataq?view=azure-devops |
-| Connect Power BI to Azure DevOps via Data Connector | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/data-connector-connect?view=azure-devops |
-| Use sample Analytics view reports with Power BI connector | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/data-connector-examples?view=azure-devops |
 | Use Azure DevOps Power Query M functions for Analytics | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/data-connector-functions?view=azure-devops |
-| Connect Power BI using Azure DevOps Analytics OData queries | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/odataquery-connect?view=azure-devops |
-| Create bug trend Power BI reports from Azure DevOps Analytics | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-boards-bugtrend?view=azure-devops |
-| Build Cumulative Flow Diagram reports from Azure DevOps in Power BI | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-boards-cfd?view=azure-devops |
-| List linked Azure DevOps work items in Power BI reports | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-boards-directlinks?view=azure-devops |
-| Create feature progress rollup reports from Azure DevOps in Power BI | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-boards-featureprogress?view=azure-devops |
-| Create lead time and cycle time Power BI reports for Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-boards-leadcycletime?view=azure-devops |
-| Build open bugs and stories Power BI report from Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-boards-openbugs?view=azure-devops |
-| Generate release burndown and burnup reports from Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-boards-releaseburndown?view=azure-devops |
-| Roll up child work item values in Azure DevOps Power BI reports | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-boards-rollup?view=azure-devops |
-| Create sprint burndown Power BI reports from Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-boards-sprintburndown?view=azure-devops |
+| Build Azure DevOps CFD report with Power BI OData | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-boards-cfd?view=azure-devops |
+| Create lead and cycle time reports from Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-boards-leadcycletime?view=azure-devops |
 | Use sample Azure DevOps OData queries for Power BI reports | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-odata-overview?view=azure-devops |
-| Report on outcomes and metrics for all Azure DevOps pipelines | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-pipelines-allpipelines?view=azure-devops |
-| Create pipeline duration trend reports from Azure DevOps in Power BI | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-pipelines-duration-trend?view=azure-devops |
-| Build pipeline duration Power BI reports from Azure DevOps Analytics | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-pipelines-duration?view=azure-devops |
-| Build pipeline outcome summary Power BI reports from Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-pipelines-outcome-summary?view=azure-devops |
-| Create pipeline pass rate trend Power BI reports from Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-pipelines-pass-rate-trend?view=azure-devops |
-| Report pipeline stage-wise failures from Azure DevOps in Power BI | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-pipelines-stagewise-failures?view=azure-devops |
-| Create pipeline task duration trend reports from Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-pipelines-task-duration-trend?view=azure-devops |
-| Analyze Azure DevOps pipeline task duration in Power BI | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-pipelines-task-duration?view=azure-devops |
-| Create rollup requirements tracking reports in Power BI | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-stories-overview-rollup?view=azure-devops |
-| Build requirements tracking reports with Power BI | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-stories-overview?view=azure-devops |
-| Build test duration trend reports with Power BI | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-test-analyics-test-duration-trend?view=azure-devops |
-| Build Power BI reports for failed Azure DevOps tests | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-test-analytics-failed-tests?view=azure-devops |
-| Create Power BI flaky test reports from Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-test-analytics-flaky-tests?view=azure-devops |
-| Create pass rate trend reports for tests in Power BI | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-test-analytics-pass-rate-trend-test?view=azure-devops |
-| Generate test duration reports in Power BI from pipelines | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-test-analytics-test-duration?view=azure-devops |
-| Generate pipeline test summary Power BI reports from Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-test-analytics-test-summary?view=azure-devops |
-| Create aggregated test suite views in Power BI | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-test-plans-aggregate-data-level?view=azure-devops |
-| Create configuration-by-outcome test reports in Power BI | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-test-plans-configuration-by-outcome?view=azure-devops |
-| Report manual test execution trends in Power BI | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-test-plans-execution-trend?view=azure-devops |
-| Report manual test progress status using Power BI | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-test-plans-progress-status?view=azure-devops |
-| Build tester-by-outcome matrix reports in Power BI | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-test-plans-tester-by-outcome?view=azure-devops |
-| Create pipeline test summary trend reports from Azure DevOps | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-test-summary-trend?view=azure-devops |
+| Query all Azure DevOps pipelines for outcome metrics | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-pipelines-allpipelines?view=azure-devops |
+| Create pipeline duration trend report with Analytics | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-pipelines-duration-trend?view=azure-devops |
+| Query Azure DevOps pipeline duration for Power BI | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-pipelines-duration?view=azure-devops |
+| Report pipeline outcome summary using Azure DevOps OData | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-pipelines-outcome-summary?view=azure-devops |
+| Build pipeline pass rate trend report from Analytics | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-pipelines-pass-rate-trend?view=azure-devops |
+| Report Azure DevOps pipeline stage failure trends | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-pipelines-stagewise-failures?view=azure-devops |
+| Build task duration trend report for Azure pipelines | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-pipelines-task-duration-trend?view=azure-devops |
+| Analyze Azure DevOps pipeline task duration percentiles | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-pipelines-task-duration?view=azure-devops |
+| Create rollup requirements tracking report in Power BI | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-stories-overview-rollup?view=azure-devops |
+| Build requirements tracking and stories overview report | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-stories-overview?view=azure-devops |
+| List failed tests for Azure DevOps pipelines in Power BI | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-test-analytics-failed-tests?view=azure-devops |
+| Report flaky tests from Azure DevOps pipelines | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-test-analytics-flaky-tests?view=azure-devops |
+| Create pass rate trend report for a specific test | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-test-analytics-pass-rate-trend-test?view=azure-devops |
+| Build test duration trend reports for Azure pipelines | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-test-analytics-test-duration-trend?view=azure-devops |
+| Analyze pipeline test duration with Azure DevOps Analytics | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-test-analytics-test-duration?view=azure-devops |
+| Generate pipeline test summary reports in Power BI | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-test-analytics-test-summary?view=azure-devops |
+| Create aggregated test suite execution reports | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-test-plans-aggregate-data-level?view=azure-devops |
+| Report configuration-by-outcome history for manual tests | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-test-plans-configuration-by-outcome?view=azure-devops |
+| Generate manual test execution trend reports | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-test-plans-execution-trend?view=azure-devops |
+| Report manual test progress status with Power BI | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-test-plans-progress-status?view=azure-devops |
+| Build tester-by-outcome matrix for manual tests | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-test-plans-tester-by-outcome?view=azure-devops |
+| Create pipeline test summary trend reports from Analytics | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/sample-test-summary-trend?view=azure-devops |
+| Transform Azure DevOps Analytics data in Power BI | https://learn.microsoft.com/en-us/azure/devops/report/powerbi/transform-analytics-data-report-generation?view=azure-devops |
 
 ### Deployment
 | Topic | URL |

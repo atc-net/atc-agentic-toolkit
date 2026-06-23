@@ -1,6 +1,6 @@
 ---
 name: azure-maps
-description: Expert knowledge for Azure Maps development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, and integrations & coding patterns. Use when using Azure Maps web SDK, search/routing/weather APIs, Spatial IO, Power BI visuals, or Bing/Google Maps migration, and other Azure Maps related development tasks.
+description: Expert knowledge for Azure Maps development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, and integrations & coding patterns. Use when using map rendering/tiles, search & routing APIs, weather data, Spatial IO, or migrating from Bing/Google Maps, and other Azure Maps related development tasks. Not for Azure AI Search (use azure-cognitive-search), Azure Digital Twins (use azure-digital-twins), Azure IoT (use azure-iot), Azure IoT Hub (use azure-iot-hub).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -10,23 +10,24 @@ This skill provides expert guidance for Azure Maps. Covers troubleshooting, best
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L30-L33 | Diagnosing and fixing common Azure Maps Weather API issues, including authentication, request/response errors, throttling, and configuration or usage problems. |
-| Best Practices | L35-L44 | Guidance on securing Azure Maps apps, rendering custom/static data, correct copyright attribution, routing/search best practices, accessibility, and Web SDK performance optimization. |
-| Decision Making | L46-L54 | Guidance on pricing tiers, billing/usage, and how to migrate or replace Bing/Google Maps and Power BI map solutions with Azure Maps and related Azure services |
-| Architecture & Design Patterns | L56-L60 | Designing Azure architectures for elevation data services and multi-itinerary route optimization using Azure Maps, open DEM data, and NVIDIA cuOpt for scalable geospatial solutions |
-| Limits & Quotas | L62-L70 | Coverage, limits, and capabilities of Azure Maps services: QPS rate limits, and regional support for geocoding, rendering/tiles, routing, traffic, and weather data. |
-| Security | L72-L85 | Securing Azure Maps access: auth methods (keys, Entra ID, SAS), SPA/daemon/device scenarios, Power BI visual access/residency, and private endpoint network protection. |
-| Configuration | L87-L110 | Configuring Azure Maps web maps, styles, layers, data sources, routing models, localization, browser support, and migrating or updating to newer Azure Maps APIs and services. |
-| Integrations & Coding Patterns | L112-L174 | Patterns and code for integrating Azure Maps into web/mobile/Power BI apps, using REST/SDKs, layers, drawing, search/routing/weather, Spatial IO, and migrating from Bing/Google Maps. |
+| Troubleshooting | L32-L36 | Diagnosing and fixing common Azure Maps Weather service issues, including authentication, quota/usage errors, incorrect responses, and troubleshooting API request/response problems. |
+| Best Practices | L37-L47 | Best practices for Azure Maps apps: auth/security, routing and search usage, static image rendering, performance tuning, accessibility, and correct copyright/attribution. |
+| Decision Making | L48-L60 | Guidance on pricing, billing, and migrating maps apps to Azure Maps from Bing, Google, Power BI visuals, and older Azure Maps APIs, including routing, tiles, and search replacements |
+| Architecture & Design Patterns | L61-L66 | Designing Azure architectures for elevation data services and multi-itinerary route optimization using Azure Maps, open DEM data, and NVIDIA cuOpt for scalable geospatial solutions |
+| Limits & Quotas | L67-L76 | Coverage, limits, and capabilities of Azure Maps services: QPS rate limits, and regional support for geocoding, rendering/tiles, routing, traffic, and weather data. |
+| Security | L77-L91 | Securing Azure Maps access: auth methods (keys, SAS, Entra ID), SPA/daemon/device scenarios, Power BI visual governance, and network isolation with Private Link. |
+| Configuration | L92-L116 | Configuring Azure Maps web maps, styles, layers, data sources, routing models, localization, browser support, and migrating or updating to newer Azure Maps APIs and services. |
+| Integrations & Coding Patterns | L117-L177 | Patterns and code for integrating Azure Maps into web/mobile/Power BI apps, using REST/SDKs, layers, drawing, search/routing/weather, Spatial IO, and migrating from Bing/Google Maps. |
 
 ### Troubleshooting
 | Topic | URL |
@@ -40,7 +41,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Render custom data on Azure Maps static raster images | https://learn.microsoft.com/en-us/azure/azure-maps/how-to-render-custom-data |
 | Show required Azure Maps copyright attribution correctly | https://learn.microsoft.com/en-us/azure/azure-maps/how-to-show-attribution |
 | Apply best practices for Azure Maps Route service | https://learn.microsoft.com/en-us/azure/azure-maps/how-to-use-best-practices-for-routing |
-| Apply best practices for Azure Maps Search service | https://learn.microsoft.com/en-us/azure/azure-maps/how-to-use-best-practices-for-search |
+| Apply best practices for Azure Maps Search | https://learn.microsoft.com/en-us/azure/azure-maps/how-to-use-best-practices-for-search |
 | Implement accessibility features in Azure Maps apps | https://learn.microsoft.com/en-us/azure/azure-maps/map-accessibility |
 | Optimize performance with Azure Maps Web SDK best practices | https://learn.microsoft.com/en-us/azure/azure-maps/web-sdk-best-practices |
 
@@ -49,8 +50,11 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 |-------|-----|
 | Select and manage Azure Maps pricing tiers | https://learn.microsoft.com/en-us/azure/azure-maps/how-to-manage-pricing-tier |
 | Plan migration from Bing Maps Enterprise to Azure Maps | https://learn.microsoft.com/en-us/azure/azure-maps/migrate-bing-maps-overview |
+| Migrate Bing Truck Route API to Azure Maps routing | https://learn.microsoft.com/en-us/azure/azure-maps/migrate-calculate-truck-route |
 | Decide how to migrate from Google Maps to Azure Maps | https://learn.microsoft.com/en-us/azure/azure-maps/migrate-from-google-maps |
+| Migrate Bing Get Imagery Metadata to Azure Maps tiles | https://learn.microsoft.com/en-us/azure/azure-maps/migrate-get-imagery-metadata |
 | Choose Azure Maps and Azure services to replace Bing SDS | https://learn.microsoft.com/en-us/azure/azure-maps/migrate-sds-data-source-management |
+| Decide and migrate from Azure Maps Search v1 | https://learn.microsoft.com/en-us/azure/azure-maps/migrate-search-v1-api |
 | Convert Power BI Map visuals to Azure Maps visual | https://learn.microsoft.com/en-us/azure/azure-maps/power-bi-visual-conversion |
 | Interpret Azure Maps transaction billing and usage | https://learn.microsoft.com/en-us/azure/azure-maps/understanding-azure-maps-transactions |
 
@@ -83,7 +87,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Secure Azure Maps web apps with interactive sign-in | https://learn.microsoft.com/en-us/azure/azure-maps/how-to-secure-webapp-users |
 | Understand Azure Maps Power BI visual data residency behavior | https://learn.microsoft.com/en-us/azure/azure-maps/power-bi-visual-data-residency |
 | Manage organizational access to Azure Maps Power BI visual | https://learn.microsoft.com/en-us/azure/azure-maps/power-bi-visual-manage-access |
-| Secure Azure Maps access using Private Endpoints | https://learn.microsoft.com/en-us/azure/azure-maps/private-endpoints |
+| Secure Azure Maps access using Private Link endpoints | https://learn.microsoft.com/en-us/azure/azure-maps/private-endpoints |
 
 ### Configuration
 | Topic | URL |
@@ -148,7 +152,6 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Search locations and show results in Azure Maps | https://learn.microsoft.com/en-us/azure/azure-maps/map-search-location |
 | Display traffic flow and incidents in Azure Maps | https://learn.microsoft.com/en-us/azure/azure-maps/map-show-traffic |
 | Translate Bing route calculation to Azure Maps routing | https://learn.microsoft.com/en-us/azure/azure-maps/migrate-calculate-route |
-| Migrate Bing truck routing to Azure Maps truck routes | https://learn.microsoft.com/en-us/azure/azure-maps/migrate-calculate-truck-route |
 | Convert Bing address geocoding to Azure Maps Geocoding | https://learn.microsoft.com/en-us/azure/azure-maps/migrate-find-location-address |
 | Migrate Bing reverse geocoding to Azure Maps API | https://learn.microsoft.com/en-us/azure/azure-maps/migrate-find-location-by-point |
 | Migrate Bing query-based geocoding to Azure Maps | https://learn.microsoft.com/en-us/azure/azure-maps/migrate-find-location-query |
@@ -158,7 +161,6 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Migrate Google Maps web services to Azure Maps REST APIs | https://learn.microsoft.com/en-us/azure/azure-maps/migrate-from-google-maps-web-services |
 | Migrate Bing Geocode Dataflow to Azure batch geocoding | https://learn.microsoft.com/en-us/azure/azure-maps/migrate-geocode-dataflow |
 | Replace Bing Geodata API with Azure Maps Get Polygon | https://learn.microsoft.com/en-us/azure/azure-maps/migrate-geodata |
-| Map Bing Get Imagery Metadata to Azure Maps tiles | https://learn.microsoft.com/en-us/azure/azure-maps/migrate-get-imagery-metadata |
 | Migrate Bing Static Map calls to Azure Static Image | https://learn.microsoft.com/en-us/azure/azure-maps/migrate-get-static-map |
 | Migrate Bing traffic incidents to Azure Maps incident details | https://learn.microsoft.com/en-us/azure/azure-maps/migrate-get-traffic-incidents |
 | Add and configure marker layers in Azure Maps visual | https://learn.microsoft.com/en-us/azure/azure-maps/power-bi-visual-add-marker-layer |

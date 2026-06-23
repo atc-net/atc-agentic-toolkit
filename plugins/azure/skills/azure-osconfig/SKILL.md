@@ -1,6 +1,6 @@
 ---
 name: azure-osconfig
-description: Expert knowledge for Azure Osconfig development including troubleshooting, security, configuration, and integrations & coding patterns. Use when running OSConfig via IoT Hub for commands, SSH posture, agent health, Windows baselines, or LAPS, and other Azure Osconfig related development tasks. Not for Azure Update Manager (use azure-update-manager), Azure Automation (use azure-automation), Azure Policy (use azure-policy).
+description: Expert knowledge for Azure Osconfig development including troubleshooting, security, configuration, and integrations & coding patterns. Use when running OSConfig via IoT for commands/networking, SSH Posture Control, agent health, or Windows security baselines, and other Azure Osconfig related development tasks. Not for Azure Update Manager (use azure-update-manager), Azure Automation (use azure-automation), Azure Policy (use azure-policy).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -10,19 +10,20 @@ This skill provides expert guidance for Azure Osconfig. Covers troubleshooting, 
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L26-L29 | Diagnosing OSConfig agent status and connectivity issues when using Azure IoT Hub, including checking logs, health, and troubleshooting deployment or reporting problems. |
-| Security | L31-L36 | Configuring Windows security via OSConfig: App Control for Business, Windows Server 2025 security baselines, and Windows LAPS with Azure Arc and Policy. |
-| Configuration | L38-L42 | Tracking OSConfig breaking changes over time and configuring/standardizing sshd settings across fleets using SSH Posture Control. |
-| Integrations & Coding Patterns | L44-L56 | Patterns for using OSConfig with Azure IoT to run custom commands, manage Linux networking, firewall, packages, hostnames, reboots, and report device/OS hardware info. |
+| Troubleshooting | L28-L32 | Diagnosing OSConfig agent status and connectivity issues when using Azure IoT Hub, including checking logs, health, and troubleshooting deployment or reporting problems. |
+| Security | L33-L39 | Configuring Windows security with OSConfig: App Control for Business policies, Windows Server 2025 security baselines, and applying CIS benchmarks to Azure Windows Server. |
+| Configuration | L40-L45 | Tracking OSConfig breaking changes over time and configuring/standardizing sshd settings across fleets using SSH Posture Control. |
+| Integrations & Coding Patterns | L46-L58 | Patterns for using OSConfig with Azure IoT to run custom commands, manage Linux networking, firewall, packages, hostnames, reboots, and report device/OS hardware info. |
 
 ### Troubleshooting
 | Topic | URL |
@@ -34,7 +35,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 |-------|-----|
 | Configure App Control for Business policies via OSConfig | https://learn.microsoft.com/en-us/azure/osconfig/osconfig-how-to-configure-app-control-for-business |
 | Configure Windows Server 2025 security baselines with OSConfig | https://learn.microsoft.com/en-us/azure/osconfig/osconfig-how-to-configure-security-baselines |
-| Configure Windows LAPS with Azure Arc and Policy | https://learn.microsoft.com/en-us/azure/osconfig/overview-laps-azure-arc |
+| Apply CIS security benchmarks to Azure Windows Server | https://learn.microsoft.com/en-us/azure/osconfig/overview-cis-benchmarks-windows-server |
 
 ### Configuration
 | Topic | URL |

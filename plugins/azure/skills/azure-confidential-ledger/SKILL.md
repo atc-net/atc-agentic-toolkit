@@ -1,43 +1,53 @@
 ---
 name: azure-confidential-ledger
-description: Expert knowledge for Azure Confidential Ledger development including decision making, security, integrations & coding patterns, and deployment. Use when configuring Entra auth, ACL roles, UDFs, client SDKs, transaction receipts, or ARM/Terraform deployments, and other Azure Confidential Ledger related development tasks. Not for Azure Confidential Computing (use azure-confidential-computing), Azure Virtual Enclaves (use azure-virtual-enclaves), Azure Key Vault (use azure-key-vault), Azure Dedicated HSM (use azure-dedicated-hsm).
+description: Expert knowledge for Azure Confidential Ledger development including troubleshooting, decision making, security, integrations & coding patterns, and deployment. Use when configuring Entra ID auth, MST payloads, Cosmos DB/Blob integrations, ACL Explorer, or ARM/Terraform deployment, and other Azure Confidential Ledger related development tasks. Not for Azure Confidential Computing (use azure-confidential-computing), Azure Virtual Enclaves (use azure-virtual-enclaves), Azure Key Vault (use azure-key-vault), Azure Database for PostgreSQL (use azure-database-postgresql).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
 # Azure Confidential Ledger Skill
 
-This skill provides expert guidance for Azure Confidential Ledger. Covers decision making, security, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure Confidential Ledger. Covers troubleshooting, decision making, security, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Decision Making | L26-L29 | Guidance on migrating from Managed CCF to Azure Confidential Ledger, including compatibility, feature mapping, and steps to move existing apps and data. |
-| Security | L31-L41 | Configuring Entra auth and app registration, managing cert- and token-based users/roles, enforcing RBAC/UDF security, and verifying enclave/node trust for Azure Confidential Ledger. |
-| Integrations & Coding Patterns | L43-L53 | Client libraries, UDFs, and patterns for integrating Confidential Ledger with apps and services (Blob digests, Power Automate, querying/organizing data, and verifying transaction receipts). |
-| Deployment | L55-L59 | How to deploy and provision Azure Confidential Ledger instances using ARM templates or Terraform, including required parameters and configuration steps. |
+| Troubleshooting | L29-L34 | Diagnosing and resolving Microsoft Signing Transparency (MST) ledger verification issues, plus steps to verify ledger integrity and inspect individual ledger entries. |
+| Decision Making | L35-L40 | Choosing between ACL Explorer tools for viewing/querying ledgers, and guidance on migrating applications and data from Managed CCF to Azure Confidential Ledger |
+| Security | L41-L53 | Securing Confidential Ledger: Entra ID setup, app registration, auth (tokens/certs), RBAC and roles, node attestation/quote verification, and security best practices. |
+| Integrations & Coding Patterns | L54-L63 | Patterns and examples for integrating ACL with Blob Storage, Power Automate, Cosmos DB, organizing ledger data, designing MST payloads/claims, and writing JavaScript user-defined functions. |
+| Deployment | L64-L68 | How to deploy and provision Azure Confidential Ledger instances using ARM templates or Terraform, including required parameters and configuration steps. |
+
+### Troubleshooting
+| Topic | URL |
+|-------|-----|
+| Troubleshoot Microsoft’s Signing Transparency Ledger verification issues | https://learn.microsoft.com/en-us/azure/confidential-ledger/microsoft-signing-transparency-troubleshoot |
+| Verify MST ledger integrity and inspect entries | https://learn.microsoft.com/en-us/azure/confidential-ledger/microsoft-signing-transparency-verify-signatures |
 
 ### Decision Making
 | Topic | URL |
 |-------|-----|
+| Choose between Azure Confidential Ledger Explorer tools | https://learn.microsoft.com/en-us/azure/confidential-ledger/ledger-explorer-concepts |
 | Migrate from Managed CCF to Azure Confidential Ledger | https://learn.microsoft.com/en-us/azure/confidential-ledger/managed-confidential-consortium-framework-migration |
 
 ### Security
 | Topic | URL |
 |-------|-----|
-| Configure Microsoft Entra authentication for Confidential Ledger | https://learn.microsoft.com/en-us/azure/confidential-ledger/authentication-azure-ad |
+| Authenticate and attest Azure Confidential Ledger nodes securely | https://learn.microsoft.com/en-us/azure/confidential-ledger/authenticate-ledger-nodes |
+| Configure Microsoft Entra authentication for Azure confidential ledger | https://learn.microsoft.com/en-us/azure/confidential-ledger/authentication-azure-ad |
 | Create and configure client certificates for Confidential Ledger | https://learn.microsoft.com/en-us/azure/confidential-ledger/create-client-certificate |
 | Manage Entra token-based users and roles in Confidential Ledger | https://learn.microsoft.com/en-us/azure/confidential-ledger/manage-azure-ad-token-based-users |
 | Manage certificate-based users and roles in Confidential Ledger | https://learn.microsoft.com/en-us/azure/confidential-ledger/manage-certificate-based-users |
 | Register Confidential Ledger applications in Microsoft Entra ID | https://learn.microsoft.com/en-us/azure/confidential-ledger/register-application |
-| Apply security best practices to Azure Confidential Ledger | https://learn.microsoft.com/en-us/azure/confidential-ledger/secure-confidential-ledger |
+| Apply security best practices to Confidential Computing Ledger | https://learn.microsoft.com/en-us/azure/confidential-ledger/secure-confidential-ledger |
 | Implement advanced UDFs with RBAC in Confidential Ledger | https://learn.microsoft.com/en-us/azure/confidential-ledger/user-defined-endpoints |
 | Verify node quotes and establish trust in Confidential Ledger | https://learn.microsoft.com/en-us/azure/confidential-ledger/verify-node-quotes |
 
@@ -45,13 +55,11 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Topic | URL |
 |-------|-----|
 | Integrate Blob Storage digests with Azure Confidential Ledger | https://learn.microsoft.com/en-us/azure/confidential-ledger/create-blob-managed-app |
-| Use Power Automate connector with Azure Confidential Ledger | https://learn.microsoft.com/en-us/azure/confidential-ledger/create-power-automate-workflow |
-| Organize and query data in Azure Confidential Ledger | https://learn.microsoft.com/en-us/azure/confidential-ledger/data-organization |
-| Use Azure Confidential Ledger .NET client library | https://learn.microsoft.com/en-us/azure/confidential-ledger/quickstart-net |
-| Use Azure Confidential Ledger Python client library | https://learn.microsoft.com/en-us/azure/confidential-ledger/quickstart-python |
+| Integrate Azure confidential ledger with Power Automate and Cosmos DB | https://learn.microsoft.com/en-us/azure/confidential-ledger/create-power-automate-workflow |
+| Organize and access data in Azure confidential ledger | https://learn.microsoft.com/en-us/azure/confidential-ledger/data-organization |
+| Design MST payloads, claims, and auditing workflows | https://learn.microsoft.com/en-us/azure/confidential-ledger/microsoft-signing-transparency-usage |
 | Run user-defined functions in Azure Confidential Ledger | https://learn.microsoft.com/en-us/azure/confidential-ledger/server-side-programming |
 | Create simple JavaScript UDFs in Confidential Ledger | https://learn.microsoft.com/en-us/azure/confidential-ledger/user-defined-functions |
-| Programmatically verify Confidential Ledger transaction receipts | https://learn.microsoft.com/en-us/azure/confidential-ledger/verify-write-transaction-receipts |
 
 ### Deployment
 | Topic | URL |

@@ -10,18 +10,19 @@ This skill provides expert guidance for Azure Carbon Optimization. Covers troubl
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L25-L28 | Diagnosing and resolving common Azure Carbon Optimization issues, including data collection gaps, configuration problems, inaccurate emissions estimates, and troubleshooting dashboards or reports. |
-| Security | L30-L33 | Setting up Azure RBAC roles and permissions so users and apps can securely access and manage Azure Carbon Optimization resources. |
-| Integrations & Coding Patterns | L35-L39 | Using the Carbon Service REST API and Python scripts to programmatically export Azure emissions data, authenticate, query, and integrate carbon metrics into external systems. |
+| Troubleshooting | L27-L31 | Diagnosing and resolving common Azure Carbon Optimization issues, including data collection gaps, configuration problems, inaccurate emissions estimates, and troubleshooting dashboards or reports. |
+| Security | L32-L36 | Setting up Azure RBAC roles and permissions so users and apps can securely access and manage Azure Carbon Optimization resources. |
+| Integrations & Coding Patterns | L37-L41 | Using the Carbon Service REST API and Python scripts to programmatically export Azure emissions data, authenticate, query, and integrate carbon metrics into external systems. |
 
 ### Troubleshooting
 | Topic | URL |

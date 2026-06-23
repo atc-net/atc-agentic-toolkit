@@ -1,6 +1,6 @@
 ---
 name: azure-attestation
-description: Expert knowledge for Azure Attestation development including troubleshooting, best practices, security, configuration, and deployment. Use when validating attestation tokens, authoring SGX/TPM policies, configuring policy signers, or securing endpoints, and other Azure Attestation related development tasks. Not for Azure Confidential Computing (use azure-confidential-computing), Azure Virtual Enclaves (use azure-virtual-enclaves), Azure Key Vault (use azure-key-vault), Azure Security (use azure-security).
+description: Expert knowledge for Azure Attestation development including troubleshooting, best practices, security, configuration, and deployment. Use when validating attestation tokens, authoring policies, managing SGX/TPM baselines, or securing private endpoints, and other Azure Attestation related development tasks. Not for Azure Confidential Computing (use azure-confidential-computing), Azure Virtual Enclaves (use azure-virtual-enclaves), Azure Key Vault (use azure-key-vault), Azure Dedicated HSM (use azure-dedicated-hsm).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -10,20 +10,21 @@ This skill provides expert guidance for Azure Attestation. Covers troubleshootin
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L27-L30 | Diagnosing and resolving common Azure Attestation failures, including policy/quote validation errors, configuration issues, and troubleshooting attestation responses and tokens. |
-| Best Practices | L32-L39 | Guidance on validating attestation tokens, writing secure attestation policies, and configuring/enforcing SGX and TPM attestation baselines using sample policies. |
-| Security | L41-L45 | Using Azure Policy to govern attestation providers, and securing Azure Attestation with private endpoints, firewalls, managed identities, and access control settings |
-| Configuration | L47-L62 | Configuring Azure Attestation policies (grammar, versions, claim rules), policy signer certs, and monitoring/logging via Azure Monitor, CLI, PowerShell, and log schema. |
-| Deployment | L64-L67 | How to create and configure a private endpoint for Azure Attestation using PowerShell, including network setup and secure access to attestation resources. |
+| Troubleshooting | L29-L33 | Diagnosing and fixing common Azure Attestation failures, error codes, policy/quote validation issues, configuration mistakes, and connectivity or runtime problems. |
+| Best Practices | L34-L42 | Guidance on validating attestation tokens, writing secure attestation policies, and configuring/enforcing SGX and TPM attestation baselines using sample policies. |
+| Security | L43-L48 | Using Azure Policy to govern attestation providers, and securing Azure Attestation with private endpoints, firewalls, managed identities, and access control settings |
+| Configuration | L49-L65 | Configuring Azure Attestation policies (grammar, versions, claim rules), policy signer certs, and monitoring/logging via Azure Monitor, CLI, PowerShell, and log schema. |
+| Deployment | L66-L69 | How to create and configure a private endpoint for Azure Attestation using PowerShell, including network setup and secure access to attestation resources. |
 
 ### Troubleshooting
 | Topic | URL |

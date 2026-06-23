@@ -1,6 +1,6 @@
 ---
 name: azure-route-server
-description: Expert knowledge for Azure Route Server development including troubleshooting, best practices, architecture & design patterns, limits & quotas, security, and configuration. Use when designing hub-spoke or multi-region topologies, BGP peering with NVAs/on-prem, tuning routing policies, or fixing route propagation issues, and other Azure Route Server related development tasks. Not for Azure Virtual Network (use azure-virtual-network), Azure Virtual Network Manager (use azure-virtual-network-manager), Azure Virtual WAN (use azure-virtual-wan), Azure VPN Gateway (use azure-vpn-gateway).
+description: Expert knowledge for Azure Route Server development including troubleshooting, best practices, architecture & design patterns, limits & quotas, security, and configuration. Use when designing hub-spoke or dual-homed topologies, configuring BGP peers/policies, tuning routing preferences, planning Route Server scale, or troubleshooting BGP/route propagation, and other Azure Route Server related development tasks. Not for Azure Virtual Network (use azure-virtual-network), Azure Virtual Network Manager (use azure-virtual-network-manager), Azure Virtual WAN (use azure-virtual-wan), Azure VPN Gateway (use azure-vpn-gateway).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -10,21 +10,22 @@ This skill provides expert guidance for Azure Route Server. Covers troubleshooti
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L28-L31 | Diagnosing and fixing common Azure Route Server connectivity problems, including BGP peering issues, route propagation, and troubleshooting steps/logs. |
-| Best Practices | L33-L37 | Configuring Azure Route Server routing preferences, BGP path selection, and custom routing policies to control traffic flow and route advertisement to your NVA or on-premises routers. |
-| Architecture & Design Patterns | L39-L47 | Design patterns for using Route Server in hub-spoke, dual-homed, anycast, multi-region, ExpressRoute/VPN integrations, NVA next-hop designs, and spoke route injection. |
-| Limits & Quotas | L49-L52 | Guidance on Route Server capacity planning, scale units, connection limits, and how many peers/routes each deployment can support. |
-| Security | L54-L57 | Configuring Azure RBAC roles and permissions needed to securely manage Azure Route Server resources and operations. |
-| Configuration | L59-L63 | Configuring Azure Route Server BGP peers, policies, and settings, and monitoring its performance, health, and traffic with Azure Monitor metrics |
+| Troubleshooting | L30-L34 | Diagnosing and fixing common Azure Route Server connectivity problems, including BGP peering issues, route propagation, and troubleshooting steps/logs. |
+| Best Practices | L35-L40 | Configuring Azure Route Server routing preferences, BGP path selection, and custom routing policies to control traffic flow and route advertisement to your NVA or on-premises routers. |
+| Architecture & Design Patterns | L41-L50 | Design patterns for using Route Server in hub-spoke, dual-homed, anycast, multi-region, ExpressRoute/VPN integrations, NVA next-hop designs, and spoke route injection. |
+| Limits & Quotas | L51-L55 | Guidance on Route Server capacity planning, scale units, connection limits, and how many peers/routes each deployment can support. |
+| Security | L56-L61 | Configuring least-privilege RBAC roles and secure deployment practices for Azure Route Server, including access control, hardening, and compliance-focused settings. |
+| Configuration | L62-L66 | Configuring Azure Route Server BGP peers, policies, and settings, and monitoring its performance, health, and traffic with Azure Monitor metrics |
 
 ### Troubleshooting
 | Topic | URL |
@@ -56,6 +57,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Topic | URL |
 |-------|-----|
 | Configure RBAC roles for managing Azure Route Server | https://learn.microsoft.com/en-us/azure/route-server/roles-permissions |
+| Secure configuration for Azure Route Server deployments | https://learn.microsoft.com/en-us/azure/route-server/secure-route-server |
 
 ### Configuration
 | Topic | URL |

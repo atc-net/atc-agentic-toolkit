@@ -10,24 +10,25 @@ This skill provides expert guidance for Azure HPC Cache. Covers troubleshooting,
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L31-L35 | Diagnosing and resolving Azure HPC Cache issues with Blob storage firewalls and NFS storage targets, including connectivity, access, and configuration problems. |
-| Best Practices | L37-L44 | Guidance on optimizing Azure HPC Cache: client load balancing, efficient data movement and manual copy to Blob targets, NFS-on-Blob considerations, and priming caches for better hit rates. |
-| Decision Making | L46-L50 | Guidance on when Azure HPC Cache is appropriate, comparing usage models, workload patterns, performance needs, and deciding if/when to adopt it for your architecture. |
-| Architecture & Design Patterns | L52-L56 | Designing Azure HPC Cache namespaces across multiple back-end storage systems, and planning regional redundancy, high availability, and failover strategies for cached workloads. |
-| Limits & Quotas | L58-L61 | How to request and manage Azure HPC Cache quota increases, including limits on cache instances, capacities, and the support process for raising quotas. |
-| Security | L63-L69 | Configuring HPC Cache security: client access policies, directory/AD integration and extended groups, customer-managed encryption keys, and overall cache security settings. |
-| Configuration | L71-L83 | Configuring and operating Azure HPC Cache: CLI setup, networking/DNS/NTP, storage targets and namespaces, mounting NFS clients, lifecycle management, metrics, and environment prerequisites. |
-| Integrations & Coding Patterns | L85-L91 | Scripts and patterns for ingesting data (msrsync, parallelcp), controlling write-back with flush_file.py, and integrating Azure HPC Cache with Azure NetApp Files. |
-| Deployment | L93-L97 | Creating Azure HPC Cache instances via portal/CLI, and recreating or moving existing caches to a different region while preserving configuration and data paths |
+| Troubleshooting | L33-L38 | Diagnosing and resolving Azure HPC Cache issues with Blob storage firewalls and NFS storage targets, including connectivity, access, and configuration problems. |
+| Best Practices | L39-L47 | Guidance on optimizing Azure HPC Cache: client load balancing, efficient data movement and manual copy to Blob targets, NFS-on-Blob considerations, and priming caches for better hit rates. |
+| Decision Making | L48-L53 | Guidance on when Azure HPC Cache is appropriate, comparing usage models, workload patterns, performance needs, and deciding if/when to adopt it for your architecture. |
+| Architecture & Design Patterns | L54-L59 | Designing Azure HPC Cache namespaces across multiple back-end storage systems, and planning regional redundancy, high availability, and failover strategies for cached workloads. |
+| Limits & Quotas | L60-L64 | How to request and manage Azure HPC Cache quota increases, including limits on cache instances, capacities, and the support process for raising quotas. |
+| Security | L65-L72 | Configuring HPC Cache security: client access policies, directory/AD integration and extended groups, customer-managed encryption keys, and overall cache security settings. |
+| Configuration | L73-L86 | Configuring and operating Azure HPC Cache: CLI setup, networking/DNS/NTP, storage targets and namespaces, mounting NFS clients, lifecycle management, metrics, and environment prerequisites. |
+| Integrations & Coding Patterns | L87-L94 | Scripts and patterns for ingesting data (msrsync, parallelcp), controlling write-back with flush_file.py, and integrating Azure HPC Cache with Azure NetApp Files. |
+| Deployment | L95-L99 | Creating Azure HPC Cache instances via portal/CLI, and recreating or moving existing caches to a different region while preserving configuration and data paths |
 
 ### Troubleshooting
 | Topic | URL |

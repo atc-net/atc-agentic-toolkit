@@ -10,24 +10,25 @@ This skill provides expert guidance for Azure Lab Services. Covers troubleshooti
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L31-L37 | Diagnosing and fixing VM access, connectivity, deployment, and lab-creation issues in Azure Lab Services, including when to redeploy or reimage VMs. |
-| Best Practices | L39-L46 | Governance and setup guidance for lab plans, custom images, nested virtualization, Linux graphical RDP, and preparing optimized Windows template VMs in Azure Lab Services |
-| Decision Making | L48-L58 | Guidance on when and how to use Azure Lab Services: choosing lab types, planning migrations (physical or to other services), cost estimation, GPU sizing, and running training or hackathon scenarios. |
-| Architecture & Design Patterns | L60-L65 | Core Azure Lab Services architecture, supported networking topologies, and design patterns for building reliable, resilient lab environments and lab plans |
-| Limits & Quotas | L67-L73 | VM capacity and core quotas for labs, how to view usage, request quota increases, and timelines for automatic VM deletion and cleanup. |
-| Security | L75-L88 | RBAC roles, lab creator/owner assignment, Azure Policy for compliance and VM size limits, firewall and public IP setup, and educator/student VM password management. |
-| Configuration | L90-L119 | Configuring Azure Lab Services: lab plans, regions, images, networking, VM templates, schedules (start/stop/shutdown), capacity, GPU/nested virtualization, and user/educator access. |
-| Integrations & Coding Patterns | L121-L133 | Integrating Lab Services with Canvas and Teams, automating lab creation via Bicep/PowerShell/Python, connecting labs to VNets, and remote access to Linux VMs with X2Go. |
-| Deployment | L135-L144 | Creating and importing Windows/Linux lab VM images (from Azure VMs, physical labs, or compute galleries), rapidly setting up/publishing labs, and migrating lab accounts to lab plans. |
+| Troubleshooting | L33-L40 | Diagnosing and fixing VM access, connectivity, deployment, and lab-creation issues in Azure Lab Services, including when to redeploy or reimage VMs. |
+| Best Practices | L41-L49 | Governance and setup guidance for lab plans, custom images, nested virtualization, Linux graphical RDP, and preparing optimized Windows template VMs in Azure Lab Services |
+| Decision Making | L50-L61 | Guidance on when and how to use Azure Lab Services: choosing lab types, planning migrations (physical or to other services), cost estimation, GPU sizing, and running training or hackathon scenarios. |
+| Architecture & Design Patterns | L62-L68 | Core Azure Lab Services architecture, supported networking topologies, and design patterns for building reliable, resilient lab environments and lab plans |
+| Limits & Quotas | L69-L76 | VM capacity and core quotas for labs, how to view usage, request quota increases, and timelines for automatic VM deletion and cleanup. |
+| Security | L77-L91 | RBAC roles, lab creator/owner assignment, Azure Policy for compliance and VM size limits, firewall and public IP setup, and educator/student VM password management. |
+| Configuration | L92-L122 | Configuring Azure Lab Services: lab plans, regions, images, networking, VM templates, schedules (start/stop/shutdown), capacity, GPU/nested virtualization, and user/educator access. |
+| Integrations & Coding Patterns | L123-L136 | Integrating Lab Services with Canvas and Teams, automating lab creation via Bicep/PowerShell/Python, connecting labs to VNets, and remote access to Linux VMs with X2Go. |
+| Deployment | L137-L146 | Creating and importing Windows/Linux lab VM images (from Azure VMs, physical labs, or compute galleries), rapidly setting up/publishing labs, and migrating lab accounts to lab plans. |
 
 ### Troubleshooting
 | Topic | URL |

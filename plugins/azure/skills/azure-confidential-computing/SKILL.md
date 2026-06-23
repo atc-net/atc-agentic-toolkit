@@ -1,43 +1,32 @@
 ---
 name: azure-confidential-computing
-description: Expert knowledge for Azure Confidential Computing development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when using SGX/SEV-SNP VMs, AKS confidential containers, attestation/SKR, vTPM, or Fortanix/Key Vault, and other Azure Confidential Computing related development tasks. Not for Azure Virtual Enclaves (use azure-virtual-enclaves), Azure Virtual Machines (use azure-virtual-machines), Azure Dedicated HSM (use azure-dedicated-hsm), Azure Attestation (use azure-attestation).
+description: Expert knowledge for Azure Confidential Computing development including decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when building SGX/SEV-SNP apps, AKS confidential containers, SKR/Key Vault flows, vTPM/CVMs, or Fortanix CCM, and other Azure Confidential Computing related development tasks. Not for Azure Virtual Enclaves (use azure-virtual-enclaves), Azure Dedicated HSM (use azure-dedicated-hsm), Azure Cloud Hsm (use azure-cloud-hsm), Azure Payment Hsm (use azure-payment-hsm).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
 # Azure Confidential Computing Skill
 
-This skill provides expert guidance for Azure Confidential Computing. Covers troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure Confidential Computing. Covers decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L31-L34 | Troubleshooting AKS confidential node issues: common errors, limitations, configuration and deployment problems, and FAQs about setup, security, and workload compatibility. |
-| Best Practices | L36-L39 | FAQ and guidance on using Azure confidential VMs: supported scenarios, security guarantees, limitations, performance, pricing, and operational best practices. |
-| Decision Making | L41-L52 | Guidance on choosing Azure confidential computing options: VMs (AMD/Intel), containers, GPUs, deployment models, capabilities, products, and use cases for secure workloads. |
-| Architecture & Design Patterns | L54-L62 | Architectural patterns and design guidance for using Azure confidential VMs, SGX enclaves, AKS, and multi-party analytics to build secure AI and containerized workloads. |
-| Limits & Quotas | L64-L67 | Guidance on choosing sizes, quotas, and deployment limits for Intel SGX-enabled VMs in Azure, including capacity planning and scaling considerations. |
-| Security | L69-L83 | Attestation, vTPM, key/secrets handling, and hardening guidance to securely run and monitor Azure confidential VMs, SGX enclaves, AKS confidential containers, and clean rooms. |
-| Configuration | L85-L93 | Configuring Azure confidential VMs and AKS: SGX/device plugins, confidential containers, VMMD/metablob settings, secure key release policies, and rotating customer-managed encryption keys. |
-| Integrations & Coding Patterns | L95-L104 | Coding patterns and samples for building, running, and attesting Intel SGX/AMD SEV-SNP confidential apps and containers, including SKR flows, tools, and Fortanix/Key Vault integrations. |
-| Deployment | L106-L116 | How to deploy and migrate Azure confidential VMs/VMSS and AKS (SGX and confidential node pools), create custom images, and set up Fortanix CCM using CLI and ARM templates. |
-
-### Troubleshooting
-| Topic | URL |
-|-------|-----|
-| FAQ for AKS confidential computing nodes | https://learn.microsoft.com/en-us/azure/confidential-computing/confidential-nodes-aks-faq |
-
-### Best Practices
-| Topic | URL |
-|-------|-----|
-| Azure confidential VM FAQ and usage guidance | https://learn.microsoft.com/en-us/azure/confidential-computing/confidential-vm-faq |
+| Decision Making | L31-L42 | Guidance on choosing Azure confidential computing options: VMs (AMD/Intel), containers, GPUs, deployment models, capabilities, products, and use cases for secure workloads. |
+| Architecture & Design Patterns | L43-L52 | Architectural patterns and design guidance for using Azure confidential VMs, SGX enclaves, AKS, and multi-party analytics to build secure AI and containerized workloads. |
+| Limits & Quotas | L53-L58 | Intel SGX capacity, quotas, and sizing for Azure confidential computing: AKS confidential node limits, SGX VM sizing guidance, and FAQ on SGX resource constraints. |
+| Security | L59-L74 | Security, attestation, and key/secrets management for Azure confidential workloads: SGX enclaves, CVMs, vTPM, AKS confidential containers, clean rooms, and hardening Linux images. |
+| Configuration | L75-L86 | Configuring and deploying Azure confidential VMs and containers (AKS SGX, VMMD blob, CMK rotation, ARM/CLI), plus Secure Key Release policies and Virtual Machine Metablob Disk usage. |
+| Integrations & Coding Patterns | L87-L97 | Coding patterns and samples for building, running, and attesting Intel SGX/AMD SEV-SNP confidential apps and containers, including SKR flows, tools, and Fortanix/Key Vault integrations. |
+| Deployment | L98-L106 | How to deploy and migrate Azure confidential VMs/VMSS and AKS (SGX and confidential node pools), create custom images, and set up Fortanix CCM using CLI and ARM templates. |
 
 ### Decision Making
 | Topic | URL |
@@ -48,7 +37,6 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Overview of confidential containers on Azure | https://learn.microsoft.com/en-us/azure/confidential-computing/confidential-containers |
 | Understand and choose Azure confidential VM capabilities | https://learn.microsoft.com/en-us/azure/confidential-computing/confidential-vm-overview |
 | Use Azure confidential GPUs for secure compute offload | https://learn.microsoft.com/en-us/azure/confidential-computing/gpu-options |
-| Select Azure confidential computing products | https://learn.microsoft.com/en-us/azure/confidential-computing/overview-azure-products |
 | Choose Azure confidential computing use cases | https://learn.microsoft.com/en-us/azure/confidential-computing/use-cases-scenarios |
 | Select Azure confidential VM options on AMD or Intel | https://learn.microsoft.com/en-us/azure/confidential-computing/virtual-machine-options |
 
@@ -65,6 +53,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 ### Limits & Quotas
 | Topic | URL |
 |-------|-----|
+| AKS confidential nodes Intel SGX capacity details | https://learn.microsoft.com/en-us/azure/confidential-computing/confidential-nodes-aks-faq |
 | Deploy and size Intel SGX VMs on Azure | https://learn.microsoft.com/en-us/azure/confidential-computing/virtual-machine-solutions-sgx |
 
 ### Security
@@ -73,8 +62,8 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Configure attestation for Azure SGX enclaves | https://learn.microsoft.com/en-us/azure/confidential-computing/attestation |
 | Use attestation types for Azure confidential workloads | https://learn.microsoft.com/en-us/azure/confidential-computing/attestation-solutions |
 | Use Secure Key Release with Azure Key Vault and confidential computing | https://learn.microsoft.com/en-us/azure/confidential-computing/concept-skr-attestation |
-| Use Azure Confidential Clean Rooms for secure collaboration | https://learn.microsoft.com/en-us/azure/confidential-computing/confidential-clean-rooms |
 | Security model for AKS Confidential Containers | https://learn.microsoft.com/en-us/azure/confidential-computing/confidential-containers-aks-security-policy |
+| Understand security details for Azure confidential VMs | https://learn.microsoft.com/en-us/azure/confidential-computing/confidential-vm-faq |
 | Configure guest attestation for Azure confidential VMs | https://learn.microsoft.com/en-us/azure/confidential-computing/guest-attestation-confidential-vms |
 | Secure confidential VMs with Defender for Cloud and guest attestation | https://learn.microsoft.com/en-us/azure/confidential-computing/guest-attestation-defender-for-cloud |
 | Harden Linux images by removing Azure guest agent | https://learn.microsoft.com/en-us/azure/confidential-computing/harden-a-linux-image-to-remove-azure-guest-agent |
@@ -90,6 +79,8 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Configure AKS Intel SGX device plugin (confcom) | https://learn.microsoft.com/en-us/azure/confidential-computing/confidential-nodes-aks-addon |
 | Configure opt-out of VMMD blob for Azure Confidential VMs | https://learn.microsoft.com/en-us/azure/confidential-computing/disable-confidential-vm-metadata-blob |
 | Rotate customer-managed keys for Azure confidential VMs | https://learn.microsoft.com/en-us/azure/confidential-computing/key-rotation-offline |
+| Deploy Azure confidential VMs with ARM templates | https://learn.microsoft.com/en-us/azure/confidential-computing/quick-create-confidential-vm-arm |
+| Provision Azure confidential VMs using Azure CLI | https://learn.microsoft.com/en-us/azure/confidential-computing/quick-create-confidential-vm-azure-cli |
 | Author Secure Key Release policies for Azure confidential TEEs | https://learn.microsoft.com/en-us/azure/confidential-computing/skr-policy-examples |
 | Use Virtual Machine Metablob Disk with confidential VMs | https://learn.microsoft.com/en-us/azure/confidential-computing/virtual-machine-metablob-disk |
 
@@ -112,6 +103,4 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Create custom images for Azure confidential VMs with CLI | https://learn.microsoft.com/en-us/azure/confidential-computing/how-to-create-custom-image-confidential-vm |
 | Deploy Fortanix CCM as Azure managed app | https://learn.microsoft.com/en-us/azure/confidential-computing/how-to-fortanix-confidential-computing-manager |
 | Migrate nested Azure confidential VMs across regions | https://learn.microsoft.com/en-us/azure/confidential-computing/migrate-nested-confidential-vms |
-| Deploy Azure confidential VMs with ARM templates | https://learn.microsoft.com/en-us/azure/confidential-computing/quick-create-confidential-vm-arm |
-| Deploy Azure confidential VMs using Azure CLI | https://learn.microsoft.com/en-us/azure/confidential-computing/quick-create-confidential-vm-azure-cli |
 | Deploy VM scale sets with hardened Linux images | https://learn.microsoft.com/en-us/azure/confidential-computing/vmss-deployment-from-hardened-linux-image |

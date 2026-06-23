@@ -1,6 +1,6 @@
 ---
 name: azure-queue-storage
-description: Expert knowledge for Azure Queue Storage development including best practices, limits & quotas, security, configuration, and integrations & coding patterns. Use when managing queue auth (Entra ID/RBAC), monitoring metrics/logs, tuning throughput/limits, or coding with SDKs, and other Azure Queue Storage related development tasks. Not for Azure Blob Storage (use azure-blob-storage), Azure Table Storage (use azure-table-storage), Azure Service Bus (use azure-service-bus), Azure Event Hubs (use azure-event-hubs).
+description: Expert knowledge for Azure Queue Storage development including best practices, limits & quotas, security, configuration, and integrations & coding patterns. Use when using queue client SDKs, Entra ID auth, client-side encryption, monitoring metrics/logs, or scaling queues, and other Azure Queue Storage related development tasks. Not for Azure Blob Storage (use azure-blob-storage), Azure Table Storage (use azure-table-storage), Azure Service Bus (use azure-service-bus), Azure Event Hubs (use azure-event-hubs).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -10,20 +10,21 @@ This skill provides expert guidance for Azure Queue Storage. Covers best practic
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Best Practices | L27-L32 | Monitoring, securing, and tuning Azure Queue Storage: metrics/logging, alerts, encryption, access control, and performance/scalability patterns and checklists. |
-| Limits & Quotas | L34-L38 | Queue throughput, scalability targets, and limits on queue size, message size, and capacity planning for Azure Queue Storage |
-| Security | L40-L52 | Using Entra ID/RBAC/ABAC for queue data access, configuring auth in CLI/Portal/PowerShell, client-side encryption, and migrating Queue apps to passwordless authentication |
-| Configuration | L54-L58 | Configuring and interpreting monitoring for Azure Queue Storage, including metrics, logs, diagnostic settings, and detailed reference for all queue monitoring data fields. |
-| Integrations & Coding Patterns | L60-L68 | Client library how-tos for using Azure Queue Storage with .NET, Java, JavaScript, Python, and PowerShell, including setup, auth, CRUD operations, and common coding patterns. |
+| Best Practices | L29-L35 | Monitoring, securing, and tuning Azure Queue Storage: metrics/logging, alerts, encryption, access control, and performance/scalability patterns and checklists. |
+| Limits & Quotas | L36-L41 | Scalability and size limits for Azure Queue Storage, including max queues/messages, throughput, message size, and total storage constraints. |
+| Security | L42-L55 | Using Entra ID/RBAC/ABAC for queue data access, configuring auth in CLI/Portal/PowerShell, client-side encryption, and migrating Queue apps to passwordless authentication |
+| Configuration | L56-L61 | Configuring and interpreting monitoring for Azure Queue Storage, including metrics, logs, diagnostic settings, and detailed reference for all queue monitoring data fields. |
+| Integrations & Coding Patterns | L62-L70 | Client library how-tos for using Azure Queue Storage with .NET, Java, JavaScript, Python, and PowerShell, including setup, auth, CRUD operations, and common coding patterns. |
 
 ### Best Practices
 | Topic | URL |
@@ -35,7 +36,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 ### Limits & Quotas
 | Topic | URL |
 |-------|-----|
-| Queue Storage scalability and performance targets | https://learn.microsoft.com/en-us/azure/storage/queues/scalability-targets |
+| Understand Azure Queue Storage scalability limits | https://learn.microsoft.com/en-us/azure/storage/queues/scalability-targets |
 | Understand Azure Queue Storage size limits | https://learn.microsoft.com/en-us/azure/storage/queues/storage-queues-introduction |
 
 ### Security

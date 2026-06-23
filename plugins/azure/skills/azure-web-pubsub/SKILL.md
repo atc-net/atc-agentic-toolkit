@@ -1,33 +1,34 @@
 ---
 name: azure-web-pubsub
-description: Expert knowledge for Azure Web PubSub development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when using WebSockets/MQTT, Socket.IO, geo-replication, custom domains, or Entra ID/managed identity auth, and other Azure Web PubSub related development tasks. Not for Azure SignalR Service (use azure-signalr-service), Azure Event Hubs (use azure-event-hubs), Azure Service Bus (use azure-service-bus), Azure Relay (use azure-relay).
+description: Expert knowledge for Azure Web PubSub development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when using WebSockets/MQTT, Socket.IO, Functions bindings, geo-replication, or Premium autoscale in Web PubSub, and other Azure Web PubSub related development tasks. Not for Azure SignalR Service (use azure-signalr-service), Azure Event Hubs (use azure-event-hubs), Azure Service Bus (use azure-service-bus), Azure Relay (use azure-relay).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
-# Azure Web Pubsub Skill
+# Azure Web PubSub Skill
 
-This skill provides expert guidance for Azure Web Pubsub. Covers troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure Web PubSub. Covers troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
-> **IMPORTANT for Agent**: This file may be large. Use the **Category Index** below to locate relevant sections, then use `read_file` with specific line ranges (e.g., `L136-L144`) to read the sections needed for the user's question
-This skill requires **network access** to fetch documentation content.
-Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
-- **Fallback**: Use the built-in `WebFetch` tool if the Microsoft Learn MCP server is not available.
+> **IMPORTANT for Agent**: Use the **Category Index** below to locate relevant sections. For categories with line ranges (e.g., `L35-L120`), use `read_file` with the specified lines. For categories with file links (e.g., `[security.md](security.md)`), use `read_file` on the linked reference file
+
+This skill requires **network access** to fetch documentation content:
+- **Preferred**: Use `mcp_microsoftdocs:microsoft_docs_fetch`. Returns Markdown.
+- **Fallback**: Use `WebFetch`. Returns Markdown.
 
 ## Category Index
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L31-L39 | Diagnosing and fixing Azure Web PubSub issues: local handler debugging, service/resource logs, common errors, and Socket.IO-specific troubleshooting and diagnostics. |
-| Best Practices | L41-L44 | Guidance on building resilient WebSocket clients for Azure Web PubSub, including reconnection strategies, handling disconnects, error handling, and connection lifecycle best practices. |
-| Decision Making | L46-L50 | Guidance on configuring Web PubSub for high availability with zones and understanding pricing, billing meters, and cost considerations |
-| Architecture & Design Patterns | L52-L57 | Architectural patterns for Web PubSub: DR/resiliency design, bridging MQTT with Web PubSub, and understanding the internal Socket.IO support model. |
-| Limits & Quotas | L59-L63 | Capacity and performance limits for Web PubSub (connections, messages, scaling) and which Socket.IO server APIs aren’t supported or behave differently. |
-| Security | L65-L92 | Securing Azure Web PubSub: auth with Entra ID/managed identities/keys, mTLS, network & private endpoints, firewalls, policy/compliance, and language SDK identity setup. |
-| Configuration | L94-L108 | Configuring Web PubSub behavior: monitoring/metrics, alerts, custom domains, event routing, geo-replication, client URLs, local tunneling, MQTT/Socket.IO specifics, and OData filters. |
-| Integrations & Coding Patterns | L110-L139 | Client/server integration patterns for Azure Web PubSub: WebSocket/MQTT protocols, auth, REST, CloudEvents, reliable JSON/protobuf subprotocols, and SDK usage (.NET/Java/JS/Python, Functions, Socket.IO). |
-| Deployment | L141-L147 | Guides for moving Web PubSub across regions, configuring Premium autoscale, and deploying/migrating Socket.IO apps and serverless chat to Azure Web PubSub. |
+| Troubleshooting | L33-L42 | Diagnosing and fixing Azure Web PubSub issues: local handler debugging, service/resource logs, common errors, and Socket.IO-specific troubleshooting and diagnostics. |
+| Best Practices | L43-L47 | Guidance on building resilient WebSocket clients for Azure Web PubSub, including reconnection strategies, handling disconnects, error handling, and connection lifecycle best practices. |
+| Decision Making | L48-L52 | Guidance on configuring Web PubSub for high availability with zones and understanding pricing, billing meters, and cost considerations |
+| Architecture & Design Patterns | L53-L59 | Architectural patterns for Web PubSub: multi-region resiliency, bridging MQTT with Web PubSub, and internal design details for Socket.IO protocol support. |
+| Limits & Quotas | L60-L65 | Capacity and performance limits for Web PubSub (connections, messages, scaling) and which Socket.IO server APIs aren’t supported or behave differently. |
+| Security | L66-L95 | Securing Web PubSub: auth with Entra ID/managed identity/keys, client certs, network & private endpoints, firewalls, policies, key rotation, and per-client/group permissions. |
+| Configuration | L96-L111 | Configuring Web PubSub behavior: monitoring/metrics, alerts, custom domains, event routing, geo-replication, client URLs, Socket.IO/MQTT options, local tunneling, and OData filters. |
+| Integrations & Coding Patterns | L112-L141 | Client/server integration patterns for Web PubSub: SDK usage, WebSocket/MQTT, REST, auth, CloudEvents, Functions bindings, Socket.IO, and reliable JSON/protobuf subprotocols. |
+| Deployment | L142-L148 | Guides for moving Web PubSub across regions, configuring Premium autoscale, and deploying/migrating Socket.IO apps and serverless chat to Azure Web PubSub. |
 
 ### Troubleshooting
 | Topic | URL |
@@ -47,13 +48,12 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 ### Decision Making
 | Topic | URL |
 |-------|-----|
-| Use availability zones and zone redundancy for Web PubSub | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/concept-availability-zones |
 | Understand Azure Web PubSub billing model | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/concept-billing-model |
 
 ### Architecture & Design Patterns
 | Topic | URL |
 |-------|-----|
-| Design resilient and DR architectures for Web PubSub | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/concept-disaster-recovery |
+| Design resilient multi-region Azure Web PubSub | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/concept-disaster-recovery |
 | Cross-protocol communication between MQTT and Web PubSub | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/reference-mqtt-cross-protocol-communication |
 | Internal design of Web PubSub for Socket.IO support | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/socketio-service-internal |
 
@@ -67,6 +67,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Topic | URL |
 |-------|-----|
 | Authorize Web PubSub access with Microsoft Entra ID | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/concept-azure-ad-authorization |
+| Configure wildcard group role permissions in Azure Web PubSub | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/concept-wildcard-group-roles |
 | Authorize Azure Web PubSub requests with Microsoft Entra applications | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/howto-authorize-from-application |
 | Authorize Azure Web PubSub with managed identity | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/howto-authorize-from-managed-identity |
 | Enable client certificate (mTLS) for Web PubSub | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/howto-client-certificate |
@@ -79,7 +80,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Secure Web PubSub with Azure Application Gateway | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/howto-integrate-app-gateway |
 | Audit Azure Web PubSub compliance with Azure Policy | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/howto-monitor-azure-policy |
 | Manage Azure Web PubSub network access control rules | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/howto-secure-network-access-control |
-| Secure Azure Web PubSub with private endpoints and VNets | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/howto-secure-private-endpoints |
+| Secure Azure Web PubSub with private endpoints | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/howto-secure-private-endpoints |
 | Rotate Azure Web PubSub access keys safely | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/howto-secure-rotate-access-key |
 | Secure Web PubSub outbound traffic to Azure Functions via shared private endpoints | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/howto-secure-shared-private-endpoints |
 | Access Key Vault privately from Azure Web PubSub via shared endpoints | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/howto-secure-shared-private-endpoints-key-vault |
@@ -100,7 +101,7 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Configure custom domains for Azure Web PubSub | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/howto-custom-domain |
 | Configure Azure Web PubSub event handlers and routing | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/howto-develop-eventhandler |
 | Enable geo-replication for Azure Web PubSub | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/howto-enable-geo-replication |
-| Generate client access URLs for Azure Web PubSub connections | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/howto-generate-client-access-url |
+| Generate client access URLs for Azure Web PubSub | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/howto-generate-client-access-url |
 | Reference for Azure Web PubSub monitoring metrics and logs | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/howto-monitor-data-reference |
 | Use Azure Web PubSub local tunnel for development | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/howto-web-pubsub-tunnel-tool |
 | CloudEvents extensions for Web PubSub MQTT handlers | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/reference-mqtt-cloud-events |
@@ -111,9 +112,8 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 ### Integrations & Coding Patterns
 | Topic | URL |
 |-------|-----|
-| Use WebSocket client protocols with Web PubSub | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/concept-client-protocols |
-| Connect MQTT clients to Azure Web PubSub over WebSockets | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/howto-connect-mqtt-websocket-client |
-| Send Azure Web PubSub client events to Event Hubs | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/howto-develop-event-listener |
+| Connect MQTT and WebSocket clients to Azure Web PubSub | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/howto-connect-mqtt-websocket-client |
+| Configure Azure Web PubSub client events to Event Hubs | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/howto-develop-event-listener |
 | Implement upstream servers for Azure Web PubSub events | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/howto-web-pubsub-write-upstream-server |
 | Create WebSocket clients | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/howto-websocket-connect |
 | Use C# client SDK for Azure Web PubSub | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/reference-client-sdk-csharp |
@@ -124,10 +124,10 @@ Use `mcp_microsoftdocs:microsoft_docs_fetch` to retrieve full articles.
 | Handle Web PubSub events via HTTP CloudEvents | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/reference-cloud-events |
 | Handle Web PubSub events via AMQP CloudEvents | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/reference-cloud-events-amqp |
 | Use Web PubSub triggers and bindings in Azure Functions | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/reference-functions-bindings |
-| Use reliable JSON WebSocket subprotocol for Web PubSub | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/reference-json-reliable-webpubsub-subprotocol |
-| Use JSON WebSocket subprotocol for Web PubSub | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/reference-json-webpubsub-subprotocol |
-| Use reliable protobuf WebSocket subprotocol for Web PubSub | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/reference-protobuf-reliable-webpubsub-subprotocol |
-| Use protobuf WebSocket subprotocol for Web PubSub | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/reference-protobuf-webpubsub-subprotocol |
+| Implement reliable JSON WebSocket subprotocol for Web PubSub | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/reference-json-reliable-webpubsub-subprotocol |
+| Use Azure Web PubSub JSON WebSocket subprotocol | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/reference-json-webpubsub-subprotocol |
+| Implement reliable protobuf WebSocket subprotocol for Web PubSub | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/reference-protobuf-reliable-webpubsub-subprotocol |
+| Use Azure Web PubSub protobuf WebSocket subprotocol | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/reference-protobuf-webpubsub-subprotocol |
 | Call Azure Web PubSub data plane REST APIs | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/reference-rest-api-data-plane |
 | REST API semantics for MQTT in Azure Web PubSub | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/reference-rest-api-mqtt |
 | Use .NET server SDK for Azure Web PubSub | https://learn.microsoft.com/en-us/azure/azure-web-pubsub/reference-server-sdk-csharp |
