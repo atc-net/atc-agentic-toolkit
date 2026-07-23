@@ -21,6 +21,7 @@ NEVER use `cd <path> && git` compound commands — they trigger security approva
 - Use conversation history, memory, or previously seen file changes as input for the suggestion
 - Reference or incorporate any code changes you may have seen, made, or discussed earlier in this conversation — they are not the source of truth; only the staged diff output is
 - Include the "Generated with Claude Code" footer, "Co-Authored-By: Claude" line, or any other Claude Code attribution text
+- Add any text outside the code fence — no preamble, no trailing notes, change analysis, or commentary
 
 These footers are for actual commits only, NOT for commit suggestions.
 
@@ -105,6 +106,8 @@ When suggesting multiple commits:
 4. **Order commits logically** - Dependencies first, then dependents
 
 ### Step 5: Output Format
+
+**Output ONLY the commit suggestion inside a code fence — nothing else.** Do not add any preamble before it or commentary after it: no analysis of the staged changes, no summary of what you did, no closing remarks, no offers to help further. The fenced block is the complete response. Stop immediately after the closing fence.
 
 #### Single Commit Example
 

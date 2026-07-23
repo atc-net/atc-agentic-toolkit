@@ -92,6 +92,8 @@ Produce a markdown summary with these sections:
 
 Wrap the entire PR suggestion inside a **markdown code fence** (triple backticks). This prevents the terminal from rendering `#` signs as headings — the user needs them as literal characters for copy-paste into a PR description.
 
+**Output ONLY the fenced code block — nothing else.** Do not add any preamble before it or commentary after it: no branch analysis, no "this branch is N commits ahead", no summary of what you did, no closing remarks, no offers to help further. The fenced block is the complete response. Stop immediately after the closing fence.
+
 **Every line must be self-contained — never break a sentence or bullet across multiple lines.** The output is displayed in a terminal code block. If a line exceeds the terminal width, the terminal soft-wraps it and injects whitespace. When the user copies that text, those extra spaces and line breaks come along, requiring manual cleanup. To prevent this:
 
 - Use bullet points everywhere (including Summary) — not flowing paragraphs
@@ -149,6 +151,7 @@ PR Title: <the suggested title>
 - Flowing paragraphs — use bullet points for everything
 - Lines longer than 72 characters — shorten or split
 - Multi-line bullets — each bullet must be one line only
+- Any text outside the code fence — no preamble, no trailing notes, branch analysis, or commentary
 
 ## Guidelines
 
