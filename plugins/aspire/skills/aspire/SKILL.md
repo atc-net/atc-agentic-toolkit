@@ -26,7 +26,7 @@ Detailed reference material lives in the `references/` folder — load on demand
 | [Deployment](references/deployment.md) | Docker, Kubernetes, Azure Container Apps, App Service |
 | [Testing](references/testing.md) | Integration tests against the AppHost |
 | [Troubleshooting](references/troubleshooting.md) | Diagnostic codes, common errors, and fixes |
-| [Migration](references/migration.md) | Per-version breaking changes (13.2 → 13.3 → 13.4) to scrub from code, scripts, and CI |
+| [Migration](references/migration.md) | Per-version breaking changes (13.2 → 13.3 → 13.4 → 13.5) to scrub from code, scripts, and CI |
 
 ---
 
@@ -42,7 +42,7 @@ When an AI agent drives Aspire, these rules prevent self-inflicted breakage. The
 | Pass `--non-interactive` on agent commands | Assume an interactive terminal | Prompts/spinners hang in non-interactive shells. |
 | Read `--format Json` for machine output | Scrape human-readable text | Text formatting is not a stable contract. |
 | `aspire start --isolated` in worktrees / shared-state risk | Run multiple non-isolated AppHosts | Avoids port and state collisions. |
-| Add `--include-hidden` when a resource is missing from `ps`/`describe` | Assume the resource doesn't exist | Proxies, helpers, and migration/seed jobs are hidden by default. |
+| Add `--include-hidden` when a resource is missing from `describe`/`resource`/`logs` | Assume the resource doesn't exist | Proxies, helpers, and migration/seed jobs are hidden by default. (Removed from `aspire ps` in 13.5 — `ps` is AppHost-level only; use `aspire describe`.) |
 | Regenerate TS SDKs with `aspire add` / `aspire restore` | Edit `.aspire/modules/` by hand | Generated SDKs are overwritten; hand edits are lost. |
 | `aspire stop` when the task is done | Leave orphaned processes/containers running | Prevents port conflicts, locks, and stale state. |
 
@@ -157,6 +157,8 @@ dotnet new install Aspire.ProjectTemplates
 ```
 
 > **13.3+ alternative install:** with the .NET 10 SDK present, install the CLI as a NativeAOT .NET global tool: `dotnet tool install -g Aspire.Cli`.
+>
+> **13.5:** also available via package managers — `npm install -g @microsoft/aspire-cli`, `brew install --cask microsoft/aspire/aspire`, `winget install Microsoft.Aspire`, or Nix (`nix profile add github:microsoft/aspire#aspire-cli`). New C# AppHost templates set `AspireUseCliBundle=true` so `dotnet run` resolves the CLI on the fly via `dnx`.
 
 ---
 
@@ -239,7 +241,12 @@ For complete API signatures, see [Polyglot APIs](references/polyglot-apis.md).
 | **Dashboard** | Real-time logs, traces, metrics, GenAI visualizer. Runs automatically with `aspire start` / `aspire run`. |
 | **MCP Server** | AI assistants can query running apps, search docs, and invoke resource MCP tools via CLI (STDIO). |
 | **Resource MCP tools** | Resources can expose MCP tools (e.g., `WithPostgresMcp()`). Discover with `aspire mcp tools`. (13.2+) |
-| **TypeScript AppHost** | GA in 13.4 (preview in 13.2/13.3). Write AppHost in TypeScript (`apphost.mts`) via `createBuilder()`. Uses `.aspire/modules/` for generated SDKs. |
+| **Interaction Service** | Prompt users from resource commands (dashboard UI). Core prompt/input APIs are **stable in 13.5** (no more `ASPIREINTERACTION001` for prompts); 13.5 adds **file-upload inputs** (stable) and **progress dialogs** (`PromptProgressAsync`, experimental). Works from C# and TypeScript AppHosts. |
+| **Resource command arguments** | (13.5+) Commands declare named arguments via `CommandOptions.Arguments`; dashboard prompts, CLI exposes `--<name>` options; read via `ExecuteCommandContext.Arguments`. |
+| **Interactive terminals** | (13.5, experimental `ASPIRETERMINAL001`) `WithTerminal()` opens an interactive terminal session on a resource (REPLs, shells) attachable from the dashboard or `aspire terminal attach` (feature flag `terminalCommandsEnabled`). |
+| **HTTPS dev certificates** | (13.5, experimental `ASPIRECERTIFICATES001`) `WithHttpsDeveloperCertificate()` / `WithHttpsCertificate(...)` / `WithoutHttpsCertificate()` on project and executable resources. |
+| **Cross-scope Azure refs** | (13.5+) `AsExistingInResourceGroup/InSubscription/InTenant` (+ `Run/PublishAsExisting*` variants) reference Azure resources outside the app's own scope. |
+| **TypeScript AppHost** | GA in 13.4 (preview in 13.2/13.3). Write AppHost in TypeScript (`apphost.mts`) via `createBuilder()`. Uses `.aspire/modules/` for generated SDKs. 13.5 adds parity: custom health checks, container file copying, interaction service, command arguments, HTTPS certs, faster startup. |
 | **Testing** | `Aspire.Hosting.Testing` — spin up full AppHost in xUnit/MSTest/NUnit. |
 | **Deployment** | Docker, Kubernetes, Azure Container Apps, Azure App Service. Tear down with `aspire destroy` (13.3+). |
 | **Container tunnel** | Enabled by default (13.3+) for uniform connectivity across Docker Desktop, Docker Engine, and Podman. Disable with `ASPIRE_ENABLE_CONTAINER_TUNNEL=false`. |
@@ -257,6 +264,8 @@ For complete API signatures, see [Polyglot APIs](references/polyglot-apis.md).
 | Restart the app | `aspire start` (stops previous automatically) |
 | Wait for resource healthy | `aspire wait <resource>` |
 | Stop the app | `aspire stop` |
+| Stop + delete persistent resource data | `aspire stop --force` (13.5+) |
+| Attach to a resource terminal session | `aspire terminal attach <resource>` (13.5+, experimental — enable `features.terminalCommandsEnabled`) |
 | List resources | `aspire describe` or `aspire resources` (add `--include-hidden` to show hidden resources, 13.3+) |
 | Run resource command | `aspire resource <resource> <command>` |
 | Start/stop/restart resource | `aspire resource <resource> start\|stop\|restart` |
@@ -267,8 +276,8 @@ For complete API signatures, see [Polyglot APIs](references/polyglot-apis.md).
 | Add an integration | `aspire add` |
 | List/search integrations | `aspire integration list` / `aspire integration search <query>` (13.4+) |
 | List candidate AppHosts in workspace | `aspire ls` (13.4+; vs `aspire ps` = running) |
-| List running AppHosts | `aspire ps` |
-| Update AppHost packages | `aspire update` (`-y/--yes` to skip prompts non-interactively, 13.4+) |
+| List running AppHosts | `aspire ps` (AppHost-level only; 13.5 removed `--resources`/`--include-hidden` — use `aspire describe`) |
+| Update AppHost packages | `aspire update` (`-y/--yes` to skip prompts non-interactively, 13.4+; `--migrate` applies pending project migrations like `apphost.ts` → `apphost.mts`, 13.5+) |
 | Update the CLI itself | `aspire update --self` (13.4+) |
 | Search docs | `aspire docs search <query>` |
 | Get doc page | `aspire docs get <slug>` |
