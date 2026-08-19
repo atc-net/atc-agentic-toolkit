@@ -62,7 +62,7 @@ Use `list_integrations` for the full live list. This summary covers the major ca
 
 | Category            | Key integrations                                                                      | Example hosting package                  |
 | ------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------- |
-| **AI**              | Azure OpenAI, OpenAI, GitHub Models, Ollama                                           | `Aspire.Hosting.Azure.CognitiveServices` |
+| **AI**              | Azure OpenAI, OpenAI, Azure AI Foundry, Ollama (GitHub Models **deprecated in 13.5**) | `Aspire.Hosting.Azure.CognitiveServices` |
 | **Caching**         | Redis, Garnet, Valkey, Azure Cache for Redis                                          | `Aspire.Hosting.Redis`                   |
 | **Cloud / Azure**   | Storage, Cosmos DB, Service Bus, Key Vault, Event Hubs, Functions, SQL, SignalR (25+) | `Aspire.Hosting.Azure.Storage`           |
 | **Cloud / AWS**     | AWS SDK integration                                                                   | `Aspire.Hosting.AWS`                     |
@@ -70,11 +70,36 @@ Use `list_integrations` for the full live list. This summary covers the major ca
 | **DevTools**        | Data API Builder, Dev Tunnels, Mailpit, k6, Flagd, Ngrok, Stripe                      | `Aspire.Hosting.DevTunnels`              |
 | **Messaging**       | RabbitMQ, Kafka, NATS, ActiveMQ, LavinMQ                                              | `Aspire.Hosting.RabbitMQ`                |
 | **Observability**   | OpenTelemetry (built-in), Seq, OTel Collector                                         | `Aspire.Hosting.Seq`                     |
-| **Compute**         | Docker Compose, Kubernetes                                                            | `Aspire.Hosting.Docker`                  |
+| **Compute**         | Docker Compose, Kubernetes, AKS, Radius (preview, 13.5+)                              | `Aspire.Hosting.Docker`                  |
 | **Reverse Proxies** | YARP                                                                                  | `Aspire.Hosting.Yarp`                    |
 | **Security**        | Keycloak                                                                              | `Aspire.Hosting.Keycloak`                |
 | **Frameworks**      | JavaScript, Python, Go, Java, Rust, Bun, Deno, Orleans, MAUI, Dapr, PowerShell        | `Aspire.Hosting.Python`                  |
 
 For polyglot framework method signatures, see [Polyglot APIs](polyglot-apis.md).
+
+---
+
+## 13.5 integration highlights
+
+- **Redis modules** — `AddRedis(...).WithModule(path)` loads a Redis module into the container;
+  `RedisModules` constants (`Json`, `Search`, `BloomFilter`, `TimeSeries`) point at the modules
+  shipped in Redis 8+ images. TypeScript parity: `withModule(RedisModules.Json)`.
+- **Foundry Local** — `AddFoundry(name).RunAsFoundryLocal()` drives the installed **foundry CLI**
+  for lifecycle management; resources can be exposed as hosted agents with `AsHostedAgent(...)`,
+  where `HostedAgentProtocol` is `Responses` or `Invocations`.
+- **GitHub Models deprecated** — `Aspire.Hosting.GitHub.Models` APIs are `[Obsolete]`, the package
+  no longer appears in `aspire add` output, and it will be removed in a future release. Migrate to
+  the Azure AI Foundry integration.
+- **Dev tunnels regions** — `DevTunnelOptions.Region` (a `DevTunnelRegion?` enum) pins the region a
+  tunnel is created in. **Breaking (13.5):** enum names normalized — `UKSouth` (not `UkSouth`),
+  `SoutheastAsia` (not `SouthEastAsia`).
+- **.NET projects by path** — `Aspire.Hosting.Dotnet` package with the experimental
+  `AddDotnetProject(name, path)` API (`ASPIREDOTNETPROJECT001`); orchestration-only.
+- **Blazor gateway on Docker Compose** — Blazor gateway resources now support Docker Compose
+  publishing.
+- **Radius (preview)** — `Aspire.Hosting.Radius` adds `AddRadiusEnvironment(name)` (with
+  `WithNamespace(...)`) to publish to a Radius environment. See [Deployment](deployment.md).
+- **Templates** — new project templates target **.NET 11 preview** in addition to the current LTS,
+  and C# AppHost templates set `AspireUseCliBundle=true` (CLI bundle resolved via `dnx`).
 
 ---

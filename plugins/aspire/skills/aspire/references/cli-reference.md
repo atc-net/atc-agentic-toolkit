@@ -2,7 +2,7 @@
 
 The Aspire CLI (`aspire`) is the primary interface for creating, running, and publishing distributed applications. It is cross-platform and installed standalone (not coupled to the .NET CLI, though `dotnet` commands also work).
 
-**Tested against:** Aspire CLI 13.4 (commands verified against the 13.4.2 CLI)
+**Tested against:** Aspire CLI 13.5 (commands verified against the 13.5.0 CLI)
 
 ---
 
@@ -27,6 +27,17 @@ Alternatively, on a machine with the .NET 10 SDK, install the CLI as a NativeAOT
 ```bash
 dotnet tool install -g Aspire.Cli
 ```
+
+Package-manager installs (13.4+; recommended acquisition path as of 13.5 — the update notifier detects npm installs and prints the matching npm command):
+
+```bash
+npm install -g @microsoft/aspire-cli          # npm
+brew install --cask microsoft/aspire/aspire   # Homebrew
+winget install Microsoft.Aspire               # Windows
+nix profile add github:microsoft/aspire#aspire-cli   # Nix
+```
+
+> **CLI bundle (13.5):** new C# AppHost templates set `AspireUseCliBundle=true`, so the AppHost resolves its own copy of the CLI on the fly via `dnx` and `dotnet run` behaves like `aspire run`. Existing projects stay opt-in. Diagnostics: `ASPIRE009` (error — bundle can't be resolved), `ASPIRE010` (warning — project opted out), `ASPIRE011` (`dnx` unavailable). Force the DNX path with `AspireCliInvocationMode=Dnx`.
 
 ---
 
@@ -54,6 +65,7 @@ Many commands also support:
 | Variable                          | Effect                                                                 |
 | --------------------------------- | ---------------------------------------------------------------------- |
 | `ASPIRE_ENABLE_CONTAINER_TUNNEL`  | Container tunnel is enabled by default (13.3+) for uniform container connectivity across Docker Desktop, Docker Engine, and Podman. Set to `false` before starting the AppHost to disable it. |
+| `ASPIRE_PROXYLESS_ENDPOINT_PORT_RANGE` | (13.5+) Overrides the port range used for proxyless endpoints without an explicit public `port` (allocated during service preparation). Format `start-end`; default `10000-32767`. |
 
 ---
 
@@ -177,9 +189,13 @@ aspire stop [options]
 
 # Options:
 #   --apphost <path>       Path to AppHost project file
+#   --all                  Stop all running AppHosts
+#   --force                (13.5+) Also clean up the AppHost's persistent resources,
+#                          permanently deleting their data without an extra confirmation prompt
 
-# Example:
+# Examples:
 aspire stop
+aspire stop --force    # stop + delete persistent resource data (13.5+)
 ```
 
 ### `aspire wait` (13.2+)
@@ -235,11 +251,21 @@ aspire resource <resource> <command> [options]
 
 # Options:
 #   --apphost <path>       Path to AppHost project file
+#   --include-hidden       Include hidden resources in the output
 
 # Examples:
 aspire resource myapi restart
 aspire resource worker stop
 aspire resource api rebuild    # custom command if defined
+```
+
+**User-defined command arguments (13.5+).** Custom commands can declare named arguments via
+`CommandOptions.Arguments` in the AppHost. The dashboard prompts for them before running; the CLI
+surfaces each as a `--<name>` option and errors when a required option is missing. Values are read
+from `ExecuteCommandContext.Arguments` in the command callback (TypeScript: `ctx.arguments()`).
+
+```bash
+aspire resource api echo --message "hello"   # --message declared as a required argument
 ```
 
 ### `aspire logs` (13.2+)
@@ -316,6 +342,22 @@ aspire otel traces --search "POST /orders -resource:cache"
 
 `aspire logs` (console logs) also accepts `--search`, but only as free-text over the log line and resource name.
 
+### `aspire terminal` (Experimental, 13.5+)
+
+Attach to interactive terminal sessions on resources configured with the experimental
+`WithTerminal()` API (`ASPIRETERMINAL001`) — drive REPLs, shells, and other terminal programs
+running as Aspire resources.
+
+```bash
+# Opt in via feature flag first:
+aspire config set features.terminalCommandsEnabled true
+
+aspire terminal ps                    # list resources with active terminal sessions
+aspire terminal attach <resource>     # attach to a resource's terminal session
+```
+
+The dashboard can also attach/detach from the same sessions in its terminal view.
+
 ### `aspire ps` (13.2+)
 
 List running AppHosts. Since 13.3, the output also includes each AppHost's dashboard URL.
@@ -324,13 +366,18 @@ List running AppHosts. Since 13.3, the output also includes each AppHost's dashb
 aspire ps [options]
 
 # Options:
-#   --resources            Include resource details
 #   --format Json          Machine-readable output
+#   -f, --follow           (13.5+) Keep running and emit updates as AppHosts change;
+#                          JSON output is newline-delimited full snapshots
 
 # Examples:
 aspire ps
-aspire ps --resources --format Json
+aspire ps --format Json
 ```
+
+> **Breaking change (13.5):** `--resources` and `--include-hidden` were removed. `aspire ps` now
+> focuses on AppHost-level summaries — use `aspire describe` (optionally with `--include-hidden`)
+> for detailed resource data.
 
 ### `aspire ls` (13.4+)
 
@@ -361,6 +408,11 @@ aspire doctor
 #   - .NET SDK installation
 #   - WSL2 configuration (Windows)
 #   - Agent configuration status
+#   - Operating-system details, incl. Linux distro info from /etc/os-release (13.5+)
+#   - Visual Studio Code detection (13.5+)
+#   - DCP health checks (13.5+)
+#
+# JSON output includes a structured `operating-system` check for tooling (13.5+).
 ```
 
 ### `aspire dashboard run` (Preview, 13.3+)
@@ -633,6 +685,9 @@ aspire update [options]
 #   --apphost <path>       Path to AppHost project file
 #   --self                 Update the Aspire CLI itself to the latest version
 #   -y, --yes              Auto-confirm prompts (required for non-interactive use, 13.4+)
+#   --migrate              (13.5+) Apply pending project migrations after updating packages
+#                          (e.g. legacy TypeScript AppHost entry apphost.ts → apphost.mts)
+#   --nuget-config-dir <dir>  Directory to create or update the NuGet.config file in (13.5+)
 #   --channel <channel>    Channel to update to (stable, daily)
 
 # Examples:
@@ -640,6 +695,7 @@ aspire update                          # Update project integrations
 aspire update --self                   # Update the CLI itself
 aspire update --self --channel daily   # Update CLI to daily build
 aspire update -y                       # Non-interactive (CI)
+aspire update --migrate                # Update + apply pending migrations (13.5+)
 ```
 
 ### `aspire mcp`

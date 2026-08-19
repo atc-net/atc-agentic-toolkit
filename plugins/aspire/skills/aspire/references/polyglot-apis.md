@@ -36,6 +36,10 @@ builder.AddProject<Projects.MyApi>("api")
 - `.WithExternalHttpEndpoints()` — mark endpoints as externally accessible
 - `.WithOtlpExporter()` — configure OpenTelemetry exporter
 - `.PublishAsDockerFile()` — override publish behavior to Dockerfile
+- `.WithTerminal()` — (13.5+, experimental `ASPIRETERMINAL001`) interactive terminal session attachable from the dashboard / `aspire terminal attach`; dimensions via `TerminalOptions` (`Columns` default 120, `Rows` default 30, `ShowTerminalHost`)
+- `.WithHttpsDeveloperCertificate()` / `.WithHttpsCertificate(cert, password)` / `.WithHttpsCertificateConfiguration(...)` / `.WithoutHttpsCertificate()` — (13.5+, experimental `ASPIRECERTIFICATES001`) HTTPS certificate configuration for project/executable resources
+- `.WithContainerFiles(destPath, sourcePath, options?)` / `.WithContainerFiles(destPath, callback, options?)` — (13.5+) copy host files or build-time-generated files into container resources; ownership via `ContainerFilesOptions` (`DefaultOwner`, `DefaultGroup`, `Umask`)
+- `builder.AddDotnetProject(name, path)` — (13.5+, experimental `ASPIREDOTNETPROJECT001`, `Aspire.Hosting.Dotnet` package) model a .NET project by path without a compile-time `ProjectReference`; orchestration-only — `aspire publish`/`aspire deploy` fail for it (use `AddCSharpApp`/`PublishAsDockerFile` to publish)
 
 ### Python
 
@@ -167,6 +171,15 @@ Chaining methods:
 redisAddr := os.Getenv("ConnectionStrings__cache")
 ```
 
+**Debugging (13.5+):** The Delve server accepts a single client by default; opt into multi-client
+mode with `WithDelveServer(o => o.AcceptMultiClient = true)`. Typed options for common Delve server
+flags (including `--continue`) are configured through `DelveServerOptions`.
+
+> **Breaking change (13.5, Go polyglot AppHosts):** when an exported API has exactly one optional
+> `options` DTO parameter, the Go code generator now passes the DTO directly instead of a generated
+> method-options wrapper struct. Regenerate the SDK and update call sites — see
+> [Migration](migration.md).
+
 ### Bun (official — `Aspire.Hosting.JavaScript`, 13.4+)
 
 Bun graduated into core Aspire in 13.4. `AddBunApp` now lives in `Aspire.Hosting.JavaScript` (the old `CommunityToolkit.Aspire.Hosting.Bun` package is superseded). Packages auto-install with Bun when a `package.json` is present.
@@ -250,6 +263,109 @@ await builder.build().run();
 > **Deprecated in 13.3:** The per-kind `withEnvironment*` helpers (`withEnvironmentExpression`, `withEnvironmentEndpoint`, `withEnvironmentParameter`, `withEnvironmentConnectionString`, `withEnvironmentFromOutput`, `withEnvironmentFromKeyVaultSecret`) are superseded by the unified `withEnvironment(name, value)` shown above — pass an expression, endpoint, parameter, or connection string as the value. Prefer the unified form.
 
 > **Note:** TypeScript AppHost is **GA as of 13.4** (preview in 13.2/13.3). Use `aspire docs search "typescript apphost"` for the latest API reference.
+
+### TypeScript parity additions (13.5)
+
+13.5 closes most remaining C# ↔ TypeScript gaps. Startup is also faster (the CLI races the RPC
+connection retry loop against process exit instead of waiting a fixed delay).
+
+**Custom health checks** — register a callback and attach it (or a built-in check) to a resource:
+
+```typescript
+import { createBuilder, HealthStatus } from './.aspire/modules/aspire.mjs';
+import type { HealthCheckResult } from './.aspire/modules/aspire.mjs';
+
+const builder = await createBuilder();
+
+const myCheck = async (): Promise<HealthCheckResult> => ({
+    status: HealthStatus.Healthy,
+    description: 'All systems nominal',
+});
+
+await builder.addHealthCheck('my_check', myCheck);
+await builder.addRedis('cache').withHealthCheck('my_check');
+```
+
+Project resources also gain `withEndpointsInEnvironment(endpointNames)` to control which endpoints
+are injected into environment variables.
+
+**Container file copying** — copy host files into containers, or generate files at build time:
+
+```typescript
+await builder.addContainer('myapp', 'nginx')
+    .withContainerFiles('/usr/share/nginx/html', './wwwroot', {
+        defaultOwner: 101,   // nginx user UID
+    })
+    .withContainerFilesCallback('/etc/nginx/conf.d', async (ctx) => {
+        await ctx.createFile('default.conf', { contents: 'server { listen 80; }' });
+    });
+```
+
+Ownership/permissions via `ContainerFilesOptions` (`defaultOwner`, `defaultGroup`, `umask`).
+C# equivalent: `WithContainerFiles(...)` overloads.
+
+**Interaction Service parity** — prompts, message boxes, notifications, and dynamic inputs work the
+same from TypeScript. 13.5 adds **file uploads** (`createFileInput` — uploads arrive as on-disk
+paths via `file.filePath`, read with Node `fs`) and **progress dialogs** (`promptProgress`):
+
+```typescript
+const interaction = await ctx.services().getInteractionService();
+
+// Commands invoked from the CLI run without an attached UI, where prompting throws.
+if (!(await interaction.isAvailable())) {
+    return { success: true, message: 'No interactive dashboard.' };
+}
+
+const fileInput = await interaction.createFileInput('dataFile', {
+    fileFilter: '.json',
+    maxFileSize: 10 * 1024 * 1024,   // 10 MB
+});
+const result = await interaction.promptInput(
+    'Import data', 'Select a JSON file to import.', fileInput, { primaryButtonText: 'Import' });
+if (await result.canceled()) {
+    return { success: false, message: 'Canceled.' };
+}
+
+await interaction.promptProgress('Processing…', {
+    work: async () => { /* long-running work; dialog closes when the callback completes */ },
+});
+```
+
+**User-defined command arguments** — declare named arguments; the dashboard prompts, the CLI exposes
+`--<name>` options, and the callback reads them via `ctx.arguments()`:
+
+```typescript
+import { createBuilder, InputType } from './.aspire/modules/aspire.mjs';
+
+await builder.addContainer('api', 'nginx').withCommand('echo', 'Echo', async (ctx) => {
+    const args = await ctx.arguments();
+    const message = await args.value('message');
+    return { success: true, message: `message=${message ?? ''}` };
+}, {
+    arguments: [
+        { name: 'message', inputType: InputType.Text, required: true },
+    ],
+});
+```
+
+**HTTPS developer certificates** — `addProject('api', './src/Api').withHttpsDeveloperCertificate()`.
+
+**Cross-scope Azure references** — `asExistingInResourceGroup(name, resourceGroup, subscription)`,
+`asExistingInSubscription(name, subscription)`, `asExistingInTenant(name)` (+ `runAsExisting*` /
+`publishAsExisting*` variants); each accepts literal strings or parameters.
+
+**.NET projects by path** — `addDotnetProject('inventory', '../InventoryService/InventoryService.csproj')`
+(experimental; orchestration-only, cannot be published).
+
+**Interactive terminals** — `withTerminal()` (parameterless in polyglot AppHosts; `TerminalOptions`
+dimensions are C#-only).
+
+**Redis modules** — `addRedis('cache').withModule(RedisModules.Json).withModule(RedisModules.Search)`.
+
+**Kubernetes persistent volumes** — `addPersistentVolume` on the Kubernetes/AKS environment
+(`withStorageClass` / `withCapacity` / `withAccessMode`), bound via `withKubernetesPersistentVolume(...)`;
+bound workloads render as StatefulSets. Note the polyglot `withVolume()` parameter order is
+`(target, name?)` — mount path first.
 
 ---
 

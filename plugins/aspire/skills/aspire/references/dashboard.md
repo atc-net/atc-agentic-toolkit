@@ -77,6 +77,16 @@ Two complementary client-side features surface in the dashboard:
 - **Browser logs** — `Aspire.Hosting.Browsers` + `.WithBrowserLogs()` in the AppHost (`aspire add browsers`). Aspire attaches a tracked Chromium session to a resource's URL over the Chrome DevTools Protocol and streams console output, errors, and network events into that resource's **console log** view; the dashboard exposes **Open tracked browser**, **Configure tracked browser**, and **Capture screenshot** commands. Experimental — suppress `ASPIREBROWSERLOGS001` in C#. See [Polyglot APIs](polyglot-apis.md).
 - **Browser telemetry** — the OpenTelemetry **JavaScript SDK** running inside your front-end app, sending client-side traces/logs/metrics to the dashboard's OTLP endpoint. Configured in the front-end app code (not the AppHost), and enabled on the dashboard via OTLP/CORS settings.
 
+### What's new in 13.5
+
+- **Official branding & visual refresh** — new design-token system with accessibility improvements across the UI.
+- **Timestamp filter for telemetry** — filter logs and traces by timestamp via a dedicated search qualifier in the filter dialog.
+- **Numeric equality operators** — the telemetry filter dialog adds `==` and `!=` for exact numeric matching.
+- **Console-logs text filter** — filter console-log output by text.
+- **Terminal view** — resources configured with the experimental `WithTerminal()` open in an interactive terminal view by default; resources that are waiting, starting, exited, or failed fall back to the console-logs view until they reach Running. See [CLI Reference](cli-reference.md) for the `aspire terminal` command group.
+- **Reconnect modal** — a clearer modal appears when the dashboard loses its connection to the AppHost.
+- **Quality fixes** — friendlier health-check error messages (instead of raw exception stacks), deduplicated replica display names, and correct telemetry streaming when resource filters are applied.
+
 ---
 
 ## Dashboard URL
@@ -202,6 +212,8 @@ docker run --rm -d \
 ## AI / agentic integration
 
 > **Changed in 13.3:** The in-dashboard GitHub Copilot chat UI (and the dashboard-embedded MCP server, along with `ASPIRE_DASHBOARD_MCP_ENDPOINT_URL`) was **removed** in favor of an agentic development model.
+>
+> **Changed in 13.5:** The remaining dashboard **AI Assistant** chat UI was removed as well — the `aspire agent init` flow is the only supported AI path.
 
 To query resource status, logs, and traces with an AI assistant, configure the **AppHost-level MCP server** via `aspire agent init` and use your assistant (Claude Code, VS Code + GitHub Copilot, Copilot CLI, etc.). See [MCP Server](mcp-server.md).
 

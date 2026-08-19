@@ -75,6 +75,38 @@ var api = builder.AddProject<Projects.Api>("api")
 
 > **13.3+:** A Helm-based Kubernetes deployment engine is available via `AddKubernetesEnvironment(...)`. Declare external traffic with first-class routing resources — `AddIngress(...)` (legacy) or `AddGateway(...)` (preferred for new clusters) — which generate the matching Ingress / Gateway API YAML in the Helm chart output. For AKS specifically, use `AddAzureKubernetesEnvironment(...)`.
 
+**Persistent volumes (13.5+, experimental `ASPIRECOMPUTE002`).** Model Kubernetes
+`PersistentVolumeClaim`s as first-class resources. Available on both the Kubernetes environment and
+the AKS environment (`Aspire.Hosting.Azure.Kubernetes`):
+
+```csharp
+#pragma warning disable ASPIRECOMPUTE002
+using Aspire.Hosting.Kubernetes;
+
+var k8s = builder.AddKubernetesEnvironment("k8s");
+
+var data = k8s.AddPersistentVolume("data")
+    .WithStorageClass("managed-csi")
+    .WithCapacity("10Gi")
+    .WithAccessMode(PersistentVolumeAccessMode.ReadWriteOnce);
+
+builder.AddContainer("postgres", "postgres:16")
+    .WithVolume("data", "/var/lib/postgresql/data")
+    .WithPersistentVolume(data);   // bound workloads render as StatefulSet, not Deployment
+```
+
+### Radius (preview, 13.5+)
+
+**Package:** `Aspire.Hosting.Radius` — publish to a [Radius](https://radapp.io/) environment:
+
+```csharp
+builder.AddRadiusEnvironment("radius")
+    .WithNamespace("my-app");
+```
+
+Publish-time infrastructure configuration (`ConfigureRadiusInfrastructure`) and project
+container-image overrides are gated behind experimental diagnostics.
+
 ### Azure Container Apps
 
 **Package:** `Aspire.Hosting.Azure.AppContainers`
@@ -101,6 +133,37 @@ var api = builder.AddProject<Projects.Api>("api")
 var storage = builder.AddAzureStorage("storage");   // creates Storage Account
 var cosmos = builder.AddAzureCosmosDB("cosmos");    // creates Cosmos DB account
 var sb = builder.AddAzureServiceBus("messaging");   // creates Service Bus namespace
+```
+
+**Deterministic environment naming (13.5+, experimental `ASPIREACANAMING002`).** Opt into
+collision-resistant resource names when deploying multiple environments into the same resource
+group — names get a `uniqueString(resourceGroup().id)` suffix while preserving each environment's
+digits (`cae1` / `cae2` stay distinct):
+
+```csharp
+#pragma warning disable ASPIREACANAMING002
+builder.AddAzureContainerAppEnvironment("acaenv")
+    .WithUniqueResourceNaming();
+```
+
+**Delegated subnets (13.5+, experimental `ASPIREAZURE003`).** ACA and Azure App Service environments
+can be placed into a delegated subnet. Declare the subnet with `WithServiceDelegation(serviceName)`,
+then attach it with `WithDelegatedSubnet(subnet)`. The virtual-network builder APIs live in
+`Aspire.Hosting.Azure.Network`.
+
+**Cross-scope existing resources (13.5+).** Reference Azure resources outside your app's own
+resource group, subscription, or tenant. Each accepts literal strings or `ParameterResource` values
+(so scope details can come from parameters/secrets), and each has `RunAsExisting*` /
+`PublishAsExisting*` variants:
+
+```csharp
+var name = builder.AddParameter("sb-name");
+var resourceGroup = builder.AddParameter("sb-rg");
+var subscription = builder.AddParameter("sb-sub");
+
+builder.AddAzureServiceBus("sb")
+    .AsExistingInResourceGroup(name, resourceGroup, subscription);
+// Also: AsExistingInSubscription(name, subscription), AsExistingInTenant(name)
 ```
 
 ### Azure App Service

@@ -32,6 +32,21 @@ These codes indicate usage of experimental/preview APIs. They may require `#prag
 | `ASPIREPERSISTENCE001`    | Shared resource-lifetime APIs (`WithPersistentLifetime`/`WithSessionLifetime`/`WithParentProcessLifetime`/`WithLifetimeOf`) for executables/projects (13.4) |
 | `ASPIREPROCESSCOMMAND001` | Process-backed resource commands — `WithProcessCommand`, `ProcessCommandSpec`, `ProcessCommandOptions` (13.4) |
 | `ASPIREBROWSERLOGS001`    | Browser logs — `WithBrowserLogs` (`Aspire.Hosting.Browsers`), tracked Chromium console/network capture (13.3+) |
+| `ASPIRETERMINAL001`       | Interactive terminal sessions — `WithTerminal()`, `TerminalOptions`, and the `aspire terminal` CLI group (13.5; CLI side also needs `features.terminalCommandsEnabled`) |
+| `ASPIREINTERACTION001`    | Interaction Service. **Scope narrowed in 13.5:** core prompt/input APIs (`PromptInputAsync`, `PromptInputsAsync`, `InteractionInput`, `InputType`, `InteractionInputCollection`) and file-upload inputs are now **stable** — only `PromptProgressAsync` (progress dialogs) still requires the suppression. |
+| `ASPIRECERTIFICATES001`   | HTTPS certificate configuration — `WithHttpsDeveloperCertificate`, `WithHttpsCertificate`, `WithHttpsCertificateConfiguration`, `WithoutHttpsCertificate` (13.5) |
+| `ASPIREDOTNETPROJECT001`  | `AddDotnetProject` / `DotnetProjectResource` — model a .NET project by path; moved to the `Aspire.Hosting.Dotnet` package in 13.5 |
+| `ASPIRECOMPUTE002`        | Kubernetes/AKS persistent volumes — `AddPersistentVolume`, `WithPersistentVolume` (13.5) |
+| `ASPIREACANAMING002`      | Azure Container Apps `WithUniqueResourceNaming()` deterministic naming (13.5) |
+| `ASPIREAZURE003`          | Azure virtual-network builder APIs in `Aspire.Hosting.Azure.Network` — `WithServiceDelegation`, `WithDelegatedSubnet` (13.5) |
+
+**CLI-bundle diagnostics (13.5, build/MSBuild-level, not suppressible experimental gates):**
+
+| Code          | Severity | Meaning |
+| ------------- | -------- | ------- |
+| **ASPIRE009** | Error    | CLI bundle can't be resolved (with `AspireUseCliBundle=true`) |
+| **ASPIRE010** | Warning  | Project opts out of the CLI bundle |
+| **ASPIRE011** | Warning  | `dnx` isn't available to acquire the CLI bundle |
 
 To suppress experimental warnings:
 
@@ -60,6 +75,17 @@ var resource = builder.AddExperimentalResource("test");
 ---
 
 ## Common Issues & Solutions
+
+### Fixed in 13.5
+
+If you hit these on 13.4 or earlier, upgrade (`aspire update --self && aspire update`):
+
+- **Deadlock during startup** — async callbacks stored in `IOptions.Configure` invoked during `BeforeStartEvent` deadlocked the AppHost.
+- **`WithBrowserLogs()` startup flakiness** — tracked browser sessions could fail even when the browser eventually became responsive; the CDP startup timeout was increased.
+- **Proxyless container endpoint references accessed before container creation** — no longer fails.
+- **`aspire run` failing for polyglot AppHosts using `*.dev.localhost` resource service URLs.**
+- **Stale AppHost backchannel sockets** blocking commands like `aspire add` — now pruned automatically; Ctrl+C/SIGTERM handling is also more responsive during startup.
+- **Slow TypeScript AppHost startup** — the CLI no longer waits a fixed delay before connecting; it races the RPC retry loop against process exit.
 
 ### Container runtime
 

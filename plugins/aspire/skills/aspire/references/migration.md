@@ -3,9 +3,58 @@
 Agent-facing scrub list. Use it when reviewing AppHost code, scripts, or CI for an Aspire version
 bump. Each row is a pattern to **search for and replace** before recommending or generating code.
 
-Sources: [Aspire 13.4 release notes](https://aspire.dev/whats-new/aspire-13-4/) and
+Sources: [Aspire 13.5 release notes](https://aspire.dev/whats-new/aspire-13-5/),
+[Aspire 13.4 release notes](https://aspire.dev/whats-new/aspire-13-4/), and
 [Aspire 13.3 release notes](https://aspire.dev/whats-new/aspire-13-3/) (verified against the live
-13.4.2 CLI).
+13.5.0 CLI).
+
+---
+
+## 13.4 → 13.5
+
+| Change | Migration |
+|---|---|
+| **`ServiceProvider` → `Services`** on hosting context types | Rename the property at every use site (e.g. `ctx.ServiceProvider` → `ctx.Services`). |
+| **`PublishAsConnectionString` obsolete** | Switch to `AddConnectionString` in publish-mode app model code. |
+| **`aspire ps --resources` and `--include-hidden` removed** | `aspire ps` now shows AppHost-level summaries only; use `aspire describe` for resource detail (add `--include-hidden` there). `--include-hidden` remains on the `aspire resource` subcommand. Verified on 13.5.0. |
+| **GitHub Models integration deprecated** | `Aspire.Hosting.GitHub.Models` APIs are `[Obsolete]` and the package no longer appears in `aspire add` output; it will be removed in a future release. Migrate to the Azure AI Foundry integration. |
+| **Proxyless endpoint port allocation timing changed** | Proxyless endpoints without an explicit public `port` now receive one during service preparation, before workload resources are created. Default range `10000-32767`; override with `ASPIRE_PROXYLESS_ENDPOINT_PORT_RANGE=start-end`. |
+| **Go polyglot: single optional `options` DTO passed directly** | When an exported API has exactly one optional `options` DTO parameter, the Go generator now passes the DTO directly instead of a generated method-options wrapper struct. Regenerate the SDK and update call sites that used the wrapper form. |
+| **`TerminalOptions.Shell` removed; `Columns`/`Rows` validated** | Delete `Shell` assignments. `Columns`/`Rows` now throw `ArgumentOutOfRangeException` when zero or negative. Internal terminal types are gated behind `ASPIRETERMINAL001`. |
+| **`DevTunnelRegion` enum values normalized** | `UkSouth` → `UKSouth`, `SouthEastAsia` → `SoutheastAsia`, etc. Fix old spellings. |
+| **Dashboard AI Assistant removed** | The chat UI is gone from the dashboard; use the `aspire agent init` agentic flow instead. |
+| **VS Code dashboard auto-launch removed** | The extension no longer opens the dashboard automatically; opt in with the `dashboardBrowser` setting or the `launch.json` value. |
+| **Orleans provider annotation internal** | `OrleansProviderTypeAnnotation` and `ProviderConfiguration` are now internal; remove external references. |
+| **`DotnetProjectResource` moved to `Aspire.Hosting.Dotnet` and made experimental** | Reference the new `Aspire.Hosting.Dotnet` package, update the namespace, and suppress `ASPIREDOTNETPROJECT001`. `aspire publish`/`aspire deploy` fail with an actionable error for path-based projects — use `AddCSharpApp(...)`/`addCSharpApp(...)` or `PublishAsDockerFile(...)` when publishing. |
+
+**New diagnostics introduced in 13.5** (suppress per-line or via `<NoWarn>` when you opt into the API):
+`ASPIRETERMINAL001` (`WithTerminal()` + `aspire terminal` CLI group),
+`ASPIRECERTIFICATES001` (`WithHttpsDeveloperCertificate`/`WithHttpsCertificate`/`WithHttpsCertificateConfiguration`),
+`ASPIREDOTNETPROJECT001` (`AddDotnetProject`), `ASPIRECOMPUTE002` (Kubernetes/AKS
+`AddPersistentVolume`), `ASPIREACANAMING002` (`WithUniqueResourceNaming`), `ASPIREAZURE003`
+(virtual-network builder APIs in `Aspire.Hosting.Azure.Network`). CLI-bundle diagnostics:
+`ASPIRE009` (error, bundle can't be resolved), `ASPIRE010` (warning, project opts out),
+`ASPIRE011` (`dnx` unavailable). **`ASPIREINTERACTION001` scope narrowed** — the core prompt/input
+APIs (`PromptInputAsync`, `PromptInputsAsync`, `InteractionInput`, `InputType`,
+`InteractionInputCollection`) and file-upload inputs are now stable; only `PromptProgressAsync`
+(progress dialogs) still requires the suppression.
+
+### Migration checklist (13.4 → 13.5)
+
+1. **Update the CLI first** — `aspire update --self`.
+2. **Update projects** — `aspire update` from the repo root.
+3. **Apply pending migrations** — `aspire update --migrate` (migrates legacy TypeScript AppHost
+   entry points `apphost.ts` → `apphost.mts`).
+4. **Scrub renamed APIs** — `ctx.ServiceProvider` → `ctx.Services`; `PublishAsConnectionString` →
+   `AddConnectionString`; `TerminalOptions.Shell` (delete); `DevTunnelRegion` spellings
+   (`UKSouth`, `SoutheastAsia`).
+5. **Audit scripts/CI** — remove `aspire ps --resources` / `aspire ps --include-hidden`; use
+   `aspire describe [--include-hidden]` instead.
+6. **Stabilize interaction code** — remove `ASPIREINTERACTION001` suppressions where only the core
+   prompt/file-upload APIs are used; keep it for `PromptProgressAsync`.
+7. **Review** GitHub Models usage (migrate to Azure AI Foundry), proxyless endpoint port
+   assumptions, Go AppHosts using the options-wrapper form (regenerate SDK), and VS Code
+   `dashboardBrowser` opt-in if you relied on auto-launch.
 
 ---
 
