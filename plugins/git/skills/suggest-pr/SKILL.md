@@ -86,8 +86,6 @@ Produce a markdown summary with these sections:
 
 `# Breaking Changes` — Detail any breaking changes with migration steps.
 
-`# Notes` — Any additional context reviewers should know.
-
 ### Step 6: Output Format
 
 Wrap the entire PR suggestion inside a **markdown code fence** (triple backticks). This prevents the terminal from rendering `#` signs as headings — the user needs them as literal characters for copy-paste into a PR description.
@@ -148,6 +146,7 @@ PR Title: <the suggested title>
 - Implementation details that are obvious from the code
 - File-by-file listings (summarize by feature/area instead)
 - Empty categories (only show categories that have changes)
+- A `# Notes` section or any extra reviewer notes — the PR body is only `# Summary`, `# Changes`, and optionally `# Breaking Changes`
 - Flowing paragraphs — use bullet points for everything
 - Lines longer than 72 characters — shorten or split
 - Multi-line bullets — each bullet must be one line only
