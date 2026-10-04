@@ -1,6 +1,6 @@
 {
   "name": "atc-agentic-toolkit",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "owner": { "name": "atc-net" },
   "plugins": [
     {
@@ -17,6 +17,11 @@
       "name": "azure",
       "source": "./plugins/azure",
       "description": "Azure services skills covering 200+ cloud services, IoT, AI, data, networking, and more"
+    },
+    {
+      "name": "cosmosdb",
+      "source": "./plugins/cosmosdb",
+      "description": "Azure Cosmos DB skills: an interactive NoSQL data-modeling workflow plus impact-ranked best-practice rules for partition keys, queries, SDK usage, indexing, throughput, global distribution, vector & full-text search, security, monitoring, and tooling"
     },
     {
       "name": "aspire",

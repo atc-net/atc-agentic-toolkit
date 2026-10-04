@@ -96,6 +96,7 @@ Once configured, type `/plugins` in Copilot Chat or use the `@agentPlugins` filt
 | [common](plugins/common/) | Common base skills including documentation generators, implementation planning, and utility tools |
 | [dotnet](plugins/dotnet/) | C#/.NET development skills including refactoring, testing, async patterns, and NuGet management |
 | [azure](plugins/azure/) | Azure services skills covering 200+ cloud services, IoT, AI, data, networking, and more |
+| [cosmosdb](plugins/cosmosdb/) | Azure Cosmos DB data modeling workflow and best-practice rules for partitioning, queries, SDK usage, indexing, and more |
 | [aspire](plugins/aspire/) | Aspire distributed application orchestration skills |
 | [git](plugins/git/) | Git workflow utilities including commit message generators and PR descriptions |
 | [github](plugins/github/) | GitHub platform skills including CI/CD workflow conventions for GitHub Actions and GitHub issue management |
@@ -104,6 +105,7 @@ Once configured, type `/plugins` in Copilot Chat or use the `@agentPlugins` filt
 | [bicep](plugins/bicep/) | Azure Bicep IaC best practices, naming conventions, modularization, and security patterns |
 | [docker](plugins/docker/) | Docker and containerization best practices covering Dockerfile optimization, multi-stage builds, security, and orchestration |
 | [powershell](plugins/powershell/) | PowerShell cmdlet development and scripting best practices based on Microsoft guidelines |
+| [atc](plugins/atc/) | ATC.NET library skills including REST API source generation from OpenAPI specs, WPF controls, and cross-platform XAML development |
 | [security](plugins/security/) | Security best practices and OWASP Top 10 guidelines for secure coding across all languages and frameworks |
 | [hooks](.claude/plugins/hooks/) | Automation hooks for Claude Code sessions (Claude Code only) |
 
