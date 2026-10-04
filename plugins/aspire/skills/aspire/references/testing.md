@@ -210,6 +210,14 @@ var builder = await DistributedApplicationTestingBuilder
     });
 ```
 
+### Dashboard in integration tests (13.6+)
+
+Set `DistributedApplicationTestingBuilderOptions.EnableDashboard` when creating the testing builder to
+run the dashboard alongside the test AppHost (handy when debugging a failing test). Call
+`GetDashboardUrlAsync()` on the running app to get an authenticated dashboard URL **without** the
+login token being written to logs. Check `aspire docs search "testing dashboard"` for the exact
+overloads before generating code.
+
 ---
 
 ## Connection string access

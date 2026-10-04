@@ -32,10 +32,16 @@ These codes indicate usage of experimental/preview APIs. They may require `#prag
 | `ASPIREPERSISTENCE001`    | Shared resource-lifetime APIs (`WithPersistentLifetime`/`WithSessionLifetime`/`WithParentProcessLifetime`/`WithLifetimeOf`) for executables/projects (13.4) |
 | `ASPIREPROCESSCOMMAND001` | Process-backed resource commands — `WithProcessCommand`, `ProcessCommandSpec`, `ProcessCommandOptions` (13.4) |
 | `ASPIREBROWSERLOGS001`    | Browser logs — `WithBrowserLogs` (`Aspire.Hosting.Browsers`), tracked Chromium console/network capture (13.3+) |
-| `ASPIRETERMINAL001`       | Interactive terminal sessions — `WithTerminal()`, `TerminalOptions`, and the `aspire terminal` CLI group (13.5; CLI side also needs `features.terminalCommandsEnabled`) |
+| `ASPIRETERMINAL001`       | Interactive terminal sessions — `WithTerminal()`, `TerminalOptions`, `TerminalService` (13.5+). 13.6: types moved to `Aspire.Hosting.ApplicationModel`; the `aspire terminal` CLI no longer needs a feature flag |
 | `ASPIREINTERACTION001`    | Interaction Service. **Scope narrowed in 13.5:** core prompt/input APIs (`PromptInputAsync`, `PromptInputsAsync`, `InteractionInput`, `InputType`, `InteractionInputCollection`) and file-upload inputs are now **stable** — only `PromptProgressAsync` (progress dialogs) still requires the suppression. |
 | `ASPIRECERTIFICATES001`   | HTTPS certificate configuration — `WithHttpsDeveloperCertificate`, `WithHttpsCertificate`, `WithHttpsCertificateConfiguration`, `WithoutHttpsCertificate` (13.5) |
-| `ASPIREDOTNETPROJECT001`  | `AddDotnetProject` / `DotnetProjectResource` — model a .NET project by path; moved to the `Aspire.Hosting.Dotnet` package in 13.5 |
+| `ASPIREDOTNETPROJECT001`  | **Retired in 13.6** (coordinated builds are the default) — remove suppressions. Was: `AddDotnetProject` / `DotnetProjectResource` in `Aspire.Hosting.Dotnet` (13.5) |
+| `ASPIRECOSMOSDB001`       | **Retired in 13.6** (vNext emulator is the default; `RunAsPreviewEmulator` obsolete) — remove suppressions |
+| `ASPIREDENO001`           | Deno hosting — `AddDenoApp`, `WithDenoAllow`, … in `Aspire.Hosting.JavaScript` (13.6) |
+| `ASPIREAZUREPROVISIONING001` | `Aspire.Hosting.Azure.Provisioning.*` proxies / `configureInfrastructure` (13.6) |
+| `ASPIREACAEXPRESS001`     | Azure Container Apps Express — `AsExpress()` (13.6) |
+| `ASPIREBLAZOR001`         | Blazor WebAssembly hosting types |
+| `ASPIREEXTENSION001`      | Extension debugging support APIs (e.g. the 13.6 `WithDebugSupport` overload receiving `LaunchConfigurationCallbackContext`) — not the old JavaScript ID |
 | `ASPIRECOMPUTE002`        | Kubernetes/AKS persistent volumes — `AddPersistentVolume`, `WithPersistentVolume` (13.5) |
 | `ASPIREACANAMING002`      | Azure Container Apps `WithUniqueResourceNaming()` deterministic naming (13.5) |
 | `ASPIREAZURE003`          | Azure virtual-network builder APIs in `Aspire.Hosting.Azure.Network` — `WithServiceDelegation`, `WithDelegatedSubnet` (13.5) |
@@ -46,7 +52,7 @@ These codes indicate usage of experimental/preview APIs. They may require `#prag
 | ------------- | -------- | ------- |
 | **ASPIRE009** | Error    | CLI bundle can't be resolved (with `AspireUseCliBundle=true`) |
 | **ASPIRE010** | Warning  | Project opts out of the CLI bundle |
-| **ASPIRE011** | Warning  | `dnx` isn't available to acquire the CLI bundle |
+| **ASPIRE011** | Error    | `dnx` isn't available to acquire the CLI bundle |
 
 To suppress experimental warnings:
 
@@ -86,6 +92,22 @@ If you hit these on 13.4 or earlier, upgrade (`aspire update --self && aspire up
 - **`aspire run` failing for polyglot AppHosts using `*.dev.localhost` resource service URLs.**
 - **Stale AppHost backchannel sockets** blocking commands like `aspire add` — now pruned automatically; Ctrl+C/SIGTERM handling is also more responsive during startup.
 - **Slow TypeScript AppHost startup** — the CLI no longer waits a fixed delay before connecting; it races the RPC retry loop against process exit.
+
+### Upgrading to 13.6
+
+| Problem | Solution |
+| ------- | -------- |
+| MongoDB client fails TLS handshake / hostname mismatch | 13.6 enables TLS by default. Use the full generated connection string (`tls=true`), trust the dev cert, or opt out with `.WithoutHttpsCertificate()` / relax with `.WithTlsMode(...)` (`PreferTls`). Container-to-container clients are most affected by hostname mismatch. |
+| `NotSupportedException` from `WithPartitionCount` | The vNext Cosmos emulator doesn't support it — remove the call, or switch to `.RunAsClassicEmulator()`. |
+| Cosmos emulator data missing after upgrade | vNext stores data under `/data` (classic: `/tmp/cosmos/appdata`) — re-seed, or use `.RunAsClassicEmulator()`. Data Explorer is off by default — `.WithDataExplorer()`. |
+| `ConnectionStrings__my-db` missing after deploy | Deployed targets emit only the portable alias `ConnectionStrings__my_db`; update client integrations or add a fallback. |
+| Error about colliding connection-string names | `my-db` and `my_db` now collide instead of overwriting — rename one resource. |
+| `The type or namespace name 'Terminals' does not exist` | Terminal types moved: `using Aspire.Hosting.ApplicationModel;`. |
+| `aspire wait` exits with code `18` | The resource reached `FailedToStart` (13.6 reports this even when waiting for `down`) — check `aspire logs <resource>`. |
+| `AddDotnetProject` build errors after upgrade | Coordinated builds need .NET SDK `11.0.100-rc.1`+ (file-based apps: `11.0.100-rtm.26473.104` or stable `11.0.100`+). Projects with per-project restore hooks: set `Aspire:Dotnet:RestoreProjectsIndividually`. |
+| `aspire stop --force` left volumes behind | Expected in 13.6 — add `--volumes` to remove Aspire-owned named volumes. |
+| Agent has skills but no Aspire MCP server | 13.6 `aspire agent init` skips MCP by default — rerun with `--mcp`. |
+| Duplicate Front Door origins after deploy | Origin names now include the backend hostname; delete old origins or preserve names via `ConfigureInfrastructure` (see [Deployment](deployment.md)). |
 
 ### Container runtime
 
@@ -140,15 +162,19 @@ If you hit these on 13.4 or earlier, upgrade (`aspire update --self && aspire up
 | Problem                  | Solution                                                |
 | ------------------------ | ------------------------------------------------------- |
 | "java not found"         | Ensure JDK is installed and `JAVA_HOME` is set          |
-| Maven/Gradle build fails | Verify build files exist; check build tool installation |
-| Spring Boot won't start  | Check `application.properties`; verify main class       |
+| Maven/Gradle build fails | Verify build files exist; `AddSpringBootApp`/`AddQuarkusApp` use the project's own wrapper (`mvnw`/`gradlew`) — override with `.WithWrapperPath(...)` |
+| `AddJavaApp` throws about launch mode | Configure exactly one: `.WithMavenGoal(...)`, `.WithGradleTask(...)`, or a JAR (`jarPath` overload) |
+| Spring Boot won't start  | Check `application.properties`; the port comes from `SERVER_PORT` (Quarkus: `QUARKUS_HTTP_PORT`) — don't hard-code it |
+| No Java traces           | `.WithOtelAgentDefaultPath()` expects the build to copy `opentelemetry-javaagent.jar` to `target/agent/` (Maven) or `build/agent/` (Gradle) |
 
 ### Rust workloads
 
 | Problem              | Solution                                                             |
 | -------------------- | -------------------------------------------------------------------- |
 | "cargo not found"    | Install Rust via rustup                                              |
-| Build takes too long | Rust compile times are normal; use `.WithCargoBuild()` for pre-build |
+| Build takes too long | Rust compile times are normal; use `.WithCargoReleaseBuild()` / `.WithCargoProfile(...)` to tune (official `Aspire.Hosting.Rust`, 13.6) |
+| App args ignored     | Use `.WithArgs(...)` for app args and `.WithCargoArgs(...)` for cargo args (separated by `--`) |
+| Service doesn't listen on the right port | Bind the endpoint to an env var: `.WithHttpEndpoint(env: "PORT")` |
 
 ### Health checks & startup
 

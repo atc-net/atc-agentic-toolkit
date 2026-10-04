@@ -13,12 +13,20 @@ Reference: https://aspire.dev/get-started/ai-coding-agents/
 The easiest way to configure the MCP server is using the Aspire CLI:
 
 ```bash
-# 13.2+
+# 13.6+ — skills only by default; opt into the MCP server explicitly
+aspire agent init --mcp
+
+# 13.2–13.5
 aspire agent init
 
 # 13.1
 aspire mcp init
 ```
+
+> **Changed in 13.6:** `aspire agent init` installs skills **without** configuring MCP unless you pass
+> `--mcp` (interactive standalone setup offers MCP as an opt-in; `--mcp=false` opts out explicitly).
+> `aspire new` / `aspire init` likewise leave MCP unselected. If an agent has Aspire skills but no
+> Aspire MCP tools, rerun `aspire agent init --mcp`.
 
 The command walks you through an interactive setup:
 

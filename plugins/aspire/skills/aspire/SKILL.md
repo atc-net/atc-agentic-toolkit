@@ -26,7 +26,7 @@ Detailed reference material lives in the `references/` folder — load on demand
 | [Deployment](references/deployment.md) | Docker, Kubernetes, Azure Container Apps, App Service |
 | [Testing](references/testing.md) | Integration tests against the AppHost |
 | [Troubleshooting](references/troubleshooting.md) | Diagnostic codes, common errors, and fixes |
-| [Migration](references/migration.md) | Per-version breaking changes (13.2 → 13.3 → 13.4 → 13.5) to scrub from code, scripts, and CI |
+| [Migration](references/migration.md) | Per-version breaking changes (13.2 → 13.3 → 13.4 → 13.5 → 13.6) to scrub from code, scripts, and CI |
 
 ---
 
@@ -45,6 +45,7 @@ When an AI agent drives Aspire, these rules prevent self-inflicted breakage. The
 | Add `--include-hidden` when a resource is missing from `describe`/`resource`/`logs` | Assume the resource doesn't exist | Proxies, helpers, and migration/seed jobs are hidden by default. (Removed from `aspire ps` in 13.5 — `ps` is AppHost-level only; use `aspire describe`.) |
 | Regenerate TS SDKs with `aspire add` / `aspire restore` | Edit `.aspire/modules/` by hand | Generated SDKs are overwritten; hand edits are lost. |
 | `aspire stop` when the task is done | Leave orphaned processes/containers running | Prevents port conflicts, locks, and stale state. |
+| Use the complete generated connection string (13.6: MongoDB adds `tls=true`; hyphenated names deploy as portable aliases like `ConnectionStrings__my_db`) | Hand-build URIs or hard-code `ConnectionStrings__my-db` | The generated value carries TLS/credentials; deployed targets emit only the portable alias. |
 
 See the consolidated lifecycle tips in [§7 Common Patterns](#7-common-patterns) and the per-version scrub list in [Migration](references/migration.md).
 
@@ -55,8 +56,8 @@ Confirm it's an Aspire app before applying these rules:
 | Signal | Detect | Notes |
 |---|---|---|
 | C# project AppHost | `.csproj` referencing `Aspire.AppHost.Sdk` | Definitive |
-| File-based C# AppHost | `apphost.cs` with `#:sdk Aspire.AppHost.Sdk` and `#:property IsAspireHost=true` | Definitive (.NET 10) |
-| TypeScript AppHost | `apphost.mts` / `apphost.ts` | Definitive |
+| File-based C# AppHost | `apphost.cs` with `#:sdk Aspire.AppHost.Sdk` and `#:property IsAspireHost=true` | Definitive (.NET 10; scaffold with `aspire init --language csharp --file-based`, 13.6+) |
+| TypeScript AppHost | `apphost.mts` / `apphost.ts` (run by Node or, 13.6+, Deno 2+ — detected from `packageManager`, `deno.lock`, `deno.json(c)`) | Definitive |
 | Aspire config | `aspire.config.json` (`appHost.language` = `"csharp"` or `"typescript/nodejs"`, `appHost.path` = where the AppHost lives) | High (13.2+; replaces legacy `aspire.json`) |
 | Generated TS SDKs | `.aspire/modules/` directory present | High (TypeScript AppHost) |
 | Service defaults | `Aspire.ServiceDefaults` project reference | Medium |
@@ -115,13 +116,13 @@ Call `mcp_context7_resolve-library-id` with `libraryName: ".NET Aspire"`.
 |---|---|---|
 | 1 | `/microsoft/aspire.dev` | Primary source. Guides, integrations, CLI reference, deployment. |
 | 2 | `/dotnet/aspire` | API internals, source-level implementation details. |
-| 3 | `/communitytoolkit/aspire` | Non-Microsoft polyglot integrations (Go, Java, Node.js, Ollama). |
+| 3 | `/communitytoolkit/aspire` | CommunityToolkit integrations (Ollama, extra JS/Java/Rust/Deno variants). Go (13.4), Java/Rust (13.6 preview), and Deno (13.6) now have first-party integrations — prefer those. |
 
 **Step 2 — Query docs:**
 
 ```
 libraryId: "/microsoft/aspire.dev", query: "Python integration AddPythonApp service discovery"
-libraryId: "/communitytoolkit/aspire", query: "Golang Java Node.js community integrations"
+libraryId: "/communitytoolkit/aspire", query: "Ollama community integrations"
 ```
 
 ### Fallback: GitHub search (when Context7 is also unavailable)
@@ -159,6 +160,8 @@ dotnet new install Aspire.ProjectTemplates
 > **13.3+ alternative install:** with the .NET 10 SDK present, install the CLI as a NativeAOT .NET global tool: `dotnet tool install -g Aspire.Cli`.
 >
 > **13.5:** also available via package managers — `npm install -g @microsoft/aspire-cli`, `brew install --cask microsoft/aspire/aspire`, `winget install Microsoft.Aspire`, or Nix (`nix profile add github:microsoft/aspire#aspire-cli`). New C# AppHost templates set `AspireUseCliBundle=true` so `dotnet run` resolves the CLI on the fly via `dnx`.
+>
+> **13.6:** `aspire update` also bumps repository-local CLI references (npm and `.config/dotnet-tools.json`); `AspireCliInvocationMode=Dnx` honors the tool manifest, `DnxPinned` uses the paired CLI version.
 
 ---
 
@@ -233,20 +236,23 @@ For complete API signatures, see [Polyglot APIs](references/polyglot-apis.md).
 | Concept | Key point |
 |---|---|
 | **Run vs Publish** | `aspire start` = background dev (13.2+, recommended). `aspire run` = foreground dev (legacy). `aspire publish` = generate deployment manifests. |
-| **Service discovery** | Automatic via env vars: `ConnectionStrings__<name>`, `services__<name>__http__0` |
+| **Service discovery** | Automatic via env vars: `ConnectionStrings__<name>`, `services__<name>__http__0`. 13.6: hyphenated/repeated-underscore names also get a portable alias (`my-db` → `ConnectionStrings__my_db`) — deployed targets emit only the alias; colliding names fail. |
 | **Resource lifecycle** | DAG ordering — dependencies start first. `.WaitFor()` gates on health checks. |
 | **Resource lifetimes** | Session (default) vs **persistent** (`WithPersistentLifetime()` — survives AppHost restarts; pair with `WithDataVolume()` for data). 13.4 extends shared lifetime APIs to executables/projects (experimental). See [Architecture](references/architecture.md). |
 | **Resource types** | `ProjectResource`, `ContainerResource`, `ExecutableResource`, `ParameterResource` |
 | **Integrations** | 144+ across 13 categories. Hosting package (AppHost) + Client package (service). |
-| **Dashboard** | Real-time logs, traces, metrics, GenAI visualizer. Runs automatically with `aspire start` / `aspire run`. |
+| **Dashboard** | Real-time logs, traces, metrics, GenAI visualizer. Runs automatically with `aspire start` / `aspire run`. 13.6 persists telemetry to SQLite and keeps the last 10 runs (run selector in the header). |
 | **MCP Server** | AI assistants can query running apps, search docs, and invoke resource MCP tools via CLI (STDIO). |
 | **Resource MCP tools** | Resources can expose MCP tools (e.g., `WithPostgresMcp()`). Discover with `aspire mcp tools`. (13.2+) |
 | **Interaction Service** | Prompt users from resource commands (dashboard UI). Core prompt/input APIs are **stable in 13.5** (no more `ASPIREINTERACTION001` for prompts); 13.5 adds **file-upload inputs** (stable) and **progress dialogs** (`PromptProgressAsync`, experimental). Works from C# and TypeScript AppHosts. |
 | **Resource command arguments** | (13.5+) Commands declare named arguments via `CommandOptions.Arguments`; dashboard prompts, CLI exposes `--<name>` options; read via `ExecuteCommandContext.Arguments`. |
-| **Interactive terminals** | (13.5, experimental `ASPIRETERMINAL001`) `WithTerminal()` opens an interactive terminal session on a resource (REPLs, shells) attachable from the dashboard or `aspire terminal attach` (feature flag `terminalCommandsEnabled`). |
+| **Interactive terminals** | (13.5+, experimental `ASPIRETERMINAL001`) `WithTerminal()` opens an interactive terminal session on a resource (REPLs, shells) attachable from the dashboard dock or `aspire terminal attach` (no feature flag since 13.6). 13.6 adds **AppHost-owned terminals** via `TerminalService` (send input, read snapshots, wait for text) — types moved to `Aspire.Hosting.ApplicationModel`. |
+| **Database/cache REPLs** | (13.6+) `WithRepl()` / `withRepl()` on PostgreSQL, MySQL, MongoDB, SQL Server, Redis, Valkey opens an authenticated client shell in the dashboard terminal dock — no local client needed. Run mode only, opt-in, uses the resource's (non-read-only) credentials. |
+| **Coordinated .NET builds** | (13.6+) `AddDotnetProject` / `addDotnetProject` projects build in shared restore/build groups (no `ASPIREDOTNETPROJECT001` suppression; package still prerelease). `WithBuildEnvironment(name, value)` sets MSBuild-only variables (not for secrets, not for file-based apps). Needs .NET SDK 11.0.100-rc.1+. |
+| **Portable volume paths** | (13.6+) `WithVolume("data", "/data", env: "DATA_PATH")` on projects/executables exposes the mount path through one env var in local and container modes (also `WithPersistentVolume(..., env:)`). |
 | **HTTPS dev certificates** | (13.5, experimental `ASPIRECERTIFICATES001`) `WithHttpsDeveloperCertificate()` / `WithHttpsCertificate(...)` / `WithoutHttpsCertificate()` on project and executable resources. |
 | **Cross-scope Azure refs** | (13.5+) `AsExistingInResourceGroup/InSubscription/InTenant` (+ `Run/PublishAsExisting*` variants) reference Azure resources outside the app's own scope. |
-| **TypeScript AppHost** | GA in 13.4 (preview in 13.2/13.3). Write AppHost in TypeScript (`apphost.mts`) via `createBuilder()`. Uses `.aspire/modules/` for generated SDKs. 13.5 adds parity: custom health checks, container file copying, interaction service, command arguments, HTTPS certs, faster startup. |
+| **TypeScript AppHost** | GA in 13.4 (preview in 13.2/13.3). Write AppHost in TypeScript (`apphost.mts`) via `createBuilder()`. Uses `.aspire/modules/` for generated SDKs. 13.5 adds parity: custom health checks, container file copying, interaction service, command arguments, HTTPS certs, faster startup. 13.6 adds `appsettings.json` configuration (`builder.getConfiguration()` → `getConfigValue('Section:Key')`) and Deno 2+ as an AppHost runtime. |
 | **Testing** | `Aspire.Hosting.Testing` — spin up full AppHost in xUnit/MSTest/NUnit. |
 | **Deployment** | Docker, Kubernetes, Azure Container Apps, Azure App Service. Tear down with `aspire destroy` (13.3+). |
 | **Container tunnel** | Enabled by default (13.3+) for uniform connectivity across Docker Desktop, Docker Engine, and Podman. Disable with `ASPIRE_ENABLE_CONTAINER_TUNNEL=false`. |
@@ -264,8 +270,10 @@ For complete API signatures, see [Polyglot APIs](references/polyglot-apis.md).
 | Restart the app | `aspire start` (stops previous automatically) |
 | Wait for resource healthy | `aspire wait <resource>` |
 | Stop the app | `aspire stop` |
-| Stop + delete persistent resource data | `aspire stop --force` (13.5+) |
-| Attach to a resource terminal session | `aspire terminal attach <resource>` (13.5+, experimental — enable `features.terminalCommandsEnabled`) |
+| Start with a .NET launch profile | `aspire start -lp <profile>` / `aspire run --launch-profile <profile>` (13.6+) |
+| Stop + clean up persistent resources | `aspire stop --force` (13.5+; keeps volumes since 13.6) — add `--volumes` to delete Aspire-owned named volumes (13.6+) |
+| List / attach resource terminals | `aspire terminal ps` / `aspire terminal attach <resource>` (13.5+; no feature flag since 13.6) |
+| Replay a terminal tape | `aspire terminal tape play <resource> --tape-file <path.tape>` (13.6+) |
 | List resources | `aspire describe` or `aspire resources` (add `--include-hidden` to show hidden resources, 13.3+) |
 | Run resource command | `aspire resource <resource> <command>` |
 | Start/stop/restart resource | `aspire resource <resource> start\|stop\|restart` |
@@ -283,6 +291,7 @@ For complete API signatures, see [Polyglot APIs](references/polyglot-apis.md).
 | Get doc page | `aspire docs get <slug>` |
 | List doc pages | `aspire docs list` |
 | Search API reference | `aspire docs api search <query> [--language csharp\|typescript]` (13.3+) |
+| Export canonical TS API JSON | `aspire sdk export --language typescript --package <Name@Version>` (13.6+, hidden command) |
 | Run dashboard standalone | `aspire dashboard run` (13.3+) |
 | Environment diagnostics | `aspire doctor` |
 | List resource MCP tools | `aspire mcp tools` |
@@ -293,11 +302,11 @@ For complete API signatures, see [Polyglot APIs](references/polyglot-apis.md).
 | Trust dev certificate | `aspire certs trust` |
 | Regenerate TS SDKs | `aspire restore` |
 | Create from template | `aspire new <template>` |
-| Initialize in existing project | `aspire init` |
+| Initialize in existing project | `aspire init` (`--language csharp --file-based` for an `apphost.cs`, 13.6+) |
 | Generate deployment manifests | `aspire publish` |
 | Deploy to targets | `aspire deploy` |
 | Tear down a deployment | `aspire destroy` (Azure/Kubernetes/Docker Compose, 13.3+) |
-| Configure MCP for AI assistants | `aspire agent init` |
+| Configure agent skills / MCP | `aspire agent init` (13.6: skills only by default — add `--mcp` for the MCP server) |
 
 Most commands support `--format Json` for machine-readable output. Use `--apphost <path>` to target a specific AppHost.
 

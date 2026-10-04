@@ -3,10 +3,75 @@
 Agent-facing scrub list. Use it when reviewing AppHost code, scripts, or CI for an Aspire version
 bump. Each row is a pattern to **search for and replace** before recommending or generating code.
 
-Sources: [Aspire 13.5 release notes](https://aspire.dev/whats-new/aspire-13-5/),
+Sources: [Aspire 13.6 release notes](https://aspire.dev/whats-new/aspire-13-6/),
+[Aspire 13.5 release notes](https://aspire.dev/whats-new/aspire-13-5/),
 [Aspire 13.4 release notes](https://aspire.dev/whats-new/aspire-13-4/), and
 [Aspire 13.3 release notes](https://aspire.dev/whats-new/aspire-13-3/) (verified against the live
-13.5.0 CLI).
+13.6.0 CLI).
+
+---
+
+## 13.5 → 13.6
+
+| Change | Migration |
+|---|---|
+| **MongoDB uses TLS by default** — `AddMongoDB` servers (incl. standalone) get the shared developer certificate; the generated connection string includes `tls=true` | Consume the **complete generated connection string** (don't hand-build URIs). Clients must trust the dev cert and connect with a matching hostname — container-to-container clients can hit hostname mismatches. Opt out per resource with `WithoutHttpsCertificate()` / `withoutHttpsCertificate()` (not recommended with replica sets), or use `WithTlsMode(...)` with `PreferTls` (accepts plaintext and TLS, still advertises TLS). The global `ASPIRE_DEVELOPER_CERTIFICATE_DEFAULT_HTTPS_TERMINATION=false` also affects other resources. Local defaults don't configure TLS for published containers. |
+| **Cosmos DB `RunAsEmulator` now selects the Linux vNext emulator** (`vnext-latest`, was classic `stable`) | Use `RunAsClassicEmulator()` / `runAsClassicEmulator()` to keep the classic emulator. Otherwise: re-seed persisted data (vNext stores under `/data`, classic under `/tmp/cosmos/appdata`); remove `WithPartitionCount` (throws `NotSupportedException` on vNext); call `WithDataExplorer()` if you want Data Explorer (off by default on vNext); replace obsolete `RunAsPreviewEmulator` with `RunAsEmulator`; drop `ASPIRECOSMOSDB001` suppressions. Revalidate tests and startup expectations. |
+| **Front Door origin names include the backend hostname** | Upgrading changes generated origin resource names even when the hostname didn't change, and incremental ARM deployments don't remove the old ones. Deploy, confirm health, then manually delete the old origins — or preserve previous names with the `ConfigureInfrastructure` override (see [Deployment](deployment.md#azure-front-door-origin-names-136)). |
+| **Portable connection-string names** — names with hyphens/repeated underscores get a portable alias (`my-db` → `ConnectionStrings__my_db`) | After deployment, Azure App Service, Kubernetes, and Foundry emit **only** the portable alias. Update client integrations alongside the hosting packages (they resolve the logical name first, then the alias); code that reads env vars directly must not assume `ConnectionStrings__my-db` exists — prefer an explicit portable name (`my_db`) or add a logical-then-portable fallback. Colliding names (`my-db` + `my_db`) now **fail** during resolution instead of overwriting. |
+| **Terminal APIs moved namespace** — `TerminalService`, `AspireTerminal`, `AspireTerminalKey`, `TerminalLaunchOptions`, `TerminalOwner`, `TerminalPlacement`: `Aspire.Hosting.Terminals` → `Aspire.Hosting.ApplicationModel` (build-breaking, no shim) | Replace `using Aspire.Hosting.Terminals;` with `using Aspire.Hosting.ApplicationModel;` (already an SDK implicit using). `TerminalInteractionOptions` and `WithTerminal` stay in `Aspire.Hosting`. Logger category becomes `Aspire.Hosting.ApplicationModel.TerminalService`. Still gated by `ASPIRETERMINAL001`. |
+| **`Aspire.Hosting.GitHub.Models` removed** (deprecated in 13.5) | The final 13.5.x package stays on NuGet but is hidden from `aspire add`. Migrate to Microsoft Foundry. |
+
+**Behavior changes (not on the official breaking list, but scrub scripts for them):**
+
+- **`aspire agent init` no longer configures MCP by default** — it installs skills only. Add `--mcp`
+  in scripts that expect the MCP server; `aspire new`/`aspire init` also leave MCP unselected.
+- **`aspire stop --force` preserves volumes** — add `--volumes` to also delete Aspire-owned named volumes.
+- **`aspire wait` exits with code `18`** when the resource reaches `FailedToStart`, even when waiting for `down`.
+- **`features.terminalCommandsEnabled` is gone** — the `aspire terminal` group is always available.
+- **Coordinated .NET builds** — `AddDotnetProject` projects build in shared restore/build groups and
+  need .NET SDK `11.0.100-rc.1`+ (file-based apps: `11.0.100-rtm.26473.104` or stable `11.0.100`+).
+  Projects with per-project restore hooks can opt out via the `Aspire:Dotnet:RestoreProjectsIndividually`
+  configuration value. `Aspire.Hosting.Dotnet` is **still a prerelease package** — "no suppression
+  needed" doesn't mean stable.
+- **Default image bumps** — App Configuration emulator `1.0.2` → `1.2.0` (now health-checks `/health`,
+  so `OnResourceReady` runs only once the emulator accepts requests); Cosmos DB emulator `stable` →
+  `vnext-latest` (covered by the Cosmos row above). Pin with `WithImageTag(...)` if needed.
+- **`AddDotnetProject` resources now publish** via .NET SDK container publishing (13.5 failed publish/deploy).
+- **Cosmos DB / AI Inference clients add default-on health checks** — `AddAzureCosmosClient`,
+  `AddKeyedAzureCosmosClient`, and AI Inference (calls `/info`); set `DisableHealthChecks` if an
+  endpoint doesn't support it.
+
+**Diagnostics in 13.6:** retired **`ASPIREDOTNETPROJECT001`** (coordinated builds are the default — remove
+suppressions) and **`ASPIRECOSMOSDB001`** (vNext is the default). New: `ASPIREDENO001` (Deno hosting),
+`ASPIREAZUREPROVISIONING001` (`Aspire.Hosting.Azure.Provisioning.*` proxies), `ASPIREACAEXPRESS001`
+(`AsExpress`). Also listed in the 13.6 diagnostics reference: `ASPIREBLAZOR001` (Blazor WebAssembly
+hosting types), `ASPIRECOMMAND001` (required command validation), `ASPIREACANAMING001`
+(`WithCompactResourceNaming`), and Radius IDs `ASPIRERADIUS003/004/006/057`. `ASPIRETERMINAL001` is unchanged.
+
+**New preview packages** (prerelease-only, `13.6.0-preview.*`): `Aspire.Hosting.Java`,
+`Aspire.Hosting.Rust`, `Aspire.Hosting.Azure.Sandboxes`, `Aspire.Hosting.Azure.ConnectorNamespace`
+(and `Aspire.Hosting.Dotnet` remains preview). Deno ships inside `Aspire.Hosting.JavaScript`.
+
+### Migration checklist (13.5 → 13.6)
+
+1. **Update the CLI first** — `aspire update --self`, then `aspire update` from the repo root (it now
+   also bumps repo-local CLI references in npm and `.config/dotnet-tools.json` manifests).
+2. **Terminal code** — `using Aspire.Hosting.Terminals;` → `using Aspire.Hosting.ApplicationModel;`.
+3. **MongoDB** — make clients use the generated connection string and trust the dev cert, or opt out
+   with `WithoutHttpsCertificate()` / `WithTlsMode(...)`.
+4. **Cosmos DB** — decide vNext vs `RunAsClassicEmulator()`; remove `WithPartitionCount` and
+   `RunAsPreviewEmulator`; re-seed data; add `WithDataExplorer()` if needed.
+5. **Connection strings** — grep for `ConnectionStrings__` reads of hyphenated names in non-.NET
+   services; rename resources to portable names or add fallbacks; fix colliding names.
+6. **Front Door** — plan the origin-name change (redeploy + delete old origins, or keep names via
+   `ConfigureInfrastructure`).
+7. **Suppressions/config** — remove `ASPIREDOTNETPROJECT001` / `ASPIRECOSMOSDB001` suppressions and any
+   `features.terminalCommandsEnabled` config.
+8. **Scripts/CI** — add `--mcp` to `aspire agent init` if MCP is wanted; add `--volumes` where
+   `aspire stop --force` was expected to delete volumes; handle `aspire wait` exit code `18`.
+9. **Review** GitHub Models usage (migrate to Foundry) and the .NET 11 SDK requirement for
+   `AddDotnetProject`.
 
 ---
 
@@ -25,7 +90,7 @@ Sources: [Aspire 13.5 release notes](https://aspire.dev/whats-new/aspire-13-5/),
 | **Dashboard AI Assistant removed** | The chat UI is gone from the dashboard; use the `aspire agent init` agentic flow instead. |
 | **VS Code dashboard auto-launch removed** | The extension no longer opens the dashboard automatically; opt in with the `dashboardBrowser` setting or the `launch.json` value. |
 | **Orleans provider annotation internal** | `OrleansProviderTypeAnnotation` and `ProviderConfiguration` are now internal; remove external references. |
-| **`DotnetProjectResource` moved to `Aspire.Hosting.Dotnet` and made experimental** | Reference the new `Aspire.Hosting.Dotnet` package, update the namespace, and suppress `ASPIREDOTNETPROJECT001`. `aspire publish`/`aspire deploy` fail with an actionable error for path-based projects — use `AddCSharpApp(...)`/`addCSharpApp(...)` or `PublishAsDockerFile(...)` when publishing. |
+| **`DotnetProjectResource` moved to `Aspire.Hosting.Dotnet` and made experimental** | Reference the new `Aspire.Hosting.Dotnet` package, update the namespace, and suppress `ASPIREDOTNETPROJECT001`. `aspire publish`/`aspire deploy` fail with an actionable error for path-based projects — use `AddCSharpApp(...)`/`addCSharpApp(...)` or `PublishAsDockerFile(...)` when publishing. *(13.6: suppression retired and these resources participate in .NET SDK container publishing.)* |
 
 **New diagnostics introduced in 13.5** (suppress per-line or via `<NoWarn>` when you opt into the API):
 `ASPIRETERMINAL001` (`WithTerminal()` + `aspire terminal` CLI group),
@@ -115,7 +180,7 @@ APIs (`PromptInputAsync`, `PromptInputsAsync`, `InteractionInput`, `InputType`,
 | `package.json` `engines.node` no longer drives Node image selection | Pin the Node version explicitly via `WithDockerfile` or your Dockerfile base image. |
 | `dotnet new aspire-py-starter` removed | Use `aspire new aspire-py-starter` (template moved to the Aspire CLI). |
 | TypeScript per-kind `withEnvironment*` helpers deprecated | Use the unified **`withEnvironment(name, value)`** — it accepts string, `ReferenceExpression`, `EndpointReference`, parameter/connection-string builders, or `IExpressionValue`. |
-| `ASPIREEXTENSION001` (JS diagnostic) renamed to **`ASPIREJAVASCRIPT001`** | Update `#pragma warning disable` and any code-search rules. |
+| `ASPIREEXTENSION001` (JS diagnostic) renamed to **`ASPIREJAVASCRIPT001`** | Update `#pragma warning disable` that targeted JavaScript hosting APIs. `ASPIREEXTENSION001` itself still exists for the experimental **extension debugging support** APIs (e.g. the 13.6 `WithDebugSupport` overload) — keep those suppressions. |
 | CLI telemetry `--format json` schema aligned with the MCP tool format | Update parsers consuming `--format json` from telemetry commands. |
 | Docker Swarm `UpdateConfig` property types changed | Update generated/hand-written Swarm overrides. |
 | **`aspire init` no longer wires the AppHost** | It drops a skeleton (`aspire.config.json` + AppHost stub); wire resources/integrations yourself afterward. |
@@ -136,7 +201,8 @@ APIs (`PromptInputAsync`, `PromptInputsAsync`, `InteractionInput`, `InputType`,
 1. `aspire update --self`, then `aspire update` from the repo root (get approval before running in CI).
 2. Rename `--log-level` → `--pipeline-log-level` in pipelines.
 3. Scrub AppHost code for: `NameOutput`→`NameOutputReference`, `AddAndPublishPromptAgent`→`AddPromptAgent`,
-   `AksSkuTier` (delete), `OtlpEndpointEnvironmentVariableName` (delete), `ASPIREEXTENSION001`→`ASPIREJAVASCRIPT001`.
+   `AksSkuTier` (delete), `OtlpEndpointEnvironmentVariableName` (delete), `ASPIREEXTENSION001`→`ASPIREJAVASCRIPT001`
+   (only where it suppressed JavaScript hosting APIs).
 4. Replace `dotnet new aspire-py-starter` with `aspire new aspire-py-starter`.
 5. Re-run `aspire agent init` if you relied on the dashboard MCP server / `ASPIRE_DASHBOARD_MCP_ENDPOINT_URL`.
 6. Replace deprecated TS `withEnvironment*` helpers with the unified `withEnvironment(name, value)`.

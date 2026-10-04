@@ -36,10 +36,13 @@ builder.AddProject<Projects.MyApi>("api")
 - `.WithExternalHttpEndpoints()` — mark endpoints as externally accessible
 - `.WithOtlpExporter()` — configure OpenTelemetry exporter
 - `.PublishAsDockerFile()` — override publish behavior to Dockerfile
-- `.WithTerminal()` — (13.5+, experimental `ASPIRETERMINAL001`) interactive terminal session attachable from the dashboard / `aspire terminal attach`; dimensions via `TerminalOptions` (`Columns` default 120, `Rows` default 30, `ShowTerminalHost`)
+- `.WithTerminal()` — (13.5+, experimental `ASPIRETERMINAL001`) interactive terminal session attachable from the dashboard / `aspire terminal attach`; dimensions via `TerminalOptions` (`Columns` default 120, `Rows` default 30, `ShowTerminalHost`). 13.6 moved `TerminalService`/`AspireTerminal*`/`TerminalLaunchOptions`/`TerminalOwner`/`TerminalPlacement` to `Aspire.Hosting.ApplicationModel` (AppHost-owned terminals: send input, read snapshots, wait for text)
+- `.WithRepl()` — (13.6+) on PostgreSQL, MySQL, MongoDB, SQL Server, Redis, Valkey server resources: dashboard command opening an authenticated client shell in the terminal dock (run mode only; uses the resource's credentials — enable only for trusted dashboard users)
+- `.WithVolume(name, target, env: "DATA_PATH")` — (13.6+) portable volume path on project/executable resources: the same env var points at a deterministic local directory in run mode and at the mount path (`/data`) when published (also `WithPersistentVolume(..., env:)`)
 - `.WithHttpsDeveloperCertificate()` / `.WithHttpsCertificate(cert, password)` / `.WithHttpsCertificateConfiguration(...)` / `.WithoutHttpsCertificate()` — (13.5+, experimental `ASPIRECERTIFICATES001`) HTTPS certificate configuration for project/executable resources
 - `.WithContainerFiles(destPath, sourcePath, options?)` / `.WithContainerFiles(destPath, callback, options?)` — (13.5+) copy host files or build-time-generated files into container resources; ownership via `ContainerFilesOptions` (`DefaultOwner`, `DefaultGroup`, `Umask`)
-- `builder.AddDotnetProject(name, path)` — (13.5+, experimental `ASPIREDOTNETPROJECT001`, `Aspire.Hosting.Dotnet` package) model a .NET project by path without a compile-time `ProjectReference`; orchestration-only — `aspire publish`/`aspire deploy` fail for it (use `AddCSharpApp`/`PublishAsDockerFile` to publish)
+- `builder.AddDotnetProject(name, path)` — (`Aspire.Hosting.Dotnet`, prerelease package) model a .NET project by path without a compile-time `ProjectReference`. **13.6:** no `ASPIREDOTNETPROJECT001` suppression needed (retired); compatible projects are coordinated into shared restore/build groups (file-based C# apps use serialized direct builds), the dashboard **Rebuild** command rebuilds after source changes (**Start**/**Restart** reuse the coordinated output), launch profiles are selectable, MSBuild `-mt` is used when the SDK supports it, and the resources now participate in **.NET SDK container publishing**. Requires .NET SDK `11.0.100-rc.1`+ (file-based apps: `11.0.100-rtm.26473.104` or stable `11.0.100`+). Opt out of grouped restore with the `Aspire:Dotnet:RestoreProjectsIndividually` configuration value. *(13.5: experimental and orchestration-only — publish/deploy failed.)*
+- `.WithBuildEnvironment(name, value)` — (13.6+) MSBuild-only environment variable for `AddDotnetProject` builds, separate from runtime env vars. Not supported for file-based apps; never use for secrets.
 
 ### Python
 
@@ -367,69 +370,130 @@ dimensions are C#-only).
 bound workloads render as StatefulSets. Note the polyglot `withVolume()` parameter order is
 `(target, name?)` — mount path first.
 
+### TypeScript AppHost additions (13.6)
+
+**Configuration from `appsettings.json`** — a TypeScript AppHost loads standard configuration from
+`appsettings.json` (and environment-specific files) beside `apphost.mts`; env vars and CLI args remain
+in the stack:
+
+```typescript
+import { createBuilder } from './.aspire/modules/aspire.mjs';
+const builder = await createBuilder();
+const configuration = await builder.getConfiguration();
+const region = await configuration.getConfigValue('Deployment:Region');
+```
+
+**Deno as the AppHost runtime** — Deno 2+ can run `apphost.mts` itself (detected from
+`packageManager`, `deno.lock`, `deno.json`, `deno.jsonc`), with native type checking and watch mode;
+certificate trust is wired via `DENO_CERT`.
+
+**Portable volume paths** — `withVolume(target, name, env)`, e.g.
+`await api.withVolume('/data', 'data', 'DATA_PATH');` (mount path first, as above).
+
+**REPLs and coordinated .NET builds** — `await builder.addRedis('cache').withRepl();` and
+`await (await builder.addDotnetProject('api', '../Api/Api.csproj')).withBuildEnvironment('ContinuousIntegrationBuild', 'true');`
+(13.6: these resources participate in .NET SDK container publishing).
+
+**Exact signatures** — `aspire sdk export --language typescript --package <Name@Version>` emits the
+canonical TypeScript API JSON for any hosting package (see [CLI Reference](cli-reference.md)).
+
 ---
 
-## Community (CommunityToolkit/Aspire)
+## Java, Rust, and Deno (first-party, 13.6+)
 
-All community integrations follow the same pattern: install the NuGet package in your AppHost, then use the `Add*App()` method.
+Before 13.6 these were CommunityToolkit-only. 13.6 ships first-party integrations; the
+`CommunityToolkit.Aspire.Hosting.Java` / `.Rust` / `.Deno` packages still exist but use different
+APIs (e.g. CommunityToolkit's `AddSpringApp`) — don't mix the two.
 
-### Java (Spring Boot)
+### Java (`Aspire.Hosting.Java`, preview)
 
-**Package:** `CommunityToolkit.Aspire.Hosting.Java`
+**Package:** `Aspire.Hosting.Java` (prerelease, `aspire add java`). Supports executable JARs,
+Maven/Gradle wrappers, Spring Boot, Quarkus, and prebuilt images; detects the target Java release from
+Maven/Gradle, generates multi-stage Dockerfiles that run as non-root, and supports VS Code debugging.
 
 ```csharp
-builder.AddSpringApp("spring-api", "../spring-service")
-    .WithHttpEndpoint(targetPort: 8080)
+builder.AddSpringBootApp("catalog", "../catalog")   // HTTP endpoint declared via SERVER_PORT
+    .WithExternalHttpEndpoints()
     .WithReference(postgres)
     .WaitFor(postgres);
 ```
 
-Chaining methods:
-- `.WithHttpEndpoint(port?, targetPort?, name?)`
-- `.WithReference(resource)`
-- `.WithEnvironment(key, value)`
-- `.WaitFor(resource)`
-- `.WithMavenBuild()` — run Maven build before start
-- `.WithGradleBuild()` — run Gradle build before start
+```typescript
+const catalog = await builder.addSpringBootApp('catalog', '../catalog');
+await catalog.withExternalHttpEndpoints();
+```
+
+| API (TS name) | Purpose |
+|---|---|
+| `addSpringBootApp(name, appDirectory)` | Spring Boot via its own Maven/Gradle wrapper (`spring-boot:run` / `bootRun`); HTTP endpoint via `SERVER_PORT` |
+| `addQuarkusApp(name, appDirectory)` | Quarkus dev mode (`quarkus:dev` / `quarkusDev`); HTTP endpoint via `QUARKUS_HTTP_PORT` |
+| `addJavaApp(name, appDirectory)` | Plain `java` launch — configure **exactly one** launch mode: `withMavenGoal(goal, args)`, `withGradleTask(task, args)`, or a JAR |
+| `addJavaAppWithJar(name, appDirectory, jarPath, args)` | Run a prebuilt JAR with `java -jar` (C#: `AddJavaApp` overload taking `jarPath`) |
+| `addJavaContainer(name, image, options?)` | Run an existing image as-is (no endpoint declared — add one yourself) |
+
+Chaining: `withMavenBuild(args)`, `withGradleBuild(args)`, `withJarArtifact(jarPath)`,
+`withMainClass(mainClass)`, `withJvmArgs(args)`, `withWrapperPath(path)`,
+`withOtelAgent(agentPath)` / `withOtelAgentDefaultPath()` (expects
+`target/agent/opentelemetry-javaagent.jar` for Maven or `build/agent/...` for Gradle — the build must
+put it there; nothing is downloaded).
 
 **Java service discovery:** Env vars via `System.getenv()`:
 ```java
 String dbConn = System.getenv("ConnectionStrings__db");
 ```
 
-### Rust
+### Rust (`Aspire.Hosting.Rust`, preview)
 
-**Package:** `CommunityToolkit.Aspire.Hosting.Rust`
-
-```csharp
-builder.AddRustApp("rust-worker", "../rust-service")
-    .WithHttpEndpoint(targetPort: 3000)
-    .WithReference(redis)
-    .WaitFor(redis);
-```
-
-Chaining methods:
-- `.WithHttpEndpoint(port?, targetPort?, name?)`
-- `.WithReference(resource)`
-- `.WithEnvironment(key, value)`
-- `.WaitFor(resource)`
-- `.WithCargoBuild()` — run `cargo build` before start
-
-### Deno
-
-**Package:** `CommunityToolkit.Aspire.Hosting.Deno`
+**Package:** `Aspire.Hosting.Rust` (prerelease, `aspire add rust`). Runs `cargo run` in the app
+directory; generates multi-stage Dockerfiles; VS Code discovery/run/debug for resources.
 
 ```csharp
-builder.AddDenoApp("deno-api", "../deno-service")
-    .WithHttpEndpoint(targetPort: 8000)
-    .WithReference(redis);
+builder.AddRustApp("api", "../rust-api")
+    .WithHttpEndpoint(env: "PORT")
+    .WithExternalHttpEndpoints();
 ```
 
-Chaining methods:
-- `.WithHttpEndpoint(port?, targetPort?, name?)`
-- `.WithReference(resource)`
-- `.WithEnvironment(key, value)`
-- `.WaitFor(resource)`
+```typescript
+await builder
+    .addRustApp('api', '../rust-api')
+    .withHttpEndpoint({ env: 'PORT' })
+    .withExternalHttpEndpoints();
+```
+
+Chaining: `withCargoArgs(args)` (cargo args, before `--`) vs `withArgs(...)` (app args, after `--`),
+`withCargoBinTarget(binName)`, `withCargoExample(name)`, `withCargoFeatures(features)`,
+`withCargoPackage(name)`, `withCargoProfile(name)`, `withCargoReleaseBuild()`, `withCargoLocked()`,
+`withCargoTarget(target)`, `withCargoManifestPath(path)`.
+
+### Deno (`Aspire.Hosting.JavaScript`, experimental `ASPIREDENO001`)
+
+Deno hosting ships in `Aspire.Hosting.JavaScript` (Deno must be on `PATH`). Run mode executes
+`deno run -A <script>`; generated containers use the stricter `deno run --allow-net --allow-env`.
+Deno's built-in OpenTelemetry is enabled via `OTEL_DENO`.
+
+```csharp
+#pragma warning disable ASPIREDENO001
+builder.AddDenoApp("deno-api", "../deno-api", "main.ts")
+    .WithDenoAllow(DenoPermissionKind.Net, "api.example.com");
+#pragma warning restore ASPIREDENO001
+```
+
+```typescript
+import { createBuilder, DenoPermissionKind } from './.aspire/modules/aspire.mjs';
+const deno = await builder.addDenoApp('deno-api', '../deno-api', 'main.ts');
+await deno.withDenoAllow(DenoPermissionKind.Net, ['api.example.com']);
+```
+
+Chaining: task/serve modes (`withDenoTask(taskName)`, `withDenoServe()`, `withDenoRun()`),
+permissions (`withDenoAllow(kind, values)`, `withDenoDeny(kind, values)`, `withDenoAllowAll()`),
+`withDenoConfig(file)`, `withDenoImportMap(file)`, `withDenoLock(file)` / `withDenoNoLock()`,
+`withDenoUnstable(features)`, `withDenoWatch()`, `withDenoInspect()`, `withDenoRuntimeArgs(args)`,
+`withDenoScriptArgs(args)`. `withDeno()` also switches other JavaScript resources (Node/Vite/Next.js)
+to the Deno package manager.
+
+## Community (CommunityToolkit/Aspire)
+
+All community integrations follow the same pattern: install the NuGet package in your AppHost, then use the `Add*App()` method.
 
 ### PowerShell
 
@@ -487,14 +551,13 @@ var processor = builder.AddGoApp("processor", "../go-processor")
     .WithReference(mongo)
     .WaitFor(rabbit);
 
-// Java analytics service (Spring Boot)
-var analytics = builder.AddSpringApp("analytics", "../spring-analytics")
-    .WithHttpEndpoint(targetPort: 8080)
+// Java analytics service (Spring Boot, Aspire.Hosting.Java preview — HTTP endpoint via SERVER_PORT)
+var analytics = builder.AddSpringBootApp("analytics", "../spring-analytics")
     .WithReference(mongo)
     .WithReference(rabbit)
     .WaitFor(mongo);
 
-// Rust high-perf worker
+// Rust high-perf worker (Aspire.Hosting.Rust preview)
 var worker = builder.AddRustApp("worker", "../rust-worker")
     .WithReference(redis)
     .WithReference(rabbit)

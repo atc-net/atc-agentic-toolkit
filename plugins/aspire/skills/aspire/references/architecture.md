@@ -213,6 +213,13 @@ All languages use the same env var pattern:
 | Java | `System.getenv("ConnectionStrings__cache")` |
 | Rust | `std::env::var("ConnectionStrings__cache")` |
 
+> **Portable names (13.6):** a resource name with hyphens or repeated underscores also gets a portable
+> alias — `my-db` → `ConnectionStrings__my_db`. Azure App Service, Kubernetes, and Foundry emit
+> **only** the alias after deployment, so direct env-var reads like `os.environ["ConnectionStrings__my-db"]`
+> break once deployed. Prefer portable resource names (`my_db`) or read the logical name with a
+> fallback to the alias. Colliding names (`my-db` and `my_db`) fail during resolution. .NET client
+> integrations updated alongside the hosting packages already try the logical name first, then the alias.
+
 ---
 
 ## Networking
