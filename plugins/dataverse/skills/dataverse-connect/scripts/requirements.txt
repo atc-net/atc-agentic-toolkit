@@ -1,0 +1,7 @@
+azure-identity
+azure-core
+msal
+msal-extensions
+requests
+PowerPlatform-Dataverse-Client>=1.0.0
+pandas

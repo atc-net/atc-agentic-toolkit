@@ -97,6 +97,7 @@ Once configured, type `/plugins` in Copilot Chat or use the `@agentPlugins` filt
 | [dotnet](plugins/dotnet/) | C#/.NET development skills including refactoring, testing, async patterns, and NuGet management |
 | [azure](plugins/azure/) | Azure services skills covering 200+ cloud services, IoT, AI, data, networking, and more |
 | [cosmosdb](plugins/cosmosdb/) | Azure Cosmos DB data modeling workflow and best-practice rules for partitioning, queries, SDK usage, indexing, and more |
+| [dataverse](plugins/dataverse/) | Microsoft Dataverse and Power Platform skills covering connection setup, data, queries, schema, solutions, administration, and security |
 | [aspire](plugins/aspire/) | Aspire distributed application orchestration skills |
 | [git](plugins/git/) | Git workflow utilities including commit message generators and PR descriptions |
 | [github](plugins/github/) | GitHub platform skills including CI/CD workflow conventions for GitHub Actions and GitHub issue management |

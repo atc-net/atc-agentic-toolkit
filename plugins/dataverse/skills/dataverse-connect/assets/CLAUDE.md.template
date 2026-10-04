@@ -1,0 +1,77 @@
+# Dataverse Workspace
+
+## Environment
+
+| Setting | Value |
+|---|---|
+| URL | {{DATAVERSE_URL}} |
+| Solution | {{SOLUTION_NAME}} |
+| Publisher prefix | {{PUBLISHER_PREFIX}} |
+
+## Repository layout
+
+| Path | Contents |
+|---|---|
+| `solutions/{{SOLUTION_NAME}}/` | Unpacked solution source; the source of truth for customizations |
+| `plugins/` | C# Dataverse plugin projects |
+| `scripts/` | `auth.py` and project Python scripts (no credentials) |
+| `.env` | Local environment config; gitignored, never commit |
+| `.dataverse/` | Workspace token cache, created only when needed; gitignored |
+| `.mcp.json` | Project-scoped MCP server config, if MCP was registered at project scope |
+
+## Workflows
+
+Pull the solution from the environment into the repository:
+
+```bash
+pac solution export --name {{SOLUTION_NAME}} --path ./solutions/{{SOLUTION_NAME}}.zip --managed false
+pac solution unpack --zipfile ./solutions/{{SOLUTION_NAME}}.zip --folder ./solutions/{{SOLUTION_NAME}}
+rm ./solutions/{{SOLUTION_NAME}}.zip
+git add ./solutions/{{SOLUTION_NAME}} && git commit -m "chore: pull {{SOLUTION_NAME}}"
+```
+
+Push the solution from the repository to the environment:
+
+```bash
+pac solution pack --zipfile ./solutions/{{SOLUTION_NAME}}.zip --folder ./solutions/{{SOLUTION_NAME}}
+pac solution import --path ./solutions/{{SOLUTION_NAME}}.zip --environment {{DATAVERSE_URL}} --async --activate-plugins
+rm ./solutions/{{SOLUTION_NAME}}.zip
+```
+
+Validate after a push with the Python SDK:
+
+```python
+import os, sys
+sys.path.insert(0, os.path.join(os.getcwd(), "scripts"))
+from auth import get_client
+
+client = get_client()
+
+# Table exists
+info = client.tables.get("<logical_name>")
+print(f"[{'PASS' if info else 'FAIL'}] Table '<logical_name>'")
+
+# Recent failed solution imports
+errors = client.records.list(
+    "msdyn_solutionhistory",
+    filter="msdyn_status eq 1",
+    select=["msdyn_name", "msdyn_exceptionmessage"],
+    orderby=["msdyn_starttime desc"],
+    top=5,
+)
+print(f"[{'FAIL' if len(errors) else 'PASS'}] {len(errors)} failed import(s)")
+```
+
+Check connectivity at any time with `python scripts/auth.py --check`.
+
+## Metadata conventions
+
+- Prefix custom tables and columns with `{{PUBLISHER_PREFIX}}_` (also visible in `solutions/{{SOLUTION_NAME}}/Other/Solution.xml`).
+- Every GUID in form and view XML must be unique. Generate one with `python -c "import uuid; print(str(uuid.uuid4()).upper())"`.
+- Business rules are stored as JSON in `Entities/<table>/Workflows/`.
+
+## C# plugins
+
+- Each project lives in `plugins/<PluginName>/`.
+- Assemblies must be strong-named; keep the `.snk` key file out of git.
+- Register new plugin steps through the Plugin Registration Tool, and push assembly updates with `pac plugin push --pluginId <id>`.
