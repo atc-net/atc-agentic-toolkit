@@ -1,12 +1,12 @@
 ---
 name: azure-iot
-description: Expert knowledge for Azure IoT development including decision making, architecture & design patterns, and integrations & coding patterns. Use when using MQTT/IoT Plug and Play, DPS/IoT Hub, SAP ERP integration, industrial IoT architectures, or device schemas, and other Azure IoT related development tasks. Not for Azure IoT Hub (use azure-iot-hub), Azure IoT Edge (use azure-iot-edge), Azure IoT Central (use azure-iot-central), Azure Defender For Iot (use azure-defender-for-iot).
+description: Expert knowledge for Azure IoT development including decision making, architecture & design patterns, and configuration. Use when managing Azure Device Registry X.509 PKI, ADR policies, IoT Hub cert revocation, or device schema namespaces, and other Azure IoT related development tasks. Not for Azure IoT Central (use azure-iot-central), Azure IoT Edge (use azure-iot-edge), Azure IoT Hub (use azure-iot-hub), Azure Defender For Iot (use azure-defender-for-iot).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
 # Azure IoT Skill
 
-This skill provides expert guidance for Azure IoT. Covers decision making, architecture & design patterns, and integrations & coding patterns. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure IoT. Covers decision making, architecture & design patterns, and configuration. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
@@ -21,8 +21,8 @@ This skill requires **network access** to fetch documentation content:
 | Category | Lines | Description |
 |----------|-------|-------------|
 | Decision Making | L27-L32 | Guidance on designing Azure Device Registry namespaces and schema registries, including structure, organization, and planning for IoT device data models and metadata. |
-| Architecture & Design Patterns | L33-L38 | Reference architectures and patterns for industrial IoT on Azure, including dataspace-based designs, component choices, and end-to-end implementation guidance for industrial scenarios. |
-| Integrations & Coding Patterns | L39-L42 | Patterns and code for integrating devices via MQTT and IoT Plug and Play, building device/service apps, formatting payloads, using DPS/IoT Hub, and connecting SAP ERP to Azure IoT. |
+| Architecture & Design Patterns | L33-L38 | Designing certificate lifecycle flows for Azure Device Registry and IoT Hub, including issuance, renewal planning, automation, and minimizing downtime for IoT device certificates |
+| Configuration | L39-L45 | Configuring Azure Device Registry for X.509 PKI: setting up credentials, creating ADR policies with Microsoft or external root CAs, and revoking certificates/policies for IoT Hub. |
 
 ### Decision Making
 | Topic | URL |
@@ -33,10 +33,13 @@ This skill requires **network access** to fetch documentation content:
 ### Architecture & Design Patterns
 | Topic | URL |
 |-------|-----|
-| Enable industrial dataspace architectures on Azure | https://learn.microsoft.com/en-us/azure/iot/howto-iot-industrial-dataspaces |
-| Implement Azure industrial IoT reference architecture | https://learn.microsoft.com/en-us/azure/iot/tutorial-iot-industrial-solution-architecture |
+| Understand certificate issuance flow in ADR and IoT Hub | https://learn.microsoft.com/en-us/azure/iot/concept-certificate-issuance |
+| Plan and execute certificate renewal for IoT devices | https://learn.microsoft.com/en-us/azure/iot/concept-certificate-renewal |
 
-### Integrations & Coding Patterns
+### Configuration
 | Topic | URL |
 |-------|-----|
-| Connect on-premises SAP ERP to Azure industrial IoT | https://learn.microsoft.com/en-us/azure/iot/howto-connect-on-premises-sap-to-azure |
+| Configure Azure Device Registry credential for X.509 PKI | https://learn.microsoft.com/en-us/azure/iot/how-to-configure-credential |
+| Create policy with Microsoft root CA in ADR | https://learn.microsoft.com/en-us/azure/iot/how-to-create-policy |
+| Configure ADR policy with external root CA | https://learn.microsoft.com/en-us/azure/iot/how-to-create-policy-external-certificate |
+| Revoke certificates and delete ADR policies for IoT Hub | https://learn.microsoft.com/en-us/azure/iot/how-to-revoke-certificate-delete-policy |

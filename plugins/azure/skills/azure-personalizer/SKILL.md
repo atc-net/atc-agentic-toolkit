@@ -1,6 +1,6 @@
 ---
 name: azure-personalizer
-description: Expert knowledge for Azure AI Personalizer development including troubleshooting, decision making, security, configuration, and integrations & coding patterns. Use when choosing single vs multi-slot, tuning exploration policies, configuring CMK encryption, debugging low rewards, or using local inference SDK, and other Azure AI Personalizer related development tasks. Not for Azure AI Metrics Advisor (use azure-metrics-advisor), Azure AI Anomaly Detector (use azure-anomaly-detector), Azure Machine Learning (use azure-machine-learning).
+description: Expert knowledge for Azure AI Personalizer development including troubleshooting, decision making, security, configuration, and integrations & coding patterns. Use when choosing single vs multi-slot setups, tuning policies/exploration, using apprentice mode, explainability, or local inference, and other Azure AI Personalizer related development tasks. Not for Azure AI Search (use azure-cognitive-search), Azure Machine Learning (use azure-machine-learning), Azure AI Metrics Advisor (use azure-metrics-advisor), Azure AI Anomaly Detector (use azure-anomaly-detector).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -20,16 +20,16 @@ This skill requires **network access** to fetch documentation content:
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L29-L33 | Diagnosing and fixing common Azure Personalizer problems: configuration and training issues, API/latency errors, low reward performance, and steps to debug and resolve service failures. |
+| Troubleshooting | L29-L33 | Diagnosing and fixing common Azure Personalizer issues: API errors, event/Reward calls, model training problems, configuration mistakes, and steps to validate and debug your setup. |
 | Decision Making | L34-L38 | Guidance on when to use single-slot vs multi-slot Personalizer, comparing scenarios, behavior, and design tradeoffs for different personalization needs. |
 | Security | L39-L44 | Configuring encryption at rest (including customer-managed keys) and controlling data collection, storage, and privacy settings for Azure Personalizer. |
-| Configuration | L45-L52 | Configuring Personalizer’s learning behavior: policies, hyperparameters, exploration, apprentice mode, explainability, model export, and learning loop settings. |
-| Integrations & Coding Patterns | L53-L56 | Using the Personalizer local inference SDK for low-latency, offline/edge scenarios, including setup, integration patterns, and best practices for calling the model locally. |
+| Configuration | L45-L51 | Configuring Personalizer’s learning behavior: policies, hyperparameters, exploration, apprentice mode, explainability, model export, and learning loop settings. |
+| Integrations & Coding Patterns | L52-L55 | Using the Personalizer local inference SDK for low-latency, offline/edge scenarios, including setup, integration patterns, and best practices for calling the model locally. |
 
 ### Troubleshooting
 | Topic | URL |
 |-------|-----|
-| Diagnose and resolve common Azure Personalizer issues | https://learn.microsoft.com/en-us/azure/ai-services/personalizer/frequently-asked-questions |
+| Troubleshoot common issues in Azure Personalizer | https://learn.microsoft.com/en-us/azure/ai-services/personalizer/frequently-asked-questions |
 
 ### Decision Making
 | Topic | URL |
@@ -47,7 +47,6 @@ This skill requires **network access** to fetch documentation content:
 |-------|-----|
 | Enable and use inference explainability in Personalizer | https://learn.microsoft.com/en-us/azure/ai-services/personalizer/how-to-inference-explainability |
 | Configure apprentice mode learning behavior in Personalizer | https://learn.microsoft.com/en-us/azure/ai-services/personalizer/how-to-learning-behavior |
-| Export and manage Personalizer model and learning settings | https://learn.microsoft.com/en-us/azure/ai-services/personalizer/how-to-manage-model |
 | Configure Azure Personalizer learning loop settings | https://learn.microsoft.com/en-us/azure/ai-services/personalizer/how-to-settings |
 
 ### Integrations & Coding Patterns

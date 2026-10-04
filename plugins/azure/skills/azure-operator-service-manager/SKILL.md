@@ -1,6 +1,6 @@
 ---
 name: azure-operator-service-manager
-description: Expert knowledge for Azure Operator Service Manager development including troubleshooting, best practices, security, configuration, and integrations & coding patterns. Use when onboarding CNFs/VNFs, designing config groups, managing ACR artifacts, securing with Private Link/RBAC, or debugging Helm-based deployments, and other Azure Operator Service Manager related development tasks. Not for Azure Operator Insights (use azure-operator-insights), Azure Operator Nexus (use azure-operator-nexus), Azure Network Function Manager (use azure-network-function-manager), Azure Resource Manager (use azure-resource-manager).
+description: Expert knowledge for Azure Operator Service Manager development including troubleshooting, best practices, security, configuration, and integrations & coding patterns. Use when onboarding CNFs/VNFs, designing config groups, managing ACR artifacts, using ARM/CLI, or securing with Private Link, and other Azure Operator Service Manager related development tasks. Not for Azure Operator Nexus (use azure-operator-nexus), Azure Operator Insights (use azure-operator-insights), Azure Network Function Manager (use azure-network-function-manager), Azure Networking (use azure-networking).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -21,9 +21,9 @@ This skill requires **network access** to fetch documentation content:
 | Category | Lines | Description |
 |----------|-------|-------------|
 | Troubleshooting | L29-L34 | Diagnosing and fixing AOSM onboarding issues with the Azure CLI extension and troubleshooting Helm chart installation failures in AOSM CNF deployments. |
-| Best Practices | L35-L43 | Best practices for AOSM onboarding, config group design, Helm packaging, artifact cleanup, and controlling CNF upgrade behavior and failure handling. |
+| Best Practices | L35-L43 | Best practices for AOSM onboarding, config group design, Helm charts, artifact cleanup, and controlling CNF upgrade failure behavior. |
 | Security | L44-L51 | Securing AOSM with Private Link, custom RBAC/roles, and User Assigned Managed Identities for controlled, least-privilege access and secure SNS/service operator deployments. |
-| Configuration | L52-L61 | Configuring AOSM runtime behavior: cluster registry for edge resiliency, pausing/resuming deployments, Helm cleanup/test settings, NFO extension cluster commands, and geo-replicated artifact stores. |
+| Configuration | L52-L61 | Configuring AOSM deployment behavior: cluster registry for edge resiliency, pausing/resuming site services, Helm cleanup/tests, NFO extension settings, and artifact store geo-replication. |
 | Integrations & Coding Patterns | L62-L71 | Using CLI/ARM/Helm with AOSM to onboard CNFs/VNFs, manage images and artifacts (ACR/storage-backed stores), and add ARM resources to network service designs |
 
 ### Troubleshooting
@@ -55,7 +55,7 @@ This skill requires **network access** to fetch documentation content:
 | Set up AOSM cluster registry for edge resiliency | https://learn.microsoft.com/en-us/azure/operator-service-manager/get-started-with-cluster-registry |
 | Interrupt and resume AOSM site network service deployments | https://learn.microsoft.com/en-us/azure/operator-service-manager/how-to-cancel-service-deployments |
 | Override Helm failure cleanup behavior in AOSM deployments | https://learn.microsoft.com/en-us/azure/operator-service-manager/how-to-use-helm-option-parameters |
-| Use AOSM NFO extension commands to manage clusters | https://learn.microsoft.com/en-us/azure/operator-service-manager/manage-network-function-operator |
+| Use CLI commands to configure NFO cluster extension | https://learn.microsoft.com/en-us/azure/operator-service-manager/manage-network-function-operator |
 | Configure geo-replication for AOSM artifact stores | https://learn.microsoft.com/en-us/azure/operator-service-manager/publisher-artifact-store-resiliency |
 | Configure Helm test integration for AOSM upgrades | https://learn.microsoft.com/en-us/azure/operator-service-manager/safe-upgrades-helm-test |
 

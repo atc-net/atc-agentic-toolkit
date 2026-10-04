@@ -1,6 +1,6 @@
 ---
 name: azure-iot-central
-description: Expert knowledge for Azure IoT Central development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when designing device templates, data export, IoT Edge gateways, REST/CLI automation, or IoT Central–to–IoT Hub migrations, and other Azure IoT Central related development tasks. Not for Azure IoT Hub (use azure-iot-hub), Azure IoT Edge (use azure-iot-edge), Azure IoT Operations (use azure-iot-operations), Azure Digital Twins (use azure-digital-twins).
+description: Expert knowledge for Azure IoT Central development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when designing device templates, data exports, IoT Edge gateways, REST/CLI automation, or IoT Central migrations, and other Azure IoT Central related development tasks. Not for Azure IoT Hub (use azure-iot-hub), Azure IoT (use azure-iot), Azure IoT Edge (use azure-iot-edge), Azure IoT Operations (use azure-iot-operations).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -22,13 +22,13 @@ This skill requires **network access** to fetch documentation content:
 |----------|-------|-------------|
 | Troubleshooting | L33-L39 | Diagnosing and fixing IoT Central issues: common errors, device connectivity/data export problems, and using audit logs to investigate configuration or state changes. |
 | Best Practices | L40-L44 | Guidance on designing and implementing IoT devices for IoT Central, including connectivity, reliability, security, telemetry modeling, and lifecycle best practices. |
-| Decision Making | L45-L49 | Guidance for planning and executing migration of devices and workloads from Azure IoT Central to Azure IoT Hub, including architecture, data, and operational considerations. |
-| Architecture & Design Patterns | L50-L56 | Solution-level IoT Central architecture, using IoT Edge as a gateway, and designing data transformation flows from devices to downstream apps and storage. |
-| Limits & Quotas | L57-L62 | IoT Central limits (devices, throughput, API calls), quotas, and supported client environments, including browser support and network/connectivity requirements. |
-| Security | L63-L78 | Securing IoT Central apps, devices, and APIs: device auth (SAS/X.509), private endpoints/VNet export, orgs/roles, multi-tenant access, and admin lifecycle/security policies. |
-| Configuration | L79-L99 | Configuring IoT Central apps: device templates, connectivity, rules, branding, data export (Blob, ADX, Event Hubs, Service Bus, webhooks), and managing via portal, CLI, and REST APIs |
-| Integrations & Coding Patterns | L100-L115 | Using REST/CLI/Power Automate/Logic Apps to integrate IoT Central with other services, manage and query devices, handle properties/commands, connect Edge/simulated devices, and export data to Power BI |
-| Deployment | L116-L123 | Guides for deploying and integrating IoT Central solutions: device bridge setup, CI/CD with Azure Pipelines, and managing IoT Edge deployments and jobs via UI and REST APIs. |
+| Decision Making | L45-L50 | Planning and executing migrations from Azure IoT Central to Azure-native IoT solutions (IoT Hub, Fabric), including architecture choices, mapping resources, and migration steps. |
+| Architecture & Design Patterns | L51-L57 | Solution-level IoT Central architecture, using IoT Edge as a gateway, and designing data transformation flows from devices to downstream apps and storage. |
+| Limits & Quotas | L58-L63 | IoT Central limits (devices, throughput, API calls), quotas, and supported client environments, including browser support and network/connectivity requirements. |
+| Security | L64-L79 | Securing IoT Central apps, devices, and APIs: device auth (SAS/X.509), private endpoints/VNet export, orgs/roles, multi-tenant access, and admin lifecycle/security policies. |
+| Configuration | L80-L101 | Configuring IoT Central apps: device templates, branding, connectivity, telemetry mapping, data transforms, exports (ADX/Blob/Event Hubs/Service Bus), file uploads, REST/CLI management, and migration. |
+| Integrations & Coding Patterns | L102-L117 | Using REST/CLI/Power Automate/Logic Apps to integrate IoT Central with other services, manage and query devices, handle properties/commands, connect Edge/simulated devices, and export data to Power BI |
+| Deployment | L118-L125 | Guides for deploying and integrating IoT Central solutions: device bridge setup, CI/CD with Azure Pipelines, and managing IoT Edge deployments and jobs via UI and REST APIs. |
 
 ### Troubleshooting
 | Topic | URL |
@@ -45,7 +45,8 @@ This skill requires **network access** to fetch documentation content:
 ### Decision Making
 | Topic | URL |
 |-------|-----|
-| Migrate IoT Central devices to Azure IoT Hub | https://learn.microsoft.com/en-us/azure/iot-central/core/howto-migrate-to-iot-hub |
+| Plan migration from IoT Central to Azure-native IoT | https://learn.microsoft.com/en-us/azure/iot-central/core/howto-migrate-to-azure-native-iot |
+| Plan migration from Azure IoT Central to IoT Hub and Fabric | https://learn.microsoft.com/en-us/azure/iot-central/core/iot-central-evolution |
 
 ### Architecture & Design Patterns
 | Topic | URL |
@@ -93,6 +94,7 @@ This skill requires **network access** to fetch documentation content:
 | Manage IoT Central device templates via REST API | https://learn.microsoft.com/en-us/azure/iot-central/core/howto-manage-device-templates-with-rest-api |
 | Manage IoT Central applications using control plane REST API | https://learn.microsoft.com/en-us/azure/iot-central/core/howto-manage-iot-central-with-rest-api |
 | Map and transform telemetry on ingress to IoT Central | https://learn.microsoft.com/en-us/azure/iot-central/core/howto-map-data |
+| Reconfigure devices when migrating to Azure IoT Hub | https://learn.microsoft.com/en-us/azure/iot-central/core/howto-migrate-to-iot-hub |
 | Create device templates and define capabilities in IoT Central | https://learn.microsoft.com/en-us/azure/iot-central/core/howto-set-up-template |
 | Transform device data inside IoT Central before export | https://learn.microsoft.com/en-us/azure/iot-central/core/howto-transform-data-internally |
 | Implement device connectivity primitives for IoT Central | https://learn.microsoft.com/en-us/azure/iot-central/core/overview-iot-central-developer |

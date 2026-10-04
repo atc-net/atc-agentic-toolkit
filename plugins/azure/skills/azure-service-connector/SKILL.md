@@ -1,6 +1,6 @@
 ---
 name: azure-service-connector
-description: Expert knowledge for Azure Service Connector development including troubleshooting, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when wiring Azure compute to databases, messaging, storage, AI, or third‑party services via Service Connector, and other Azure Service Connector related development tasks. Not for Azure API Management (use azure-api-management), Azure App Service (use azure-app-service), Azure Functions (use azure-functions), Azure Logic Apps (use azure-logic-apps).
+description: Expert knowledge for Azure Service Connector development including troubleshooting, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when wiring Azure compute to Redis, databases, storage, messaging, AI services, or third‑party endpoints, and other Azure Service Connector related development tasks. Not for Azure API Management (use azure-api-management), Azure Connector Namespace (use azure-connector-namespace), Azure Logic Apps (use azure-logic-apps), Azure Service Bus (use azure-service-bus).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -20,11 +20,11 @@ This skill requires **network access** to fetch documentation content:
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L30-L36 | Diagnosing and resolving common Service Connector errors, connection failures (incl. AKS scenarios), error codes, and configuration issues between Azure compute and backing services. |
+| Troubleshooting | L30-L36 | Diagnosing and resolving common Service Connector errors, connection failures, and AKS-specific integration issues, including error codes, logs, and step-by-step troubleshooting guidance. |
 | Limits & Quotas | L37-L41 | Known limitations of Azure Service Connector, unsupported scenarios, and suggested workarounds or alternatives for common connection and configuration issues. |
 | Security | L42-L47 | Managing Service Connector security: required permissions, Microsoft Entra role assignments, and configuring auth methods (managed identity, service principal, key-based). |
-| Configuration | L48-L55 | How to define and retrieve Service Connector connection settings (IaC and runtime), configure auth and environment variables, and supply correct CLI parameters for connections |
-| Integrations & Coding Patterns | L56-L88 | How to connect Azure compute to databases, messaging, storage, AI, and third‑party services using Service Connector, including setup patterns, auth options, and integration examples. |
+| Configuration | L48-L56 | Configuring Service Connector connections via IaC/CLI, setting auth and environment variables, and specific setup for Azure Cache for Redis and retrieving connection configs. |
+| Integrations & Coding Patterns | L57-L88 | How to connect Azure compute to databases, messaging, storage, AI, and third‑party services using Service Connector, including setup patterns, auth options, and integration examples. |
 | Deployment | L89-L92 | Info on where Service Connector is regionally supported per compute service and how to create connections using infrastructure-as-code tools. |
 
 ### Troubleshooting
@@ -50,6 +50,7 @@ This skill requires **network access** to fetch documentation content:
 |-------|-----|
 | Define Azure Service Connector IaC connection settings | https://learn.microsoft.com/en-us/azure/service-connector/how-to-build-connections-with-iac-tools |
 | Retrieve and use Service Connector connection configurations | https://learn.microsoft.com/en-us/azure/service-connector/how-to-get-configurations |
+| Configure Service Connector for Azure Cache for Redis | https://learn.microsoft.com/en-us/azure/service-connector/how-to-integrate-redis-cache |
 | Configure authentication options and env vars in Service Connector | https://learn.microsoft.com/en-us/azure/service-connector/how-to-manage-authentication |
 | Provide correct CLI parameters to Azure Service Connector | https://learn.microsoft.com/en-us/azure/service-connector/how-to-provide-correct-parameters |
 
@@ -73,7 +74,6 @@ This skill requires **network access** to fetch documentation content:
 | Integrate Neon Serverless Postgres with Service Connector | https://learn.microsoft.com/en-us/azure/service-connector/how-to-integrate-neon-postgres |
 | Integrate Azure OpenAI in Foundry Models via Service Connector | https://learn.microsoft.com/en-us/azure/service-connector/how-to-integrate-openai |
 | Connect Azure Database for PostgreSQL via Service Connector | https://learn.microsoft.com/en-us/azure/service-connector/how-to-integrate-postgres |
-| Integrate Azure Cache for Redis using Service Connector | https://learn.microsoft.com/en-us/azure/service-connector/how-to-integrate-redis-cache |
 | Connect Azure Service Bus using Service Connector | https://learn.microsoft.com/en-us/azure/service-connector/how-to-integrate-service-bus |
 | Integrate Azure SignalR Service using Service Connector | https://learn.microsoft.com/en-us/azure/service-connector/how-to-integrate-signalr |
 | Connect Azure SQL Database via Service Connector | https://learn.microsoft.com/en-us/azure/service-connector/how-to-integrate-sql-database |

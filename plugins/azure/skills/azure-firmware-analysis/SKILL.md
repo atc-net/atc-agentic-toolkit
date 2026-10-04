@@ -1,6 +1,6 @@
 ---
 name: azure-firmware-analysis
-description: Expert knowledge for Azure Firmware Analysis development including best practices, security, integrations & coding patterns, and deployment. Use when configuring RBAC access, deploying workspaces via ARM/Bicep/Terraform, or automating firmware uploads via CLI/PowerShell/Python, and other Azure Firmware Analysis related development tasks. Not for Azure Defender For Iot (use azure-defender-for-iot), Azure IoT Edge (use azure-iot-edge), Azure IoT Hub (use azure-iot-hub), Azure Confidential Computing (use azure-confidential-computing).
+description: Expert knowledge for Azure Firmware Analysis development including best practices, security, integrations & coding patterns, and deployment. Use when configuring RBAC/service principals, uploading firmware via CLI/PowerShell/Python, mapping results to Device Registry, reading SBOM paths, or deploying workspaces with ARM/Bicep/Terraform, and other Azure Firmware Analysis related development tasks.
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -20,16 +20,16 @@ This skill requires **network access** to fetch documentation content:
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Best Practices | L28-L34 | Guidance on running Azure firmware analysis, reading SBOM extractor paths, and interpreting/prioritizing detected firmware vulnerabilities and weaknesses. |
+| Best Practices | L28-L34 | Guidance on reading firmware SBOM paths, understanding unsafe function call alerts, and interpreting/prioritizing firmware weakness findings for security analysis. |
 | Security | L35-L40 | Managing secure access to Azure Firmware Analysis using service principals and configuring role-based access control (RBAC) permissions for users and apps |
-| Integrations & Coding Patterns | L41-L47 | How to programmatically upload firmware for analysis in Azure using CLI, PowerShell, or Python, including auth, commands/scripts, and basic automation patterns. |
-| Deployment | L48-L53 | How to provision and deploy an Azure Firmware Analysis workspace using infrastructure-as-code tools: ARM templates, Bicep, and Terraform configuration and setup. |
+| Integrations & Coding Patterns | L41-L48 | CLI, PowerShell, and Python examples for uploading firmware to Azure Firmware Analysis and mapping scan results to Azure Device Registry devices and assets. |
+| Deployment | L49-L54 | How to provision and deploy an Azure Firmware Analysis workspace using infrastructure-as-code tools: ARM templates, Bicep, and Terraform configuration and setup. |
 
 ### Best Practices
 | Topic | URL |
 |-------|-----|
 | Interpret SBOM extractor paths in firmware analysis | https://learn.microsoft.com/en-us/azure/firmware-analysis/interpreting-extractor-paths |
-| Analyze firmware images with Azure firmware analysis | https://learn.microsoft.com/en-us/azure/firmware-analysis/tutorial-analyze-firmware |
+| Interpret unsafe function call findings in firmware analysis | https://learn.microsoft.com/en-us/azure/firmware-analysis/understand-unsafe-function-calls |
 | Interpret and prioritize firmware weaknesses data | https://learn.microsoft.com/en-us/azure/firmware-analysis/understand-weaknesses-data |
 
 ### Security
@@ -41,7 +41,8 @@ This skill requires **network access** to fetch documentation content:
 ### Integrations & Coding Patterns
 | Topic | URL |
 |-------|-----|
-| Upload firmware to Azure analysis using CLI | https://learn.microsoft.com/en-us/azure/firmware-analysis/quickstart-upload-firmware-using-azure-command-line-interface |
+| Map firmware analysis results to Azure Device Registry assets | https://learn.microsoft.com/en-us/azure/firmware-analysis/firmware-analysis-integration-with-azure-device-registry |
+| Upload firmware to Azure firmware analysis via CLI | https://learn.microsoft.com/en-us/azure/firmware-analysis/quickstart-upload-firmware-using-azure-command-line-interface |
 | Upload firmware to Azure analysis with PowerShell | https://learn.microsoft.com/en-us/azure/firmware-analysis/quickstart-upload-firmware-using-powershell |
 | Upload firmware to Azure analysis using Python | https://learn.microsoft.com/en-us/azure/firmware-analysis/quickstart-upload-firmware-using-python |
 

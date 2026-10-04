@@ -1,6 +1,6 @@
 ---
 name: azure-queue-storage
-description: Expert knowledge for Azure Queue Storage development including best practices, limits & quotas, security, configuration, and integrations & coding patterns. Use when using queue client SDKs, Entra ID auth, client-side encryption, monitoring metrics/logs, or scaling queues, and other Azure Queue Storage related development tasks. Not for Azure Blob Storage (use azure-blob-storage), Azure Table Storage (use azure-table-storage), Azure Service Bus (use azure-service-bus), Azure Event Hubs (use azure-event-hubs).
+description: Expert knowledge for Azure Queue Storage development including best practices, limits & quotas, security, configuration, and integrations & coding patterns. Use when configuring queue auth/encryption, monitoring metrics/logs, handling limits, or coding with Azure Queue SDKs, and other Azure Queue Storage related development tasks. Not for Azure Service Bus (use azure-service-bus), Azure Event Hubs (use azure-event-hubs), Azure Table Storage (use azure-table-storage).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -22,9 +22,9 @@ This skill requires **network access** to fetch documentation content:
 |----------|-------|-------------|
 | Best Practices | L29-L35 | Monitoring, securing, and tuning Azure Queue Storage: metrics/logging, alerts, encryption, access control, and performance/scalability patterns and checklists. |
 | Limits & Quotas | L36-L41 | Scalability and size limits for Azure Queue Storage, including max queues/messages, throughput, message size, and total storage constraints. |
-| Security | L42-L55 | Using Entra ID/RBAC/ABAC for queue data access, configuring auth in CLI/Portal/PowerShell, client-side encryption, and migrating Queue apps to passwordless authentication |
-| Configuration | L56-L61 | Configuring and interpreting monitoring for Azure Queue Storage, including metrics, logs, diagnostic settings, and detailed reference for all queue monitoring data fields. |
-| Integrations & Coding Patterns | L62-L70 | Client library how-tos for using Azure Queue Storage with .NET, Java, JavaScript, Python, and PowerShell, including setup, auth, CRUD operations, and common coding patterns. |
+| Security | L42-L56 | Securing Queue Storage: Entra ID/RBAC/ABAC auth, portal/CLI/PowerShell access control, client-side encryption, passwordless migration, and security best practices. |
+| Configuration | L57-L62 | Setting up metrics, logs, and alerts for Azure Queue Storage, and understanding/using the collected monitoring data to troubleshoot performance and reliability issues. |
+| Integrations & Coding Patterns | L63-L71 | Client library how-tos for using Azure Queue Storage with .NET, Java, JavaScript, Python, and PowerShell, including setup, auth, CRUD operations, and common coding patterns. |
 
 ### Best Practices
 | Topic | URL |
@@ -52,12 +52,13 @@ This skill requires **network access** to fetch documentation content:
 | Use ABAC role assignment conditions for queues | https://learn.microsoft.com/en-us/azure/storage/queues/queues-auth-abac |
 | Actions and attributes for Queue Storage ABAC | https://learn.microsoft.com/en-us/azure/storage/queues/queues-auth-abac-attributes |
 | Example ABAC role conditions for Queue Storage | https://learn.microsoft.com/en-us/azure/storage/queues/queues-auth-abac-examples |
+| Apply security best practices to Azure Queue Storage | https://learn.microsoft.com/en-us/azure/storage/queues/secure-queues |
 
 ### Configuration
 | Topic | URL |
 |-------|-----|
 | Configure monitoring for Azure Queue Storage | https://learn.microsoft.com/en-us/azure/storage/queues/monitor-queue-storage |
-| Reference for Queue Storage monitoring data | https://learn.microsoft.com/en-us/azure/storage/queues/monitor-queue-storage-reference |
+| Configure and interpret Azure Queue Storage monitoring data | https://learn.microsoft.com/en-us/azure/storage/queues/monitor-queue-storage-reference |
 
 ### Integrations & Coding Patterns
 | Topic | URL |

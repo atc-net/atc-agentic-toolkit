@@ -1,12 +1,12 @@
 ---
 name: azure-cloud-services
-description: Expert knowledge for Azure Cloud Services development including troubleshooting, best practices, decision making, limits & quotas, security, configuration, and integrations & coding patterns. Use when managing Cloud Services (extended support) OS upgrades, Key Vault certs, .csdef/.cscfg, autoscale rules, or PowerShell automation, and other Azure Cloud Services related development tasks. Not for Azure Networking (use azure-networking), Azure Virtual Machines (use azure-virtual-machines), Azure Resource Manager (use azure-resource-manager), Azure Portal (use azure-portal).
+description: Expert knowledge for Azure Cloud Services development including troubleshooting, best practices, decision making, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when managing Cloud Services guest OS versions, Key Vault certs, .csdef/.cscfg configs, autoscale, or PowerShell automation, and other Azure Cloud Services related development tasks. Not for Azure App Service (use azure-app-service), Azure Virtual Machines (use azure-virtual-machines), Azure Kubernetes Service (AKS) (use azure-kubernetes-service), Azure Functions (use azure-functions).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
 # Azure Cloud Services Skill
 
-This skill provides expert guidance for Azure Cloud Services. Covers troubleshooting, best practices, decision making, limits & quotas, security, configuration, and integrations & coding patterns. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure Cloud Services. Covers troubleshooting, best practices, decision making, limits & quotas, security, configuration, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
@@ -20,13 +20,14 @@ This skill requires **network access** to fetch documentation content:
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L31-L35 | Diagnosing and fixing common migration errors when moving classic Cloud Services to Cloud Services (extended support), including deployment, configuration, and compatibility issues. |
-| Best Practices | L36-L40 | Guidance on designing and configuring autoscale rules for Cloud Services, including metrics, thresholds, and patterns to optimize performance, reliability, and cost. |
-| Decision Making | L41-L49 | Planning Cloud Services (extended support) upgrades and migrations: OS upgrade paths, classic-to-extended migration steps/requirements, VNet migration, and comparison with VM Scale Sets. |
-| Limits & Quotas | L50-L56 | VM instance size limits/capacities and timelines, impacts, and constraints related to Guest OS family retirements for Azure Cloud Services. |
+| Troubleshooting | L32-L36 | Diagnosing and fixing common migration errors when moving classic Cloud Services to Cloud Services (extended support), including deployment, configuration, and compatibility issues. |
+| Best Practices | L37-L41 | Guidance on designing and configuring autoscale rules for Cloud Services, including metrics, thresholds, and patterns to optimize performance, reliability, and cost. |
+| Decision Making | L42-L49 | Guidance on planning Cloud Services guest OS upgrades, comparing Cloud Services vs VM Scale Sets, and migrating classic/non-VNet Cloud Services to extended support and VNets. |
+| Limits & Quotas | L50-L56 | Guest OS versions, retirement timelines, upgrade planning, and VM size/capacity options for Azure Cloud Services deployments |
 | Security | L57-L62 | Using Key Vault for certificates in Cloud Services and understanding Azure Guest OS security updates, support lifecycle, and retirement policies |
-| Configuration | L63-L81 | Configuring Cloud Services roles and deployments: .csdef/.cscfg schemas, network/load balancer settings, diagnostics, RDP, Key Vault, extensions, alerts, and scaling/SKU overrides. |
-| Integrations & Coding Patterns | L82-L87 | Automating Azure Cloud Services (extended support) with PowerShell: creating deployments, retrieving service details, and resetting or redeploying cloud service instances. |
+| Configuration | L63-L81 | Configuring Cloud Services roles and deployments: .csdef/.cscfg schemas, networking, load balancers, diagnostics, RDP, Key Vault, extensions, alerts, and SKU/instance overrides |
+| Integrations & Coding Patterns | L82-L88 | Automating Azure Cloud Services (extended support) with PowerShell: creating deployments, retrieving service details, and resetting or redeploying cloud service instances. |
+| Deployment | L89-L92 | Planning and managing Guest OS upgrades for Azure Cloud Services, including supported OS families, upgrade paths, scheduling, and minimizing downtime. |
 
 ### Troubleshooting
 | Topic | URL |
@@ -41,7 +42,6 @@ This skill requires **network access** to fetch documentation content:
 ### Decision Making
 | Topic | URL |
 |-------|-----|
-| Plan Azure Cloud Services Guest OS upgrade path | https://learn.microsoft.com/en-us/azure/cloud-services-extended-support/cloud-services-guestos-update-matrix |
 | Compare Cloud Services and Virtual Machine Scale Sets features | https://learn.microsoft.com/en-us/azure/cloud-services-extended-support/feature-support-analysis |
 | Plan migration from Cloud Services classic to extended support | https://learn.microsoft.com/en-us/azure/cloud-services-extended-support/in-place-migration-overview |
 | Understand technical requirements for Cloud Services migration | https://learn.microsoft.com/en-us/azure/cloud-services-extended-support/in-place-migration-technical-details |
@@ -68,7 +68,7 @@ This skill requires **network access** to fetch documentation content:
 | Enable Key Vault VM extension for Cloud Services roles | https://learn.microsoft.com/en-us/azure/cloud-services-extended-support/enable-key-vault-virtual-machine |
 | Configure Remote Desktop extension for Cloud Services | https://learn.microsoft.com/en-us/azure/cloud-services-extended-support/enable-rdp |
 | Configure Azure diagnostics extension for Cloud Services | https://learn.microsoft.com/en-us/azure/cloud-services-extended-support/enable-wad |
-| Configure and manage extensions for Cloud Services roles | https://learn.microsoft.com/en-us/azure/cloud-services-extended-support/extensions |
+| Configure extensions for Azure Cloud Services (extended support) | https://learn.microsoft.com/en-us/azure/cloud-services-extended-support/extensions |
 | Override Cloud Services SKU and instance count via allowModelOverride | https://learn.microsoft.com/en-us/azure/cloud-services-extended-support/override-sku |
 | Reference schema for Cloud Services configuration (.cscfg) | https://learn.microsoft.com/en-us/azure/cloud-services-extended-support/schema-cscfg-file |
 | Configure NetworkConfiguration for Cloud Services deployments | https://learn.microsoft.com/en-us/azure/cloud-services-extended-support/schema-cscfg-networkconfiguration |
@@ -85,3 +85,8 @@ This skill requires **network access** to fetch documentation content:
 | Use PowerShell to create Cloud Services (extended support) | https://learn.microsoft.com/en-us/azure/cloud-services-extended-support/sample-create-cloud-service |
 | Use PowerShell to retrieve Cloud Service details | https://learn.microsoft.com/en-us/azure/cloud-services-extended-support/sample-get-cloud-service |
 | Use PowerShell to reset Cloud Services deployments | https://learn.microsoft.com/en-us/azure/cloud-services-extended-support/sample-reset-cloud-service |
+
+### Deployment
+| Topic | URL |
+|-------|-----|
+| Plan Azure Cloud Services Guest OS upgrade paths | https://learn.microsoft.com/en-us/azure/cloud-services-extended-support/cloud-services-guestos-update-matrix |

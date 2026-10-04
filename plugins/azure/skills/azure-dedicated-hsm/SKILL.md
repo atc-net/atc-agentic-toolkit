@@ -1,12 +1,12 @@
 ---
 name: azure-dedicated-hsm
-description: Expert knowledge for Azure Dedicated HSM development including troubleshooting, decision making, architecture & design patterns, and security. Use when deploying Dedicated HSMs, configuring VNets/ExpressRoute, planning HA/failover, or migrating to Managed/Cloud HSM, and other Azure Dedicated HSM related development tasks. Not for Azure Cloud Hsm (use azure-cloud-hsm), Azure Key Vault (use azure-key-vault), Azure Payment Hsm (use azure-payment-hsm).
+description: Expert knowledge for Azure Dedicated HSM development including troubleshooting, decision making, architecture & design patterns, security, and deployment. Use when sizing HSM clusters, configuring ExpressRoute IP SKUs, securing VNets, or planning HSM retirement/migration, and other Azure Dedicated HSM related development tasks. Not for Azure Cloud Hsm (use azure-cloud-hsm), Azure Key Vault (use azure-key-vault), Azure Payment Hsm (use azure-payment-hsm).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
 # Azure Dedicated HSM Skill
 
-This skill provides expert guidance for Azure Dedicated HSM. Covers troubleshooting, decision making, architecture & design patterns, and security. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure Dedicated HSM. Covers troubleshooting, decision making, architecture & design patterns, security, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
@@ -20,10 +20,11 @@ This skill requires **network access** to fetch documentation content:
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L28-L33 | Diagnosing and fixing Azure Dedicated HSM deployment, configuration, usage, and support issues, including common errors and steps to resolve failed or misconfigured HSM instances. |
-| Decision Making | L34-L40 | Guidance on Dedicated HSM retirement, choosing successors (Managed/Cloud HSM), and planning/migrating ExpressRoute IPs and HSM workloads to new SKUs or services. |
+| Troubleshooting | L29-L34 | Diagnosing and fixing Azure Dedicated HSM deployment, configuration, usage, and support issues, including common errors and steps to resolve failed or misconfigured HSM instances. |
+| Decision Making | L35-L40 | Guidance on Dedicated HSM retirement, choosing successors (Managed/Cloud HSM), and planning/migrating ExpressRoute IPs and HSM workloads to new SKUs or services. |
 | Architecture & Design Patterns | L41-L47 | Guidance on designing Dedicated HSM deployments: sizing and topology, high availability and failover patterns, and secure networking (VNet, subnets, routing, and connectivity). |
-| Security | L48-L52 | Physical security controls for Dedicated HSM devices and best-practice guidance for securing, configuring, and operating Azure Dedicated HSM in production environments. |
+| Security | L48-L53 | Physical security controls for Dedicated HSM devices and recommended security configurations, policies, and operational best practices for protecting keys and access. |
+| Deployment | L54-L57 | Guidance for migrating the ExpressRoute gateway IP SKU used with Azure Dedicated HSM, including steps, prerequisites, and configuration considerations. |
 
 ### Troubleshooting
 | Topic | URL |
@@ -34,7 +35,6 @@ This skill requires **network access** to fetch documentation content:
 ### Decision Making
 | Topic | URL |
 |-------|-----|
-| Migrate Dedicated HSM ExpressRoute Basic IP to Standard SKU | https://learn.microsoft.com/en-us/azure/dedicated-hsm/migration-basic-standard |
 | Plan migration from Azure Dedicated HSM to Managed or Cloud HSM | https://learn.microsoft.com/en-us/azure/dedicated-hsm/migration-guide |
 | Understand Azure Dedicated HSM retirement and successors | https://learn.microsoft.com/en-us/azure/dedicated-hsm/overview |
 
@@ -49,4 +49,9 @@ This skill requires **network access** to fetch documentation content:
 | Topic | URL |
 |-------|-----|
 | Understand physical security of Azure Dedicated HSM devices | https://learn.microsoft.com/en-us/azure/dedicated-hsm/physical-security |
-| Apply security best practices to Azure Dedicated HSM | https://learn.microsoft.com/en-us/azure/dedicated-hsm/secure-dedicated-hsm |
+| Apply security best practices for Azure Dedicated HSM | https://learn.microsoft.com/en-us/azure/dedicated-hsm/secure-dedicated-hsm |
+
+### Deployment
+| Topic | URL |
+|-------|-----|
+| Migrate Dedicated HSM ExpressRoute gateway IP SKU | https://learn.microsoft.com/en-us/azure/dedicated-hsm/migration-basic-standard |

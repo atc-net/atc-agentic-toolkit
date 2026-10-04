@@ -1,6 +1,6 @@
 ---
 name: azure-analysis-services
-description: Expert knowledge for Azure Analysis Services development including troubleshooting. Use when testing server endpoints, checking firewalls/VNETs, validating DNS, or diagnosing gateway/SSL issues, and other Azure Analysis Services related development tasks. Not for Azure Synapse Analytics (use azure-synapse-analytics), Azure SQL Database (use azure-sql-database), Azure SQL Managed Instance (use azure-sql-managed-instance), SQL Server on Azure Virtual Machines (use azure-sql-virtual-machines).
+description: Expert knowledge for Azure Analysis Services development including troubleshooting. Use when resolving server connectivity, firewall/VNet, DNS, client connection, or network error issues, and other Azure Analysis Services related development tasks. Not for Azure Synapse Analytics (use azure-synapse-analytics), Azure SQL Database (use azure-sql-database), Azure SQL Managed Instance (use azure-sql-managed-instance), SQL Server on Azure Virtual Machines (use azure-sql-virtual-machines).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -20,9 +20,9 @@ This skill requires **network access** to fetch documentation content:
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L25-L28 | Diagnosing and resolving Azure Analysis Services network connectivity issues, including testing connections, common failure causes, and configuration checks. |
+| Troubleshooting | L25-L28 | Diagnosing and fixing Azure Analysis Services connectivity issues, including firewall/VNet settings, DNS, client connections, and common network-related errors. |
 
 ### Troubleshooting
 | Topic | URL |
 |-------|-----|
-| Diagnose Azure Analysis Services network connectivity issues | https://learn.microsoft.com/en-us/analysis-services/azure-analysis-services/analysis-services-network-faq?view=sql-analysis-services-2025 |
+| Troubleshoot Azure Analysis Services network connectivity | https://learn.microsoft.com/en-us/analysis-services/azure-analysis-services/analysis-services-network-faq?view=sql-analysis-services-2025 |

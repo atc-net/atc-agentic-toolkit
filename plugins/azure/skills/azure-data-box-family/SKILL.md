@@ -1,6 +1,6 @@
 ---
 name: azure-data-box-family
-description: Expert knowledge for Azure Data Box development including troubleshooting, best practices, limits & quotas, security, configuration, and integrations & coding patterns. Use when using Data Box/Heavy/Disk for bulk uploads, SMB/NFS copy, REST APIs, Key Vault CMKs, or VHD-to-managed-disk, and other Azure Data Box related development tasks. Not for Azure Import Export (use azure-import-export), Azure Stack Edge (use azure-stack-edge), Azure Blob Storage (use azure-blob-storage), Azure Files (use azure-files).
+description: Expert knowledge for Azure Data Box development including troubleshooting, best practices, limits & quotas, security, configuration, and integrations & coding patterns. Use when using Data Box/Disk/Heavy for offline data copy, SMB/NFS uploads, REST APIs, CMKs/Key Vault, or NTFS ACL preservation, and other Azure Data Box related development tasks. Not for Azure Import Export (use azure-import-export), Azure Stack Edge (use azure-stack-edge), Azure Virtual Machines (use azure-virtual-machines).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -22,7 +22,7 @@ This skill requires **network access** to fetch documentation content:
 |----------|-------|-------------|
 | Troubleshooting | L30-L46 | Diagnosing and fixing Azure Data Box and Data Box Disk issues: audit/order logs, validation and unlock errors, SMB/REST/upload copy failures, and time sync or connection problems. |
 | Best Practices | L47-L52 | Guidance on preserving NTFS ACLs, file permissions, and metadata when copying data to Azure Data Box and Data Box Disk using supported tools and settings |
-| Limits & Quotas | L53-L62 | Device capacities, disk/file size limits, and connection constraints for Azure Data Box, Data Box Disk, and Data Box Heavy, including usage rules and FAQs on quotas. |
+| Limits & Quotas | L53-L62 | Limits on capacity, files, connections, and usage for Data Box, Data Box Disk, and Data Box Heavy devices, including quotas, supported configurations, and operational constraints. |
 | Security | L63-L73 | Securing Azure Data Box: certificates, CMKs in Key Vault, Customer Lockbox, built‑in protections, and applying Azure Policy (including regulatory controls) to Data Box and Data Box Disk. |
 | Configuration | L74-L93 | Configuring and operating Data Box/Heavy/Disk: cabling, system/network requirements, local UI/portal admin, SMB/NFS/NAS copy workflows, and setting blob access tiers (Hot/Cool/Archive). |
 | Integrations & Coding Patterns | L94-L103 | Patterns and tools for integrating Data Box with apps and backup products (REST APIs, VHD to managed disks, file share to SharePoint, Commvault, OpenText, Veeam migrations). |
@@ -55,7 +55,7 @@ This skill requires **network access** to fetch documentation content:
 |-------|-----|
 | Azure Data Box Disk capacity and usage limits FAQ | https://learn.microsoft.com/en-us/azure/databox/data-box-disk-faq |
 | Review Azure Data Box Disk capacity and file limits | https://learn.microsoft.com/en-us/azure/databox/data-box-disk-limits |
-| Azure Data Box and Data Box Heavy limits and usage FAQs | https://learn.microsoft.com/en-us/azure/databox/data-box-faq |
+| Operational limits and usage details for Azure Data Box | https://learn.microsoft.com/en-us/azure/databox/data-box-faq |
 | Capacity and connection limits for Azure Data Box Heavy | https://learn.microsoft.com/en-us/azure/databox/data-box-heavy-limits |
 | Azure Data Box device and connection limits | https://learn.microsoft.com/en-us/azure/databox/data-box-limits |
 | Understand Azure Data Box device capacities and usage | https://learn.microsoft.com/en-us/azure/databox/data-box-overview |

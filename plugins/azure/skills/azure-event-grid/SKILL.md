@@ -1,6 +1,6 @@
 ---
 name: azure-event-grid
-description: Expert knowledge for Azure Event Grid development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, and integrations & coding patterns. Use when configuring Event Grid topics/namespaces, MQTT broker/auth, webhooks, filters, dead-lettering, or routing targets, and other Azure Event Grid related development tasks. Not for Azure Service Bus (use azure-service-bus), Azure Event Hubs (use azure-event-hubs), Azure Notification Hubs (use azure-notification-hubs), Azure Logic Apps (use azure-logic-apps).
+description: Expert knowledge for Azure Event Grid development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, and integrations & coding patterns. Use when configuring Event Grid/MQTT namespaces, securing endpoints, routing events, integrating Functions/Service Bus, or troubleshooting delivery, and other Azure Event Grid related development tasks. Not for Azure Event Hubs (use azure-event-hubs), Azure Service Bus (use azure-service-bus), Azure Notification Hubs (use azure-notification-hubs), Azure Web PubSub (use azure-web-pubsub).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -20,14 +20,14 @@ This skill requires **network access** to fetch documentation content:
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L32-L40 | Diagnosing and fixing Event Grid issues: MQTT broker problems, error codes, common failures, network connectivity, and event subscription validation errors. |
+| Troubleshooting | L32-L40 | Diagnosing and fixing Event Grid issues: MQTT broker problems, error codes, common failures, network connectivity, and webhook subscription validation errors. |
 | Best Practices | L41-L45 | Guidance on designing client-side failover for Event Grid, including using multiple regions, retry logic, and resilient publishing patterns for high availability. |
-| Decision Making | L46-L53 | Guidance on choosing Event Grid tiers, matching event schemas, comparing Azure vs Kubernetes deployments, and migrating from IoT Edge Event Grid to IoT Edge hub. |
-| Architecture & Design Patterns | L54-L59 | Patterns for routing events across Event Grid namespace topics and implementing MQTT-based request/response command workflows using Event Grid. |
-| Limits & Quotas | L60-L71 | Event Grid delivery/retry behavior, custom headers, event retention, and region-specific quotas/limits for topics, namespaces, and Kubernetes-based Event Grid |
-| Security | L72-L123 | Authentication, authorization, and network security for Event Grid: keys/SAS, Entra ID/JWT, RBAC, managed identities, webhooks, MQTT auth, TLS, firewalls, private endpoints, and security policies. |
-| Configuration | L124-L198 | Configuring Event Grid: topics, namespaces, subscriptions, filters, dead-lettering, monitoring/metrics, MQTT broker and routing, and detailed event schemas for many Azure and Microsoft services. |
-| Integrations & Coding Patterns | L199-L239 | Patterns for publishing, routing, and consuming Event Grid events with HTTP/webhooks, MQTT, Azure/M365/SaaS sources, and handlers like Event Hubs, Monitor, Relay, and custom endpoints. |
+| Decision Making | L46-L56 | Guidance for choosing Event Grid tiers, schemas, Kubernetes vs Azure hosting, MQTT routing, autoscale, push delivery, and migration from Event Grid on IoT Edge to IoT Edge hub. |
+| Architecture & Design Patterns | L57-L63 | Patterns for routing events between namespaces, designing MQTT topic hierarchies, and implementing MQTT command/response flows using Azure Event Grid. |
+| Limits & Quotas | L64-L75 | Event Grid delivery/retry behavior, custom headers, event retention, and region-specific quotas/limits for topics, namespaces, and Kubernetes-based Event Grid |
+| Security | L76-L128 | Securing Event Grid endpoints and MQTT: auth (keys, SAS, Entra, JWT, certs), RBAC, managed identities, webhooks, TLS, IP/firewalls, private endpoints, policies, and cross-tenant delivery. |
+| Configuration | L129-L200 | Configuring Event Grid and MQTT namespaces, domains, filtering, monitoring, autoscale, and dead-lettering, plus detailed event schemas and subscription setup for many Azure and Microsoft services. |
+| Integrations & Coding Patterns | L201-L241 | Patterns and guides for integrating Event Grid with Auth0, Graph/M365 apps, MQTT, webhooks, Functions, Service Bus, Event Hubs, and understanding event schemas and handler configuration. |
 
 ### Troubleshooting
 | Topic | URL |
@@ -36,7 +36,7 @@ This skill requires **network access** to fetch documentation content:
 | Azure Event Grid error codes and resolutions | https://learn.microsoft.com/en-us/azure/event-grid/troubleshoot-errors |
 | Troubleshoot common Azure Event Grid issues | https://learn.microsoft.com/en-us/azure/event-grid/troubleshoot-issues |
 | Diagnose Azure Event Grid network connectivity failures | https://learn.microsoft.com/en-us/azure/event-grid/troubleshoot-network-connectivity |
-| Fix Azure Event Grid subscription validation errors | https://learn.microsoft.com/en-us/azure/event-grid/troubleshoot-subscription-validation |
+| Troubleshoot Event Grid webhook subscription validation | https://learn.microsoft.com/en-us/azure/event-grid/troubleshoot-subscription-validation |
 
 ### Best Practices
 | Topic | URL |
@@ -49,6 +49,9 @@ This skill requires **network access** to fetch documentation content:
 | Select the right Azure Event Grid tier | https://learn.microsoft.com/en-us/azure/event-grid/choose-right-tier |
 | Choose compatible event schemas for Azure Event Grid subscriptions | https://learn.microsoft.com/en-us/azure/event-grid/event-schema-compatibility |
 | Compare Event Grid on Kubernetes vs Azure features | https://learn.microsoft.com/en-us/azure/event-grid/kubernetes/features |
+| Choose MQTT routing options in Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/mqtt-routing |
+| Use Autoscale for Azure Event Grid namespaces | https://learn.microsoft.com/en-us/azure/event-grid/namespace-autoscale-overview |
+| Decide on push delivery for Event Grid namespaces | https://learn.microsoft.com/en-us/azure/event-grid/namespace-push-delivery-overview |
 | Migrate from Event Grid on IoT Edge to IoT Edge hub | https://learn.microsoft.com/en-us/azure/event-grid/transition |
 
 ### Architecture & Design Patterns
@@ -56,6 +59,7 @@ This skill requires **network access** to fetch documentation content:
 |-------|-----|
 | Forward events between Event Grid namespace topics | https://learn.microsoft.com/en-us/azure/event-grid/forward-events-to-another-namespace-topic |
 | Implement MQTT request-response commands with Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/mqtt-request-response-messages |
+| Design MQTT topic spaces in Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/mqtt-topic-spaces |
 
 ### Limits & Quotas
 | Topic | URL |
@@ -89,17 +93,17 @@ This skill requires **network access** to fetch documentation content:
 | Configure cross-tenant Event Grid delivery with managed identity | https://learn.microsoft.com/en-us/azure/event-grid/cross-tenant-delivery-using-managed-identity |
 | Enforce Event Grid security controls with custom Azure Policies | https://learn.microsoft.com/en-us/azure/event-grid/custom-azure-policies-for-security-control |
 | Configure custom domains for Event Grid MQTT and HTTP | https://learn.microsoft.com/en-us/azure/event-grid/custom-domains-namespaces |
-| Deliver Event Grid events securely using managed identities | https://learn.microsoft.com/en-us/azure/event-grid/deliver-events-using-managed-identity |
+| Configure Event Grid managed identity event delivery | https://learn.microsoft.com/en-us/azure/event-grid/deliver-events-using-managed-identity |
 | Enable managed identity on Event Grid custom topics and domains | https://learn.microsoft.com/en-us/azure/event-grid/enable-identity-custom-topics-domains |
 | Enable managed identity on Event Grid partner topics | https://learn.microsoft.com/en-us/azure/event-grid/enable-identity-partner-topic |
 | Enable managed identity on Event Grid system topics | https://learn.microsoft.com/en-us/azure/event-grid/enable-identity-system-topics |
 | Validate webhook endpoints using CloudEvents schema in Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/end-point-validation-cloud-events-schema |
 | Enable and use managed identities for Event Grid namespaces | https://learn.microsoft.com/en-us/azure/event-grid/event-grid-namespace-managed-identity |
 | Retrieve and manage access keys for Event Grid resources | https://learn.microsoft.com/en-us/azure/event-grid/get-access-keys |
-| Use managed identities to deliver events from Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/managed-service-identity |
+| Enable managed identities for Azure Event Grid topics | https://learn.microsoft.com/en-us/azure/event-grid/managed-service-identity |
 | Configure MQTT client access control in Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/mqtt-access-control |
 | Authenticate MQTT clients with CA certificate chains | https://learn.microsoft.com/en-us/azure/event-grid/mqtt-certificate-chain-client-authentication |
-| Configure MQTT client authentication for Event Grid namespaces | https://learn.microsoft.com/en-us/azure/event-grid/mqtt-client-authentication |
+| Configure MQTT client authentication in Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/mqtt-client-authentication |
 | Configure MQTT client certificate authentication in Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/mqtt-client-certificate-authentication |
 | Configure OAuth 2.0 JWT auth for Event Grid MQTT | https://learn.microsoft.com/en-us/azure/event-grid/mqtt-client-custom-jwt |
 | Use Entra JWT auth and RBAC for MQTT clients | https://learn.microsoft.com/en-us/azure/event-grid/mqtt-client-microsoft-entra-token-and-rbac |
@@ -111,6 +115,7 @@ This skill requires **network access** to fetch documentation content:
 | Configure network security for Azure Event Grid namespaces | https://learn.microsoft.com/en-us/azure/event-grid/network-security-namespaces |
 | Authenticate Event Grid namespaces using OAuth JWT | https://learn.microsoft.com/en-us/azure/event-grid/oauth-json-web-token-authentication |
 | Built-in Azure Policy definitions for Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/policy-reference |
+| Authenticate and post events to Event Grid custom topics | https://learn.microsoft.com/en-us/azure/event-grid/post-to-custom-topic |
 | Secure Event Grid webhook delivery with Entra application | https://learn.microsoft.com/en-us/azure/event-grid/scripts/powershell-webhook-secure-delivery-microsoft-entra-app |
 | Secure Event Grid webhook delivery with Entra user | https://learn.microsoft.com/en-us/azure/event-grid/scripts/powershell-webhook-secure-delivery-microsoft-entra-user |
 | Secure Event Grid webhooks with Microsoft Entra ID | https://learn.microsoft.com/en-us/azure/event-grid/secure-webhook-delivery |
@@ -130,10 +135,10 @@ This skill requires **network access** to fetch documentation content:
 | Job Router events schema for Azure Communication Services | https://learn.microsoft.com/en-us/azure/event-grid/communication-services-router-events |
 | Azure Communication Services SMS events schema for Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/communication-services-telephony-sms-events |
 | Voice and video calling events schema for Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/communication-services-voice-video-events |
-| Create and manage Event Grid namespace event subscriptions | https://learn.microsoft.com/en-us/azure/event-grid/create-view-manage-event-subscriptions |
 | Create and manage Event Grid namespace topics | https://learn.microsoft.com/en-us/azure/event-grid/create-view-manage-namespace-topics |
+| Configure and manage Event Grid namespaces | https://learn.microsoft.com/en-us/azure/event-grid/create-view-manage-namespaces |
 | Configure dead-lettering for Event Grid namespace subscriptions | https://learn.microsoft.com/en-us/azure/event-grid/dead-letter-event-subscriptions-namespace-topics |
-| Enable diagnostic logs for Azure Event Grid resources | https://learn.microsoft.com/en-us/azure/event-grid/enable-diagnostic-logs-topic |
+| Configure diagnostic log settings for Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/enable-diagnostic-logs-topic |
 | Configure event filtering options in Azure Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/event-filtering |
 | AKS events schema and usage with Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/event-schema-aks |
 | AKS resources events schema for Azure Resource Notifications | https://learn.microsoft.com/en-us/azure/event-grid/event-schema-aks-resources |
@@ -145,7 +150,6 @@ This skill requires **network access** to fetch documentation content:
 | Container Registry events schema for Azure Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/event-schema-container-registry |
 | ContainerService maintenance events schema for AKS notifications | https://learn.microsoft.com/en-us/azure/event-grid/event-schema-containerservice-resources |
 | Azure Data Box events schema for Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/event-schema-data-box |
-| Azure Data Manager for Agriculture events schema | https://learn.microsoft.com/en-us/azure/event-grid/event-schema-data-manager-for-agriculture |
 | Event Grid namespace events schema for Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/event-schema-event-grid-namespace |
 | Azure Event Hubs events schema for Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/event-schema-event-hubs |
 | Health Resources events schema for Azure Resource Notifications | https://learn.microsoft.com/en-us/azure/event-grid/event-schema-health-resources |
@@ -160,13 +164,11 @@ This skill requires **network access** to fetch documentation content:
 | Azure subscription lifecycle events schema for Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/event-schema-subscriptions |
 | Determine schema type for an Event Grid topic | https://learn.microsoft.com/en-us/azure/event-grid/get-topic-schema |
 | Manage and publish events with Event Grid event domains | https://learn.microsoft.com/en-us/azure/event-grid/how-to-event-domains |
-| Configure event filters on Azure Event Grid subscriptions | https://learn.microsoft.com/en-us/azure/event-grid/how-to-filter-events |
 | Map custom event schemas to Azure Event Grid schema | https://learn.microsoft.com/en-us/azure/event-grid/input-mappings |
 | Configure batch event delivery for Event Grid on Kubernetes | https://learn.microsoft.com/en-us/azure/event-grid/kubernetes/batch-event-delivery |
 | Configure advanced event filtering in Event Grid on Kubernetes | https://learn.microsoft.com/en-us/azure/event-grid/kubernetes/filter-events |
 | Install and configure Event Grid extension on Arc-enabled Kubernetes | https://learn.microsoft.com/en-us/azure/event-grid/kubernetes/install-k8s-extension |
 | Configure Event Grid dead-lettering and retry policies | https://learn.microsoft.com/en-us/azure/event-grid/manage-event-delivery |
-| Microsoft Entra events schema via Microsoft Graph in Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/microsoft-entra-events |
 | View Event Grid metrics and configure alerts in Azure portal | https://learn.microsoft.com/en-us/azure/event-grid/monitor-event-delivery |
 | Use MQTT broker metrics and logs for monitoring | https://learn.microsoft.com/en-us/azure/event-grid/monitor-mqtt-delivery-reference |
 | Monitor data reference for Event Grid namespace push delivery | https://learn.microsoft.com/en-us/azure/event-grid/monitor-namespace-push-reference |
@@ -178,11 +180,11 @@ This skill requires **network access** to fetch documentation content:
 | Configure Azure Event Grid MQTT clients and groups | https://learn.microsoft.com/en-us/azure/event-grid/mqtt-clients |
 | Configure multiple MQTT sessions per client in Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/mqtt-establishing-multiple-sessions-per-client |
 | Use MQTT Retain with Azure Event Grid broker | https://learn.microsoft.com/en-us/azure/event-grid/mqtt-retain |
-| Configure routing of MQTT messages in Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/mqtt-routing |
 | Configure enrichments for MQTT routed messages | https://learn.microsoft.com/en-us/azure/event-grid/mqtt-routing-enrichment |
 | Understand event schema for MQTT routed messages | https://learn.microsoft.com/en-us/azure/event-grid/mqtt-routing-event-schema |
 | Configure filtering for MQTT routed Event Grid messages | https://learn.microsoft.com/en-us/azure/event-grid/mqtt-routing-filtering |
-| Configure MQTT topic spaces in Azure Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/mqtt-topic-spaces |
+| Configure Autoscale settings for Event Grid namespaces | https://learn.microsoft.com/en-us/azure/event-grid/namespace-enable-autoscale |
+| Manually configure throughput units in Event Grid namespaces | https://learn.microsoft.com/en-us/azure/event-grid/namespace-enable-manual-scale |
 | Configure event filtering for Event Grid namespaces | https://learn.microsoft.com/en-us/azure/event-grid/namespace-event-filtering |
 | Microsoft Outlook events schema in Azure Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/outlook-events |
 | Microsoft Graph API resource events in Azure Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/partner-events-graph-api |
@@ -215,7 +217,9 @@ This skill requires **network access** to fetch documentation content:
 | Use Azure Blob Storage as an Event Grid source | https://learn.microsoft.com/en-us/azure/event-grid/event-schema-blob-storage |
 | Consume Azure Key Vault events from Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/event-schema-key-vault |
 | Alert on Health Resources events using Azure Monitor | https://learn.microsoft.com/en-us/azure/event-grid/handle-health-resources-events-using-azure-monitor-alerts |
-| Handle Key Vault expiration events with Azure Monitor alerts | https://learn.microsoft.com/en-us/azure/event-grid/handle-key-vault-events-using-azure-monitor-alerts |
+| Use Azure Functions as Event Grid handlers | https://learn.microsoft.com/en-us/azure/event-grid/handler-functions |
+| Configure Azure Event Grid with Service Bus handlers | https://learn.microsoft.com/en-us/azure/event-grid/handler-service-bus |
+| Use Microsoft Entra event schemas in Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/microsoft-entra-events |
 | Route MQTT events to Microsoft Fabric via Event Hubs | https://learn.microsoft.com/en-us/azure/event-grid/mqtt-events-fabric |
 | Publish MQTT messages via HTTP using Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/mqtt-how-to-http-publish |
 | Publish MQTT messages via HTTP using Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/mqtt-http-publish |
@@ -223,8 +227,6 @@ This skill requires **network access** to fetch documentation content:
 | Configure webhook handlers for Event Grid namespace topics | https://learn.microsoft.com/en-us/azure/event-grid/namespace-handler-webhook |
 | Use supported event handlers for Event Grid namespace push | https://learn.microsoft.com/en-us/azure/event-grid/namespace-topics-event-handlers |
 | Use Microsoft OneDrive events with Azure Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/one-drive-events |
-| Publish events to Event Grid custom topics with access keys | https://learn.microsoft.com/en-us/azure/event-grid/post-to-custom-topic |
-| Push Event Grid namespace events to Event Hubs via CLI | https://learn.microsoft.com/en-us/azure/event-grid/publish-deliver-events-with-namespace-topics |
 | Configure Event Grid namespace push to Event Hubs in portal | https://learn.microsoft.com/en-us/azure/event-grid/publish-deliver-events-with-namespace-topics-portal |
 | Deliver Event Grid namespace events to webhooks via CLI | https://learn.microsoft.com/en-us/azure/event-grid/publish-deliver-events-with-namespace-topics-webhook |
 | Deliver Event Grid namespace events to webhooks using portal | https://learn.microsoft.com/en-us/azure/event-grid/publish-deliver-events-with-namespace-topics-webhook-portal |
@@ -233,7 +235,7 @@ This skill requires **network access** to fetch documentation content:
 | Use Microsoft Security Alert events with Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/security-alert-events |
 | Deliver Event Grid events to private webhooks via Azure Relay | https://learn.microsoft.com/en-us/azure/event-grid/send-events-webhooks-private-destinations |
 | Use Microsoft SharePoint events with Azure Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/share-point-events |
-| Subscribe to Microsoft Graph change events via Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/subscribe-to-graph-api-events |
+| Subscribe to Microsoft Graph events via Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/subscribe-to-graph-api-events |
 | Use HTTP subscriber operations for Event Grid namespace topics | https://learn.microsoft.com/en-us/azure/event-grid/subscriber-operations |
 | Use Microsoft Teams events with Azure Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/teams-events |
 | Use Microsoft To Do task events with Event Grid | https://learn.microsoft.com/en-us/azure/event-grid/to-do-events |
