@@ -1,0 +1,6 @@
+{
+  "name": "dataverse",
+  "version": "1.0.0",
+  "description": "Microsoft Dataverse and Power Platform skills covering connection setup, record CRUD, bulk import, queries and analytics, schema and metadata, solution lifecycle, environment administration, and security",
+  "skills": "./skills/"
+}
