@@ -2,7 +2,7 @@
 
 The Aspire CLI (`aspire`) is the primary interface for creating, running, and publishing distributed applications. It is cross-platform and installed standalone (not coupled to the .NET CLI, though `dotnet` commands also work).
 
-**Tested against:** Aspire CLI 13.5 (commands verified against the 13.5.0 CLI)
+**Tested against:** Aspire CLI 13.6 (commands verified against the 13.6.0 CLI)
 
 ---
 
@@ -38,6 +38,8 @@ nix profile add github:microsoft/aspire#aspire-cli   # Nix
 ```
 
 > **CLI bundle (13.5):** new C# AppHost templates set `AspireUseCliBundle=true`, so the AppHost resolves its own copy of the CLI on the fly via `dnx` and `dotnet run` behaves like `aspire run`. Existing projects stay opt-in. Diagnostics: `ASPIRE009` (error — bundle can't be resolved), `ASPIRE010` (warning — project opted out), `ASPIRE011` (`dnx` unavailable). Force the DNX path with `AspireCliInvocationMode=Dnx`.
+>
+> **13.6:** `AspireCliInvocationMode` has two DNX modes — `Dnx` runs `Aspire.Cli` through DNX **without** a version and honors an in-scope `.config/dotnet-tools.json` tool manifest; `DnxPinned` runs the paired `Aspire.Cli` version and ignores the manifest. `aspire update` also updates repository-local CLI references in npm and .NET tool manifests.
 
 ---
 
@@ -47,8 +49,10 @@ All commands support these options:
 
 | Option                | Description                                    |
 | --------------------- | ---------------------------------------------- |
-| `-d, --debug`         | Enable debug logging to the console            |
+| `-l, --log-level <level>` | Minimum console log level (Trace, Debug, Information, Warning, Error, Critical) |
 | `--non-interactive`   | Disable all interactive prompts and spinners   |
+| `--nologo`            | Suppress the startup banner and telemetry notice |
+| `--banner`            | Display the animated welcome banner            |
 | `--wait-for-debugger` | Wait for a debugger to attach before executing |
 | `-?, -h, --help`      | Show help and usage information                |
 | `-v, --version`       | Show version information                       |
@@ -82,8 +86,12 @@ aspire new [<template>] [options]
 #   -n, --name <name>        Project name
 #   -o, --output <dir>       Output directory
 #   -s, --source <source>    NuGet source for templates
-#   -v, --version <version>  Version of templates to use
+#   --version <version>      Version of templates to use
 #   --channel <channel>      Channel (stable, daily)
+#   --language <language>    AppHost language
+#   --suppress-agent-init    Skip AI agent environment configuration after creation
+#   --skill-locations <list> Skill locations to install (standard,claudecode,github,opencode | all | none)
+#   --skills <list>          Skills to install (CLI-provided: playwright-cli, dotnet-inspect | all | none)
 
 # Examples:
 aspire new aspire-starter
@@ -110,16 +118,22 @@ Initialize Aspire in an existing project or solution.
 aspire init [options]
 
 # Options:
-#   -s, --source <source>    NuGet source for templates
-#   -v, --version <version>  Version of templates to use
-#   --channel <channel>      Channel (stable, daily)
+#   --language <language>    AppHost language (csharp, typescript)
+#   --file-based             (13.6+) Create apphost.cs in the current directory, skipping
+#                            .NET solution discovery. Requires C#.
+#   --suppress-agent-init    Skip AI agent environment configuration
+#   --skill-locations <list> Skill locations to install (standard,claudecode,github,opencode | all | none)
+#   --skills <list>          Skills to install (CLI-provided: playwright-cli, dotnet-inspect | all | none)
 
-# Example:
+# Examples:
 cd my-existing-solution
 aspire init
+aspire init --language csharp --file-based   # file-based apphost.cs (13.6+)
 ```
 
 Adds AppHost and ServiceDefaults projects to an existing solution. Interactive prompts guide you through selecting which projects to orchestrate.
+
+> **13.6:** `aspire new` and `aspire init` preselect repository-local skills (including `aspireify`); MCP is **unselected by default**.
 
 ### `aspire run`
 
@@ -135,10 +149,13 @@ aspire run [options] [-- <additional arguments>]
 #   --detach               Run in background (equivalent to `aspire start`) (13.2+)
 #   --isolated             Randomized ports, isolated secrets (for worktrees) (13.2+)
 #   --no-build             Skip build when artifacts already up-to-date (13.2+)
+#   -lp, --launch-profile <name>  (13.6+) .NET launch profile to use when starting the AppHost
+#   --format <Json|Table>  Output format for detached results
 
 # Examples:
 aspire run
 aspire run --apphost ./src/MyApp.AppHost
+aspire run --launch-profile Development  # (13.6+)
 aspire run --detach --isolated    # equivalent to: aspire start --isolated
 ```
 
@@ -163,11 +180,14 @@ aspire start [options]
 # Options:
 #   --apphost <path>       Path to AppHost project file
 #   --isolated             Isolated mode (separate ports, user secrets; for worktrees)
+#   --no-build             Skip build/restore
+#   -lp, --launch-profile <name>  (13.6+) .NET launch profile to use when starting the AppHost
 #   --format Json          Machine-readable output
 
 # Examples:
 aspire start
 aspire start --isolated
+aspire start -lp Development           # (13.6+)
 aspire start --apphost ./src/MyApp.AppHost
 ```
 
@@ -180,6 +200,8 @@ Behavior:
 
 **This is the recommended command for 13.2+.** Relaunching is safe — just run `aspire start` again.
 
+> **Launch profiles (13.6):** `--launch-profile`/`-lp` flows through direct AppHost launches, detached child processes, and VS Code delegation. When the CLI can't safely reproduce a .NET launch profile it delegates to `dotnet run`.
+
 ### `aspire stop` (13.2+)
 
 Stop a background AppHost started with `aspire start`.
@@ -190,12 +212,15 @@ aspire stop [options]
 # Options:
 #   --apphost <path>       Path to AppHost project file
 #   --all                  Stop all running AppHosts
-#   --force                (13.5+) Also clean up the AppHost's persistent resources,
-#                          permanently deleting their data without an extra confirmation prompt
+#   --force                (13.5+) Stop and clean up the AppHost's persistent resources;
+#                          13.6: volumes are PRESERVED by default
+#   --volumes              (13.6+) Also remove Aspire-owned named volumes (requires --force);
+#                          anonymous volumes and bind mounts are never removed
 
 # Examples:
 aspire stop
-aspire stop --force    # stop + delete persistent resource data (13.5+)
+aspire stop --force              # stop + clean up persistent resources, keep volumes (13.6)
+aspire stop --force --volumes    # ...and delete Aspire-owned named volumes (13.6+)
 ```
 
 ### `aspire wait` (13.2+)
@@ -208,7 +233,10 @@ aspire wait <resource> [options]
 # Options:
 #   --apphost <path>       Path to AppHost project file
 #   --status <status>      Target status: healthy, up, down (default: healthy)
-#   --timeout <seconds>    Timeout in seconds
+#   --timeout <seconds>    Timeout in seconds (default 120)
+#
+# Exit codes: 13.6 returns 18 when the resource reaches FailedToStart — even when
+# waiting for `--status down`.
 
 # Examples:
 aspire start --isolated
@@ -236,6 +264,8 @@ aspire describe --format Json
 aspire describe --follow             # live updates (used by VS Code extension)
 aspire describe --include-hidden     # show resources hidden by default
 ```
+
+> **13.6:** `describe` redacts secret environment variables, and `describe --follow` emits the current state immediately before streaming changes.
 
 ### `aspire resource` (13.2+)
 
@@ -342,21 +372,26 @@ aspire otel traces --search "POST /orders -resource:cache"
 
 `aspire logs` (console logs) also accepts `--search`, but only as free-text over the log line and resource name.
 
-### `aspire terminal` (Experimental, 13.5+)
+### `aspire terminal` (13.5+; no feature flag since 13.6)
 
 Attach to interactive terminal sessions on resources configured with the experimental
-`WithTerminal()` API (`ASPIRETERMINAL001`) — drive REPLs, shells, and other terminal programs
-running as Aspire resources.
+`WithTerminal()` API (`ASPIRETERMINAL001`), database/cache REPLs from `WithRepl()`, or AppHost-owned
+terminals created through `TerminalService` — drive REPLs, shells, and other terminal programs.
 
 ```bash
-# Opt in via feature flag first:
-aspire config set features.terminalCommandsEnabled true
-
-aspire terminal ps                    # list resources with active terminal sessions
-aspire terminal attach <resource>     # attach to a resource's terminal session
+aspire terminal ps [--format Json] [-v]   # list resource-owned AND AppHost-owned terminals (13.6)
+aspire terminal attach <resource>         # attach the local terminal to a resource's PTY session
+aspire terminal tape play <resource> --tape-file <path.tape> [-r <replica>] [--timeout <s>]
+                                          # (13.6) play a VHS tape against a running resource
+                                          # terminal and print its final screen (timeout default 120s;
+                                          # -r required for replicated resources when non-interactive)
 ```
 
-The dashboard can also attach/detach from the same sessions in its terminal view.
+> **Changed in 13.6:** the `features.terminalCommandsEnabled` flag no longer exists — the
+> command group is always available. The AppHost still needs the `terminals.v1` capability and
+> the hosting APIs remain experimental (`ASPIRETERMINAL001`).
+
+The dashboard can also attach/detach from the same sessions in its terminal dock.
 
 ### `aspire ps` (13.2+)
 
@@ -422,9 +457,21 @@ Run the Aspire Dashboard in standalone mode — no AppHost required. Useful for 
 ```bash
 aspire dashboard run [options]
 
-# Example:
+# Options:
+#   --frontend-url <url>         HTTP endpoint(s) serving the dashboard frontend
+#   --otlp-grpc-url <url>        OTLP/gRPC endpoint
+#   --otlp-http-url <url>        OTLP/HTTP endpoint
+#   --allow-anonymous            Allow anonymous access
+#   --application-name <name>    (13.6+) Display name; also scopes persisted dashboard data
+#   --persistence <mode>         (13.6+) None | Run | Resume (standalone default: None)
+#   --config-file-path <path>    JSON configuration file
+
+# Examples:
 aspire dashboard run
+aspire dashboard run --application-name my-app --persistence Resume   # (13.6+)
 ```
+
+> **13.6:** the standalone dashboard is a Native AOT executable (no managed wrapper). AppHost-started dashboards default to `Run` persistence (SQLite, last 10 runs kept read-only); see [Dashboard](dashboard.md).
 
 > The dashboard is also available as a standalone container image — see [Dashboard](dashboard.md).
 
@@ -506,6 +553,8 @@ aspire certs clean     # Remove stale developer certificates
 aspire certs trust     # Trust the current development certificate
 ```
 
+> **Linux (13.6):** certificate trust also covers Firefox NSS databases. For non-default profile locations set the `certificates.nssDbPaths` configuration value.
+
 ### `aspire add`
 
 Add a hosting integration to the AppHost.
@@ -577,6 +626,29 @@ aspire publish --output-path ./deploy
 aspire publish -e Staging
 aspire publish --list-steps
 ```
+
+### `aspire sdk export` (13.6+, hidden from `aspire --help`)
+
+Emit a deterministic, canonical TypeScript API reference for an Aspire hosting package as JSON — the
+same projection the TypeScript code generator uses (optional parameters, promises, DTOs, enums).
+Useful for confirming exact polyglot method signatures before generating AppHost code.
+
+```bash
+aspire sdk export --language <language> [options] > api.json
+
+# Options:
+#   --language <language>        (required) Target language, e.g. typescript
+#                                (its -l short alias collides with the global -l/--log-level — use the long form)
+#   -p, --package <Name@Version> Package to export (default: Aspire.Hosting at the CLI's SDK version)
+
+# Examples:
+aspire sdk export --language typescript --package Aspire.Hosting.Redis@13.6.0
+aspire sdk export --language typescript --package Aspire.Hosting.Java@13.6.0-preview.1.26479.8
+```
+
+> Observed on 13.6.0: exporting the default `Aspire.Hosting` package failed with "No managed
+> assemblies for package 'Aspire.Hosting' ... could be mapped", while integration packages exported
+> fine. If it happens, fall back to integration packages or `aspire docs api`.
 
 ### `aspire config`
 
@@ -676,7 +748,7 @@ aspire destroy -e Staging -y
 
 ### `aspire update` (Preview)
 
-Update integrations in the Aspire project, or update the CLI itself.
+Update integrations in the Aspire project, repository-local CLI references (13.6: npm and `.config/dotnet-tools.json` manifests), or the CLI itself. Self-update is channel-aware (13.6) — it preserves the channel the CLI was acquired from.
 
 ```bash
 aspire update [options]
@@ -740,6 +812,14 @@ Agent and AI assistant integration commands.
 
 ```bash
 aspire agent init
+aspire agent init --mcp            # (13.6+) also configure the Aspire MCP server
+
+# Options:
+#   --workspace-root <path>    Workspace root directory
+#   --skill-locations <list>   standard,claudecode,github,opencode | all | none
+#   --skills <list>            Skills to install (CLI-provided: playwright-cli, dotnet-inspect | all | none)
+#   --mcp                      (13.6+) Configure the MCP server; omit = leave MCP unconfigured,
+#                              --mcp=false = explicit opt-out
 
 # Interactive — detects your AI environment and creates config files + skill files.
 # Supported environments:
@@ -752,6 +832,8 @@ aspire agent init
 ```
 
 Generates the appropriate configuration and skill files for your detected AI tool.
+
+> **Changed in 13.6:** `aspire agent init` defaults to **skills only, without MCP**. Interactive standalone setup offers MCP as an opt-in; pass `--mcp` in scripts. GitHub Copilot is detected even without the standalone Copilot CLI on `PATH`.
 See [MCP Server](mcp-server.md) for details.
 
 #### `aspire agent mcp` (13.2+, replaces `aspire mcp start`)

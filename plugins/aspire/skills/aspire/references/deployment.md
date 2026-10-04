@@ -25,6 +25,21 @@ aspire destroy -e Staging -y  # target an environment, skip the confirmation pro
 
 > Since 13.3, a container-runtime health check runs before `aspire deploy` so missing/stopped Docker/Podman is caught early. Use `--list-steps` on `deploy`/`destroy` to preview the pipeline without executing it.
 
+> **Deployment state (13.6):** state is isolated per AppHost and environment under
+> `<ASPIRE_HOME>/deployments/<AppHostSha>/<environment>.json`. The VS Code extension exposes
+> **Deploy**, **Publish**, **Run pipeline step**, and **Debug pipeline step** on AppHost items.
+
+### Portable names and paths (13.6)
+
+- **Connection-string names** — names containing hyphens or repeated underscores get a portable alias
+  (`my-db` → `ConnectionStrings__my_db`). Azure App Service, Kubernetes, and Foundry emit **only** the
+  alias after deployment; updated client integrations resolve the logical name first, then the alias.
+  Colliding names (`my-db` and `my_db`) fail during resolution. Prefer portable names (`my_db`) for
+  anything read directly from env vars.
+- **Volume paths** — `WithVolume("data", "/data", env: "DATA_PATH")` (TS: `withVolume('/data', 'data', 'DATA_PATH')`)
+  gives projects/executables one env-var contract that works locally and in Docker Compose,
+  Kubernetes (`withKubernetesPersistentVolumeMount(..., { env })`), and Azure Container Apps.
+
 ---
 
 ## Supported Targets
@@ -95,6 +110,12 @@ builder.AddContainer("postgres", "postgres:16")
     .WithPersistentVolume(data);   // bound workloads render as StatefulSet, not Deployment
 ```
 
+**13.6 Kubernetes/AKS updates:** Ingress/Gateway routes inherit `WithHostname(...)` when no explicit
+host is set; Helm values include embedded parameters resolved during deployment; AKS provisions
+persistent storage; inline CSI volumes (`CsiVolumeSourceV1`, `VolumeV1.Csi`) give ephemeral
+pod-scoped mounts; `aspire destroy` on AKS acquires credentials and runs Helm cleanup before removing
+Azure resources.
+
 ### Radius (preview, 13.5+)
 
 **Package:** `Aspire.Hosting.Radius` — publish to a [Radius](https://radapp.io/) environment:
@@ -105,7 +126,12 @@ builder.AddRadiusEnvironment("radius")
 ```
 
 Publish-time infrastructure configuration (`ConfigureRadiusInfrastructure`) and project
-container-image overrides are gated behind experimental diagnostics.
+container-image overrides are gated behind experimental diagnostics (`ASPIRERADIUS003/004/006/057`).
+
+**13.6:** experimental APIs configure recipe parameters and secrets globally or per resource;
+consumers get addresses/credentials from the backing resource's deployed schema and recipe outputs;
+new publish diagnostics flag unsupported endpoints, database mappings, credentials, and secret
+collisions. Radius **v0.60.2** is recommended (minimum v0.60.0).
 
 ### Azure Container Apps
 
@@ -134,6 +160,14 @@ var storage = builder.AddAzureStorage("storage");   // creates Storage Account
 var cosmos = builder.AddAzureCosmosDB("cosmos");    // creates Cosmos DB account
 var sb = builder.AddAzureServiceBus("messaging");   // creates Service Bus namespace
 ```
+
+**ACA Express (13.6, preview, experimental `ASPIREACAEXPRESS001`).** Call `AsExpress()` on the
+**container app environment** (`AddAzureContainerAppEnvironment(...).AsExpress()`) to publish and
+deploy HTTP apps with the Azure Container Apps Express preview — rapid provisioning, fewer settings,
+scale-to-zero when idle and on-demand scale-out. Express defaults to zero minimum replicas and does
+**not** provision the managed Aspire dashboard; explicit replica settings and infrastructure
+customization are preserved, and app-to-app references require explicitly public HTTP endpoints.
+Suppress `ASPIREACAEXPRESS001` to use it.
 
 **Deterministic environment naming (13.5+, experimental `ASPIREACANAMING002`).** Opt into
 collision-resistant resource names when deploying multiple environments into the same resource
@@ -164,6 +198,81 @@ var subscription = builder.AddParameter("sb-sub");
 builder.AddAzureServiceBus("sb")
     .AsExistingInResourceGroup(name, resourceGroup, subscription);
 // Also: AsExistingInSubscription(name, subscription), AsExistingInTenant(name)
+```
+
+### Azure Container Apps Sandboxes (13.6, prerelease)
+
+**Package:** `Aspire.Hosting.Azure.Sandboxes` (`aspire add azure-sandboxes`). Deploys project,
+container, and Dockerfile resources as isolated sandboxes. `AddAzureSandboxGroup` provisions the
+sandbox group, an Azure Container Registry, identities, and role assignments:
+
+```csharp
+using Aspire.Hosting.Azure;
+
+builder.AddAzureSandboxGroup("sandboxes");
+builder.AddDockerfile("web", "./web")
+    .WithHttpEndpoint(port: 8080, targetPort: 8080, name: "http")
+    .WithExternalHttpEndpoints()
+    .PublishAsAzureSandbox(new AzureSandboxOptions
+    {
+        Tier = AzureSandboxTier.Small,
+        AutoSuspendEnabled = true,
+        AutoSuspendInterval = TimeSpan.FromMinutes(15),
+        AutoSuspendMode = AzureSandboxAutoSuspendMode.Disk
+    });
+```
+
+TypeScript: `addAzureSandboxGroup('sandboxes')` and `publishAsAzureSandbox({ tier: AzureSandboxTier.Small, autoSuspendEnabled: true, autoSuspendInterval: 900_000, autoSuspendMode: AzureSandboxAutoSuspendMode.Disk })`
+(interval in **milliseconds** in TS).
+
+- Tiers: `ExtraSmall`, `Small`, `Medium`, `Large`, `ExtraLarge`. Auto-suspend modes: `None`, `Memory`, `Disk`.
+  Auto-delete options (`AfterCreation` / `AfterSuspend` triggers) and group identity
+  (`withSystemAssignedIdentity`, `withUserAssignedIdentity`, `withAcrPullIdentity`, `withNoManagedIdentity`) are also available.
+- Images resolve to immutable linux/amd64 digests; egress is **deny-by-default**; stale sandboxes and
+  images are cleaned up on redeploy and `aspire destroy`.
+- External endpoints must be marked explicitly; public HTTPS URLs require Microsoft Entra auth unless
+  you opt into anonymous access.
+- **Not yet supported:** volumes, TCP ports, private service discovery, Windows/ARM64 images.
+
+### Azure Connector Namespace (13.6, prerelease)
+
+**Package:** `Aspire.Hosting.Azure.ConnectorNamespace` — model connections to external services and
+managed MCP server configurations with explicit operation allow-lists and Microsoft Entra access
+policies in the AppHost. Requires preview access in your subscription/region. A connection supplies
+connection info, not authorization.
+
+### Azure infrastructure customization (13.6, experimental)
+
+Experimental per-service `Aspire.Hosting.Azure.Provisioning.*` packages expose
+`configureInfrastructure` to polyglot AppHosts for customizing Azure Provisioning SDK properties and
+composing Bicep expressions. Shared diagnostic: `ASPIREAZUREPROVISIONING001`.
+
+Other 13.6 Azure changes: location changes require explicit confirmation before delete/recreate;
+more reliable service-principal / federated-workload identity detection.
+
+### Azure Front Door origin names (13.6)
+
+Origin names now include the backend hostname, so **upgrading renames generated origins** even if the
+hostname didn't change — and incremental ARM deployments don't delete the old ones. Deploy the new
+names, confirm health, then delete the old origins manually. To keep the previous names:
+
+```csharp
+using Azure.Provisioning;
+using Azure.Provisioning.Cdn;
+using Azure.Provisioning.Expressions;
+
+builder.AddAzureFrontDoor("frontdoor")
+    .WithOrigin(api)
+    .ConfigureInfrastructure(infrastructure =>
+    {
+        foreach (var origin in infrastructure.GetProvisionableResources()
+            .OfType<FrontDoorOrigin>())
+        {
+            origin.Name = BicepFunction.Take(
+                BicepFunction.Interpolate($"{origin.BicepIdentifier.Replace("_", "")}-{BicepFunction.GetUniqueString(BicepFunction.GetResourceGroup().Id)}"),
+                origin.GetResourceNameRequirements().MaxLength);
+        }
+    });
 ```
 
 ### Azure App Service
