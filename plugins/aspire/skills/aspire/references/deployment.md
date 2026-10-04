@@ -1,6 +1,12 @@
 # Deployment — Complete Reference
 
-Aspire separates **orchestration** (what to run) from **deployment** (where to run it). The `aspire publish` command translates your AppHost resource model into deployment manifests for your target platform.
+Aspire separates **orchestration** (what to run) from **deployment** (where to run it). You declare
+the target as a **compute environment resource** in the AppHost (`AddDockerComposeEnvironment`,
+`AddKubernetesEnvironment`, `AddAzureContainerAppEnvironment`, …) and then run plain
+`aspire publish` (generate artifacts) or `aspire deploy` (generate + apply).
+
+> **There is no `-p <target>` flag** on `aspire publish` (verified on 13.6.0). The target comes from the
+> environment resource(s) in the AppHost, not from the command line.
 
 ---
 
@@ -8,22 +14,38 @@ Aspire separates **orchestration** (what to run) from **deployment** (where to r
 
 | Concept | What it does |
 |---|---|
-| **`aspire publish`** | Generates deployment artifacts (Dockerfiles, Helm charts, Bicep, etc.) |
-| **Deploy** | You run the generated artifacts through your CI/CD pipeline |
-
-Aspire does NOT deploy directly via `aspire publish`. It generates the manifests — you deploy them through CI/CD.
-
-### Direct deploy & teardown (Preview, 13.3+)
-
-For supported targets (Azure, Kubernetes, Docker Compose), the CLI can also deploy and tear down directly:
+| **`aspire publish -o <dir>`** | Generates deployment artifacts (Compose file + `.env`, Helm chart, Bicep, …) as a one-way handoff to another tool |
+| **`aspire deploy -e <env>`** | Evaluates the AppHost, builds/pushes images, provisions and applies — the whole flow inside Aspire |
+| **`aspire do <step>`** | Runs one named pipeline step (e.g. `build`, `push`, `prepare-<env-resource>`) — use `--list-steps` to see the names |
+| **`aspire destroy -e <env> [-y]`** | Tears down what `aspire deploy` provisioned |
 
 ```bash
-aspire deploy                 # provision + deploy to the target environment
-aspire destroy                # tear down what `aspire deploy` provisioned
-aspire destroy -e Staging -y  # target an environment, skip the confirmation prompt
+aspire publish -o ./aspire-output             # artifacts only (default: <AppHost dir>/aspire-output)
+aspire deploy --environment Production        # provision + deploy (default environment: Production)
+aspire do push --environment staging          # build + push images only
+aspire destroy -e Staging -y                  # tear down, skip the confirmation prompt
 ```
 
-> Since 13.3, a container-runtime health check runs before `aspire deploy` so missing/stopped Docker/Podman is caught early. Use `--list-steps` on `deploy`/`destroy` to preview the pipeline without executing it.
+All four accept `--apphost`, `-e/--environment`, `--no-build`, `--list-steps`, and
+`--include-exception-details`; `deploy` also has `--clear-cache`. Since 13.3, a container-runtime
+health check runs before `aspire deploy` so missing/stopped Docker/Podman is caught early.
+
+**Deployment rules for agents:**
+
+- `aspire deploy` does **not** consume an earlier `aspire publish` output directory — it re-evaluates
+  the AppHost. Use `publish` *or* `deploy`, not publish-then-deploy.
+- Deploy the resources the AppHost declares — **never containerize or deploy the AppHost itself**.
+- `--list-steps` previews the pipeline, but it is not proof a deploy can run unattended (prompts for
+  missing parameters/credentials still happen at run time).
+- Provisioning cloud resources costs money: when the user asked for a plan or a preview, **ask before
+  running `aspire deploy`**. `aspire destroy` needs explicit approval and an exact environment.
+- Don't declare a deployment done until a health/endpoint check against the target passes.
+- Don't commit generated artifacts (`aspire-output/`, `.env.<environment>`, Helm values with resolved
+  values) — they can contain secrets. Deployment state (below) is sensitive too.
+- Keep all Aspire packages on **one release family**. Several deployment packages are preview-only
+  (`Aspire.Hosting.Kubernetes` / `Aspire.Hosting.Azure.Kubernetes` are `13.6.0-preview.*`) and
+  `Aspire.Hosting.AWS` versions independently (13.7.x) — don't expect identical version strings, but
+  don't mix 13.5 and 13.6 packages (`MissingMethodException` / `TypeLoadException` at startup).
 
 > **Deployment state (13.6):** state is isolated per AppHost and environment under
 > `<ASPIRE_HOME>/deployments/<AppHostSha>/<environment>.json`. The VS Code extension exposes
@@ -42,53 +64,88 @@ aspire destroy -e Staging -y  # target an environment, skip the confirmation pro
 
 ---
 
+## Choosing a target
+
+| Target | `aspire add` | AppHost (C#) | AppHost (TS) |
+|---|---|---|---|
+| Docker Compose | `docker` | `AddDockerComposeEnvironment("compose")` | `addDockerComposeEnvironment('compose')` |
+| Kubernetes (any cluster) | `kubernetes` (preview) | `AddKubernetesEnvironment("k8s")` | `addKubernetesEnvironment('k8s')` |
+| Azure Container Apps | `azure-appcontainers` | `AddAzureContainerAppEnvironment("aca")` | `addAzureContainerAppEnvironment('aca')` |
+| Azure App Service | `azure-appservice` | `AddAzureAppServiceEnvironment("appsvc")` | `addAzureAppServiceEnvironment('appsvc')` |
+| AKS | `azure-kubernetes` (preview) | `AddAzureKubernetesEnvironment("aks")` | `addAzureKubernetesEnvironment('aks')` |
+
+- If the user just says "Azure", **ask** which compute target (ACA, App Service, or AKS) before adding one.
+- If the AppHost already has exactly one environment, use it. With a single environment every compute
+  resource goes there automatically; `WithComputeEnvironment(env)` is only needed when there are several.
+- Resources added only inside a run-mode branch (`if (!builder.ExecutionContext.IsPublishMode)`) are
+  not deployed.
+
+---
+
 ## Supported Targets
 
-### Docker
+### Docker Compose
 
-**Package:** `Aspire.Hosting.Docker`
-
-```bash
-aspire publish -p docker -o ./docker-output
-```
-
-Generates:
-- `docker-compose.yml` — service definitions matching your AppHost
-- `Dockerfile` for each .NET project
-- Environment variable configuration
-- Volume mounts
-- Network configuration
+**Package:** `Aspire.Hosting.Docker` (`aspire add docker`)
 
 ```csharp
-// AppHost configuration for Docker publishing
-var api = builder.AddProject<Projects.Api>("api")
-    .PublishAsDockerFile();  // override default publish behavior
+var compose = builder.AddDockerComposeEnvironment("compose");
+var api = builder.AddProject<Projects.Api>("api");   // automatically included in the Compose output
 ```
 
-> **13.3+:** Docker Compose deployments also support **Podman** as the container runtime, plus privileged-mode publishing.
+```bash
+aspire publish -o ./aspire-output              # docker-compose.yaml + .env (parameters unfilled)
+aspire do prepare-compose --environment staging  # + .env.staging with resolved values, builds images
+aspire deploy --environment staging            # prepare + `docker compose up`
+```
+
+| Output | Contents |
+|---|---|
+| `docker-compose.yaml` | Services, networks, volumes for every compute resource |
+| `.env` | Expected parameters, **unfilled** after `aspire publish` |
+| `.env.<environment>` | Resolved values, written by `prepare-<env-resource>` / `deploy` — treat as a secret |
+
+- Customize the model, don't hand-edit the generated YAML: `ConfigureComposeFile(file => …)` on the
+  environment, `ConfigureEnvFile(env => …)` for the `.env` model, and
+  `PublishAsDockerComposeService((resource, service) => …)` per resource (labels, restart policy, …).
+- Container runtime: auto-detected; force one with `ASPIRE_CONTAINER_RUNTIME=docker|podman`. Podman
+  must be **5.0.0+** (older versions are flagged by `aspire doctor` and ignored).
+- `PublishAsDockerFile()` on a project overrides the default .NET SDK container build.
 
 ### Kubernetes
 
-**Package:** `Aspire.Hosting.Kubernetes`
-
-```bash
-aspire publish -p kubernetes -o ./k8s-output
-```
-
-Generates:
-- Kubernetes YAML manifests (Deployments, Services, ConfigMaps, Secrets)
-- Helm chart (optional)
-- Ingress configuration
-- Resource limits based on AppHost configuration
+**Package:** `Aspire.Hosting.Kubernetes` (`aspire add kubernetes`, preview). Prerequisites: `kubectl`
+with a configured context and **Helm v4.2.0+** on `PATH`.
 
 ```csharp
-// AppHost: customize K8s publishing
-var api = builder.AddProject<Projects.Api>("api")
-    .WithReplicas(3)                    // maps to K8s replicas
-    .WithExternalHttpEndpoints();       // maps to Ingress/LoadBalancer
+var k8s = builder.AddKubernetesEnvironment("k8s");
+var registry = builder.AddContainerRegistry("registry", "myregistry.example.com:5000");
+
+var api = builder.AddProject<Projects.Api>("api").WithReplicas(3);
+var web = builder.AddProject<Projects.Web>("web");
+
+// Services are reachable only inside the cluster by default — expose them explicitly:
+var ingress = k8s.AddIngress("public")
+    .WithIngressClass("nginx")
+    .WithHostname("app.example.com")
+    .WithTls();
+ingress.WithPath("/api", api.GetEndpoint("http"));
+ingress.WithPath("/", web.GetEndpoint("http"));
 ```
 
-> **13.3+:** A Helm-based Kubernetes deployment engine is available via `AddKubernetesEnvironment(...)`. Declare external traffic with first-class routing resources — `AddIngress(...)` (legacy) or `AddGateway(...)` (preferred for new clusters) — which generate the matching Ingress / Gateway API YAML in the Helm chart output. For AKS specifically, use `AddAzureKubernetesEnvironment(...)`.
+- **Helm is the default engine** — `aspire publish` produces a Helm chart; `WithHelm(h => …)` only
+  customizes namespace / release name / chart version. Per-resource tweaks:
+  `PublishAsKubernetesService(resource => …)`.
+- **External traffic:** `WithExternalHttpEndpoints()` alone does **not** make a service public. Use
+  `AddIngress(...)` (`WithPath`, `WithDefaultBackend`; named `WithRoute` before 13.4) or `AddGateway(...)`
+  (Gateway API — preferred for new clusters; `gateway.WithRoute(...)`).
+- **A container registry is required** (`AddContainerRegistry`) — it must be reachable from your
+  machine and the cluster nodes. There is no local-registry fallback.
+- `aspire deploy` uses the **current kubectl context** (`kubectl config current-context`) and
+  `helm install`/`upgrade`; it never creates the cluster. Manual handoff:
+  `helm install|upgrade <release> ./k8s-artifacts [-f values.production.yaml]`.
+- External charts: `AddHelmChart(...)` on the environment installs them as post-deploy steps.
+- For AKS use `AddAzureKubernetesEnvironment(...)` **instead of** (not alongside) `AddKubernetesEnvironment`.
 
 **Persistent volumes (13.5+, experimental `ASPIRECOMPUTE002`).** Model Kubernetes
 `PersistentVolumeClaim`s as first-class resources. Available on both the Kubernetes environment and
@@ -133,24 +190,34 @@ consumers get addresses/credentials from the backing resource's deployed schema 
 new publish diagnostics flag unsupported endpoints, database mappings, credentials, and secret
 collisions. Radius **v0.60.2** is recommended (minimum v0.60.0).
 
+### Azure (all targets)
+
+Local `aspire deploy` authenticates with Azure CLI credentials by default (`Azure:CredentialSource` /
+`Azure__CredentialSource` selects another: `AzureDeveloperCli`, `VisualStudio`, `AzurePowerShell`, …).
+Shared settings (config keys or env vars):
+
+| Setting | Purpose |
+|---|---|
+| `Azure__SubscriptionId` | Target subscription |
+| `Azure__Location` | Default region |
+| `Azure__ResourceGroup` | Resource group to create or reuse |
+| `Azure__CredentialProcessTimeoutSeconds` | Credential subprocess timeout (5–600 s) |
+| `Parameters__<name>` | AppHost parameters |
+
+- `aspire secret set` is for local development only — in CI (and for TypeScript AppHosts) supply
+  values as environment variables on the `aspire deploy` process.
+- Local deploys prompt for missing values. Don't pipe an interactive deploy through `tee`/`tail`
+  (it breaks the prompts); run it non-interactively with everything supplied instead.
+- Failed provisioning: start from the first failed ARM operation —
+  `az deployment operation group list -g <rg> -n <deployment> --query "[?properties.provisioningState=='Failed']"`.
+
 ### Azure Container Apps
 
-**Package:** `Aspire.Hosting.Azure.AppContainers`
-
-```bash
-aspire publish -p azure -o ./azure-output
-```
-
-Generates:
-- Bicep templates for Azure Container Apps Environment
-- Container App definitions for each service
-- Azure Container Registry configuration
-- Managed identity configuration
-- Dapr components (if using Dapr integration)
-- VNET configuration
+**Package:** `Aspire.Hosting.Azure.AppContainers` (`aspire add azure-appcontainers`)
 
 ```csharp
-// AppHost: Azure-specific configuration
+builder.AddAzureContainerAppEnvironment("aca-env");
+
 var api = builder.AddProject<Projects.Api>("api")
     .WithExternalHttpEndpoints()        // maps to external ingress
     .WithReplicas(3);                   // maps to min replicas
@@ -160,6 +227,15 @@ var storage = builder.AddAzureStorage("storage");   // creates Storage Account
 var cosmos = builder.AddAzureCosmosDB("cosmos");    // creates Cosmos DB account
 var sb = builder.AddAzureServiceBus("messaging");   // creates Service Bus namespace
 ```
+
+- The environment plus the app resources is enough for a standard deployment — use
+  `PublishAsAzureContainerApp((infra, app) => …)` only to customize the generated Container App.
+- Endpoints are grouped by target port: at most **one external HTTP** ingress (served via the platform
+  HTTPS endpoint, HTTP redirected) and **no external non-HTTP** endpoints; HTTP and TCP can't share a
+  target port. External HTTP endpoints are upgraded to HTTPS in generated URLs/connection strings
+  (`WithHttpsUpgrade(false)` opts out).
+- Named volumes and bind mounts become **Azure Files** mounts. The Aspire dashboard is provisioned by
+  default (except with ACA Express).
 
 **ACA Express (13.6, preview, experimental `ASPIREACAEXPRESS001`).** Call `AsExpress()` on the
 **container app environment** (`AddAzureContainerAppEnvironment(...).AsExpress()`) to publish and
@@ -172,7 +248,8 @@ Suppress `ASPIREACAEXPRESS001` to use it.
 **Deterministic environment naming (13.5+, experimental `ASPIREACANAMING002`).** Opt into
 collision-resistant resource names when deploying multiple environments into the same resource
 group — names get a `uniqueString(resourceGroup().id)` suffix while preserving each environment's
-digits (`cae1` / `cae2` stay distinct):
+digits (`cae1` / `cae2` stay distinct). **Don't apply it retroactively without explicit approval** —
+changing the naming scheme can recreate an existing environment:
 
 ```csharp
 #pragma warning disable ASPIREACANAMING002
@@ -277,16 +354,18 @@ builder.AddAzureFrontDoor("frontdoor")
 
 ### Azure App Service
 
-**Package:** `Aspire.Hosting.Azure.AppService`
+**Package:** `Aspire.Hosting.Azure.AppService` (`aspire add azure-appservice`)
 
-```bash
-aspire publish -p appservice -o ./appservice-output
+```csharp
+var appService = builder.AddAzureAppServiceEnvironment("appsvc")
+    .WithAzureApplicationInsights();   // opt-in; App Insights is not provisioned by default
+// .WithDashboard(false)               // the Aspire dashboard is included by default
 ```
 
-Generates:
-- Bicep templates for App Service Plans and Web Apps
-- Connection string configuration
-- Application settings
+Generates Bicep for the App Service plan and web apps, with connection strings and app settings.
+App settings accept only letters, numbers, and underscores — prefer portable names (13.6 emits the
+`my_db` alias for connection strings); for other dashed names call `SkipEnvironmentVariableNameChecks()`
+after `PublishAsAzureAppServiceWebsite(...)` only when you intend to bypass validation.
 
 ---
 
@@ -302,14 +381,26 @@ Generates:
 | `.WithReplicas(n)` | `deploy: replicas: n` | `replicas: n` | `minReplicas: n` |
 | `.WithVolume()` | `volumes:` | `PersistentVolumeClaim` | Azure Files |
 | `.WithHttpEndpoint()` | `ports:` | `Service` port | Ingress |
-| `.WithExternalHttpEndpoints()` | `ports:` (host) | `Ingress` / `LoadBalancer` | External ingress |
-| `AddParameter(secret: true)` | `.env` file | `Secret` | Key Vault reference |
+| `.WithExternalHttpEndpoints()` | `ports:` (host) | Cluster-internal until routed via `AddIngress`/`AddGateway` | External ingress |
+| `AddParameter(secret: true)` | `.env.<environment>` file | `Secret` | Key Vault reference |
 
 ---
 
 ## CI/CD integration
 
-### GitHub Actions example
+Pick the shape by how your release is structured:
+
+| Need | Command(s) |
+|---|---|
+| One job builds and deploys | `aspire deploy --environment production --non-interactive` |
+| Build and release separated (approvals, artifact promotion) | `aspire do push` + `aspire publish --output-path ./aspire-output` |
+| CI stages around specific AppHost steps | `aspire do build`, `aspire do push`, `aspire do <step>` (names from `--list-steps`) |
+| Validate only | `aspire deploy --list-steps` |
+
+`--environment` selects the deployment context; `Parameters__*` env vars supply the values. Uploaded
+publish output (`.env.<environment>`, Helm values) can contain secrets — scope artifact access.
+
+### GitHub Actions example (Azure, OIDC)
 
 ```yaml
 name: Deploy
@@ -317,31 +408,53 @@ on:
   push:
     branches: [main]
 
+permissions:
+  id-token: write   # OIDC / workload identity federation
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
 
       - name: Install Aspire CLI
-        run: curl -sSL https://aspire.dev/install.sh | bash
+        run: |
+          curl -sSL https://aspire.dev/install.sh | bash
+          echo "$HOME/.aspire/bin" >> "$GITHUB_PATH"   # make `aspire` available to later steps
 
-      - name: Generate manifests
-        run: aspire publish -p azure -o ./deploy
-
-      - name: Deploy to Azure
-        uses: azure/arm-deploy@v2
+      - uses: azure/login@v2
         with:
-          template: ./deploy/main.bicep
-          parameters: ./deploy/main.parameters.json
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy
+        run: aspire deploy --environment Production --non-interactive
+        env:
+          Azure__SubscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          Azure__Location: westeurope
+          Azure__ResourceGroup: rg-myapp-prod
+          Parameters__api_key: ${{ secrets.API_KEY }}
 ```
 
+- **TypeScript AppHost:** add `actions/setup-node` (Node 22.x), `npm ci`, and pass
+  `--apphost ./apphost.mts`.
+- **Container registry (non-Azure targets):** log in first (e.g. `docker/login-action` for GHCR),
+  then pass `Parameters__registry_endpoint` / `Parameters__registry_repository` to `aspire do push`.
+- **Deployment state:** cache `~/.aspire/deployments` (`actions/cache`) to avoid re-prompting;
+  the cache contains parameter values — restrict access.
+- **Destroy jobs:** gate behind `workflow_dispatch` or a protected Environment and run
+  `aspire destroy -e <env> --yes --non-interactive`.
+
 ### Azure DevOps example
+
+Use an Azure Resource Manager service connection (prefer workload identity federation):
 
 ```yaml
 trigger:
@@ -356,16 +469,23 @@ steps:
     inputs:
       version: '10.0.x'
 
-  - script: curl -sSL https://aspire.dev/install.sh | bash
+  - script: |
+      curl -sSL https://aspire.dev/install.sh | bash
+      echo "##vso[task.prependpath]$HOME/.aspire/bin"
     displayName: 'Install Aspire CLI'
 
-  - script: aspire publish -p azure -o $(Build.ArtifactStagingDirectory)/deploy
-    displayName: 'Generate deployment manifests'
-
-  - task: AzureResourceManagerTemplateDeployment@3
+  - task: AzureCLI@2
+    displayName: 'aspire deploy'
     inputs:
-      deploymentScope: 'Resource Group'
-      templateLocation: '$(Build.ArtifactStagingDirectory)/deploy/main.bicep'
+      azureSubscription: 'my-service-connection'
+      scriptType: bash
+      scriptLocation: inlineScript
+      inlineScript: aspire deploy --environment Production --non-interactive
+    env:
+      Azure__CredentialSource: AzureCli
+      Azure__SubscriptionId: $(AZURE_SUBSCRIPTION_ID)
+      Azure__Location: westeurope
+      Azure__ResourceGroup: rg-myapp-prod
 ```
 
 ---
@@ -381,9 +501,13 @@ var postgres = builder.AddPostgres("db", password: dbPassword);
 ```
 
 In deployment:
-- **Docker:** Loaded from `.env` file
+- **Docker:** Loaded from `.env.<environment>` (generated by `prepare-<env>` / `deploy`)
 - **Kubernetes:** Loaded from `Secret` resource
 - **Azure:** Loaded from Key Vault via managed identity
+
+**Parameter naming:** a parameter `registry-endpoint` is read from config key
+`Parameters:registry-endpoint` or env var `Parameters__registry_endpoint` (dashes become underscores
+in env vars). Supply every required parameter before a non-interactive deploy.
 
 ### Conditional resources
 

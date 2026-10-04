@@ -129,7 +129,8 @@ For polyglot framework method signatures, see [Polyglot APIs](polyglot-apis.md).
   `SoutheastAsia` (not `SouthEastAsia`).
 - **.NET projects by path** — `Aspire.Hosting.Dotnet` package with the experimental
   `AddDotnetProject(name, path)` API (`ASPIREDOTNETPROJECT001`); orchestration-only. *(13.6: coordinated
-  builds, suppression retired.)*
+  builds, .NET SDK container publishing, suppression retired; Blazor gateway via
+  `AddDotnetProjectBlazorGateway(...).WithBlazorClientApp(...)` — see [Project v2 Migration](project-v2-migration.md).)*
 - **Blazor gateway on Docker Compose** — Blazor gateway resources now support Docker Compose
   publishing.
 - **Radius (preview)** — `Aspire.Hosting.Radius` adds `AddRadiusEnvironment(name)` (with

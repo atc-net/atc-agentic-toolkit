@@ -44,6 +44,11 @@ These codes indicate usage of experimental/preview APIs. They may require `#prag
 | `ASPIREEXTENSION001`      | Extension debugging support APIs (e.g. the 13.6 `WithDebugSupport` overload receiving `LaunchConfigurationCallbackContext`) — not the old JavaScript ID |
 | `ASPIRECOMPUTE002`        | Kubernetes/AKS persistent volumes — `AddPersistentVolume`, `WithPersistentVolume` (13.5) |
 | `ASPIREACANAMING002`      | Azure Container Apps `WithUniqueResourceNaming()` deterministic naming (13.5) |
+| `ASPIRECSHARPAPPS001`     | `AddCSharpApp` / `addCSharpApp` — path-based and file-based C# apps (13.x) |
+| `ASPIREPROJECTS001`       | Project defaults/launch annotations and the `AddEFMigrations` overloads for `IDotnetProgramResource` (Project v2) |
+| `ASPIREDOCKERFILEBUILDER001` | Programmatic Dockerfile generation — `AddDockerfileBuilder` / `WithDockerfileBuilder` |
+| `ASPIREDURABLETASK001`    | Durable Task scheduler / task hub APIs in `Aspire.Hosting.Azure.Functions` (13.3) |
+| `ASPIREEXPORT013`         | Integration authors: two `[AspireExport]`s generate the same polyglot capability ID (13.3) |
 | `ASPIREAZURE003`          | Azure virtual-network builder APIs in `Aspire.Hosting.Azure.Network` — `WithServiceDelegation`, `WithDelegatedSubnet` (13.5) |
 
 **CLI-bundle diagnostics (13.5, build/MSBuild-level, not suppressible experimental gates):**
@@ -118,6 +123,8 @@ If you hit these on 13.4 or earlier, upgrade (`aspire update --self && aspire up
 | Port already in use               | Another process is using the port; Aspire auto-assigns, but `targetPort` must be free on the container |
 | Container image pull fails        | Check network connectivity; verify image name and tag                                                  |
 | "Permission denied" on Linux      | Add user to `docker` group: `sudo usermod -aG docker $USER`                                            |
+| `Login failed` / `password authentication failed` after changing a password parameter | A persistent volume still holds the old credentials. With the user's approval: `aspire stop --force --volumes --apphost <path>` (13.6) or remove that volume, then start again |
+| Forcing Docker vs Podman | Set `ASPIRE_CONTAINER_RUNTIME=docker\|podman` before the CLI command; Podman must be 5.0.0+ |
 | Container connectivity issues (13.3+) | The container tunnel is on by default. To rule it out, disable it: set `ASPIRE_ENABLE_CONTAINER_TUNNEL=false` before starting the AppHost |
 
 ### Service discovery
@@ -199,7 +206,8 @@ If you hit these on 13.4 or earlier, upgrade (`aspire update --self && aspire up
 | Problem                                   | Solution                                                            |
 | ----------------------------------------- | ------------------------------------------------------------------- |
 | "Project not found" for `AddProject<T>()` | Ensure `.csproj` is in the solution and referenced by AppHost       |
-| Package version conflicts                 | Pin all Aspire packages to the same version                         |
+| Package version conflicts / `MissingMethodException` / `TypeLoadException` at startup | Keep every Aspire package on one release family (all 13.6.x). Preview-only integrations carry preview versions (`13.6.0-preview.*`) and AWS versions independently — don't force identical strings, but never mix 13.5 and 13.6 packages. Use `aspire update` |
+| A "known fix" from an older release doesn't apply | Check the running CLI/dashboard version (`aspire --version`, `aspire describe`) and the actual error first; never recommend downgrading Aspire as a mitigation |
 | AppHost won't build                       | Check `Aspire.AppHost.Sdk` is in the project; run `dotnet restore`  |
 | `aspire run` / `aspire start` build error | Fix the build error first; both commands require a successful build |
 
@@ -207,7 +215,7 @@ If you hit these on 13.4 or earlier, upgrade (`aspire update --self && aspire up
 
 | Problem                               | Solution                                                                             |
 | ------------------------------------- | ------------------------------------------------------------------------------------ |
-| `aspire start` says "already running" | Just run `aspire start` again — it auto-stops the previous instance                  |
+| `aspire start` says "already running" | Run `aspire start` again (same `--apphost`/`--isolated`) — it auto-stops the previous instance; for one changed resource use `aspire resource <r> restart\|rebuild` instead |
 | `aspire wait` times out               | Check resource health with `aspire describe`; inspect logs with `aspire logs <resource>` |
 | `aspire describe` shows no resources  | AppHost may not be running; check with `aspire ps`                                   |
 | Port conflict with `--isolated`       | Ensure no other instances conflict; check with `aspire ps`                           |
@@ -221,7 +229,10 @@ If you hit these on 13.4 or earlier, upgrade (`aspire update --self && aspire up
 | `aspire publish` fails                   | Check publisher package is installed (e.g., `Aspire.Hosting.Docker`) |
 | Generated Bicep has errors               | Check for unsupported resource configurations                        |
 | Container image push fails               | Verify registry credentials and permissions                          |
-| Missing connection strings in deployment | Check generated ConfigMaps/Secrets match resource names              |
+| Missing connection strings in deployment | Check generated ConfigMaps/Secrets match resource names; 13.6 deploys hyphenated names only as portable aliases (`ConnectionStrings__my_db`) |
+| `aspire publish -p …` "unrecognized option" | There is no `-p`; add a target environment resource to the AppHost (see [Deployment](deployment.md)) |
+| Kubernetes pods in `ImagePullBackOff` | The registry isn't reachable or authorized from the cluster — check `AddContainerRegistry`, image-pull secrets, and (AKS) `az aks check-acr` |
+| Azure provisioning failed | `az deployment operation group list -g <rg> -n <deployment> --query "[?properties.provisioningState=='Failed']"` — fix the first failed operation |
 
 ---
 
@@ -296,16 +307,16 @@ Use `--apphost <path>` to disambiguate when multiple AppHosts are present.
 
 ## Agent operational gotchas
 
-Lower-level quirks worth knowing when scripting against the CLI. These are **reported upstream by
-Microsoft's `aspire-skills`** (issue links below) rather than independently re-verified here — treat the
-symptom/workaround as the value and confirm the issue status against your CLI version:
+Lower-level quirks worth knowing when scripting against the CLI. All linked issues were **open** as of
+the 13.6 review — confirm the issue status against your CLI version:
 
 | Symptom | Handling |
 |---|---|
 | `aspire start --format json` emits human-readable text before the JSON | Strip everything before the first `{`/`[` ([aspire#15843](https://github.com/microsoft/aspire/issues/15843)). |
-| `aspire ps --format Json` has both `name` and `displayName` | Use `displayName` when passing a resource to `aspire wait` ([aspire#15842](https://github.com/microsoft/aspire/issues/15842)). |
-| TypeScript AppHost telemetry "No such host" for `*.dev.localhost` | Query the dashboard directly with `--dashboard-url localhost:<port>` ([aspire#15782](https://github.com/microsoft/aspire/issues/15782)). |
-| `--isolated` telemetry not reachable | The OTLP port isn't randomized under `--isolated`; avoid `--isolated` when you need telemetry ([aspire#16107](https://github.com/microsoft/aspire/issues/16107)). |
+| `aspire ps` hangs when an AppHost has no URL or sits on a breakpoint | Run it with a timeout; prefer `aspire describe --apphost <path>` ([aspire#15576](https://github.com/microsoft/aspire/issues/15576)). |
+| `aspire agent init` fails or hangs non-interactively | Pass `--non-interactive --skills <list\|all> --skill-locations <list>` explicitly; if it still fails, ask the user to run it in a normal terminal ([aspire#16264](https://github.com/microsoft/aspire/issues/16264), [aspire#15071](https://github.com/microsoft/aspire/issues/15071)). |
+| Passing a resource to `aspire wait` / `aspire resource` | Use the resource name returned by `aspire describe` (`aspire ps` is AppHost-level only since 13.5). |
+| `aspire stop` output | `stop` has no `--format` — use its exit code. |
 
 ---
 
