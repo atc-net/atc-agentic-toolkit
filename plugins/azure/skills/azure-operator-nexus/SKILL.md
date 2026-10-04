@@ -1,12 +1,12 @@
 ---
 name: azure-operator-nexus
-description: Expert knowledge for Azure Operator Nexus development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when managing Nexus clusters, fabric networking/BGP, near-edge storage, NPB TAP rules, or bare metal lifecycle, and other Azure Operator Nexus related development tasks. Not for Azure Network Function Manager (use azure-network-function-manager), Azure Networking (use azure-networking), Azure Virtual Network Manager (use azure-virtual-network-manager), Azure Virtual WAN (use azure-virtual-wan).
+description: Expert knowledge for Azure Operator Nexus development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, and deployment. Use when configuring Nexus fabric ACLs/BGP, securing RBAC/SSH, planning cluster placement, or diagnosing fabric/K8s issues, and other Azure Operator Nexus related development tasks. Not for Azure Operator Insights (use azure-operator-insights), Azure Operator Service Manager (use azure-operator-service-manager), Azure Networking (use azure-networking), Azure Virtual Network (use azure-virtual-network).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
 # Azure Operator Nexus Skill
 
-This skill provides expert guidance for Azure Operator Nexus. Covers troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure Operator Nexus. Covers troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
@@ -20,15 +20,14 @@ This skill requires **network access** to fetch documentation content:
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L33-L78 | Diagnosing and fixing Nexus infrastructure issues: bare metal/VM recovery, storage and CSI/NFS problems, Kubernetes node/pod failures, network fabric/DNS/LACP/TWAMP, and control-plane health. |
-| Best Practices | L79-L84 | Guidance on Nexus bare metal lifecycle ops, ETCD maintenance in Nexus AKS, and procedures for repairing and maintaining Nexus storage appliance components. |
-| Decision Making | L85-L92 | Guidance on planning Nexus Kubernetes cluster placement and choosing compatible Nexus versions, VM SKUs, and platform SKUs based on workload, capacity, and storage support. |
-| Architecture & Design Patterns | L93-L97 | Designing near-edge storage for Azure Operator Nexus: architecture choices, data locality, performance, capacity planning, redundancy, and integration with Nexus network/compute. |
-| Limits & Quotas | L98-L110 | Nexus platform limits, quotas, supported versions, upgrade cadence, storage planning, node restarts/timeouts, isolation domain requirements, and log behavior after disconnection. |
-| Security | L111-L150 | Securing Nexus: identity/RBAC, ACLs, SSH and serial access, break-glass methods, key/cert/secret rotation, Defender/Policy, managed identities, and secure VM/cluster connectivity. |
-| Configuration | L151-L217 | Configuring and operating Azure Operator Nexus: cluster templates/parameters, Kubernetes and fabric settings, routing/BGP/ACLs, isolation domains, QoS, monitoring, commit workflows, and device/network changes. |
-| Integrations & Coding Patterns | L218-L222 | Configuring Network Packet Broker TAP rules in Azure Operator Nexus, including rule creation, traffic mirroring, filtering, and integration patterns for network observability. |
-| Deployment | L223-L231 | Deploying and maintaining Nexus platform and fabric: prerequisites, image building, OS and fabric upgrades, and replacing or updating terminal servers in the network fabric. |
+| Troubleshooting | L32-L79 | Diagnosing and fixing Azure Operator Nexus issues: bare metal/VM recovery, storage and volume errors, network fabric/DNS/LACP/TWAMP problems, Kubernetes pod/node health, and upgrade/runtime failures. |
+| Best Practices | L80-L85 | Guidance on Nexus bare metal lifecycle ops, ETCD maintenance in Nexus AKS, and procedures for repairing and maintaining Nexus storage appliance components. |
+| Decision Making | L86-L93 | Guidance for planning Nexus cluster placement, choosing Nexus and Kubernetes VM SKUs/versions, and mapping Nexus releases to supported storage software. |
+| Architecture & Design Patterns | L94-L99 | Design patterns and reference architectures for resilient Nexus deployments, including rack-failure-tolerant control planes and near-edge storage topology and capacity planning. |
+| Limits & Quotas | L100-L112 | Limits, capacity planning, supported versions, upgrade cadence, and operational guidance (storage expansion, node restarts, isolation domains, log behavior) for Azure Operator Nexus. |
+| Security | L113-L150 | Securing Nexus: identity/RBAC, ACLs, SSH and serial access, break-glass methods, key/cert/secret rotation, Defender/Policy, managed identities, and secure VM/cluster connectivity. |
+| Configuration | L151-L223 | Configuring and operating Azure Operator Nexus: cluster templates/parameters, fabric ACLs and route policies, BGP/VRF limits, isolation domains, Kubernetes settings, monitoring, security, and upgrade workflows. |
+| Deployment | L224-L231 | Deploying and maintaining Nexus platform and fabric: prerequisites, image building, OS and fabric upgrades, and replacing or updating terminal servers in the network fabric. |
 
 ### Troubleshooting
 | Topic | URL |
@@ -39,15 +38,17 @@ This skill requires **network access** to fetch documentation content:
 | Run emergency bare metal actions with nexusctl | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-baremetal-nexusctl |
 | Use run-data-extract to troubleshoot Nexus bare-metal | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-baremetal-run-data-extract |
 | Troubleshoot bare metal machines with az baremetalmachine run-read-command | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-baremetal-run-read |
+| Resolve preflight check failures for Nexus runtime upgrades | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-cluster-runtime-upgrade-preflight-checks |
 | Gather trace IDs for Nexus PersistentVolumeClaim failures | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-gather-pvc-trace-id |
 | Collect diagnostic data for Nexus VM console issues | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-gather-vm-console-data |
 | Run Nexus Kubernetes cluster log collector script | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-kubernetes-cluster-log-collector-script |
 | Run read-only diagnostics on Nexus storage appliances | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-storage-run-read |
-| Use Operator Nexus diagnostic logs for monitoring | https://learn.microsoft.com/en-us/azure/operator-nexus/list-logs-available |
+| Diagnose and resolve Operator Nexus storage appliance errors | https://learn.microsoft.com/en-us/azure/operator-nexus/reference-storage-appliance-error-messages |
+| Fix Azure Operator Nexus volume operation errors | https://learn.microsoft.com/en-us/azure/operator-nexus/reference-volume-error-messages |
 | Fix Accepted cluster hydration issues in Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/troubleshoot-accepted-cluster-hydration |
 | Diagnose and fix degraded bare metal machines in Azure Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/troubleshoot-bare-metal-machine-degraded |
 | Troubleshoot bare-metal machine provisioning in Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/troubleshoot-bare-metal-machine-provisioning |
-| Resolve warning status messages for bare metal machines in Azure Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/troubleshoot-bare-metal-machine-warning |
+| Diagnose and fix Bare Metal Machine warning states in Azure Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/troubleshoot-bare-metal-machine-warning |
 | Fix Nexus ClusterConnectionStatus Disconnected heartbeat issues | https://learn.microsoft.com/en-us/azure/operator-nexus/troubleshoot-cluster-heartbeat-connection-status-disconnected |
 | Recover control plane quorum loss in Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/troubleshoot-control-plane-quorum |
 | Resolve CSN storage pod containers stuck in creating | https://learn.microsoft.com/en-us/azure/operator-nexus/troubleshoot-csn-storage-pod-container-stuck-in-creating |
@@ -86,24 +87,25 @@ This skill requires **network access** to fetch documentation content:
 | Topic | URL |
 |-------|-----|
 | Plan resource placement for Nexus Kubernetes clusters | https://learn.microsoft.com/en-us/azure/operator-nexus/concepts-nexus-kubernetes-placement |
-| Map Operator Nexus versions to supported storage software | https://learn.microsoft.com/en-us/azure/operator-nexus/reference-near-edge-storage-supported-versions |
 | Select Azure Operator Nexus Kubernetes VM SKUs | https://learn.microsoft.com/en-us/azure/operator-nexus/reference-nexus-kubernetes-cluster-sku |
+| Select and manage supported Kubernetes versions in Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/reference-nexus-kubernetes-cluster-supported-versions |
 | Choose appropriate Azure Operator Nexus SKUs | https://learn.microsoft.com/en-us/azure/operator-nexus/reference-operator-nexus-skus |
 
 ### Architecture & Design Patterns
 | Topic | URL |
 |-------|-----|
+| Design rack-resilient control plane for Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/concepts-rack-resiliency |
 | Design near-edge storage architecture for Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/reference-near-edge-storage |
 
 ### Limits & Quotas
 | Topic | URL |
 |-------|-----|
-| Use Nexus Kubernetes persistent storage classes effectively | https://learn.microsoft.com/en-us/azure/operator-nexus/concepts-storage-kubernetes |
 | Plan storage capacity with multiple Nexus appliances | https://learn.microsoft.com/en-us/azure/operator-nexus/concepts-storage-multiple-appliances |
+| Expand nexus-shared storage capacity in Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-expand-csn-shared-storage |
 | Restart Nexus Kubernetes nodes and handle timeouts | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-kubernetes-cluster-action-restart |
 | Meet technical requirements for Nexus isolation domains | https://learn.microsoft.com/en-us/azure/operator-nexus/reference-isolation-domain-technical-requirements |
 | Review Azure Operator Nexus limits and quotas | https://learn.microsoft.com/en-us/azure/operator-nexus/reference-limits-and-quotas |
-| Supported Kubernetes versions and lifecycle in Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/reference-nexus-kubernetes-cluster-supported-versions |
+| Map storage appliance software versions to Nexus releases | https://learn.microsoft.com/en-us/azure/operator-nexus/reference-near-edge-storage-supported-versions |
 | Operator Nexus platform runtime upgrade cadence and support | https://learn.microsoft.com/en-us/azure/operator-nexus/reference-nexus-platform-runtime-upgrades |
 | Check supported software versions for Azure Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/reference-supported-software-versions |
 | Troubleshoot log disruption after 48-hour Nexus disconnection | https://learn.microsoft.com/en-us/azure/operator-nexus/troubleshoot-logs-disrupted-post-prolonged-disconnection |
@@ -118,7 +120,6 @@ This skill requires **network access** to fetch documentation content:
 | Apply ACLs to Azure Operator Nexus resources | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-apply-access-control-list |
 | Manage emergency SSH access to BMCs with bmckeyset in Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-baremetal-bmc-ssh |
 | Manage emergency SSH access to bare metal machines with baremetalmachinekeyset | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-baremetal-bmm-ssh |
-| Rotate and resynchronize certificates in Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-certificate-rotation |
 | Use managed identities and user resources in Operator Nexus clusters | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-cluster-managed-identity-user-provided-resources |
 | Configure SSH ACLs on Nexus management VPN NNI | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-configure-acls-for-ssh-management-on-access-vpn |
 | Configure Network TAP rules with UAMI-based access in Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-configure-network-tap-rules-with-user-assigned-managed-identity |
@@ -145,16 +146,15 @@ This skill requires **network access** to fetch documentation content:
 | Use VM Console Service for secure Nexus VM access | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-use-vm-console-service |
 | Enroll Nexus VMs with Azure Arc via public relay MI | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-virtual-machines-arc-enroll-with-managed-identities |
 | Create Nexus VMs with managed identities and authenticate | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-virtual-machines-authenticate-with-managed-identities |
-| Configure access control list traffic policies in Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/reference-acl-configuration |
 | Use ACL configuration examples in Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/reference-acl-examples |
 
 ### Configuration
 | Topic | URL |
 |-------|-----|
-| Author cluster.jsonc templates for Nexus clusters | https://learn.microsoft.com/en-us/azure/operator-nexus/cluster-jsonc-example |
-| Define cluster.parameters.jsonc for multi-rack Nexus clusters | https://learn.microsoft.com/en-us/azure/operator-nexus/cluster-parameters-jsonc-example |
-| Use clusterManager.jsonc template for Nexus deployment | https://learn.microsoft.com/en-us/azure/operator-nexus/clustermanager-jsonc-example |
-| Configure clusterManager.parameters.jsonc for Nexus clusters | https://learn.microsoft.com/en-us/azure/operator-nexus/clustermanager-parameters-jsonc-example |
+| Use cluster.jsonc template for Nexus clusters | https://learn.microsoft.com/en-us/azure/operator-nexus/cluster-jsonc-example |
+| Configure cluster.parameters.jsonc for Nexus clusters | https://learn.microsoft.com/en-us/azure/operator-nexus/cluster-parameters-jsonc-example |
+| Use clusterManager.jsonc template for Nexus ARM | https://learn.microsoft.com/en-us/azure/operator-nexus/clustermanager-jsonc-example |
+| Define clusterManager.parameters.jsonc for Nexus ARM | https://learn.microsoft.com/en-us/azure/operator-nexus/clustermanager-parameters-jsonc-example |
 | Apply A/B staged configuration updates in Nexus Fabric | https://learn.microsoft.com/en-us/azure/operator-nexus/concepts-ab-staged-commit-configuration-update-commit-workflow |
 | Define and apply access control lists in Nexus Network Fabric | https://learn.microsoft.com/en-us/azure/operator-nexus/concepts-access-control-lists |
 | Use commit workflow v2 for Nexus Network Fabric changes | https://learn.microsoft.com/en-us/azure/operator-nexus/concepts-commit-workflow-v2 |
@@ -163,23 +163,27 @@ This skill requires **network access** to fetch documentation content:
 | Monitor and detect configuration drift in Nexus Network Fabric | https://learn.microsoft.com/en-us/azure/operator-nexus/concepts-network-fabric-configuration-monitoring |
 | Modify Nexus Fabric devices using read-write commands | https://learn.microsoft.com/en-us/azure/operator-nexus/concepts-network-fabric-read-write-commands |
 | Batch and commit Nexus Network Fabric configuration updates | https://learn.microsoft.com/en-us/azure/operator-nexus/concepts-network-fabric-resource-update-commit |
-| Model terminal servers as Azure Operator Nexus ARM resources | https://learn.microsoft.com/en-us/azure/operator-nexus/concepts-terminal-server-as-resource |
-| Customize CoreDNS and node-local-dns in Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/how-to-customize-kubernetes-cluster-dns |
+| Configure custom DNS via CoreDNS ConfigMaps in Azure Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/how-to-customize-kubernetes-cluster-dns |
 | Create and manage IP prefixes and rules in Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/how-to-ip-prefixes |
 | Create and manage route policies in Operator Nexus Network Fabric | https://learn.microsoft.com/en-us/azure/operator-nexus/how-to-route-policy |
 | Append custom suffixes to Nexus interface descriptions | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-append-custom-suffix-to-interface-descriptions |
+| Configure and automate certificate rotation in Azure Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-certificate-rotation |
 | Check runtime versions of Operator Nexus components | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-check-runtime-version |
 | Manage cluster metrics configurations in Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-cluster-metrics-configuration-management |
+| Use parameterized templates for Nexus cluster runtime upgrades | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-cluster-runtime-upgrade-template |
+| Configure PauseAfterRack strategy for Nexus runtime upgrades | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-cluster-runtime-upgrade-with-pauseafterrack-strategy |
 | Configure BGP prefix limits on CE devices in Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-configure-bgp-prefix-limit-on-customer-edge-devices |
 | Configure BYO storage and UAMI for Nexus Network Fabric | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-configure-bring-your-own-storage-network-fabric |
 | Configure and manage Azure Operator Nexus clusters | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-configure-cluster |
 | Configure diagnostic settings and config drift monitoring in Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-configure-diagnostic-settings-monitor-configuration-differences |
-| Configure L2 and L3 isolation domains in Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-configure-isolation-domain |
+| Configure L2 and L3 isolation domains with Azure CLI | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-configure-isolation-domain |
+| Configure Network Fabric Controller with Azure CLI | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-configure-network-fabric-controller |
+| Configure Azure Operator Nexus network packet broker | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-configure-network-packet-broker |
 | Configure VRF route prefix limits for IPv4/IPv6 on AON CE devices | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-configure-virtual-routing-forwarding-route-prefix-limits-on-devices |
 | Delete Layer 3 isolation domains safely in Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-delete-layer-3-isolation-domains |
 | Disable cgroupsv2 on Nexus Kubernetes nodes | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-disable-cgroupsv2 |
 | Disable or enable Nexus network interfaces administratively | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-disable-enable-network-interface |
-| Disable internal and external networks in Nexus L3 isolation domains | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-disable-internal-external-networks-enabled-layer-3-isolation-domain |
+| Disable and re-enable networks in L3 isolation domains | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-disable-internal-external-networks-enabled-layer-3-isolation-domain |
 | Enable or disable BMP log streaming for Nexus fabric resources | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-enable-log-streaming |
 | Enable Micro-BFD on CE and PE devices in Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-enable-micro-bfd |
 | Install Azure CLI extensions for Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-install-cli-extensions |
@@ -193,7 +197,7 @@ This skill requires **network access** to fetch documentation content:
 | Monitor packet rates for Nexus fabric interfaces in Azure portal | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-monitor-interface-packet-rate |
 | Configure monitoring for Nexus Kubernetes clusters | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-monitor-naks-cluster |
 | Monitor VNF virtual machines on Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-monitor-virtualized-network-functions-virtual-machines |
-| Configure Quality of Service for Nexus Network Fabric via Azure CLI | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-network-fabric-quality-of-service |
+| Configure QoS settings for Azure Operator Nexus network fabric | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-network-fabric-quality-of-service |
 | Deploy Azure Operator Nexus instance via template | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-nexus-instance-deployment-template |
 | Reboot Nexus network devices using graceful and ungraceful modes | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-reboot-network-device |
 | Rotate Azure Local Operator Nexus cluster credentials | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-rotate-credential-api |
@@ -203,6 +207,8 @@ This skill requires **network access** to fetch documentation content:
 | Use Commit Workflow v2 to manage Nexus configuration changes | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-use-commit-workflow-v2 |
 | Configure MDE runtime protection for Operator Nexus clusters | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-use-mde-runtime-protection |
 | Configure placement hints for Nexus virtual machines | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-virtual-machine-placement-hints |
+| Configure and interpret Azure Operator Nexus log categories | https://learn.microsoft.com/en-us/azure/operator-nexus/list-logs-available |
+| Configure traffic policy ACLs in Azure Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/reference-acl-configuration |
 | Configure PE-CE connectivity for Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/reference-customer-edge-provider-edge-connectivity |
 | Configure Azure Operator Nexus isolation domains | https://learn.microsoft.com/en-us/azure/operator-nexus/reference-isolation-domain-configuration |
 | Use isolation domain configuration examples in Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/reference-isolation-domain-configuration-examples |
@@ -215,11 +221,6 @@ This skill requires **network access** to fetch documentation content:
 | Monitor Azure Operator Nexus Ethernet metrics | https://learn.microsoft.com/en-us/azure/operator-nexus/reference-operator-nexus-observability-metrics |
 | Configure route policies in Azure Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/reference-route-policy-configuration |
 
-### Integrations & Coding Patterns
-| Topic | URL |
-|-------|-----|
-| Configure Network Packet Broker TAP rules in Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-configure-network-packet-broker |
-
 ### Deployment
 | Topic | URL |
 |-------|-----|
@@ -227,5 +228,4 @@ This skill requires **network access** to fetch documentation content:
 | Replace a terminal server in Azure Operator Nexus Network Fabric | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-replace-terminal-server |
 | Pre-validate and upgrade Azure Operator Nexus fabric | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-upgrade-nexus-fabric |
 | Use template to upgrade Azure Operator Nexus fabric | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-upgrade-nexus-fabric-template |
-| Upgrade Terminal Server OS in Azure Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-upgrade-os-of-terminal-server |
 | Build VM images for Azure Operator Nexus | https://learn.microsoft.com/en-us/azure/operator-nexus/howto-virtual-machine-image |

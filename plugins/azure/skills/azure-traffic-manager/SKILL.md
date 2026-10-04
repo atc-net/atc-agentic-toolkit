@@ -1,6 +1,6 @@
 ---
 name: azure-traffic-manager
-description: Expert knowledge for Azure Traffic Manager development including troubleshooting, best practices, decision making, architecture & design patterns, security, configuration, and integrations & coding patterns. Use when configuring profiles/endpoints, routing methods, RUM scripts, nested profiles, or Traffic View analytics, and other Azure Traffic Manager related development tasks. Not for Azure Front Door (use azure-front-door), Azure Load Balancer (use azure-load-balancer), Azure Virtual Network (use azure-virtual-network), Azure Virtual WAN (use azure-virtual-wan).
+description: Expert knowledge for Azure Traffic Manager development including troubleshooting, best practices, decision making, architecture & design patterns, security, configuration, and integrations & coding patterns. Use when configuring Traffic Manager profiles, routing methods, IaC (ARM/Bicep/Terraform), Traffic View, or nested designs, and other Azure Traffic Manager related development tasks. Not for Azure Front Door (use azure-front-door), Azure Load Balancer (use azure-load-balancer), Azure Application Gateway (use azure-application-gateway), Azure Virtual WAN (use azure-virtual-wan).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -20,18 +20,19 @@ This skill requires **network access** to fetch documentation content:
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L31-L35 | Testing Traffic Manager routing behavior, verifying endpoint health, and diagnosing/fixing degraded profiles, misconfigurations, and routing issues. |
-| Best Practices | L36-L40 | Guidance on optimizing Traffic Manager profiles, endpoint configuration, monitoring, and routing settings for high performance, reliability, and low-latency global traffic distribution |
-| Decision Making | L41-L46 | Guidance on choosing the right Traffic Manager routing method and using Traffic View analytics to optimize routing decisions and traffic distribution |
-| Architecture & Design Patterns | L47-L54 | Architectural patterns for combining Traffic Manager with other Azure load balancers, nested profiles, App Service integration, and Traffic Manager + Application Gateway designs. |
-| Security | L55-L59 | Best practices for securely configuring Traffic Manager profiles, endpoints, access controls, and monitoring to protect traffic routing and DNS-based load balancing. |
-| Configuration | L60-L81 | Configuring Traffic Manager profiles, endpoints, routing methods (weighted, geographic, subnet, multivalue), DNS/IPv6, monitoring/logs, and using ARM, Bicep, Terraform, CLI, and PowerShell. |
-| Integrations & Coding Patterns | L82-L86 | Using Traffic Manager Real User Measurements (RUM) in apps and web pages, including integrating with Visual Studio App Center and adding the RUM JavaScript to collect user latency data. |
+| Troubleshooting | L31-L36 | Testing Traffic Manager routing behavior, verifying endpoint configuration, and diagnosing/fixing degraded or unhealthy Traffic Manager profiles and endpoints. |
+| Best Practices | L37-L41 | Guidance on optimizing Traffic Manager profiles, endpoint configuration, monitoring, and routing settings for high performance, reliability, and low-latency global traffic distribution |
+| Decision Making | L42-L47 | Guidance on choosing the right Traffic Manager routing method and using Traffic View analytics to optimize routing decisions and traffic distribution |
+| Architecture & Design Patterns | L48-L55 | Architectural patterns for combining Traffic Manager with other Azure load balancers, nested profiles, App Service integration, and Traffic Manager + Application Gateway designs. |
+| Security | L56-L60 | Securing Traffic Manager endpoints and routing, including access control, TLS/HTTPS, DNS security, and best practices for protecting traffic and configurations. |
+| Configuration | L61-L80 | Configuring Traffic Manager profiles, routing methods (weighted, geographic, subnet, MultiValue, nested), endpoints, monitoring/logs, and IaC setup via ARM, Bicep, Terraform, and PowerShell. |
+| Integrations & Coding Patterns | L81-L85 | Using App Center Real User Measurements with Traffic Manager, adding RUM scripts to web pages, and collecting client-side latency/endpoint data for routing and performance analysis. |
 
 ### Troubleshooting
 | Topic | URL |
 |-------|-----|
 | Verify and test Azure Traffic Manager routing configuration | https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-testing-settings |
+| Diagnose and fix Azure Traffic Manager degraded status | https://learn.microsoft.com/en-us/troubleshoot/azure/traffic-manager/troubleshoot-traffic-manager-degraded-status |
 
 ### Best Practices
 | Topic | URL |
@@ -55,32 +56,30 @@ This skill requires **network access** to fetch documentation content:
 ### Security
 | Topic | URL |
 |-------|-----|
-| Secure configuration practices for Azure Traffic Manager | https://learn.microsoft.com/en-us/azure/traffic-manager/secure-traffic-manager |
+| Secure Azure Traffic Manager routing and access | https://learn.microsoft.com/en-us/azure/traffic-manager/secure-traffic-manager |
 
 ### Configuration
 | Topic | URL |
 |-------|-----|
-| Define nested Multivalue routing with ARM templates | https://learn.microsoft.com/en-us/azure/traffic-manager/configure-multivalue-routing-method-template |
-| Configure DNS record types and IPv6 in Traffic Manager | https://learn.microsoft.com/en-us/azure/traffic-manager/dns-record-types |
+| Configure nested Traffic Manager endpoints via ARM | https://learn.microsoft.com/en-us/azure/traffic-manager/configure-multivalue-routing-method-template |
 | Add external endpoints to Traffic Manager via ARM templates | https://learn.microsoft.com/en-us/azure/traffic-manager/how-to-add-endpoint-existing-profile-template |
 | Define Traffic Manager profiles using Bicep | https://learn.microsoft.com/en-us/azure/traffic-manager/quickstart-create-traffic-manager-profile-bicep |
 | Configure Traffic Manager profiles with ARM templates | https://learn.microsoft.com/en-us/azure/traffic-manager/quickstart-create-traffic-manager-profile-template |
 | Provision Traffic Manager profiles using Terraform | https://learn.microsoft.com/en-us/azure/traffic-manager/quickstart-create-traffic-manager-profile-terraform |
 | Configure MultiValue routing profiles in Traffic Manager | https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-configure-multivalue-routing-method |
-| Configure subnet-based routing rules in Traffic Manager | https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-configure-subnet-routing-method |
+| Configure subnet-based routing in Azure Traffic Manager | https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-configure-subnet-routing-method |
 | Enable and use Traffic Manager diagnostic resource logs | https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-diagnostic-logs |
 | Configure geographic routing regions for Traffic Manager | https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-geographic-regions |
 | Manage Traffic Manager endpoints across regions | https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-manage-endpoints |
 | Create and manage Azure Traffic Manager profiles | https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-manage-profiles |
 | Use Traffic Manager metrics and alerts for monitoring | https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-metrics-alerts |
 | Configure endpoint monitoring and health checks in Traffic Manager | https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-monitoring |
-| Manage Azure Traffic Manager with PowerShell (ARM) | https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-powershell-arm |
-| Configure Traffic Manager subnet override via Azure CLI | https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-subnet-override-cli |
+| Configure strictly typed profiles in Azure Traffic Manager | https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-strictly-typed-profiles |
 | Configure Traffic Manager subnet override via PowerShell | https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-subnet-override-powershell |
 | Configure weighted endpoint routing in Traffic Manager | https://learn.microsoft.com/en-us/azure/traffic-manager/tutorial-traffic-manager-weighted-endpoint-routing |
 
 ### Integrations & Coding Patterns
 | Topic | URL |
 |-------|-----|
-| Integrate Visual Studio App Center apps with Traffic Manager RUM | https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-create-rum-visual-studio |
+| Integrate App Center RUM with Azure Traffic Manager | https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-create-rum-visual-studio |
 | Instrument web pages for Traffic Manager Real User Measurements | https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-create-rum-web-pages |

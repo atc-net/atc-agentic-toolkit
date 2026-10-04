@@ -1,12 +1,12 @@
 ---
 name: azure-external-attack-surface-management
-description: Expert knowledge for Azure External Attack Surface Management development including limits & quotas, and configuration. Use when defining EASM asset filters, building inventory queries, or managing billable asset usage and quotas, and other Azure External Attack Surface Management related development tasks. Not for Azure Defender For Cloud (use azure-defender-for-cloud), Azure Security (use azure-security), Azure Sentinel (use azure-sentinel), Azure Firewall Manager (use azure-firewall-manager).
+description: Expert knowledge for Azure External Attack Surface Management development including configuration. Use when filtering EASM inventory by ASN, domains, hosts, IPs, pages, SSL certs, or exporting findings to analytics tools, and other Azure External Attack Surface Management related development tasks. Not for Azure Defender For Cloud (use azure-defender-for-cloud), Azure Security (use azure-security), Azure Sentinel (use azure-sentinel), Azure Networking (use azure-networking).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
 # Azure External Attack Surface Management Skill
 
-This skill provides expert guidance for Azure External Attack Surface Management. Covers limits & quotas, and configuration. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure External Attack Surface Management. Covers configuration. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
@@ -20,24 +20,18 @@ This skill requires **network access** to fetch documentation content:
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Limits & Quotas | L26-L30 | Details on Defender EASM billable asset limits, how usage is measured, and how billing and quotas work for external attack surface management. |
-| Configuration | L31-L43 | Configuring Defender EASM asset filters (domains, hosts, IPs, ASNs, SSL certs, pages, contacts), using inventory filters/saved queries, and connecting EASM data to Log Analytics/ADX. |
-
-### Limits & Quotas
-| Topic | URL |
-|-------|-----|
-| Understand Defender EASM billable asset limits and billing | https://learn.microsoft.com/en-us/azure/external-attack-surface-management/understanding-billable-assets |
+| Configuration | L25-L37 | Configuring and using Defender EASM inventory filters (ASN, domains, hosts, IPs/blocks, pages, SSL certs, contacts) and exporting EASM data to analytics tools. |
 
 ### Configuration
 | Topic | URL |
 |-------|-----|
-| Configure ASN asset filters in Defender EASM | https://learn.microsoft.com/en-us/azure/external-attack-surface-management/asn-asset-filters |
-| Configure contact asset filters in Defender EASM | https://learn.microsoft.com/en-us/azure/external-attack-surface-management/contact-asset-filters |
-| Configure Defender EASM data connections to Log Analytics and ADX | https://learn.microsoft.com/en-us/azure/external-attack-surface-management/data-connections |
-| Configure domain asset filters in Defender EASM | https://learn.microsoft.com/en-us/azure/external-attack-surface-management/domain-asset-filters |
-| Configure host asset filters in Defender EASM | https://learn.microsoft.com/en-us/azure/external-attack-surface-management/host-asset-filters |
-| Use Defender EASM inventory filters and saved queries | https://learn.microsoft.com/en-us/azure/external-attack-surface-management/inventory-filters |
-| Configure IP address asset filters in Defender EASM | https://learn.microsoft.com/en-us/azure/external-attack-surface-management/ip-address-asset-filters |
-| Configure IP block asset filters in Defender EASM | https://learn.microsoft.com/en-us/azure/external-attack-surface-management/ip-block-asset-filters |
-| Configure page asset filters in Defender EASM | https://learn.microsoft.com/en-us/azure/external-attack-surface-management/page-asset-filters |
-| Configure SSL certificate asset filters in Defender EASM | https://learn.microsoft.com/en-us/azure/external-attack-surface-management/ssl-certificate-asset-filters |
+| Filter ASN assets in Defender EASM inventory | https://learn.microsoft.com/en-us/azure/external-attack-surface-management/asn-asset-filters |
+| Use contact asset filters in Defender EASM | https://learn.microsoft.com/en-us/azure/external-attack-surface-management/contact-asset-filters |
+| Configure Defender EASM data exports to analytics | https://learn.microsoft.com/en-us/azure/external-attack-surface-management/data-connections |
+| Configure Defender EASM domain asset filters | https://learn.microsoft.com/en-us/azure/external-attack-surface-management/domain-asset-filters |
+| Apply host asset filters in Defender EASM | https://learn.microsoft.com/en-us/azure/external-attack-surface-management/host-asset-filters |
+| Use Defender EASM inventory filters effectively | https://learn.microsoft.com/en-us/azure/external-attack-surface-management/inventory-filters |
+| Configure IP address filters in Defender EASM | https://learn.microsoft.com/en-us/azure/external-attack-surface-management/ip-address-asset-filters |
+| Filter IP block assets in Defender EASM | https://learn.microsoft.com/en-us/azure/external-attack-surface-management/ip-block-asset-filters |
+| Filter page assets in Defender EASM inventory | https://learn.microsoft.com/en-us/azure/external-attack-surface-management/page-asset-filters |
+| Use SSL certificate asset filters in Defender EASM | https://learn.microsoft.com/en-us/azure/external-attack-surface-management/ssl-certificate-asset-filters |

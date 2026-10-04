@@ -8,24 +8,24 @@
 | Topic | URL |
 |-------|-----|
 | Customize Azure Linux images with Image Customizer | https://learn.microsoft.com/en-us/azure/azure-linux/customize-images |
+| Migrate AKS node pools to Azure Linux | https://learn.microsoft.com/en-us/azure/azure-linux/tutorial-migrate-azure-linux-aks |
 | Migrate Azure availability sets to VM scale sets | https://learn.microsoft.com/en-us/azure/virtual-machines/availability-set-migrate-to-scale-sets |
+| Migrate ADE-encrypted VMs to encryption at host | https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption-migrate |
 | Copy incremental managed disk snapshots across regions | https://learn.microsoft.com/en-us/azure/virtual-machines/disks-copy-incremental-snapshot-across-regions |
-| Deploy nonzonal Premium SSD v2 managed disks | https://learn.microsoft.com/en-us/azure/virtual-machines/disks-deploy-nonzonal-premium-v2 |
-| Deploy Azure Premium SSD v2 managed disks | https://learn.microsoft.com/en-us/azure/virtual-machines/disks-deploy-premium-v2 |
+| Deploy Azure managed disks with ZRS redundancy | https://learn.microsoft.com/en-us/azure/virtual-machines/disks-deploy-zrs |
 | Export ARM templates for resource groups with VM extensions | https://learn.microsoft.com/en-us/azure/virtual-machines/extensions/export-templates |
-| Migrate from Azure HBv2 virtual machines before retirement | https://learn.microsoft.com/en-us/azure/virtual-machines/hbv2-series-overview |
-| Migrate Linux VMs from unmanaged to managed disks using CLI | https://learn.microsoft.com/en-us/azure/virtual-machines/linux/convert-unmanaged-to-managed-disks |
+| Upgrade Azure Disk Encryption on existing disks | https://learn.microsoft.com/en-us/azure/virtual-machines/linux/disk-encryption-upgrade |
 | Use Azure DevOps task to inject artifacts into VM images | https://learn.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-devops-task |
 | Migrate Linux VMs to Azure Premium Storage with Site Recovery | https://learn.microsoft.com/en-us/azure/virtual-machines/linux/migrate-to-premium-storage-using-azure-site-recovery |
+| Deploy GPU-accelerated ThinLinc Linux VDI on Azure | https://learn.microsoft.com/en-us/azure/virtual-machines/linux/thinlinc-linux-vdi |
 | Configure rolling deployments to Linux VMs with Azure Pipelines | https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-devops-azure-pipelines-classic |
 | Move VM maintenance configurations between Azure regions | https://learn.microsoft.com/en-us/azure/virtual-machines/move-region-maintenance-configuration |
 | Move resources tied to VM maintenance configurations across regions | https://learn.microsoft.com/en-us/azure/virtual-machines/move-region-maintenance-configuration-resources |
 | FAQ for moving Azure VMs from regional to zonal availability | https://learn.microsoft.com/en-us/azure/virtual-machines/move-virtual-machines-regional-zonal-faq |
-| Plan for Azure NVv4 virtual machine retirement | https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/gpu-accelerated/nvv4-retirement |
 | Use incremental snapshots for unmanaged disk backup | https://learn.microsoft.com/en-us/azure/virtual-machines/unmanaged-disks-incremental-snapshots |
+| Deploy Premium SSD v2 disks with availability sets | https://learn.microsoft.com/en-us/azure/virtual-machines/use-premium-ssd-v2-with-availability-set |
 | Perform in-place Windows Server upgrades on Azure VMs | https://learn.microsoft.com/en-us/azure/virtual-machines/windows-in-place-upgrade |
 | Migrate Windows VMs from unmanaged to managed disks with PowerShell | https://learn.microsoft.com/en-us/azure/virtual-machines/windows/convert-unmanaged-to-managed-disks |
 | Migrate Windows VMs to Azure Premium Storage with Site Recovery | https://learn.microsoft.com/en-us/azure/virtual-machines/windows/migrate-to-premium-storage-using-azure-site-recovery |
 | Migrate AWS/on-prem VHDs to Azure managed disk VMs | https://learn.microsoft.com/en-us/azure/virtual-machines/windows/on-prem-to-azure |
-| Perform in-place upgrades of RHEL images on Azure VMs | https://learn.microsoft.com/en-us/azure/virtual-machines/workloads/redhat/redhat-in-place-upgrade |
 | Implement blue-green deployments to Azure Linux VMs with Azure Pipelines | https://learn.microsoft.com/en-us/previous-versions/azure/virtual-machines/linux/tutorial-azure-devops-blue-green-strategy |

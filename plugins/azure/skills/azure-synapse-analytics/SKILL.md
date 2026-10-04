@@ -1,6 +1,6 @@
 ---
 name: azure-synapse-analytics
-description: Expert knowledge for Azure Synapse Analytics development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when working with Synapse SQL pools, Spark pools, Synapse Link, PolyBase ELT, or Cosmos DB integrations, and other Azure Synapse Analytics related development tasks. Not for Azure Data Factory (use azure-data-factory), Azure Data Explorer (use azure-data-explorer), Azure Databricks (use azure-databricks), Azure HDInsight (use azure-hdinsight).
+description: Expert knowledge for Azure Synapse Analytics development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when designing Synapse workspaces, SQL/dedicated pools, serverless SQL, Spark pools, or Synapse Link for Cosmos DB, and other Azure Synapse Analytics related development tasks. Not for Azure Data Factory (use azure-data-factory), Azure Data Explorer (use azure-data-explorer), Azure Databricks (use azure-databricks), Azure HDInsight (use azure-hdinsight).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -20,15 +20,15 @@ This skill requires **network access** to fetch documentation content:
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L33-L61 | Diagnosing and fixing Synapse workspace, SQL pool, Spark, Studio, and Synapse Link issues, including connectivity, performance, job failures, tenant moves, and workload misclassification. |
-| Best Practices | L62-L123 | Best practices for Synapse performance, SQL/T-SQL patterns, Spark optimization, indexing/statistics, data loading, and migrating/modernizing from Netezza, Oracle, and Teradata. |
-| Decision Making | L124-L145 | Guidance for choosing Synapse components, migration tools, performance tiers, and cost models, plus planning upgrades, Spark lifecycles, and SQL pool resource and distribution strategies. |
-| Architecture & Design Patterns | L146-L165 | Architecture and design guidance for Synapse workspaces, SQL/serverless/Spark pools, data warehouse migrations, table/distribution/partition strategies, ELT/PolyBase loading, and workload management. |
-| Limits & Quotas | L166-L176 | Synapse SQL and Synapse Link limits: memory/concurrency caps, capacity and quotas, Delta Lake v1 query limits, and feature/known issues for Cosmos DB and SQL Link integrations. |
-| Security | L177-L237 | Securing Synapse workspaces end-to-end: auth and RBAC, network and private endpoints, firewall and data exfiltration, encryption/TDE, policies, managed identities, and secure data access/migration. |
-| Configuration | L238-L286 | Configuring Synapse workspaces, Spark pools, and SQL pools: monitoring, scaling, libraries, backups/restores, workload management, Purview/ML integration, and Synapse Link monitoring. |
-| Integrations & Coding Patterns | L287-L336 | Integrating Synapse with Spark, SQL, ML, storage, Cosmos DB, and external tools; patterns for data movement, querying files, logging/metrics, and managing compute via APIs and automation. |
-| Deployment | L337-L344 | Guides for deploying Synapse workspaces and dedicated SQL pools with CI/CD and ARM templates, plus operational readiness checks and configuring SQL pool maintenance windows. |
+| Troubleshooting | L33-L62 | Diagnosing and fixing Synapse workspace, SQL pool, Spark, Studio, and Synapse Link errors, including connectivity, performance, workload classification, and known issues/workarounds. |
+| Best Practices | L63-L124 | Best practices for Synapse performance, SQL/T-SQL patterns, Spark optimization, indexing/statistics, data loading, and migrating/modernizing from Netezza, Oracle, and Teradata. |
+| Decision Making | L125-L147 | Guidance for choosing Synapse components, migration tools, cost and capacity models, Spark runtimes, and SQL pool generations to design, migrate, and optimize Synapse solutions. |
+| Architecture & Design Patterns | L148-L167 | Architecture and design guidance for Synapse workspaces, SQL/serverless/Spark pools, data warehouse migrations, table/distribution/partition strategies, ELT/PolyBase loading, and workload management. |
+| Limits & Quotas | L168-L180 | Spark runtime versions/support, SQL pool memory/concurrency limits, capacity quotas, and feature/limit details for Delta Lake, Synapse Link for Cosmos DB, and Synapse Link for SQL. |
+| Security | L181-L241 | Securing Synapse workspaces end-to-end: auth and RBAC, network and private endpoints, firewall and data exfiltration, encryption/TDE, policies, managed identities, and secure data access/migration. |
+| Configuration | L242-L288 | Configuring Synapse workspaces, Spark pools, libraries, monitoring/metrics, backups/restore, workload management, and integrations with Purview, Azure ML, and Azure Monitor. |
+| Integrations & Coding Patterns | L289-L338 | Integrating Synapse with Spark, SQL, ML, storage, Cosmos DB, and external tools; patterns for data movement, querying files, logging/metrics, and managing compute via APIs and automation. |
+| Deployment | L339-L346 | Guides for deploying Synapse workspaces and dedicated SQL pools with CI/CD and ARM templates, plus operational readiness checks and configuring SQL pool maintenance windows. |
 
 ### Troubleshooting
 | Topic | URL |
@@ -49,6 +49,7 @@ This skill requires **network access** to fetch documentation content:
 | Diagnose and fix Synapse SQL pool connectivity issues | https://learn.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/sql-data-warehouse-troubleshoot-connectivity |
 | Monitor workload groups and query activity in Synapse portal | https://learn.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/sql-data-warehouse-workload-management-portal-monitor |
 | Troubleshoot common serverless SQL pool issues | https://learn.microsoft.com/en-us/azure/synapse-analytics/sql/resources-self-help-sql-on-demand |
+| Resolve limitations and known issues in Synapse Link for SQL | https://learn.microsoft.com/en-us/azure/synapse-analytics/synapse-link/synapse-link-for-sql-known-issues |
 | Troubleshoot Synapse Link Entra user impersonation issues | https://learn.microsoft.com/en-us/azure/synapse-analytics/synapse-link/troubleshoot/troubleshoot-sql-azure-active-directory |
 | Troubleshoot Synapse Link for Azure SQL after database failover | https://learn.microsoft.com/en-us/azure/synapse-analytics/synapse-link/troubleshoot/troubleshoot-sql-database-failover |
 | Troubleshoot creation of Synapse Link for Azure SQL Database | https://learn.microsoft.com/en-us/azure/synapse-analytics/synapse-link/troubleshoot/troubleshoot-sql-link-creation |
@@ -132,6 +133,7 @@ This skill requires **network access** to fetch documentation content:
 | Select tools for Oracle data warehouse migration to Synapse | https://learn.microsoft.com/en-us/azure/synapse-analytics/migration-guides/oracle/6-microsoft-third-party-migration-tools |
 | Choose Microsoft and third-party tools for Teradata to Synapse migration | https://learn.microsoft.com/en-us/azure/synapse-analytics/migration-guides/teradata/6-microsoft-third-party-migration-tools |
 | Plan and manage Azure Synapse Analytics costs | https://learn.microsoft.com/en-us/azure/synapse-analytics/plan-manage-costs |
+| Choose Synapse Spark runtime release channels | https://learn.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-runtime-release-channels |
 | Plan Synapse Spark runtime lifecycle and support | https://learn.microsoft.com/en-us/azure/synapse-analytics/spark/runtime-for-apache-spark-lifecycle-and-supportability |
 | Plan and execute migration of dedicated SQL pool to Gen2 | https://learn.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/gen2-migration-schedule |
 | Use Azure Advisor recommendations for Synapse SQL | https://learn.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/sql-data-warehouse-concept-recommendations |
@@ -166,13 +168,15 @@ This skill requires **network access** to fetch documentation content:
 ### Limits & Quotas
 | Topic | URL |
 |-------|-----|
+| Understand Spark 3.4 runtime support and lifecycle | https://learn.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-34-runtime |
+| Review Spark 3.5 runtime components and support | https://learn.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-35-runtime |
+| Check supported Spark, Scala, Python versions in Synapse | https://learn.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-version-support |
 | Understand memory and concurrency limits in Synapse SQL pool | https://learn.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/memory-concurrency-limits |
 | Dedicated SQL pool FAQ with service limits | https://learn.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/sql-data-warehouse-overview-faq |
 | Dedicated SQL pool capacity limits and quotas | https://learn.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/sql-data-warehouse-service-capacity-limits |
 | Query Delta Lake v1 with Synapse serverless SQL | https://learn.microsoft.com/en-us/azure/synapse-analytics/sql/query-delta-lake-format |
 | Supported features and limitations of Synapse Link for Cosmos DB | https://learn.microsoft.com/en-us/azure/synapse-analytics/synapse-link/concept-synapse-link-cosmos-db-support |
 | Azure Synapse Link for SQL FAQs and limits | https://learn.microsoft.com/en-us/azure/synapse-analytics/synapse-link/faq |
-| Limitations and known issues for Synapse Link for SQL | https://learn.microsoft.com/en-us/azure/synapse-analytics/synapse-link/synapse-link-for-sql-known-issues |
 
 ### Security
 | Topic | URL |
@@ -243,10 +247,9 @@ This skill requires **network access** to fetch documentation content:
 | Configure and review monitoring for Azure Synapse | https://learn.microsoft.com/en-us/azure/synapse-analytics/guidance/implementation-success-perform-monitoring-review |
 | Link Synapse workspace to Azure Machine Learning | https://learn.microsoft.com/en-us/azure/synapse-analytics/machine-learning/quickstart-integrate-azure-machine-learning |
 | Set up SynapseML environment for Foundry Tools | https://learn.microsoft.com/en-us/azure/synapse-analytics/machine-learning/setup-environment-cognitive-services |
-| Reference monitoring metrics and logs for Synapse Analytics | https://learn.microsoft.com/en-us/azure/synapse-analytics/monitor-synapse-analytics-reference |
+| Reference monitoring metrics for Azure Synapse Analytics | https://learn.microsoft.com/en-us/azure/synapse-analytics/monitor-synapse-analytics-reference |
 | Monitor Apache Spark applications in Synapse Studio | https://learn.microsoft.com/en-us/azure/synapse-analytics/monitoring/how-to-monitor-spark-applications |
 | Runtime components for Synapse Spark 3.3 | https://learn.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-33-runtime |
-| Runtime components for Synapse Spark 3.5 | https://learn.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-35-runtime |
 | Configure autoscale for Apache Spark pools | https://learn.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-autoscale |
 | Manage Apache Spark configuration in Synapse Studio | https://learn.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-azure-create-spark-configuration |
 | Manage Apache Spark libraries in Synapse pools | https://learn.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-azure-portal-add-libraries |
@@ -258,7 +261,6 @@ This skill requires **network access** to fetch documentation content:
 | Use session-scoped libraries in Synapse notebooks | https://learn.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-manage-session-packages |
 | Manage workspace-level libraries for Synapse Spark | https://learn.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-manage-workspace-packages |
 | Configure Apache Spark pool sizes and behavior | https://learn.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-pool-configurations |
-| Select supported Apache Spark runtimes in Synapse | https://learn.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-version-support |
 | Configure Synapse Spark diagnostics to Log Analytics | https://learn.microsoft.com/en-us/azure/synapse-analytics/spark/data-collector-api-to-log-ingestion-api |
 | Configure backup, restore points, and geo-backups for Synapse dedicated SQL pools | https://learn.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/backup-and-restore |
 | Disable geo-backups for Synapse dedicated SQL pool | https://learn.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/disable-geo-backup |

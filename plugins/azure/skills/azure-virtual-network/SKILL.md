@@ -1,12 +1,12 @@
 ---
 name: azure-virtual-network
-description: Expert knowledge for Azure Virtual Network development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, and deployment. Use when configuring VNet peering, gateways, service endpoints, encryption, NVAs, or upgrading Basic to Standard IPs, and other Azure Virtual Network related development tasks. Not for Azure Virtual Network Manager (use azure-virtual-network-manager), Azure Virtual WAN (use azure-virtual-wan), Azure VPN Gateway (use azure-vpn-gateway), Azure ExpressRoute (use azure-expressroute).
+description: Expert knowledge for Azure Virtual Network development including best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, and deployment. Use when configuring VNet peering, subnet delegation, NSGs, service endpoints, or upgrading Basic to Standard public IPs, and other Azure Virtual Network related development tasks. Not for Azure Networking (use azure-networking), Azure Virtual Network Manager (use azure-virtual-network-manager), Azure Virtual WAN (use azure-virtual-wan), Azure VPN Gateway (use azure-vpn-gateway).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
 # Azure Virtual Network Skill
 
-This skill provides expert guidance for Azure Virtual Network. Covers troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
+This skill provides expert guidance for Azure Virtual Network. Covers best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, and deployment. It combines local quick-reference content with remote documentation fetching capabilities.
 
 ## How to Use This Skill
 
@@ -20,37 +20,28 @@ This skill requires **network access** to fetch documentation content:
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L32-L36 | Diagnosing and fixing Azure VM/VNet connectivity issues: routing and NSG problems, NVAs and routing appliances, SMTP blocking, VNet peering, encryption, and VNet deletion errors. |
-| Best Practices | L37-L48 | Best practices for Azure VM/VNet networking: NIC internals, NSGs, outbound access, MTU and TCP/IP tuning, throughput optimization, and using VNet service endpoints securely and efficiently. |
-| Decision Making | L49-L58 | Guidance on design choices: when to use accelerated networking, routing preferences, VNets vs appliances, IP upgrade paths, VNet integration options, and cost/performance trade-offs. |
-| Architecture & Design Patterns | L59-L65 | Designing VNet architectures: subnet extension for migrations, VNet peering, hybrid two-tier apps, traffic mirroring with TAP, topology planning, and custom routing options. |
-| Limits & Quotas | L66-L71 | VM networking limits: MANA support per VM size, static public IP assignment and quotas, and per-VM network throughput caps and constraints. |
-| Security | L72-L81 | Network security for VNets: Kubernetes network policies, layered controls, Azure Policy for VNets, Virtual Network encryption concepts/config, and securing storage egress with service endpoint policies. |
-| Configuration | L82-L113 | Configuring Azure Virtual Network behavior: IPs (public/private/custom), DNS, DHCP, encryption, peering, gateways, monitoring, and MANA settings for VMs, NVAs, and PaaS delegation. |
-| Deployment | L114-L117 | Guidance for upgrading Azure Basic public IP addresses to Standard SKU, including requirements, steps, and considerations for network resources and downtime. |
-
-### Troubleshooting
-| Topic | URL |
-|-------|-----|
-| Register and create Azure Virtual Network routing appliances | https://learn.microsoft.com/en-us/azure/virtual-network/how-to-create-virtual-network-routing-appliance |
+| Best Practices | L31-L39 | Designing secure, high-performance VNets: NSG rule patterns, traffic flow, VM throughput tuning, TCP/IP optimization, and secure use of VNet service endpoints. |
+| Decision Making | L40-L49 | Guidance on choosing VNet-related options: MANA support for VM sizes, upgrading Basic to Standard public IPs, routing preference and unmetered CDN traffic, cost trade-offs, and VNet integration for isolation. |
+| Architecture & Design Patterns | L50-L56 | Designing VNet architectures: subnet extension for migrations, VNet peering, hybrid two-tier apps, traffic mirroring with TAP, topology planning, and custom routing options. |
+| Limits & Quotas | L57-L64 | Network resource limits and behaviors for Azure VMs/VNets: accelerated networking support, public IP quotas, VM throughput caps, and Virtual Network scale/performance constraints. |
+| Security | L65-L74 | Securing virtual networks: Kubernetes network policies, NSG/service tag rules, encryption, storage egress restrictions, and enforcing security/compliance via Azure Policy. |
+| Configuration | L75-L110 | Configuring Azure VNets: IPs (public/private, prefixes, IPv4/IPv6), DNS, MTU, DHCP, subnet delegation/peering, monitoring, and CNI/MANA networking for VMs, NVAs, Kubernetes, and PaaS. |
+| Deployment | L111-L114 | Guidance for upgrading Azure Basic public IP addresses to Standard SKU, including requirements, steps, and considerations for network resources and downtime. |
 
 ### Best Practices
 | Topic | URL |
 |-------|-----|
-| Understand Azure Accelerated Networking internals on Linux | https://learn.microsoft.com/en-us/azure/virtual-network/accelerated-networking-how-it-works |
 | Apply Azure Virtual Network design best practices | https://learn.microsoft.com/en-us/azure/virtual-network/concepts-and-best-practices |
-| Tune MTU settings for Azure virtual machines | https://learn.microsoft.com/en-us/azure/virtual-network/how-to-virtual-machine-mtu |
-| Understand and control default outbound access for Azure VMs | https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/default-outbound-access |
 | Configure Azure NSG rules and traffic processing | https://learn.microsoft.com/en-us/azure/virtual-network/network-security-group-how-it-works |
-| Tune Azure VM network settings for higher throughput | https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-optimize-network-bandwidth |
-| Configure and use Azure VNet service endpoints | https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-service-endpoints-overview |
+| Optimize Azure VM network throughput settings | https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-optimize-network-bandwidth |
+| Implement Azure virtual network service endpoints securely | https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-service-endpoints-overview |
 | Apply TCP/IP performance tuning on Azure VMs | https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-tcpip-performance-tuning |
 
 ### Decision Making
 | Topic | URL |
 |-------|-----|
-| Decide when to use Azure Accelerated Networking | https://learn.microsoft.com/en-us/azure/virtual-network/accelerated-networking-overview |
-| Plan and execute upgrade from Basic to Standard public IPs | https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/public-ip-basic-upgrade-guidance |
+| Decide MANA support for existing Azure VM sizes | https://learn.microsoft.com/en-us/azure/virtual-network/accelerated-networking-mana-existing-sizes |
+| Upgrade Azure Basic public IPs to Standard SKU | https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/public-ip-basic-upgrade-guidance |
 | Choose Azure routing preference via Microsoft or ISP network | https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/routing-preference-overview |
 | Use routing preference unmetered for Azure-to-CDN traffic | https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/routing-preference-unmetered |
 | Optimize Azure Virtual Network costs and trade-offs | https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-cost-optimization |
@@ -66,28 +57,33 @@ This skill requires **network access** to fetch documentation content:
 ### Limits & Quotas
 | Topic | URL |
 |-------|-----|
+| Understand limits and support for Azure Accelerated Networking | https://learn.microsoft.com/en-us/azure/virtual-network/accelerated-networking-overview |
 | Create Azure VM with static public IP and understand IP limits | https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/virtual-network-static-public-ip |
 | Understand Azure VM network throughput limits | https://learn.microsoft.com/en-us/azure/virtual-network/virtual-machine-network-throughput |
+| Understand Azure Virtual Network limits and behaviors | https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq |
 
 ### Security
 | Topic | URL |
 |-------|-----|
 | Configure Kubernetes network policies on Azure | https://learn.microsoft.com/en-us/azure/virtual-network/kubernetes-network-policies |
-| Secure Azure Virtual Network deployments with layered controls | https://learn.microsoft.com/en-us/azure/virtual-network/secure-virtual-network |
+| Apply security controls to Azure Virtual Network deployments | https://learn.microsoft.com/en-us/azure/virtual-network/secure-virtual-network |
 | Apply Azure Policy compliance controls to Virtual Network | https://learn.microsoft.com/en-us/azure/virtual-network/security-controls-policy |
+| Configure Azure service tags for network security rules | https://learn.microsoft.com/en-us/azure/virtual-network/service-tags-overview |
 | Configure and manage Azure Virtual Network encryption | https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-encryption-faq |
-| Understand and use Azure Virtual Network encryption | https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-encryption-overview |
 | Secure Azure Storage egress with service endpoint policies | https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-service-endpoint-policies-overview |
 
 ### Configuration
 | Topic | URL |
 |-------|-----|
-| Configure MANA for Linux Azure virtual machines | https://learn.microsoft.com/en-us/azure/virtual-network/accelerated-networking-mana-linux |
-| Configure MANA support and opt-out for Azure NVAs | https://learn.microsoft.com/en-us/azure/virtual-network/accelerated-networking-mana-network-virtual-appliance-opt-out |
+| Configure Azure Network Adapter (MANA) for Linux VMs | https://learn.microsoft.com/en-us/azure/virtual-network/accelerated-networking-mana-linux |
+| Configure MANA behavior for NVAs on existing VM sizes | https://learn.microsoft.com/en-us/azure/virtual-network/accelerated-networking-mana-network-virtual-appliance-opt-out |
+| Configure Azure CNI for Kubernetes virtual networks | https://learn.microsoft.com/en-us/azure/virtual-network/deploy-container-networking |
+| Install and configure Azure CNI on Linux Docker hosts | https://learn.microsoft.com/en-us/azure/virtual-network/deploy-container-networking-docker-linux |
 | Configure advertised gateway prefixes for hub VNets | https://learn.microsoft.com/en-us/azure/virtual-network/how-to-advertised-gateway-prefixes |
-| Configure subnet peering for Azure virtual networks | https://learn.microsoft.com/en-us/azure/virtual-network/how-to-configure-subnet-peering |
+| Configure subnet peering in Azure virtual networks | https://learn.microsoft.com/en-us/azure/virtual-network/how-to-configure-subnet-peering |
 | Create and configure an encrypted Azure virtual network | https://learn.microsoft.com/en-us/azure/virtual-network/how-to-create-encryption |
 | Deploy a DHCP server VM for on-premises clients | https://learn.microsoft.com/en-us/azure/virtual-network/how-to-dhcp-azure |
+| Configure MTU settings for Azure virtual machines | https://learn.microsoft.com/en-us/azure/virtual-network/how-to-virtual-machine-mtu |
 | Configure public IP addresses for Azure Application Gateway frontends | https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/configure-public-ip-application-gateway |
 | Configure public IP addresses for Azure Firewall deployments | https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/configure-public-ip-firewall |
 | Configure public IP usage with Azure Load Balancer | https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/configure-public-ip-load-balancer |
@@ -96,13 +92,14 @@ This skill requires **network access** to fetch documentation content:
 | Configure public IP addresses for Azure VPN gateways | https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/configure-public-ip-vpn-gateway |
 | Onboard and configure custom IPv6 address prefixes in Azure | https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/create-custom-ip-address-prefix-ipv6-portal |
 | Onboard and configure custom IPv4 address prefixes in Azure | https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/create-custom-ip-address-prefix-portal |
+| Configure default outbound access for Azure VMs | https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/default-outbound-access |
 | Manage Azure custom IP address prefixes and migrations | https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/manage-custom-ip-address-prefix |
 | Create and manage Azure public IP address prefixes | https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/manage-public-ip-address-prefix |
 | Configure monitoring and alerts for Azure Public IP addresses | https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/monitor-public-ip |
-| Reference metrics and logs for monitoring Azure Public IPs | https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/monitor-public-ip-reference |
+| Use Azure Monitor metrics for Public IP addresses | https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/monitor-public-ip-reference |
 | Configure Azure public IP address prefixes and zones | https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/public-ip-address-prefix |
 | Configure private and public IPs on Azure network interfaces | https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/virtual-network-network-interface-addresses |
-| Create and manage Azure public IP address resources | https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/virtual-network-public-ip-address |
+| Configure and manage Azure public IP addresses | https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/virtual-network-public-ip-address |
 | Configure monitoring for Azure Virtual Network with Azure Monitor | https://learn.microsoft.com/en-us/azure/virtual-network/monitor-virtual-network |
 | Reference for Azure Virtual Network monitoring data | https://learn.microsoft.com/en-us/azure/virtual-network/monitor-virtual-network-reference |
 | Use built-in Azure Policy definitions for Virtual Network | https://learn.microsoft.com/en-us/azure/virtual-network/policy-reference |

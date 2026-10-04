@@ -1,6 +1,6 @@
 ---
 name: azure-data-explorer
-description: Expert knowledge for Azure Data Explorer development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when configuring ADX clusters, private endpoints, follower DBs, streaming ingestion, or Power BI integration, and other Azure Data Explorer related development tasks. Not for Azure Synapse Analytics (use azure-synapse-analytics), Azure HDInsight (use azure-hdinsight), Azure Databricks (use azure-databricks), Azure Stream Analytics (use azure-stream-analytics).
+description: Expert knowledge for Azure Data Explorer development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when securing ADX (RBAC, managed identities), automating cluster/schema deployment, integrating via ODBC/JDBC, tuning ingestion, or designing DR/multitenant architectures, and other Azure Data Explorer related development tasks. Not for Azure Synapse Analytics (use azure-synapse-analytics), Azure Stream Analytics (use azure-stream-analytics), Azure HDInsight (use azure-hdinsight), Azure Databricks (use azure-databricks).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -20,20 +20,21 @@ This skill requires **network access** to fetch documentation content:
 
 | Category | Lines | Description |
 |----------|-------|-------------|
-| Troubleshooting | L33-L44 | Diagnosing and fixing ADX cluster health, creation, connection, private endpoint, ingestion, and DB/table operation errors, including interpreting ingestion error codes and using Resource Health. |
-| Best Practices | L45-L55 | Guidance on ADX performance and reliability: schema design, handling duplicates, JSON ingestion, monitoring queued ingestion, hot/cold data querying, high concurrency, and Power BI integration. |
-| Decision Making | L56-L70 | Guidance on ADX cluster sizing and SKUs, cost and reservations, business continuity, confidential/isolated compute, streaming ingestion choices, and migrating from Elasticsearch. |
-| Architecture & Design Patterns | L71-L77 | Patterns for ADX deployment: regional DR and replication, cross-cluster access via follower DBs, and multitenant cluster/database design choices. |
-| Limits & Quotas | L78-L87 | Cluster limits and behaviors: free cluster quotas, auto-stop, safe delete/recover, ingestion file size and invalid data handling, and supported data/compression formats. |
-| Security | L88-L115 | Configuring ADX security: auth/RBAC, managed identities, encryption/CMK, network isolation (private endpoints, outbound/public access), policies, compliance, and data privacy (purge). |
-| Configuration | L116-L129 | Configuring ADX clusters, schemas, policies, plugins, and data connections, plus emulator setup, KQL/T-SQL use, monitoring refs, and web UI settings/profiles/shortcuts. |
-| Integrations & Coding Patterns | L130-L163 | Integrating ADX with tools and services (SQL, ODBC/JDBC, Power Automate/Apps, Logic Apps, Grafana, Splunk, OpenTelemetry, Functions, Purview) and coding/query patterns for these connectors. |
-| Deployment | L164-L170 | Provisioning and automating ADX environments, deploying schema via Azure DevOps, and migrating clusters to availability zones and from VNet injection to private endpoints. |
+| Troubleshooting | L33-L45 | Diagnosing and fixing ADX cluster health, creation, connection, private endpoint, ingestion, and DB/table operation errors, including interpreting ingestion error codes and using Resource Health. |
+| Best Practices | L46-L57 | Guidance on optimizing ADX clusters and schemas, handling duplicates and JSON ingestion, tuning for high concurrency, monitoring queued ingestion, using hot windows, and applying Power BI best practices. |
+| Decision Making | L58-L72 | Guidance on ADX capacity planning, SKU and compute choices, scaling, cost optimization, reservations, business continuity, confidential compute, streaming ingestion, and Elasticsearch migration. |
+| Architecture & Design Patterns | L73-L79 | Designing ADX architectures for DR/BCP, cross-cluster access via follower DBs, and multitenant patterns (isolation, scaling, and resource sharing). |
+| Limits & Quotas | L80-L89 | Cluster limits and behaviors: free cluster quotas, auto-stop, safe delete/recover, ingestion file size and invalid data handling, and supported data/compression formats. |
+| Security | L90-L117 | Securing Azure Data Explorer: authn/z (RBAC, principals, Entra apps, Conditional Access), encryption, managed identities, network isolation, policies, data purging, and outbound/public access control. |
+| Configuration | L118-L132 | Configuring ADX environments: database/table policies, retention/cache, cross-tenant Event Hubs, Kusto emulator, plugins, monitoring, schema sync, T-SQL, and web UI settings/shortcuts. |
+| Integrations & Coding Patterns | L133-L167 | Integrating Azure Data Explorer with tools and platforms (SQL, ODBC/JDBC, Power Automate/Apps, Functions, Grafana, Splunk, OpenTelemetry, etc.) and coding patterns for querying, ingestion, and automation. |
+| Deployment | L168-L174 | Automating ADX cluster provisioning and schema deployment, plus guidance for migrating clusters to availability zones and from VNet injection to private endpoints. |
 
 ### Troubleshooting
 | Topic | URL |
 |-------|-----|
 | Monitor and troubleshoot Azure Data Explorer cluster health | https://learn.microsoft.com/en-us/azure/data-explorer/check-cluster-health |
+| Diagnose and fix Azure Data Explorer dashboard tile errors | https://learn.microsoft.com/en-us/azure/data-explorer/dashboard-troubleshoot-tile-errors |
 | Interpret ADX ingestion error codes and failures | https://learn.microsoft.com/en-us/azure/data-explorer/error-codes |
 | Resolve common Azure Data Explorer ingestion issues | https://learn.microsoft.com/en-us/azure/data-explorer/ingestion-faq |
 | Use Resource Health to diagnose ADX issues | https://learn.microsoft.com/en-us/azure/data-explorer/monitor-with-resource-health |
@@ -45,6 +46,7 @@ This skill requires **network access** to fetch documentation content:
 ### Best Practices
 | Topic | URL |
 |-------|-----|
+| Apply Azure Advisor recommendations to optimize Data Explorer clusters | https://learn.microsoft.com/en-us/azure/data-explorer/azure-advisor |
 | Handle duplicate data in Azure Data Explorer | https://learn.microsoft.com/en-us/azure/data-explorer/dealing-with-duplicates |
 | Optimize Azure Data Explorer clusters for high-concurrency workloads | https://learn.microsoft.com/en-us/azure/data-explorer/high-concurrency |
 | Use hot windows to efficiently query cold data in Azure Data Explorer | https://learn.microsoft.com/en-us/azure/data-explorer/hot-windows |
@@ -66,12 +68,12 @@ This skill requires **network access** to fetch documentation content:
 | Use ADX pricing calculator for cluster planning | https://learn.microsoft.com/en-us/azure/data-explorer/pricing-calculator |
 | Optimize ADX cost per GB ingested | https://learn.microsoft.com/en-us/azure/data-explorer/pricing-cost-drivers |
 | Understand ADX reservation discount application | https://learn.microsoft.com/en-us/azure/data-explorer/pricing-reservation-discount |
-| Buy ADX reserved capacity to reduce markup costs | https://learn.microsoft.com/en-us/azure/data-explorer/pricing-reserved-capacity |
+| Choose and purchase Azure Data Explorer reserved capacity | https://learn.microsoft.com/en-us/azure/data-explorer/pricing-reserved-capacity |
 
 ### Architecture & Design Patterns
 | Topic | URL |
 |-------|-----|
-| Design ADX regional DR and replication solutions | https://learn.microsoft.com/en-us/azure/data-explorer/business-continuity-create-solution |
+| Design Azure Data Explorer business continuity and DR | https://learn.microsoft.com/en-us/azure/data-explorer/business-continuity-create-solution |
 | Use follower databases for cross-cluster ADX access | https://learn.microsoft.com/en-us/azure/data-explorer/follower |
 | Choose multitenant architectures for Azure Data Explorer | https://learn.microsoft.com/en-us/azure/data-explorer/multi-tenant |
 
@@ -96,16 +98,16 @@ This skill requires **network access** to fetch documentation content:
 | Configure cross-tenant access for Azure Data Explorer | https://learn.microsoft.com/en-us/azure/data-explorer/cross-tenant-query-and-commands |
 | Configure customer-managed keys for Azure Data Explorer | https://learn.microsoft.com/en-us/azure/data-explorer/customer-managed-keys |
 | Purge personal data from Azure Data Explorer | https://learn.microsoft.com/en-us/azure/data-explorer/data-purge-portal |
-| Authenticate external tables with managed identities | https://learn.microsoft.com/en-us/azure/data-explorer/external-tables-managed-identities |
+| Authenticate Azure Data Explorer external tables with managed identities | https://learn.microsoft.com/en-us/azure/data-explorer/external-tables-managed-identities |
 | Ingest data using managed identity authentication | https://learn.microsoft.com/en-us/azure/data-explorer/ingest-data-managed-identity |
 | Configure and manage Azure Data Explorer cluster locks | https://learn.microsoft.com/en-us/azure/data-explorer/manage-cluster-locks |
 | Configure Azure Data Explorer cluster RBAC permissions | https://learn.microsoft.com/en-us/azure/data-explorer/manage-cluster-permissions |
-| Configure database and table RBAC in Azure Data Explorer | https://learn.microsoft.com/en-us/azure/data-explorer/manage-database-permissions |
+| Configure database RBAC permissions in Azure Data Explorer | https://learn.microsoft.com/en-us/azure/data-explorer/manage-database-permissions |
 | Use managed identities with Azure Data Explorer | https://learn.microsoft.com/en-us/azure/data-explorer/managed-identities-overview |
 | Apply built-in Azure Policy definitions to ADX | https://learn.microsoft.com/en-us/azure/data-explorer/policy-reference |
 | Securely connect private-endpoint clusters to Power BI | https://learn.microsoft.com/en-us/azure/data-explorer/power-bi-private-endpoint |
 | Create and authorize Microsoft Entra apps for Data Explorer | https://learn.microsoft.com/en-us/azure/data-explorer/provision-entra-id-app |
-| Enable conditional access policies for Azure Data Explorer | https://learn.microsoft.com/en-us/azure/data-explorer/security-conditional-access |
+| Configure Conditional Access for Azure Data Explorer | https://learn.microsoft.com/en-us/azure/data-explorer/security-conditional-access |
 | Apply Azure Policy compliance controls to Data Explorer | https://learn.microsoft.com/en-us/azure/data-explorer/security-controls-policy |
 | Configure managed private endpoints for Data Explorer | https://learn.microsoft.com/en-us/azure/data-explorer/security-network-managed-private-endpoint-create |
 | Plan network security for Azure Data Explorer clusters | https://learn.microsoft.com/en-us/azure/data-explorer/security-network-overview |
@@ -119,11 +121,12 @@ This skill requires **network access** to fetch documentation content:
 | Use KQL database scripts in ARM deployments | https://learn.microsoft.com/en-us/azure/data-explorer/database-script |
 | Programmatically create Azure Data Explorer database and table policies | https://learn.microsoft.com/en-us/azure/data-explorer/database-table-policies |
 | Create cross-tenant Event Hubs data connections for Azure Data Explorer | https://learn.microsoft.com/en-us/azure/data-explorer/ingest-data-cross-tenant |
-| Install and run the ADX Kusto emulator | https://learn.microsoft.com/en-us/azure/data-explorer/kusto-emulator-install |
+| Install and configure Azure Data Explorer Kusto emulator | https://learn.microsoft.com/en-us/azure/data-explorer/kusto-emulator-install |
 | Manage language extension plugins in Azure Data Explorer | https://learn.microsoft.com/en-us/azure/data-explorer/language-extensions |
-| Reference metrics and logs for Azure Data Explorer monitoring | https://learn.microsoft.com/en-us/azure/data-explorer/monitor-data-explorer-reference |
+| Configure Azure Data Explorer monitoring reference settings | https://learn.microsoft.com/en-us/azure/data-explorer/monitor-data-explorer-reference |
 | Synchronize ADX schema with Sync Kusto tool | https://learn.microsoft.com/en-us/azure/data-explorer/sync-kusto |
 | Use T-SQL queries against Azure Data Explorer | https://learn.microsoft.com/en-us/azure/data-explorer/t-sql |
+| Configure Azure Data Explorer table retention and cache | https://learn.microsoft.com/en-us/azure/data-explorer/table-retention-policy-wizard |
 | Customize Azure Data Explorer web UI environment settings | https://learn.microsoft.com/en-us/azure/data-explorer/web-customize-settings |
 | Use Azure Data Explorer web UI query keyboard shortcuts | https://learn.microsoft.com/en-us/azure/data-explorer/web-ui-query-keyboard-shortcuts |
 
@@ -139,12 +142,13 @@ This skill requires **network access** to fetch documentation content:
 | Use ADX connector in Power Automate flows | https://learn.microsoft.com/en-us/azure/data-explorer/flow |
 | Automate ADX queries with Power Automate examples | https://learn.microsoft.com/en-us/azure/data-explorer/flow-usage |
 | Configure Grafana integration with Azure Data Explorer | https://learn.microsoft.com/en-us/azure/data-explorer/grafana |
+| Configure Event Grid ingestion from storage to Azure Data Explorer | https://learn.microsoft.com/en-us/azure/data-explorer/ingest-data-event-grid-overview |
 | Ingest Splunk Enterprise data into Azure Data Explorer | https://learn.microsoft.com/en-us/azure/data-explorer/ingest-data-splunk |
 | Ingest data from Splunk Universal Forwarder into Azure Data Explorer | https://learn.microsoft.com/en-us/azure/data-explorer/ingest-data-splunk-uf |
 | Configure Telegraf Azure Data Explorer output plugin | https://learn.microsoft.com/en-us/azure/data-explorer/ingest-data-telegraf |
 | Use ADX input/output bindings in Azure Functions | https://learn.microsoft.com/en-us/azure/data-explorer/integrate-azure-functions |
 | Integrate MCP servers with Azure Data Explorer | https://learn.microsoft.com/en-us/azure/data-explorer/integrate-mcp-servers |
-| Configure K2Bridge to use Azure Data Explorer in Kibana | https://learn.microsoft.com/en-us/azure/data-explorer/k2bridge |
+| Connect Azure Data Explorer to Kibana via K2Bridge | https://learn.microsoft.com/en-us/azure/data-explorer/k2bridge |
 | Query ADX from Jupyter using Kqlmagic | https://learn.microsoft.com/en-us/azure/data-explorer/kqlmagic |
 | Query ADX as a linked server from SQL Server | https://learn.microsoft.com/en-us/azure/data-explorer/linked-server |
 | Run ADX queries via Logic Apps connector | https://learn.microsoft.com/en-us/azure/data-explorer/logic-apps |
@@ -166,5 +170,5 @@ This skill requires **network access** to fetch documentation content:
 |-------|-----|
 | Automate provisioning of Azure Data Explorer environments | https://learn.microsoft.com/en-us/azure/data-explorer/automated-deploy-overview |
 | Use Azure DevOps pipelines for Azure Data Explorer schema deployment | https://learn.microsoft.com/en-us/azure/data-explorer/devops |
-| Migrate Azure Data Explorer clusters to availability zones | https://learn.microsoft.com/en-us/azure/data-explorer/migrate-cluster-to-multiple-availability-zone |
+| Migrate Azure Data Explorer clusters to multiple availability zones | https://learn.microsoft.com/en-us/azure/data-explorer/migrate-cluster-to-multiple-availability-zone |
 | Migrate Azure Data Explorer VNet injection to private endpoints | https://learn.microsoft.com/en-us/azure/data-explorer/security-network-migrate-vnet-to-private-endpoint |

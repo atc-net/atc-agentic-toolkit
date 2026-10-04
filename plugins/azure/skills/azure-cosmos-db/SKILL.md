@@ -1,6 +1,6 @@
 ---
 name: azure-cosmos-db
-description: Expert knowledge for Azure Cosmos DB development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when using Cosmos DB NoSQL/Mongo/Cassandra/PostgreSQL APIs, change feed, vector search, multi-region, or AI/RAG workloads, and other Azure Cosmos DB related development tasks. Not for Azure Table Storage (use azure-table-storage), Azure SQL Database (use azure-sql-database), Azure Database for MySQL (use azure-database-mysql), Azure Database for PostgreSQL (use azure-database-postgresql).
+description: Expert knowledge for Azure Cosmos DB development including troubleshooting, best practices, decision making, architecture & design patterns, limits & quotas, security, configuration, integrations & coding patterns, and deployment. Use when using NoSQL/Mongo/Cassandra/Gremlin/PostgreSQL APIs, change feed, vector search, multi-region HA, or CI/CD deployments, and other Azure Cosmos DB related development tasks. Not for Azure Table Storage (use azure-table-storage), Azure SQL Database (use azure-sql-database), Azure SQL Managed Instance (use azure-sql-managed-instance), Azure Data Explorer (use azure-data-explorer).
 compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
 user-invocable: false
 ---
@@ -18,17 +18,17 @@ This skill requires **network access** to fetch documentation content:
 
 ## Category Index
 
-| Category | Location | Description |
-|----------|----------|-------------|
-| Troubleshooting | L33-L86 | Diagnosing and fixing Cosmos DB issues across APIs (Cassandra, Gremlin, MongoDB, PostgreSQL, SQL), including errors, timeouts, performance, encryption/CMK, connectivity, and SDK/client problems. |
-| Best Practices | L87-L153 | Performance, cost, resiliency, and SDK best practices for Cosmos DB (NoSQL, Mongo, Cassandra, PostgreSQL), including partitioning, indexing, RU optimization, change feed, DR, and HA. |
-| Decision Making | L154-L215 | Guides for choosing Cosmos DB/DocumentDB/PostgreSQL options (throughput, consistency, regions, pricing) and planning migrations, upgrades, analytics, and vector index strategies. |
-| Architecture & Design Patterns | L216-L247 | Architectural patterns for AI/RAG, agent memory, knowledge graphs, multi-tenant and microservice designs, high availability, change feed, analytics, and vector search on Cosmos DB and PostgreSQL. |
-| Limits & Quotas | L248-L288 | Limits, quotas, and behaviors for Cosmos DB (and DocumentDB): throughput, autoscale, burst, partitions, backups/restore, serverless, free tier, indexing, Gremlin, PostgreSQL, and Cassandra. |
-| Security | L289-L361 | Securing Cosmos DB across all APIs: identity/RBAC, network isolation, encryption/CMK, auditing, firewall/TLS, data masking, Defender/Policy governance, and PostgreSQL/Cassandra/Mongo-specific hardening. |
-| Configuration | L362-L491 | Configuring Cosmos DB and related services: throughput, indexing, backup/restore, monitoring, emulators, vector/search, multi-region, Cassandra/Mongo/PostgreSQL/Table APIs, and SDK performance/observability. |
-| Integrations & Coding Patterns | [integrations.md](integrations.md) | SDK usage patterns, bulk ops, change feed, vector search, Kafka/Spark/BI integrations, and language-specific samples for connecting, migrating, and querying all Cosmos DB APIs. |
-| Deployment | [deployment.md](deployment.md) | Deploying and managing Cosmos DB (NoSQL, Mongo, Cassandra, PostgreSQL, Table, DocumentDB) with Bicep/ARM/Terraform, CI/CD, emulator, migrations, upgrades, and maintenance. |
+| Category | Lines | Description |
+|----------|-------|-------------|
+| Troubleshooting | L33-L83 | Diagnosing and fixing Cosmos DB issues across APIs and SDKs: connection and timeout errors, RU/latency problems, encryption/CMK and replication issues, and advanced diagnostics/log queries. |
+| Best Practices | L84-L136 | Performance, scaling, partitioning, RU/cost optimization, SDK usage, change feed, resilience/DR, and best practices for Cosmos DB APIs (NoSQL, MongoDB, Cassandra, PostgreSQL, vector). |
+| Decision Making | L137-L187 | Guides for choosing Cosmos DB deployment, scaling, consistency, backup, pricing, and migration options across SQL, MongoDB, Cassandra, Table, and PostgreSQL APIs. |
+| Architecture & Design Patterns | L188-L213 | Patterns and reference architectures for AI agents, change feed, analytics, multi-region HA, SaaS/multi-tenant design, microservices, and vector/AI search on Cosmos DB and Cosmos DB for PostgreSQL. |
+| Limits & Quotas | L214-L248 | Limits, quotas, and behaviors for Cosmos DB throughput, partitions, backup/restore, serverless, APIs (Cassandra, Gremlin, Table), integrated cache, and PostgreSQL clusters. |
+| Security | L249-L314 | Securing Cosmos DB: encryption, keys, RBAC/Entra ID, network isolation (VNet, Private Link, firewalls), auditing, data masking, TLS, and security best practices across all APIs. |
+| Configuration | L315-L441 | Configuring and tuning Azure Cosmos DB and its APIs (NoSQL, Mongo, Cassandra, Gremlin, Table, PostgreSQL): throughput, indexing, backup/restore, monitoring, SDK performance, fleets, emulators, and HA. |
+| Integrations & Coding Patterns | L442-L568 | SDK patterns, bulk ops, change feed, vector search, Kafka/Spark/Kafka Connect, language-specific samples, and integrations for NoSQL, Cassandra, Mongo, Gremlin, and PostgreSQL APIs. |
+| Deployment | L569-L594 | Deploying and migrating Cosmos DB (NoSQL, MongoDB, Cassandra, PostgreSQL, Table) using Bicep, ARM, Terraform, CI/CD, emulator, AKS, and handling upgrades, restores, and maintenance. |
 
 ### Troubleshooting
 | Topic | URL |
@@ -45,7 +45,7 @@ This skill requires **network access** to fetch documentation content:
 | Interpret Cosmos DB Gremlin response headers for debugging | https://learn.microsoft.com/en-us/azure/cosmos-db/gremlin/headers |
 | Use diagnostics queries to troubleshoot Cosmos DB MongoDB | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/diagnostic-queries |
 | Resolve common Azure Cosmos DB MongoDB error codes | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/error-codes-solutions |
-| Resolve common Azure Cosmos DB for MongoDB issues | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/faq |
+| Resolve common issues for Azure Cosmos DB MongoDB API | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/faq |
 | Prevent rate-limiting errors in Cosmos DB MongoDB operations | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/prevent-rate-limiting-errors |
 | Troubleshoot query performance issues in Cosmos DB MongoDB | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/troubleshoot-query-performance |
 | Use aggregated diagnostics logs to troubleshoot Cosmos DB requests | https://learn.microsoft.com/en-us/azure/cosmos-db/monitor-aggregated-logs |
@@ -80,9 +80,6 @@ This skill requires **network access** to fetch documentation content:
 | Troubleshoot Cosmos DB service unavailable connectivity errors | https://learn.microsoft.com/en-us/azure/cosmos-db/troubleshoot-service-unavailable |
 | Troubleshoot Cosmos DB 401 unauthorized access errors | https://learn.microsoft.com/en-us/azure/cosmos-db/troubleshoot-unauthorized |
 | Use Cosmos DB metrics and insights to debug common issues | https://learn.microsoft.com/en-us/azure/cosmos-db/use-metrics |
-| Troubleshoot CMK-based encryption issues in Azure DocumentDB | https://learn.microsoft.com/en-us/azure/documentdb/how-to-database-encryption-troubleshoot |
-| Diagnose and fix common Azure DocumentDB errors | https://learn.microsoft.com/en-us/azure/documentdb/troubleshoot-common-issues |
-| Troubleshoot Azure DocumentDB replication issues | https://learn.microsoft.com/en-us/azure/documentdb/troubleshoot-replication |
 
 ### Best Practices
 | Topic | URL |
@@ -96,14 +93,11 @@ This skill requires **network access** to fetch documentation content:
 | Adapt Apache Cassandra apps to Cosmos DB Cassandra | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/adoption |
 | Consume change feed from Cosmos DB Cassandra | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/change-feed |
 | Map Cassandra consistency levels to Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/consistency-mapping |
-| Configure Cosmos DB Cassandra extension driver settings | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/driver-extensions |
+| Apply recommended driver settings for Cosmos DB Cassandra | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/driver-extensions |
 | Measure RU charges for Cosmos DB Cassandra queries | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/find-request-unit-charge |
-| Use lightweight transactions in Cosmos DB Cassandra | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/lightweight-transactions |
 | Use materialized views (preview) in Cosmos DB Cassandra | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/materialized-views |
 | Design partitions for Cosmos DB Cassandra workloads | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/partitioning |
 | Avoid rate limiting with server-side retry in Cosmos DB Cassandra | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/prevent-rate-limiting-errors |
-| Use secondary indexing in Cosmos DB Cassandra | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/secondary-indexing |
-| Use tokens and token() with Cosmos DB Cassandra | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/tokens |
 | Implement and consume Azure Cosmos DB change feed | https://learn.microsoft.com/en-us/azure/cosmos-db/change-feed |
 | Design resilient Cosmos DB SDK client applications | https://learn.microsoft.com/en-us/azure/cosmos-db/conceptual-resilient-sdk-applications |
 | Understand Cosmos DB conflict types and policies | https://learn.microsoft.com/en-us/azure/cosmos-db/conflict-resolution-policies |
@@ -115,12 +109,11 @@ This skill requires **network access** to fetch documentation content:
 | Enable autoscale throughput for Cosmos DB resources | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-provision-autoscale-throughput |
 | Use shared database throughput safely in Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-provision-database-throughput |
 | Monitor Azure Cosmos DB change feed processor progress | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-use-change-feed-estimator |
-| Merge Cosmos DB partitions to reduce fragmentation | https://learn.microsoft.com/en-us/azure/cosmos-db/merge |
 | Model and partition real-world data in Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/model-partition-example |
 | Redistribute throughput across Cosmos DB MongoDB partitions | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/distribute-throughput-across-partitions |
 | Optimize Cosmos DB for MongoDB indexing configuration | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/indexing |
 | Optimize write performance for Cosmos DB MongoDB workloads | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/optimize-write-performance |
-| Optimize Cosmos DB MongoDB workloads after migration | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/post-migration-optimization |
+| Optimize Azure Cosmos DB MongoDB workloads post-migration | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/post-migration-optimization |
 | Use MongoDB read preference with globally distributed Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/readpreference-global-distribution |
 | Use MongoDB aggregation pipelines on Azure Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/tutorial-aggregation |
 | Optimize Azure Cosmos DB costs for dev and production workloads | https://learn.microsoft.com/en-us/azure/cosmos-db/optimize-costs |
@@ -137,30 +130,20 @@ This skill requires **network access** to fetch documentation content:
 | Apply best practices for scaling Cosmos DB throughput | https://learn.microsoft.com/en-us/azure/cosmos-db/scaling-provisioned-throughput-best-practices |
 | Design synthetic partition keys in Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/synthetic-partition-keys |
 | Optimize Cosmos DB request unit consumption | https://learn.microsoft.com/en-us/azure/cosmos-db/understand-request-unit-consumption |
-| Apply background indexing best practices in DocumentDB | https://learn.microsoft.com/en-us/azure/documentdb/background-indexing |
-| Apply cross-region replication best practices in Azure DocumentDB | https://learn.microsoft.com/en-us/azure/documentdb/cross-region-replication |
-| Implement HA and cross-region replication best practices in Azure DocumentDB | https://learn.microsoft.com/en-us/azure/documentdb/high-availability-replication-best-practices |
-| Follow indexing best practices for DocumentDB collections | https://learn.microsoft.com/en-us/azure/documentdb/how-to-create-indexes |
-| Configure and tune text indexes in Azure DocumentDB | https://learn.microsoft.com/en-us/azure/documentdb/how-to-create-text-index |
-| Design and use wildcard indexes in Azure DocumentDB | https://learn.microsoft.com/en-us/azure/documentdb/how-to-create-wildcard-indexes |
-| Migrate safely to ordered indexes in Azure DocumentDB | https://learn.microsoft.com/en-us/azure/documentdb/how-to-migrate-ordered-indexes |
-| Optimize Azure DocumentDB queries using Index Advisor | https://learn.microsoft.com/en-us/azure/documentdb/index-advisor |
-| Design sharding strategy for scalable Azure DocumentDB collections | https://learn.microsoft.com/en-us/azure/documentdb/partitioning |
-| Apply security best practices for Azure DocumentDB clusters | https://learn.microsoft.com/en-us/azure/documentdb/security |
-| Optimize performance for Azure Cassandra managed instances | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/best-practice-performance |
-| Apply HA and DR best practices for Cassandra managed instances | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/resilient-applications |
-| Use write-through cache to improve Cassandra managed instance performance | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/write-through-cache |
+| Optimize Azure Managed Cassandra performance | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/best-practice-performance |
+| Apply resilience best practices to Cassandra apps | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/resilient-applications |
+| Use write-through cache to reduce Cassandra latency | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/write-through-cache |
 
 ### Decision Making
 | Topic | URL |
 |-------|-----|
 | Choose analytics and BI options for Azure Cosmos DB data | https://learn.microsoft.com/en-us/azure/cosmos-db/analytics-and-business-intelligence-overview |
 | Live dual-write migration to Cosmos DB Cassandra | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/migrate-data-dual-write-proxy |
-| Choose scaling options for Cosmos DB Cassandra throughput | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/scale-account-throughput |
+| Choose scaling options for Cosmos DB Cassandra API | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/scale-account-throughput |
 | Choose Azure Cosmos DB consistency levels | https://learn.microsoft.com/en-us/azure/cosmos-db/consistency-levels |
 | Convert vCores to Cosmos DB RU/s for migration | https://learn.microsoft.com/en-us/azure/cosmos-db/convert-vcore-to-request-unit |
 | Decide when to use Cosmos DB dedicated gateway | https://learn.microsoft.com/en-us/azure/cosmos-db/dedicated-gateway |
-| Estimate Cosmos DB RU/s and cost with capacity planner | https://learn.microsoft.com/en-us/azure/cosmos-db/estimate-ru-with-capacity-planner |
+| Estimate Azure Cosmos DB RU/s and costs | https://learn.microsoft.com/en-us/azure/cosmos-db/estimate-ru-with-capacity-planner |
 | Manage multitenant throughput with Cosmos DB fleet pools | https://learn.microsoft.com/en-us/azure/cosmos-db/fleet-pools |
 | Use global secondary indexes in Azure Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/global-secondary-indexes |
 | Choose Cosmos DB manual vs autoscale throughput | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-choose-offer |
@@ -170,25 +153,26 @@ This skill requires **network access** to fetch documentation content:
 | Migrate from Cosmos DB Kafka connector V1 to V2 | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-migrate-from-kafka-connector-v1-to-v2 |
 | Plan and size Cosmos DB integrated cache | https://learn.microsoft.com/en-us/azure/cosmos-db/integrated-cache |
 | Migrate Cosmos DB legacy metrics APIs to Azure Monitor | https://learn.microsoft.com/en-us/azure/cosmos-db/legacy-migrate-az-monitor |
-| Migrate Cosmos DB from periodic to continuous backup | https://learn.microsoft.com/en-us/azure/cosmos-db/migrate-continuous-backup |
+| Decide and migrate to continuous backup in Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/migrate-continuous-backup |
 | Upgrade applications to Azure Cosmos DB .NET SDK v2 | https://learn.microsoft.com/en-us/azure/cosmos-db/migrate-dotnet-v2 |
 | Upgrade applications to Azure Cosmos DB .NET SDK v3 | https://learn.microsoft.com/en-us/azure/cosmos-db/migrate-dotnet-v3 |
 | Upgrade applications to Azure Cosmos DB Java SDK v4 | https://learn.microsoft.com/en-us/azure/cosmos-db/migrate-java-v4-sdk |
 | Decide between Cosmos DB MongoDB and MongoDB Atlas | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/compare-mongodb-atlas |
 | Evaluate benefits of upgrading to Cosmos DB MongoDB 4.0+ | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/compression-cost-savings |
 | Map MongoDB consistency to Cosmos DB levels | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/consistency-mapping |
-| Estimate RU/s and cost for Cosmos DB MongoDB workloads | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/estimate-ru-capacity-planner |
+| Plan RU/s capacity and cost for Cosmos DB MongoDB API | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/estimate-ru-capacity-planner |
 | Decide and migrate from Cosmos DB for MongoDB to DocumentDB | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/how-to-migrate-documentdb |
 | Plan pre-migration steps from MongoDB to Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/pre-migration-steps |
 | Plan Cosmos DB network bandwidth usage and costs | https://learn.microsoft.com/en-us/azure/cosmos-db/network-bandwidth |
 | Request Cosmos DB data restore from periodic backups via support | https://learn.microsoft.com/en-us/azure/cosmos-db/periodic-backup-request-data-restore |
+| Plan migration from Cosmos DB PostgreSQL to Elastic Cluster | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/concepts-benefits-database-postgresql |
 | Understand burstable compute workloads on Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/concepts-burstable-compute |
 | Plan and manage Cosmos DB for PostgreSQL cluster upgrades | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/concepts-upgrade |
 | Determine application type for distributed modeling | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/howto-app-type |
 | Choose initial cluster size for Azure Cosmos DB for PostgreSQL | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/howto-scale-initial |
 | Choose shard count for distributed tables in Cosmos DB for PostgreSQL | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/howto-shard-count |
-| Plan migration from Cosmos DB PostgreSQL to Elastic Cluster | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/migrate-postgresql-elastic-cluster |
 | Classify workloads for Cosmos DB for PostgreSQL scaling | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/quickstart-build-scalable-apps-classify |
+| Classify and design scalable Cosmos DB for PostgreSQL apps | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/quickstart-build-scalable-apps-overview |
 | Plan compute and storage for Azure Cosmos DB for PostgreSQL clusters | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/resources-compute |
 | Estimate and optimize pricing for Azure Cosmos DB for PostgreSQL | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/resources-pricing |
 | Choose Azure regions and resiliency options for Azure Cosmos DB for PostgreSQL | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/resources-regions |
@@ -198,20 +182,8 @@ This skill requires **network access** to fetch documentation content:
 | Configure global distribution for Azure Cosmos DB for Table | https://learn.microsoft.com/en-us/azure/cosmos-db/table/tutorial-global-distribution |
 | Decide between Cosmos DB provisioned and serverless | https://learn.microsoft.com/en-us/azure/cosmos-db/throughput-serverless |
 | Use Cosmos DB Migration Assistant for RDBMS decisions | https://learn.microsoft.com/en-us/azure/cosmos-db/vscode-extension/cosmos-db-migration-assistant |
-| Decide between Azure DocumentDB and MongoDB Atlas | https://learn.microsoft.com/en-us/azure/documentdb/compare-mongodb-atlas |
-| Evaluate MongoDB feature compatibility in Azure DocumentDB | https://learn.microsoft.com/en-us/azure/documentdb/compatibility-features |
-| Assess MongoDB Query Language compatibility in Azure DocumentDB | https://learn.microsoft.com/en-us/azure/documentdb/compatibility-query-language |
-| Choose Azure DocumentDB cross-region failover modes | https://learn.microsoft.com/en-us/azure/documentdb/failover-modes |
-| Assess MongoDB workloads for migration to Azure DocumentDB | https://learn.microsoft.com/en-us/azure/documentdb/how-to-assess-plan-migration-readiness |
-| Evaluate MongoDB compatibility for managed DocumentDB | https://learn.microsoft.com/en-us/azure/documentdb/managed-service-compatibility |
-| Choose migration options from MongoDB to DocumentDB | https://learn.microsoft.com/en-us/azure/documentdb/migration-options |
-| Plan MongoDB to DocumentDB migration strategies | https://learn.microsoft.com/en-us/azure/documentdb/migration-options |
-| Compare vector search algorithms in DocumentDB using .NET | https://learn.microsoft.com/en-us/azure/documentdb/quickstart-dotnet-select-algorithm |
-| Compare and tune DocumentDB vector index algorithms in Go | https://learn.microsoft.com/en-us/azure/documentdb/quickstart-go-select-algorithm |
-| Evaluate DocumentDB vector index algorithms using Java | https://learn.microsoft.com/en-us/azure/documentdb/quickstart-java-select-algorithm |
-| Select vector index algorithm in DocumentDB with TypeScript | https://learn.microsoft.com/en-us/azure/documentdb/quickstart-nodejs-select-algorithm |
-| Choose optimal vector index and similarity in DocumentDB (Python) | https://learn.microsoft.com/en-us/azure/documentdb/quickstart-python-select-algorithm |
-| Select Azure DocumentDB regions for deployment | https://learn.microsoft.com/en-us/azure/documentdb/regional-availability |
+| Choose dual-write proxy migration for Cassandra | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/dual-write-proxy-migration |
+| Decide on Apache Spark-based Cassandra migration | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/spark-migration |
 
 ### Architecture & Design Patterns
 | Topic | URL |
@@ -238,12 +210,6 @@ This skill requires **network access** to fetch documentation content:
 | Design real-time dashboard on Cosmos DB for PostgreSQL | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/tutorial-design-database-realtime |
 | Build serverless apps with Cosmos DB and Azure Functions | https://learn.microsoft.com/en-us/azure/cosmos-db/serverless-computing-database |
 | Apply Cosmos DB design pattern for social media apps | https://learn.microsoft.com/en-us/azure/cosmos-db/social-media-apps |
-| Use Autoscale for variable workloads in Azure DocumentDB | https://learn.microsoft.com/en-us/azure/documentdb/autoscale |
-| Design hybrid BM25 and vector search in Azure DocumentDB | https://learn.microsoft.com/en-us/azure/documentdb/full-text-search-hybrid |
-| Apply half-precision vectors for efficient AI storage in DocumentDB | https://learn.microsoft.com/en-us/azure/documentdb/half-precision |
-| Use product quantization for scalable vector search in DocumentDB | https://learn.microsoft.com/en-us/azure/documentdb/product-quantization |
-| Design dual-write Spark migration to Cassandra managed instances | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/dual-write-proxy-migration |
-| Architect Spark-based migrations to Cassandra managed instances | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/spark-migration |
 
 ### Limits & Quotas
 | Topic | URL |
@@ -251,12 +217,13 @@ This skill requires **network access** to fetch documentation content:
 | Autoscale throughput limits and behavior in Azure Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/autoscale-faq |
 | Use Cosmos DB burst capacity limits effectively | https://learn.microsoft.com/en-us/azure/cosmos-db/burst-capacity |
 | Burst capacity limits and usage rules in Azure Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/burst-capacity-faq |
+| Use lightweight transactions in Cosmos DB Cassandra | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/lightweight-transactions |
 | Choose Azure Cosmos DB change feed modes and limits | https://learn.microsoft.com/en-us/azure/cosmos-db/change-feed-modes |
 | Azure Cosmos DB service quotas and default limits reference | https://learn.microsoft.com/en-us/azure/cosmos-db/concepts-limits |
 | Understand limits for Cosmos DB continuous backup restore | https://learn.microsoft.com/en-us/azure/cosmos-db/continuous-backup-restore-frequently-asked-questions |
-| Use Cosmos DB continuous backup and point-in-time restore | https://learn.microsoft.com/en-us/azure/cosmos-db/continuous-backup-restore-introduction |
+| Understand Azure Cosmos DB continuous backup limits | https://learn.microsoft.com/en-us/azure/cosmos-db/continuous-backup-restore-introduction |
 | Throughput redistribution limits across Cosmos DB partitions | https://learn.microsoft.com/en-us/azure/cosmos-db/distribute-throughput-across-partitions-faq |
-| Reference Azure Cosmos DB service limits and quotas | https://learn.microsoft.com/en-us/azure/cosmos-db/faq |
+| Azure Cosmos DB service limits and behaviors FAQ | https://learn.microsoft.com/en-us/azure/cosmos-db/faq |
 | Use Cosmos DB lifetime free tier limits | https://learn.microsoft.com/en-us/azure/cosmos-db/free-tier |
 | Reference stopwords for Cosmos DB full text search | https://learn.microsoft.com/en-us/azure/cosmos-db/gen-ai/stopwords |
 | Review runtime limits for Cosmos DB Gremlin engine | https://learn.microsoft.com/en-us/azure/cosmos-db/gremlin/limits |
@@ -268,23 +235,16 @@ This skill requires **network access** to fetch documentation content:
 | Estimate RU charges for key-value operations | https://learn.microsoft.com/en-us/azure/cosmos-db/key-value-store-cost |
 | Create Cosmos DB containers with large partition keys | https://learn.microsoft.com/en-us/azure/cosmos-db/large-partition-keys |
 | Migrate nonpartitioned Cosmos DB containers to partitioned | https://learn.microsoft.com/en-us/azure/cosmos-db/migrate-containers-partitioned-to-nonpartitioned |
-| Use Azure Cosmos DB automatic backup and restore | https://learn.microsoft.com/en-us/azure/cosmos-db/online-backup-and-restore |
+| Understand Azure Cosmos DB backup limits and restore | https://learn.microsoft.com/en-us/azure/cosmos-db/online-backup-and-restore |
 | Modify Cosmos DB periodic backup interval and retention limits | https://learn.microsoft.com/en-us/azure/cosmos-db/periodic-backup-modify-interval-retention |
 | Change vCore compute quotas per region for Cosmos DB for PostgreSQL | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/howto-compute-quota |
 | Cluster limits and quotas for Azure Cosmos DB for PostgreSQL | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/reference-limits |
 | Use same-account restore with Cosmos DB continuous backup | https://learn.microsoft.com/en-us/azure/cosmos-db/restore-in-account-continuous-backup-frequently-asked-questions |
 | Understand performance limits of Cosmos DB serverless | https://learn.microsoft.com/en-us/azure/cosmos-db/serverless-performance |
 | Configure and understand Cosmos DB soft delete retention | https://learn.microsoft.com/en-us/azure/cosmos-db/soft-delete |
+| Review Azure Cosmos DB Table API limits and behaviors | https://learn.microsoft.com/en-us/azure/cosmos-db/table/faq |
 | Throughput bucket limits and throttling behavior in Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/throughput-buckets-faq |
-| Review compute and storage configuration options for Azure DocumentDB | https://learn.microsoft.com/en-us/azure/documentdb/compute-storage |
-| Review compute and storage configuration options for Azure DocumentDB | https://learn.microsoft.com/en-us/azure/documentdb/compute-storage |
-| Azure DocumentDB FAQ with limits and behaviors | https://learn.microsoft.com/en-us/azure/documentdb/faq |
-| Understand Azure DocumentDB Free Tier limits | https://learn.microsoft.com/en-us/azure/documentdb/free-tier |
-| Configure Premium SSD v2 performance for Azure DocumentDB | https://learn.microsoft.com/en-us/azure/documentdb/high-performance-storage |
-| Understand and configure indexes in Azure DocumentDB | https://learn.microsoft.com/en-us/azure/documentdb/indexing |
-| Reference Azure DocumentDB service limits and quotas | https://learn.microsoft.com/en-us/azure/documentdb/limitations |
-| Understand document size and batch write limits in Azure DocumentDB | https://learn.microsoft.com/en-us/azure/documentdb/max-document-size |
-| Review limits and configuration FAQs for Cassandra managed instances | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/faq |
+| Review throughput limits and regions for Cassandra | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/faq |
 
 ### Security
 | Topic | URL |
@@ -347,36 +307,25 @@ This skill requires **network access** to fetch documentation content:
 | Reference for data plane RBAC roles in Azure Cosmos DB for Table | https://learn.microsoft.com/en-us/azure/cosmos-db/table/reference-data-plane-security |
 | Secure Azure Cosmos DB for Table accounts and data | https://learn.microsoft.com/en-us/azure/cosmos-db/table/security |
 | Prepare Cosmos DB workloads for TLS 1.3 support | https://learn.microsoft.com/en-us/azure/cosmos-db/tls-support |
-| Configure Azure DocumentDB firewall rules for secure access | https://learn.microsoft.com/en-us/azure/documentdb/how-to-configure-firewall |
-| Configure Entra ID RBAC access for Azure DocumentDB | https://learn.microsoft.com/en-us/azure/documentdb/how-to-connect-role-based-access-control |
-| Configure customer-managed key encryption for Azure DocumentDB | https://learn.microsoft.com/en-us/azure/documentdb/how-to-data-encryption |
-| Use Azure Private Link with Azure DocumentDB securely | https://learn.microsoft.com/en-us/azure/documentdb/how-to-private-link |
-| Manage public network access to Azure DocumentDB clusters | https://learn.microsoft.com/en-us/azure/documentdb/how-to-public-access |
-| Manage secondary native users and privileges in Azure DocumentDB | https://learn.microsoft.com/en-us/azure/documentdb/secondary-users |
-| Assign Cosmos DB service principal roles for Cassandra managed instances | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/add-service-principal |
-| Configure customer-managed keys for Cassandra managed instances | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/customer-managed-keys |
-| Configure LDAP authentication for Azure Cassandra MI | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/ldap |
-| Configure outbound network rules for Cassandra managed instances | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/network-rules |
-| Secure Cassandra managed instances with VPN and routing rules | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/use-vpn |
+| Assign Cosmos DB service principal for Cassandra | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/add-service-principal |
+| Configure customer-managed keys for Cassandra | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/customer-managed-keys |
+| Enable LDAP authentication for Cassandra clusters | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/ldap |
+| Secure Cassandra managed instance access via VPN | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/use-vpn |
 
 ### Configuration
 | Topic | URL |
 |-------|-----|
 | Configure change data capture for Cosmos DB analytical store | https://learn.microsoft.com/en-us/azure/cosmos-db/analytical-store-change-data-capture |
 | Audit Cosmos DB point-in-time restore operations via activity logs | https://learn.microsoft.com/en-us/azure/cosmos-db/audit-restore-continuous |
-| Create Cosmos DB Cassandra containers via portal and SDKs | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/how-to-create-container |
 | Configure provisioned and autoscale throughput for Cosmos DB Cassandra | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/how-to-provision-throughput |
 | Configure monitoring insights for Cosmos DB Cassandra | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/monitor-insights |
 | Reconfigure Azure Cosmos DB container partition key | https://learn.microsoft.com/en-us/azure/cosmos-db/change-partition-key |
-| Configure and manage Azure Cosmos DB container copy jobs | https://learn.microsoft.com/en-us/azure/cosmos-db/container-copy |
 | Configure resource model for Cosmos DB point-in-time restore | https://learn.microsoft.com/en-us/azure/cosmos-db/continuous-backup-restore-resource-model |
 | Configure Azure Monitor alerts for Cosmos DB metrics and logs | https://learn.microsoft.com/en-us/azure/cosmos-db/create-alerts |
-| Configure and use the Cosmos DB local emulator | https://learn.microsoft.com/en-us/azure/cosmos-db/emulator |
 | Configure and run Azure Cosmos DB Linux-based emulator | https://learn.microsoft.com/en-us/azure/cosmos-db/emulator-linux |
 | Use Windows Cosmos DB emulator command-line and PowerShell | https://learn.microsoft.com/en-us/azure/cosmos-db/emulator-windows-arguments |
 | Use Fleet Analytics to monitor Cosmos DB usage and cost | https://learn.microsoft.com/en-us/azure/cosmos-db/fleet-analytics |
 | Reference schema for Cosmos DB Fleet Analytics tables | https://learn.microsoft.com/en-us/azure/cosmos-db/fleet-analytics-schema-reference |
-| Configure and use Cosmos DB full-text search | https://learn.microsoft.com/en-us/azure/cosmos-db/gen-ai/full-text-search |
 | Configure hybrid vector and full-text search in Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/gen-ai/hybrid-search |
 | Configure Sharded DiskANN vector indexes in Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/gen-ai/sharded-diskann |
 | Enable and use CDC in Cosmos DB analytical store | https://learn.microsoft.com/en-us/azure/cosmos-db/get-started-change-data-capture |
@@ -389,6 +338,7 @@ This skill requires **network access** to fetch documentation content:
 | Configure per-partition automatic failover for Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-configure-per-partition-automatic-failover |
 | Create and configure Cosmos DB fleets and fleetspaces | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-create-fleet |
 | Define unique key constraints in Azure Cosmos DB containers | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-define-unique-keys |
+| Configure and use Azure Cosmos DB emulator for local development | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-develop-emulator |
 | Enable Cosmos DB Fleet Analytics in Fabric workspace | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-enable-fleet-analytics |
 | Configure and query geospatial indexing in Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-geospatial-index-query |
 | Configure and manage Cosmos DB conflict resolution | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-manage-conflicts |
@@ -396,6 +346,7 @@ This skill requires **network access** to fetch documentation content:
 | Manage and update Cosmos DB indexing policies via SDKs | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-manage-indexing-policy |
 | Configure Cosmos DB multi-region writes in SDKs | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-multi-master |
 | Provision container-level throughput in Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-provision-container-throughput |
+| Configure and manage soft delete in Azure Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-soft-delete |
 | Configure time to live (TTL) in Azure Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-time-to-live |
 | Interpret Cosmos DB indexing metrics to optimize queries | https://learn.microsoft.com/en-us/azure/cosmos-db/index-metrics |
 | Configure Azure Cosmos DB indexing policies for performance | https://learn.microsoft.com/en-us/azure/cosmos-db/index-policy |
@@ -404,6 +355,7 @@ This skill requires **network access** to fetch documentation content:
 | Manage Cosmos DB NoSQL resources using Azure CLI | https://learn.microsoft.com/en-us/azure/cosmos-db/manage-with-cli |
 | Automate Azure Cosmos DB management with PowerShell | https://learn.microsoft.com/en-us/azure/cosmos-db/manage-with-powershell |
 | Create Cosmos DB NoSQL resources with Terraform | https://learn.microsoft.com/en-us/azure/cosmos-db/manage-with-terraform |
+| Configure and use Azure Cosmos DB partition merge | https://learn.microsoft.com/en-us/azure/cosmos-db/merge |
 | Check MongoDB 3.2 feature support in Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/feature-support-32 |
 | Check MongoDB 3.6 feature support in Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/feature-support-36 |
 | Check MongoDB 4.0 feature support in Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/feature-support-40 |
@@ -418,7 +370,7 @@ This skill requires **network access** to fetch documentation content:
 | Configure throughput for Cosmos DB MongoDB resources | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/how-to-provision-throughput |
 | Configure per-document TTL in Cosmos DB for MongoDB | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/time-to-live |
 | Track Cosmos DB partition split and merge via activity logs | https://learn.microsoft.com/en-us/azure/cosmos-db/monitor-activity-logs-elastic-operations |
-| Reference for Cosmos DB monitoring metrics and logs | https://learn.microsoft.com/en-us/azure/cosmos-db/monitor-reference |
+| Use Azure Cosmos DB monitoring metrics and logs | https://learn.microsoft.com/en-us/azure/cosmos-db/monitor-reference |
 | Configure diagnostic settings and resource logs for Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/monitor-resource-logs |
 | Optimize Async Java v2 Cosmos DB client settings | https://learn.microsoft.com/en-us/azure/cosmos-db/performance-tips-async-java |
 | Optimize Sync Java v2 Cosmos DB client settings | https://learn.microsoft.com/en-us/azure/cosmos-db/performance-tips-java |
@@ -451,7 +403,6 @@ This skill requires **network access** to fetch documentation content:
 | Use system tables for distributed queries in Azure Cosmos DB for PostgreSQL | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/reference-metadata |
 | Configure server parameters in Azure Cosmos DB for PostgreSQL | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/reference-parameters |
 | Configure priority-based request execution in Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/priority-based-execution |
-| Provision Cosmos DB accounts with continuous backup | https://learn.microsoft.com/en-us/azure/cosmos-db/provision-account-continuous-backup |
 | Configure autoscale throughput for Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/provision-throughput-autoscale |
 | Use Cosmos DB SQL query metrics for performance analysis | https://learn.microsoft.com/en-us/azure/cosmos-db/query-metrics |
 | Retrieve Cosmos DB SQL query performance metrics with .NET SDK | https://learn.microsoft.com/en-us/azure/cosmos-db/query-metrics-performance |
@@ -462,6 +413,13 @@ This skill requires **network access** to fetch documentation content:
 | Provision Cosmos DB with Terraform | https://learn.microsoft.com/en-us/azure/cosmos-db/quickstart-terraform |
 | Restore Cosmos DB accounts using continuous backup | https://learn.microsoft.com/en-us/azure/cosmos-db/restore-account-continuous-backup |
 | Configure resource model for Cosmos DB same-account restore | https://learn.microsoft.com/en-us/azure/cosmos-db/restore-in-account-continuous-backup-resource-model |
+| Deploy Azure Cosmos DB accounts with ARM templates | https://learn.microsoft.com/en-us/azure/cosmos-db/samples-resource-manager-templates |
+| Apply Azure Cosmos DB Go SDK release updates | https://learn.microsoft.com/en-us/azure/cosmos-db/sdk-go |
+| Maintain and migrate Azure Cosmos DB Java Async v2 | https://learn.microsoft.com/en-us/azure/cosmos-db/sdk-java-async-v2 |
+| Configure Spring Data Azure Cosmos DB v2 | https://learn.microsoft.com/en-us/azure/cosmos-db/sdk-java-spring-data-v2 |
+| Configure Spring Data Azure Cosmos DB v3 | https://learn.microsoft.com/en-us/azure/cosmos-db/sdk-java-spring-data-v3 |
+| Use Spring Data Azure Cosmos DB v5 features | https://learn.microsoft.com/en-us/azure/cosmos-db/sdk-java-spring-data-v5 |
+| Use Azure Cosmos DB Java SDK v4 effectively | https://learn.microsoft.com/en-us/azure/cosmos-db/sdk-java-v4 |
 | Configure Cosmos DB SDK observability with OpenTelemetry and App Insights | https://learn.microsoft.com/en-us/azure/cosmos-db/sdk-observability |
 | Use Azure Cosmos DB Shell commands and settings | https://learn.microsoft.com/en-us/azure/cosmos-db/shell/ |
 | Set up Model Context Protocol server for Cosmos DB Shell | https://learn.microsoft.com/en-us/azure/cosmos-db/shell/model-context-protocol-setup |
@@ -475,16 +433,162 @@ This skill requires **network access** to fetch documentation content:
 | Tune Azure Cosmos DB .NET SDK v3 connection settings | https://learn.microsoft.com/en-us/azure/cosmos-db/tune-connection-configurations-net-sdk-v3 |
 | Configure workspace data transformations for Cosmos DB logs | https://learn.microsoft.com/en-us/azure/cosmos-db/tutorial-log-transformation |
 | Define and use unique key policies in Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/unique-keys |
-| Configure and manage Azure DocumentDB cross-region replication | https://learn.microsoft.com/en-us/azure/documentdb/how-to-cluster-replica |
-| Create and use Azure DocumentDB replica clusters for DR | https://learn.microsoft.com/en-us/azure/documentdb/how-to-cross-region-replica-portal |
-| Set up metric-based alerts for DocumentDB clusters | https://learn.microsoft.com/en-us/azure/documentdb/how-to-manage-alerts |
-| Configure and operate the Azure DocumentDB MCP Toolkit | https://learn.microsoft.com/en-us/azure/documentdb/mcp-toolkit |
-| Configure and interpret DocumentDB monitoring metrics | https://learn.microsoft.com/en-us/azure/documentdb/monitor-metrics |
-| Configure vector indexes and queries in Azure DocumentDB | https://learn.microsoft.com/en-us/azure/documentdb/vector-search |
-| Configure hybrid Cassandra clusters using Azure CLI | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/configure-hybrid-cluster-cli |
-| Create and scale Cassandra managed clusters with CLI | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/create-cluster-cli |
-| Configure multi-region Cassandra managed clusters via CLI | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/create-multi-region-cluster |
-| Run nodetool and SSTable DBA commands on Cassandra managed instances | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/dba-commands |
-| Automate Cassandra managed instance resource management with CLI | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/manage-resources-cli |
-| Enable and configure materialized views in Cassandra managed instances | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/materialized-views |
-| Configure Azure Monitor metrics and logs for Cassandra managed instances | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/monitor-clusters |
+| Run DBA commands and override Cassandra configurations | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/dba-commands |
+| Enable materialized views in managed Cassandra | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/materialized-views |
+| Configure Azure Monitor for Cassandra clusters | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/monitor-clusters |
+| Configure outbound network rules for Cassandra managed instances | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/network-rules |
+| Set up Prometheus and Grafana for Cassandra metrics | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/visualize-prometheus-grafana |
+
+### Integrations & Coding Patterns
+| Topic | URL |
+|-------|-----|
+| Use Azure CLI samples for Cosmos DB Cassandra management | https://github.com/azure-samples/azure-cli-samples/tree/master/cosmosdb/cassandra |
+| Use PowerShell samples to manage Cosmos DB Cassandra resources | https://github.com/azure/azure-docs-powershell-samples/tree/master/cosmosdb/cassandra |
+| Use .NET bulk executor library for Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/bulk-executor-dotnet |
+| Implement bulk import with Azure Cosmos DB Java SDK | https://learn.microsoft.com/en-us/azure/cosmos-db/bulk-executor-java |
+| Configure Spark integration with Cosmos DB Cassandra | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/connect-spark-configuration |
+| Run Glowroot APM with Cosmos DB Cassandra | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/glowroot |
+| Create Cassandra containers using Azure Cosmos DB SDKs | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/how-to-create-container |
+| Configure Kafka Connect to Cosmos DB Cassandra | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/kafka-connect |
+| Migrate Cassandra data via Databricks to Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/migrate-data-databricks |
+| Migrate Oracle to Cosmos DB Cassandra using Arcion | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/oracle-migrate-cosmos-db-arcion |
+| Sync PostgreSQL to Cosmos DB Cassandra using Kafka | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/postgres-migrate-cosmos-db-kafka |
+| Run Spark aggregation queries on Cosmos DB Cassandra | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/spark-aggregation-operations |
+| Insert data into Cosmos DB Cassandra using Spark | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/spark-create-operations |
+| Access Cosmos DB Cassandra from Azure Databricks | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/spark-databricks |
+| Perform keyspace and table DDL via Spark on Cosmos DB Cassandra | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/spark-ddl-operations |
+| Delete data in Cosmos DB Cassandra from Spark | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/spark-delete-operation |
+| Access Cosmos DB Cassandra from HDInsight Spark on YARN | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/spark-hdinsight |
+| Read Cosmos DB Cassandra table data with Spark | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/spark-read-operation |
+| Copy tables in Cosmos DB Cassandra via Spark | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/spark-table-copy-operations |
+| Upsert data to Cosmos DB Cassandra using Spark | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/spark-upsert-operations |
+| Use Azure Cosmos DB change feed processor with SDKs | https://learn.microsoft.com/en-us/azure/cosmos-db/change-feed-processor |
+| Implement Azure Cosmos DB change feed pull model | https://learn.microsoft.com/en-us/azure/cosmos-db/change-feed-pull-model |
+| Process Azure Cosmos DB change feed with Apache Spark | https://learn.microsoft.com/en-us/azure/cosmos-db/change-feed-spark |
+| Integrate Cosmos DB Java SDK metrics with Micrometer and Prometheus | https://learn.microsoft.com/en-us/azure/cosmos-db/client-metrics-java |
+| Retrieve RU charge for Cosmos DB SQL queries | https://learn.microsoft.com/en-us/azure/cosmos-db/find-request-unit-charge |
+| Index external documents into Cosmos DB for semantic search | https://learn.microsoft.com/en-us/azure/cosmos-db/gen-ai/document-indexer |
+| Get latest restorable timestamp via PowerShell and CLI | https://learn.microsoft.com/en-us/azure/cosmos-db/get-latest-restore-timestamp |
+| Execute Gremlin graph queries on Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/gremlin/how-to-write-queries |
+| Use partner tools with Cosmos DB Gremlin graphs | https://learn.microsoft.com/en-us/azure/cosmos-db/gremlin/partner-tools-services |
+| Quickstart: Connect .NET Gremlin client to Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/gremlin/quickstart-dotnet |
+| Quickstart: Connect Node.js Gremlin client to Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/gremlin/quickstart-nodejs |
+| Quickstart: Connect Python Gremlin client to Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/gremlin/quickstart-python |
+| Use distributed transactions with Azure Cosmos DB .NET SDK | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-configure-and-use-distributed-transactions |
+| Convert Cosmos DB .NET SDK session token formats | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-convert-session-token |
+| Create Azure Cosmos DB containers via portal, CLI, and SDKs | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-create-container |
+| Delete Azure Cosmos DB items by partition key value | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-delete-by-partition-key |
+| Create Azure Cosmos DB containers with .NET SDK | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-dotnet-create-container |
+| Create Cosmos DB databases with the .NET SDK | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-dotnet-create-database |
+| Create and upsert items in Cosmos DB with .NET | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-dotnet-create-item |
+| Connect to Cosmos DB for NoSQL using .NET SDK | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-dotnet-get-started |
+| Query Cosmos DB items with the .NET SDK | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-dotnet-query-items |
+| Read items from Cosmos DB using .NET | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-dotnet-read-item |
+| Index and query vector data in Azure Cosmos DB with .NET | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-dotnet-vector-index-query |
+| Index and query vector data in Azure Cosmos DB with Java | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-java-vector-index-query |
+| Create Azure Cosmos DB containers with JavaScript SDK | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-javascript-create-container |
+| Create Cosmos DB databases with the JavaScript SDK | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-javascript-create-database |
+| Create Azure Cosmos DB items with JavaScript SDK | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-javascript-create-item |
+| Connect to Cosmos DB for NoSQL using JavaScript | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-javascript-get-started |
+| Query Azure Cosmos DB items with JavaScript SDK | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-javascript-query-items |
+| Index and query vector data in Azure Cosmos DB with JavaScript | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-javascript-vector-index-query |
+| Use Azure Cosmos DB Data Migration Tool for imports | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-migrate-desktop-tool |
+| Create Azure Cosmos DB containers with Python SDK | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-python-create-container |
+| Create Azure Cosmos DB databases with Python SDK | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-python-create-database |
+| Connect to Azure Cosmos DB for NoSQL with Python | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-python-get-started |
+| Index and query vector data in Azure Cosmos DB with Python | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-python-vector-index-query |
+| Call Cosmos DB stored procedures and triggers from SDKs | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-use-stored-procedures-triggers-udfs |
+| Write Cosmos DB stored procedures using JavaScript query API | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-write-javascript-query-api |
+| Implement Cosmos DB stored procedures, triggers, and UDFs | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-write-stored-procedures-triggers-udfs |
+| Use JavaScript query API inside Cosmos DB server-side code | https://learn.microsoft.com/en-us/azure/cosmos-db/javascript-query-api |
+| Integrate Azure Cosmos DB with Kafka Connect | https://learn.microsoft.com/en-us/azure/cosmos-db/kafka-connector |
+| Configure Cosmos DB Kafka sink connector for topic ingestion | https://learn.microsoft.com/en-us/azure/cosmos-db/kafka-connector-sink |
+| Configure Cosmos DB Kafka sink connector V2 | https://learn.microsoft.com/en-us/azure/cosmos-db/kafka-connector-sink-v2 |
+| Configure Cosmos DB Kafka source connector for change feed | https://learn.microsoft.com/en-us/azure/cosmos-db/kafka-connector-source |
+| Configure Cosmos DB Kafka source connector V2 | https://learn.microsoft.com/en-us/azure/cosmos-db/kafka-connector-source-v2 |
+| Use Cosmos DB Kafka Connect V2 for streaming data | https://learn.microsoft.com/en-us/azure/cosmos-db/kafka-connector-v2 |
+| Use latest restorable timestamp API for Cosmos DB containers | https://learn.microsoft.com/en-us/azure/cosmos-db/latest-restore-timestamp-continuous-backup |
+| Connect MongoDB applications to Cosmos DB using connection strings | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/connect-account |
+| Connect Mongoose-based Node.js apps to Cosmos DB MongoDB API | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/connect-using-mongoose |
+| Use Cosmos DB MongoDB extension commands | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/custom-commands |
+| Build Node.js console app with Cosmos DB MongoDB API | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/nodejs-console-app |
+| Delete data in Cosmos DB for MongoDB collections | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/tutorial-delete |
+| Connect Angular/Node app to Cosmos DB using Mongoose | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/tutorial-develop-nodejs-part-5 |
+| Insert data via Mongo shell into Cosmos DB MongoDB API | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/tutorial-insert |
+| Query Cosmos DB for MongoDB using Mongo shell | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/tutorial-query |
+| Update documents in Cosmos DB MongoDB API with Mongosh | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/tutorial-update |
+| Integrate Cosmos DB with BI tools via ODBC driver | https://learn.microsoft.com/en-us/azure/cosmos-db/odbc-driver |
+| Use partial document update (Patch API) in Azure Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/partial-document-update |
+| Get started with partial document update in Cosmos DB SDKs | https://learn.microsoft.com/en-us/azure/cosmos-db/partial-document-update-getting-started |
+| Ingest data from Azure Blob Storage into Cosmos DB for PostgreSQL | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/howto-ingest-azure-blob-storage |
+| Use Azure Data Factory to ingest data into Cosmos DB for PostgreSQL | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/howto-ingest-azure-data-factory |
+| Ingest real-time data with Azure Stream Analytics into Cosmos DB for PostgreSQL | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/howto-ingest-azure-stream-analytics |
+| Create and modify distributed tables in Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/howto-modify-distributed-tables |
+| Determine true size of distributed tables in Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/howto-table-size |
+| Use C# to connect to Cosmos DB for PostgreSQL | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/quickstart-app-stacks-csharp |
+| Create Java app connecting to Cosmos DB for PostgreSQL | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/quickstart-app-stacks-java |
+| Use Node.js to connect to Cosmos DB for PostgreSQL | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/quickstart-app-stacks-nodejs |
+| Use Python to connect to Cosmos DB for PostgreSQL | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/quickstart-app-stacks-python |
+| Use Ruby to connect to Cosmos DB for PostgreSQL | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/quickstart-app-stacks-ruby |
+| Connect to Cosmos DB for PostgreSQL using psql | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/quickstart-connect-psql |
+| Distribute tables across Cosmos DB for PostgreSQL nodes | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/quickstart-distribute-tables |
+| Use COPY command in Azure Cosmos DB for PostgreSQL | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/reference-copy-command |
+| Call distributed SQL functions in Azure Cosmos DB for PostgreSQL | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/reference-functions |
+| Use pg_azure_storage extension with Azure Cosmos DB for PostgreSQL | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/reference-pg-azure-storage |
+| Shard data using distributed tables in Cosmos DB for PostgreSQL | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/tutorial-shard |
+| Create Cosmos DB vector index with .NET SDK | https://learn.microsoft.com/en-us/azure/cosmos-db/quickstart-create-vector-index-dotnet |
+| Create Cosmos DB vector index with Go SDK | https://learn.microsoft.com/en-us/azure/cosmos-db/quickstart-create-vector-index-go |
+| Create Cosmos DB vector index with Java SDK | https://learn.microsoft.com/en-us/azure/cosmos-db/quickstart-create-vector-index-java |
+| Create Cosmos DB vector index with Python SDK | https://learn.microsoft.com/en-us/azure/cosmos-db/quickstart-create-vector-index-python |
+| Create Cosmos DB vector index with TypeScript SDK | https://learn.microsoft.com/en-us/azure/cosmos-db/quickstart-create-vector-index-typescript |
+| Use Azure Cosmos DB with .NET SDK | https://learn.microsoft.com/en-us/azure/cosmos-db/quickstart-dotnet |
+| Use Azure Cosmos DB with Java SDK | https://learn.microsoft.com/en-us/azure/cosmos-db/quickstart-java |
+| Use Azure Cosmos DB with Node.js SDK | https://learn.microsoft.com/en-us/azure/cosmos-db/quickstart-nodejs |
+| Use Azure Cosmos DB with Python SDK | https://learn.microsoft.com/en-us/azure/cosmos-db/quickstart-python |
+| Use .NET client for Cosmos DB vector search | https://learn.microsoft.com/en-us/azure/cosmos-db/quickstart-vector-store-dotnet |
+| Implement Cosmos DB vector search with Go | https://learn.microsoft.com/en-us/azure/cosmos-db/quickstart-vector-store-go |
+| Implement Cosmos DB vector search with Java | https://learn.microsoft.com/en-us/azure/cosmos-db/quickstart-vector-store-java |
+| Implement Cosmos DB vector search with Node.js | https://learn.microsoft.com/en-us/azure/cosmos-db/quickstart-vector-store-nodejs |
+| Implement Cosmos DB vector search with Python | https://learn.microsoft.com/en-us/azure/cosmos-db/quickstart-vector-store-python |
+| Read Azure Cosmos DB change feed with push and pull models | https://learn.microsoft.com/en-us/azure/cosmos-db/read-change-feed |
+| Use Azure CLI to manage Cosmos DB for NoSQL | https://learn.microsoft.com/en-us/azure/cosmos-db/samples-cli |
+| Use Azure PowerShell with Cosmos DB for NoSQL | https://learn.microsoft.com/en-us/azure/cosmos-db/samples-powershell |
+| Scale Cosmos DB throughput on a schedule with Functions | https://learn.microsoft.com/en-us/azure/cosmos-db/scale-on-schedule |
+| Bulk Executor .NET SDK reference for Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/sdk-dotnet-bulk-executor-v2 |
+| .NET Change Feed Processor SDK reference for Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/sdk-dotnet-change-feed-v2 |
+| .NET SDK v3 usage and resources for Cosmos DB NoSQL | https://learn.microsoft.com/en-us/azure/cosmos-db/sdk-dotnet-v3 |
+| Legacy Java SDK v2 reference and retirement for Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/sdk-java-v2 |
+| Node.js SDK usage and release notes for Cosmos DB | https://learn.microsoft.com/en-us/azure/cosmos-db/sdk-nodejs |
+| Use Cosmos DB as ASP.NET session state and cache provider | https://learn.microsoft.com/en-us/azure/cosmos-db/session-state-and-caching-provider |
+| Use Azure Cosmos DB Shell command reference effectively | https://learn.microsoft.com/en-us/azure/cosmos-db/shell/command-reference |
+| Connect to Azure Cosmos DB for Table using the .NET SDK | https://learn.microsoft.com/en-us/azure/cosmos-db/table/how-to-dotnet-get-started |
+| Use transactional batch operations in Azure Cosmos DB SDKs | https://learn.microsoft.com/en-us/azure/cosmos-db/transactional-batch |
+| Integrate Vercel applications with Cosmos DB backends | https://learn.microsoft.com/en-us/azure/cosmos-db/vercel-integration |
+| Integrate Jaeger tracing with Cassandra managed instance | https://learn.microsoft.com/en-us/azure/managed-instance-apache-cassandra/jaeger |
+
+### Deployment
+| Topic | URL |
+|-------|-----|
+| Deploy Cosmos DB NoSQL resources using Bicep | https://learn.microsoft.com/en-us/azure/cosmos-db/bicep-samples |
+| Manage Cosmos DB Cassandra with Bicep templates | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/manage-with-bicep |
+| Migrate Apache Cassandra data to Cosmos DB Cassandra | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/migrate-data |
+| Migrate Oracle data to Cosmos DB Cassandra with Striim | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/migrate-data-striim |
+| Deploy Cosmos DB Cassandra resources with ARM templates | https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/templates-samples |
+| Deploy Cosmos DB web app using ARM template | https://learn.microsoft.com/en-us/azure/cosmos-db/create-website |
+| Restore deleted Cosmos DB containers or databases in-account | https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-restore-in-account-continuous-backup |
+| Deploy Azure Cosmos DB resources with ARM templates | https://learn.microsoft.com/en-us/azure/cosmos-db/manage-with-templates |
+| Manage Cosmos DB for MongoDB using Bicep | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/manage-with-bicep |
+| Migrate large MongoDB datasets to Cosmos DB with Databricks | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/migrate-databricks |
+| Deploy Cosmos DB for MongoDB with ARM templates | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/resource-manager-template-samples |
+| Upgrade Cosmos DB for MongoDB wire protocol version | https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/upgrade-version |
+| Manage scheduled maintenance for Cosmos DB clusters | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/concepts-maintenance |
+| Execute migration workflow to PostgreSQL elastic clusters | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/how-to-migrate-database-postgresql |
+| Upgrade PostgreSQL and Citus versions in Cosmos DB for PostgreSQL clusters | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/howto-upgrade |
+| Manage Azure Cosmos DB for PostgreSQL with Terraform | https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/reference-terraform |
+| Provision Cosmos DB NoSQL accounts with Terraform | https://learn.microsoft.com/en-us/azure/cosmos-db/samples-terraform |
+| Create Azure Cosmos DB for Table resources using Bicep | https://learn.microsoft.com/en-us/azure/cosmos-db/table/manage-with-bicep |
+| Deploy Azure Cosmos DB for Table with ARM templates | https://learn.microsoft.com/en-us/azure/cosmos-db/table/resource-manager-templates |
+| Deploy ASP.NET app with Cosmos DB and AKS via Bicep | https://learn.microsoft.com/en-us/azure/cosmos-db/tutorial-deploy-app-bicep-aks |
+| Implement .NET bulk import to Cosmos DB for NoSQL | https://learn.microsoft.com/en-us/azure/cosmos-db/tutorial-dotnet-bulk-import |
+| Configure Azure DevOps CI/CD with Cosmos DB Emulator | https://learn.microsoft.com/en-us/azure/cosmos-db/tutorial-setup-ci-cd |
+| Deploy Spring Boot app with Cosmos DB on AKS | https://learn.microsoft.com/en-us/azure/cosmos-db/tutorial-springboot-azure-kubernetes-service |
