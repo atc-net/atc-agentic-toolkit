@@ -70,11 +70,16 @@ For applications using AI/LLM integrations:
 
 A notification center surfaces resource command results and lifecycle events (e.g. the outcome of a Rebuild or a custom resource command) directly in the dashboard UI.
 
+### Linking to the dashboard
+
+Use only dashboard URLs the CLI returns (`aspire describe --format Json`, `aspire otel … --format Json`,
+the login URL from `aspire start`) — don't construct dashboard URLs by hand; ports and tokens are dynamic.
+
 ### Browser logs vs. browser telemetry (13.3+)
 
 Two complementary client-side features surface in the dashboard:
 
-- **Browser logs** — `Aspire.Hosting.Browsers` + `.WithBrowserLogs()` in the AppHost (`aspire add browsers`). Aspire attaches a tracked Chromium session to a resource's URL over the Chrome DevTools Protocol and streams console output, errors, and network events into that resource's **console log** view; the dashboard exposes **Open tracked browser**, **Configure tracked browser**, and **Capture screenshot** commands. Experimental — suppress `ASPIREBROWSERLOGS001` in C#. See [Polyglot APIs](polyglot-apis.md).
+- **Browser logs** — `Aspire.Hosting.Browsers` + `.WithBrowserLogs()` in the AppHost (`aspire add browsers`). Aspire adds a child resource `<parent>-browser-logs`, attaches a tracked Chromium session to the parent's URL over the Chrome DevTools Protocol, and streams console output, errors, and network events into the **child resource's console log** (`aspire logs <parent>-browser-logs`, not `aspire otel logs <parent>`); the child exposes **Open tracked browser** (`open-tracked-browser`), **Configure tracked browser**, and **Capture screenshot** (`capture-screenshot`) commands. Experimental — suppress `ASPIREBROWSERLOGS001` in C#. See [Polyglot APIs](polyglot-apis.md).
 - **Browser telemetry** — the OpenTelemetry **JavaScript SDK** running inside your front-end app, sending client-side traces/logs/metrics to the dashboard's OTLP endpoint. Configured in the front-end app code (not the AppHost), and enabled on the dashboard via OTLP/CORS settings.
 
 ### What's new in 13.6

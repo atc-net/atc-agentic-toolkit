@@ -121,7 +121,7 @@ Chaining methods:
 
 **`AddNextJsApp(name, appDirectory)`** — Next.js with run/publish defaults. Marked `[Experimental]`; in C# AppHosts suppress `ASPIREJAVASCRIPT001`. Requires `output: "standalone"` in `next.config.*` for publish (opt out with `.DisableBuildValidation()`).
 
-**`.WithBrowserLogs()` (browser console + screenshots, 13.3+).** Attaches a tracked Chromium session to any resource that exposes an HTTP/HTTPS endpoint (not just JS frontends). Browser console logs, errors, and network events stream into the resource's log view in the dashboard, and you can capture screenshots as command artifacts. Ships in the `Aspire.Hosting.Browsers` package (`aspire add browsers`). The API is experimental — in C# AppHosts suppress `ASPIREBROWSERLOGS001`.
+**`.WithBrowserLogs()` (browser console + screenshots, 13.3+).** Attaches a tracked Chromium session to any resource that exposes an HTTP/HTTPS endpoint (not just JS frontends). It adds a **child resource `<parent>-browser-logs`** (type `BrowserLogs`); browser console logs, errors, exceptions, and network events stream into **that child's** console log stream, and you can capture screenshots as command artifacts. From the CLI: `aspire resource web-browser-logs open-tracked-browser`, then `aspire logs web-browser-logs` (not `aspire otel logs web`); `capture-screenshot` is the screenshot command. The parent needs an HTTP/HTTPS endpoint (HTTPS preferred). Ships in the `Aspire.Hosting.Browsers` package (`aspire add browsers`). The API is experimental — in C# AppHosts suppress `ASPIREBROWSERLOGS001`.
 
 ```csharp
 #pragma warning disable ASPIREBROWSERLOGS001
@@ -345,11 +345,17 @@ await builder.addContainer('api', 'nginx').withCommand('echo', 'Echo', async (ct
     const message = await args.value('message');
     return { success: true, message: `message=${message ?? ''}` };
 }, {
-    arguments: [
-        { name: 'message', inputType: InputType.Text, required: true },
-    ],
+    commandOptions: {          // 4th parameter is WithCommandOptions → { commandOptions: CommandOptions }
+        arguments: [
+            { name: 'message', inputType: InputType.Text, required: true },
+        ],
+    },
 });
 ```
+
+`args.value(name)` returns `string | undefined`; `args.requiredValue(name)` throws when missing
+(also `get`, `required`, `toArray`). On the CLI, put command arguments that collide with Aspire
+options after `--` (`aspire resource api echo -- --apphost x`).
 
 **HTTPS developer certificates** — `addProject('api', './src/Api').withHttpsDeveloperCertificate()`.
 
@@ -357,8 +363,10 @@ await builder.addContainer('api', 'nginx').withCommand('echo', 'Echo', async (ct
 `asExistingInSubscription(name, subscription)`, `asExistingInTenant(name)` (+ `runAsExisting*` /
 `publishAsExisting*` variants); each accepts literal strings or parameters.
 
-**.NET projects by path** — `addDotnetProject('inventory', '../InventoryService/InventoryService.csproj')`
-(experimental; orchestration-only, cannot be published).
+**.NET projects by path** — `addDotnetProject('inventory', '../InventoryService/InventoryService.csproj', { launchProfileName: 'https' })`
+(`aspire add dotnet`, prerelease; flat `DotnetProjectOptions`: `launchProfileName`, `excludeLaunchProfile`,
+`excludeKestrelEndpoints`). 13.6: coordinated builds and .NET SDK container publishing (13.5 was
+orchestration-only). Migrating existing `addProject` calls: [Project v2 Migration](project-v2-migration.md).
 
 **Interactive terminals** — `withTerminal()` (parameterless in polyglot AppHosts; `TerminalOptions`
 dimensions are C#-only).

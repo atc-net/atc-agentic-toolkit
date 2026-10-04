@@ -37,7 +37,7 @@ winget install Microsoft.Aspire               # Windows
 nix profile add github:microsoft/aspire#aspire-cli   # Nix
 ```
 
-> **CLI bundle (13.5):** new C# AppHost templates set `AspireUseCliBundle=true`, so the AppHost resolves its own copy of the CLI on the fly via `dnx` and `dotnet run` behaves like `aspire run`. Existing projects stay opt-in. Diagnostics: `ASPIRE009` (error — bundle can't be resolved), `ASPIRE010` (warning — project opted out), `ASPIRE011` (`dnx` unavailable). Force the DNX path with `AspireCliInvocationMode=Dnx`.
+> **CLI bundle (13.5):** new C# AppHost templates set `AspireUseCliBundle=true`, so the AppHost resolves its own copy of the CLI on the fly via `dnx` and `dotnet run` behaves like `aspire run`. Existing projects stay opt-in (preserve `AspireUseCliBundle` as you find it; add it only when the user opts in). **Agents still use `aspire start --non-interactive`** — the bundle doesn't make a foreground `dotnet run` suitable for agent workflows. Diagnostics: `ASPIRE009` (error — bundle can't be resolved), `ASPIRE010` (warning — project opted out), `ASPIRE011` (`dnx` unavailable). Force the DNX path with `AspireCliInvocationMode=Dnx`.
 >
 > **13.6:** `AspireCliInvocationMode` has two DNX modes — `Dnx` runs `Aspire.Cli` through DNX **without** a version and honors an in-scope `.config/dotnet-tools.json` tool manifest; `DnxPinned` runs the paired `Aspire.Cli` version and ignores the manifest. `aspire update` also updates repository-local CLI references in npm and .NET tool manifests.
 
@@ -69,6 +69,10 @@ Many commands also support:
 | Variable                          | Effect                                                                 |
 | --------------------------------- | ---------------------------------------------------------------------- |
 | `ASPIRE_ENABLE_CONTAINER_TUNNEL`  | Container tunnel is enabled by default (13.3+) for uniform container connectivity across Docker Desktop, Docker Engine, and Podman. Set to `false` before starting the AppHost to disable it. |
+| `ASPIRE_ENVIRONMENT`              | AppHost environment name (selects `appsettings.{env}.json`) when nothing higher-priority is set. Precedence: `--environment`, `DOTNET_ENVIRONMENT`, `ASPIRE_ENVIRONMENT`, then `Production`. Doesn't flow to child resources or the dashboard. |
+| `ASPIRE_CONTAINER_RUNTIME`        | `docker` (default) or `podman` — forces the container runtime instead of auto-detection (also for `aspire deploy` to Docker Compose). |
+| `ASPIRE_DCP_USE_DEVELOPER_CERTIFICATE` | Default `true`: DCP's internal server uses the ASP.NET Core dev certificate. Set `false` to opt out (DCP generates an ephemeral certificate). |
+| `ASPIRE_VERSION_CHECK_DISABLED`   | `true` skips the newer-version check on startup. |
 | `ASPIRE_PROXYLESS_ENDPOINT_PORT_RANGE` | (13.5+) Overrides the port range used for proxyless endpoints without an explicit public `port` (allocated during service preparation). Format `start-end`; default `10000-32767`. |
 
 ---
@@ -131,7 +135,19 @@ aspire init
 aspire init --language csharp --file-based   # file-based apphost.cs (13.6+)
 ```
 
-Adds AppHost and ServiceDefaults projects to an existing solution. Interactive prompts guide you through selecting which projects to orchestrate.
+Scaffolds a **minimal AppHost skeleton + `aspire.config.json`** and (optionally) installs the
+`aspireify` agent skill, which the agent then uses to wire up the existing services. It does not
+modify existing projects, `global.json`, or dev-cert trust. What it creates depends on the repo:
+
+- `.sln`/`.slnx` present + C# → a project-based `AppHost.csproj` added to the solution (with `ProjectReference`s);
+- C# `--file-based` (or chosen interactively) → `apphost.cs` with `#:sdk` / `#:package` directives;
+- TypeScript → `apphost.mts` + `.aspire/modules/` + `tsconfig.apphost.json`; if the root already has a
+  `package.json`, the AppHost becomes a nested `aspire-apphost/` package.
+
+Agent rules: **don't run `aspire init` when an AppHost already exists** (any detection signal in
+[SKILL.md](../SKILL.md)); pass `--language` when using `--non-interactive`; afterwards resolve
+`appHost.path` relative to `aspire.config.json` instead of assuming the AppHost is at the root.
+`--source` / `--version` are deprecated no-ops on `init`, and `init` has no `--channel`.
 
 > **13.6:** `aspire new` and `aspire init` preselect repository-local skills (including `aspireify`); MCP is **unselected by default**.
 
@@ -198,7 +214,9 @@ Behavior:
 3. Starts the DCP engine in the background
 4. Returns immediately (non-blocking)
 
-**This is the recommended command for 13.2+.** Relaunching is safe — just run `aspire start` again.
+**This is the recommended command for 13.2+.** Relaunching restarts the whole AppHost (the previous
+instance is stopped automatically) — do that when the **AppHost** changed, and repeat `--isolated` in
+worktrees. For a single changed resource use `aspire resource <resource> rebuild|restart` instead.
 
 > **Launch profiles (13.6):** `--launch-profile`/`-lp` flows through direct AppHost launches, detached child processes, and VS Code delegation. When the CLI can't safely reproduce a .NET launch profile it delegates to `dotnet run`.
 
@@ -207,7 +225,7 @@ Behavior:
 Stop a background AppHost started with `aspire start`.
 
 ```bash
-aspire stop [options]
+aspire stop [options]          # no --format option — use the exit code
 
 # Options:
 #   --apphost <path>       Path to AppHost project file
@@ -218,10 +236,14 @@ aspire stop [options]
 #                          anonymous volumes and bind mounts are never removed
 
 # Examples:
-aspire stop
-aspire stop --force              # stop + clean up persistent resources, keep volumes (13.6)
-aspire stop --force --volumes    # ...and delete Aspire-owned named volumes (13.6+)
+aspire stop --apphost ./src/MyApp.AppHost
+aspire stop --force --apphost <path>             # stop + clean up persistent resources, keep volumes (13.6)
+aspire stop --force --volumes --apphost <path>   # ...and delete Aspire-owned named volumes (13.6+)
 ```
+
+> `--force` is not a "stronger stop": it removes persistent resource instances without another
+> prompt, and `--volumes` deletes data. Get explicit approval, always pass `--apphost`, and never
+> combine `--force` with `--all`.
 
 ### `aspire wait` (13.2+)
 
@@ -272,12 +294,16 @@ aspire describe --include-hidden     # show resources hidden by default
 Run a command on a specific resource, or control its lifecycle.
 
 ```bash
-aspire resource <resource> <command> [options]
+aspire resource <resource> <command> [options] [-- <command-options>]
 
 # Built-in commands:
 #   start     Start a stopped resource
 #   stop      Stop a running resource
 #   restart   Restart a resource
+#   rebuild   Rebuild a C# project resource (its own build, not the whole AppHost)
+# Discover a resource's commands (queries the running AppHost):
+#   aspire resource <resource> --help
+#   aspire resource <resource> <command> --help
 
 # Options:
 #   --apphost <path>       Path to AppHost project file
@@ -286,7 +312,8 @@ aspire resource <resource> <command> [options]
 # Examples:
 aspire resource myapi restart
 aspire resource worker stop
-aspire resource api rebuild    # custom command if defined
+aspire resource api rebuild
+aspire resource api mycmd --apphost ./AppHost.cs -- --apphost value   # args after `--` go to the command
 ```
 
 **User-defined command arguments (13.5+).** Custom commands can declare named arguments via
@@ -471,6 +498,9 @@ aspire dashboard run
 aspire dashboard run --application-name my-app --persistence Resume   # (13.6+)
 ```
 
+> **It blocks** until stopped. Agents should run it in the background, capture the login URL (with its
+> `t=` token) from the first output lines, and never wait for the command to finish.
+>
 > **13.6:** the standalone dashboard is a Native AOT executable (no managed wrapper). AppHost-started dashboards default to `Run` persistence (SQLite, last 10 runs kept read-only); see [Dashboard](dashboard.md).
 
 > The dashboard is also available as a standalone container image — see [Dashboard](dashboard.md).
@@ -606,7 +636,9 @@ aspire restore
 
 ### `aspire publish` (Preview)
 
-Generate deployment manifests from the AppHost resource model.
+Generate deployment artifacts from the AppHost resource model. The **target comes from the
+environment resource(s) in the AppHost** (`AddDockerComposeEnvironment`, `AddKubernetesEnvironment`,
+`AddAzureContainerAppEnvironment`, …) — there is no `-p`/`--publisher` option. See [Deployment](deployment.md).
 
 ```bash
 aspire publish [options] [-- <additional arguments>]
@@ -618,6 +650,7 @@ aspire publish [options] [-- <additional arguments>]
 #                                      (renamed from --log-level in 13.3; -l/--log-level still sets console output)
 #   -e, --environment <env>            Environment (default: Production)
 #   --include-exception-details        Include stack traces in pipeline logs
+#   --no-build                         Don't build or restore the AppHost first
 #   --list-steps                       List pipeline steps without running them
 
 # Examples:
@@ -664,11 +697,24 @@ aspire config <subcommand>
 #   delete <key>           Delete a configuration value
 
 # Examples:
-aspire config list
+aspire config list --all            # also lists available feature flags
 aspire config set telemetry.enabled false
 aspire config get telemetry.enabled
 aspire config delete telemetry.enabled
 ```
+
+Feature flags on 13.6 (`aspire config set features.<name> true|false [--global]`):
+
+| Flag | Default | Effect |
+|---|---|---|
+| `defaultWatchEnabled` | `false` | AppHost-level watch: restarts the app after AppHost (and C# project) changes. Not per-resource hot reload. |
+| `experimentalPolyglot:go` / `:java` / `:python` / `:rust` | `false` | Experimental AppHost language support beyond C#/TypeScript |
+| `showAllTemplates` | `false` | Show experimental templates in `aspire new` / `aspire init` |
+| `showDeprecatedPackages` | `false` | Show deprecated packages in `aspire add` search |
+| `stagingChannelEnabled` | `false` | Allow the staging channel |
+| `polyglotIntegrationFilterEnabled` | `false` | (Experimental) restrict `aspire add` in non-C# AppHosts to `polyglot`-tagged packages — only useful against a local feed |
+| `nugetSignatureVerificationEnabled` | `true` | Default `DOTNET_NUGET_SIGNATURE_VERIFICATION` for NuGet operations |
+| `updateNotificationsEnabled` | `true` | CLI update notifications |
 
 ### `aspire cache`
 
@@ -698,6 +744,7 @@ aspire deploy [options] [-- <additional arguments>]
 #                                      (renamed from --log-level in 13.3; -l/--log-level still sets console output)
 #   -e, --environment <env>            Environment (default: Production)
 #   --include-exception-details        Include stack traces in pipeline logs
+#   --no-build                         Don't build or restore the AppHost first
 #   --list-steps                       List pipeline steps without running them
 #   --clear-cache                      Clear deployment cache for current environment
 
@@ -719,11 +766,14 @@ aspire do <step> [options] [-- <additional arguments>]
 #                                      (renamed from --log-level in 13.3; -l/--log-level still sets console output)
 #   -e, --environment <env>            Environment (default: Production)
 #   --include-exception-details        Include stack traces in pipeline logs
+#   --no-build                         Don't build or restore the AppHost first
 #   --list-steps                       List pipeline steps without running them
 
 # Examples:
-aspire do build-images --apphost ./src/MyApp.AppHost
-aspire do --list-steps                 # show pipeline steps without executing
+aspire do --list-steps                 # show step names (they depend on the AppHost's environments)
+aspire do build --apphost ./src/MyApp.AppHost
+aspire do push --environment staging
+aspire do prepare-compose --environment staging   # prepare-<environment-resource-name>
 ```
 
 ### `aspire destroy` (Preview, 13.3+)
@@ -738,6 +788,8 @@ aspire destroy [options] [-- <additional arguments>]
 #   -o, --output-path <path>           Path containing the deployment artifacts to destroy
 #   --pipeline-log-level <level>       Pipeline log level (trace, debug, information, warning, error, critical)
 #   -e, --environment <env>            Environment (default: Production)
+#   --include-exception-details        Include stack traces in pipeline logs
+#   --no-build                         Don't build or restore the AppHost first
 #   --list-steps                       List the steps without running them
 #   -y, --yes                          Do not prompt for confirmation before destroying
 

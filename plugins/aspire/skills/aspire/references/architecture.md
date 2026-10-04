@@ -278,14 +278,22 @@ Aspire configures OpenTelemetry automatically for .NET services. For non-.NET se
 
 ### Configuring non-.NET services
 
-The DCP exposes an OTLP endpoint. Set these env vars in your non-.NET service:
+The **dashboard** hosts the OTLP endpoint (its address comes from `ASPIRE_DASHBOARD_OTLP_ENDPOINT_URL` /
+`ASPIRE_DASHBOARD_OTLP_HTTP_ENDPOINT_URL` and differs per AppHost/profile — never hard-code a port such
+as `4317`). In local development Aspire sets these on .NET projects automatically, and on any other
+resource that calls `WithOtlpExporter()` (most language integrations do; add it yourself on custom
+executables/containers):
 
 ```
-OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
-OTEL_SERVICE_NAME=<your-service-name>
+OTEL_EXPORTER_OTLP_ENDPOINT=<dashboard OTLP endpoint>   # injected, dynamic
+OTEL_SERVICE_NAME=<resource-name>
+OTEL_RESOURCE_ATTRIBUTES=service.instance.id=<id>
 ```
 
-Aspire auto-injects `OTEL_EXPORTER_OTLP_ENDPOINT` via `.WithReference()` for the dashboard collector.
+Your service only needs an OpenTelemetry SDK that reads these standard variables. It is **not**
+injected via `.WithReference()`. OTLP export is disabled when `OTEL_EXPORTER_OTLP_ENDPOINT` isn't set —
+in deployed environments point it at your own collector/backend (Azure App Service: `WithAzureApplicationInsights()`
+on the environment).
 
 ### ServiceDefaults pattern
 
