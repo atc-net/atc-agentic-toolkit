@@ -56,7 +56,7 @@ Generate an AGENTS.md file for a repository.
 
 ### create-implementation-plan
 
-Create implementation plan files for features, refactoring, or architecture changes.
+Create resumable implementation plan files for features, refactoring, or architecture changes, with per-phase verification and handoff summaries.
 
 ### create-llms
 
