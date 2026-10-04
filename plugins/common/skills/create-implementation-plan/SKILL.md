@@ -1,6 +1,6 @@
 ---
 name: create-implementation-plan
-description: 'Create a new implementation plan file for new features, refactoring existing code or upgrading packages, design, architecture or infrastructure.'
+description: 'Create a new implementation plan file for new features, refactoring existing code or upgrading packages, design, architecture or infrastructure. Produces a durable, resumable plan with per-phase verification and handoff summaries so a future agent can pick up where the last one left off. Use when the user wants to plan multi-step or multi-session work.'
 ---
 
 # Create Implementation Plan
@@ -11,7 +11,18 @@ Your goal is to create a new implementation plan file for `${input:PlanPurpose}`
 
 ## Execution Context
 
-This prompt is designed for AI-to-AI communication and automated processing. All instructions must be interpreted literally and executed systematically without human interpretation or clarification.
+The plan file, not the conversation, is the source of truth. It records what to do, what is done, how each phase was verified, and how to deploy, so any agent or human can resume the work with zero prior context.
+
+## Clarify Before Writing
+
+Do not write the plan until the scope is understood. Ask the user (use `AskUserQuestion` for concrete choices) about anything that is ambiguous:
+
+- Scope boundaries (what is in and out)
+- Constraints, dependencies, and environments
+- Success criteria and how they will be verified
+- Deployment and failure cases
+
+Surface assumptions for the user to confirm. Once the questions are resolved, the plan itself must be executable without further human interpretation.
 
 ## Core Requirements
 
@@ -27,6 +38,8 @@ Plans must consist of discrete, atomic phases containing executable tasks. Each 
 ## Phase Architecture
 
 - Each phase must have measurable completion criteria
+- Each phase must have a verification block with commands the agent can run autonomously and the expected result
+- Each phase must have a summary placeholder that is filled in only when the phase completes
 - Tasks within phases must be executable in parallel unless dependencies are specified
 - All task descriptions must include specific file paths, function names, and exact implementation details
 - No task should require human interpretation or decision-making
@@ -59,7 +72,7 @@ All implementation plans must strictly adhere to the following template. Each se
 - All section headers must match exactly (case-sensitive)
 - All identifier prefixes must follow the specified format
 - Tables must include all required columns
-- No placeholder text may remain in the final output
+- No placeholder text may remain in the final output, except the phase summaries, Final Recap, and Deployment Plan, which stay as placeholders until that work completes
 
 ## Status
 
@@ -82,6 +95,10 @@ tags: [Optional: List of relevant tags or categories, e.g., `feature`, `upgrade`
 
 [A short concise introduction to the plan and the goal it is intended to achieve.]
 
+## For Future Agents
+
+As work proceeds: mark each task completed with its date; set the front matter `status` and each phase's `Status`; run the phase's **Verification** and record the result before starting the next phase; write the **Phase Summary** when a phase completes. When all phases are done, fill in **Final Recap** and **Deployment Plan**.
+
 ## 1. Requirements & Constraints
 
 [Explicitly list all requirements & constraints that affect the plan and constrain how it is implemented. Use bullet points or tables for clarity.]
@@ -97,6 +114,8 @@ tags: [Optional: List of relevant tags or categories, e.g., `feature`, `upgrade`
 
 ### Implementation Phase 1
 
+Status: Not started <!-- Not started | In progress | Complete -->
+
 - GOAL-001: [Describe the goal of this phase, e.g., "Implement feature X", "Refactor module Y", etc.]
 
 | Task | Description | Completed | Date |
@@ -105,7 +124,17 @@ tags: [Optional: List of relevant tags or categories, e.g., `feature`, `upgrade`
 | TASK-002 | Description of task 2 | |  |
 | TASK-003 | Description of task 3 | |  |
 
+#### Verification
+
+- **VER-001**: [Command or check the agent can run autonomously, with the expected result, e.g., `dotnet test` passes with 0 failures]
+
+#### Phase Summary
+
+_(Write when the phase completes: what was done, key decisions, and anything needed to continue with zero context.)_
+
 ### Implementation Phase 2
+
+Status: Not started
 
 - GOAL-002: [Describe the goal of this phase, e.g., "Implement feature X", "Refactor module Y", etc.]
 
@@ -114,6 +143,14 @@ tags: [Optional: List of relevant tags or categories, e.g., `feature`, `upgrade`
 | TASK-004 | Description of task 4 | |  |
 | TASK-005 | Description of task 5 | |  |
 | TASK-006 | Description of task 6 | |  |
+
+#### Verification
+
+- **VER-002**: [Autonomous check with expected result]
+
+#### Phase Summary
+
+_(Write when the phase completes.)_
 
 ## 3. Alternatives
 
@@ -154,4 +191,19 @@ tags: [Optional: List of relevant tags or categories, e.g., `feature`, `upgrade`
 
 [Link to related spec 1]
 [Link to relevant external documentation]
+
+## 9. Final Recap
+
+_(Write when all phases complete: a summary of the entire piece of work.)_
+
+## 10. Deployment Plan
+
+_(Write when all phases complete: step-by-step deployment instructions.)_
 ```
+
+## Common Mistakes
+
+- **Vague tasks**: each task is concrete ("Add retry logic to `PaymentClient.Charge`"), not a theme ("Improve payments").
+- **Manual-only verification**: give runnable commands with expected output, not "test it manually".
+- **Pre-filled summaries**: phase summaries, Final Recap, and Deployment Plan stay as placeholders until that work actually completes.
+- **Skipping verification**: a phase is not complete until its verification has run and the result is recorded.
