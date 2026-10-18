@@ -1,0 +1,29 @@
+{
+  "name": "atc-progress",
+  "version": "0.1.0",
+  "description": "Claude Code mod: a progress bar above the prompt for the active implementation plan (plan/*.md), plus a live subagents pane (/atc-progress) with model, context, tokens, estimated cost and time. Requires Claude Code 2.1.287+.",
+  "author": {
+    "name": "atc-net"
+  },
+  "homepage": "https://github.com/atc-net/atc-agentic-toolkit/tree/main/plugins/atc-progress",
+  "repository": "https://github.com/atc-net/atc-agentic-toolkit",
+  "keywords": [
+    "mod",
+    "progress",
+    "implementation-plan",
+    "subagents"
+  ],
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "autoOpen": {
+      "type": "string",
+      "title": "Open the agents pane",
+      "description": "off: only /atc-progress opens it. agents: it also opens by itself, once per session, when the first subagent starts.",
+      "default": "off",
+      "options": [
+        "off",
+        "agents"
+      ]
+    }
+  }
+}
