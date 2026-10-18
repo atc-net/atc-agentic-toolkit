@@ -15,6 +15,7 @@ A curated collection of prompts, skills, plugins, and best practices for AI codi
   - [💡 What is ATC Agentic Toolkit?](#-what-is-atc-agentic-toolkit)
   - [🚀 Quick Start](#-quick-start)
   - [🔌 Available Plugins](#-available-plugins)
+  - [🧩 Mods](#-mods)
   - [📁 Project Structure](#-project-structure)
   - [🛠️ Plugin Development](#️-plugin-development)
   - [✅ Requirements](#-requirements)
@@ -109,6 +110,44 @@ Once configured, type `/plugins` in Copilot Chat or use the `@agentPlugins` filt
 | [atc](plugins/atc/) | ATC.NET library skills including REST API source generation from OpenAPI specs, WPF controls, and cross-platform XAML development |
 | [security](plugins/security/) | Security best practices and OWASP Top 10 guidelines for secure coding across all languages and frameworks |
 | [hooks](.claude/plugins/hooks/) | Automation hooks for Claude Code sessions (Claude Code only) |
+| [atc-progress](plugins/atc-progress/) | Mod: implementation-plan progress bar above the prompt and a live subagents pane (Claude Code only) |
+
+---
+
+## 🧩 Mods
+
+Mods are plugins that change Claude Code itself while it runs. They can add a bar above the prompt, a side pane, slash commands, or react to tool calls, using Claude Code's function-hooks API (`hooks/hooks.json` → `hooks/register.tsx`).
+
+> [!IMPORTANT]
+> Mods require **Claude Code 2.1.287 or newer** (check with `claude --version`, update with `claude update`). They are Claude Code only: GitHub Copilot doesn't load them, so they're listed only in the Claude marketplace. The old `CLAUDE_CODE_ENABLE_FUNCTION_HOOKS` flag is no longer needed and is ignored.
+
+| Mod | What it shows | Commands | Settings |
+|-----|---------------|----------|----------|
+| [atc-progress](plugins/atc-progress/) | A plan bar above the prompt (from `plan/*.md`) and a subagents pane with model, context, tokens, estimated cost and time | `/atc-progress [plans\|plan [path]\|continue [path]\|open\|close\|hide\|show\|help]` | `autoOpen`: `off` / `agents` |
+
+### Install a mod
+
+```text
+/plugin marketplace add atc-net/atc-agentic-toolkit
+/plugin install atc-progress@atc-agentic-toolkit
+```
+
+Or from a shell: `claude plugin install atc-progress@atc-agentic-toolkit`. A mod with only hooks runs straight after install. If it doesn't show up, run `/reload-plugins` or restart Claude Code.
+
+### Activate / deactivate
+
+| Action | In a session | From a shell |
+|--------|--------------|--------------|
+| Disable | `/plugin` → select the mod → Disable | `claude plugin disable atc-progress@atc-agentic-toolkit` |
+| Enable | `/plugin` → select the mod → Enable | `claude plugin enable atc-progress@atc-agentic-toolkit` |
+| Uninstall | `/plugin` → select the mod → Uninstall | `claude plugin uninstall atc-progress@atc-agentic-toolkit` |
+| See what's installed | `/plugin` | `claude plugin list` |
+
+Run `/reload-plugins` (or restart) after enabling or disabling.
+
+### Mod settings
+
+Installing a mod asks for its options. Change them later in `/config`, where each option is a row under the mod's name. Each mod's README lists its options and has a **Try it** section with prompts to test it.
 
 ---
 
@@ -166,6 +205,25 @@ Want to create your own plugins? The toolkit provides a complete framework for d
 - [Plugin Development Guide](docs/guides/plugin-development.md)
 - [Skill Creation Guide](docs/guides/skill-creation.md)
 - [Plugin Structure Reference](docs/reference/plugin-structure.md)
+
+### Working on a mod locally
+
+Point `--plugin-dir` at the mod's folder in your clone to run it for one session without installing it. Use an absolute path so it works from any project, and repeat the flag to load several mods. Saving a file in the folder reloads the mod.
+
+```bash
+claude --plugin-dir <path-to-clone>/plugins/atc-progress
+```
+
+To load it in every session (the desktop app included), add the path to `CLAUDE_CODE_PLUGIN_DIRS` in the `env` block of `~/.claude/settings.json`. Separate several folders with `;` on Windows and `:` on macOS/Linux. Options for a mod loaded this way go under `pluginConfigs`:
+
+```json
+{
+  "env": { "CLAUDE_CODE_PLUGIN_DIRS": "E:/Dev/atc-agentic-toolkit/plugins/atc-progress" },
+  "pluginConfigs": { "atc-progress": { "options": { "autoOpen": "agents" } } }
+}
+```
+
+Check a mod with `claude plugin validate plugins/<mod>` and `claude plugin test plugins/<mod>`.
 
 ---
 
