@@ -111,6 +111,7 @@ Once configured, type `/plugins` in Copilot Chat or use the `@agentPlugins` filt
 | [security](plugins/security/) | Security best practices and OWASP Top 10 guidelines for secure coding across all languages and frameworks |
 | [hooks](.claude/plugins/hooks/) | Automation hooks for Claude Code sessions (Claude Code only) |
 | [atc-progress](plugins/atc-progress/) | Mod: implementation-plan progress bar above the prompt and a live subagents pane (Claude Code only) |
+| [atc-blast-radius](plugins/atc-blast-radius/) | Mod: holds risky shell commands and shows what they would delete before you choose Proceed or Cancel (Claude Code only) |
 
 ---
 
@@ -124,6 +125,7 @@ Mods are plugins that change Claude Code itself while it runs. They can add a ba
 | Mod | What it shows | Commands | Settings |
 |-----|---------------|----------|----------|
 | [atc-progress](plugins/atc-progress/) | A plan bar above the prompt (from `plan/*.md`) and a subagents pane with model, context, tokens, estimated cost and time | `/atc-progress [plans\|plan [path]\|continue [path]\|open\|close\|hide\|show\|help]` | `autoOpen`: `off` / `agents` |
+| [atc-blast-radius](plugins/atc-blast-radius/) | Before `rm -rf`, `Remove-Item -Recurse`, `git reset --hard`, `git clean`, a force push or a migration runs: what it would delete or throw away, then **Cancel** / **Proceed** | none (works on its own) | none |
 
 ### Install a mod
 
