@@ -92,6 +92,11 @@
       "name": "atc-blast-radius",
       "source": "./plugins/atc-blast-radius",
       "description": "Mod (Claude Code 2.1.287+): holds risky shell commands (rm -rf, Remove-Item -Recurse, git reset --hard, git clean, force pushes, migrations) and shows what they would delete before you choose Proceed or Cancel"
+    },
+    {
+      "name": "atc-replay-theater",
+      "source": "./plugins/atc-replay-theater",
+      "description": "Mod (Claude Code 2.1.287+): after a turn that edited files, step through the edits one diff at a time in a pane (/atc-replay)"
     }
   ]
 }
