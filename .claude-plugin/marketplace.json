@@ -87,6 +87,11 @@
       "name": "atc-progress",
       "source": "./plugins/atc-progress",
       "description": "Mod (Claude Code 2.1.287+): implementation-plan progress bar above the prompt and a live subagents pane with model, context, tokens, estimated cost and time"
+    },
+    {
+      "name": "atc-blast-radius",
+      "source": "./plugins/atc-blast-radius",
+      "description": "Mod (Claude Code 2.1.287+): holds risky shell commands (rm -rf, Remove-Item -Recurse, git reset --hard, git clean, force pushes, migrations) and shows what they would delete before you choose Proceed or Cancel"
     }
   ]
 }
