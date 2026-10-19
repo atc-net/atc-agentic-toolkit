@@ -1,0 +1,17 @@
+{
+  "name": "atc-replay-theater",
+  "version": "0.1.0",
+  "description": "Claude Code mod: after a turn that edited files, step through the edits one diff at a time in a pane (/atc-replay), with Prev, Next and Close. Records only the edits that ran. Works on Windows, macOS and Linux. Requires Claude Code 2.1.287+.",
+  "author": {
+    "name": "atc-net"
+  },
+  "homepage": "https://github.com/atc-net/atc-agentic-toolkit/tree/main/plugins/atc-replay-theater",
+  "repository": "https://github.com/atc-net/atc-agentic-toolkit",
+  "keywords": [
+    "mod",
+    "diff",
+    "review",
+    "edits"
+  ],
+  "types": "./types/index.d.ts"
+}
