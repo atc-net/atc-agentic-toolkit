@@ -1,6 +1,6 @@
 # Claude Code Fundamentals
 
-Essential concepts and principles for effective use of Claude Code in software development workflows.
+The core concepts you need to use Claude Code well: models and context, memory, the ways to customize it, subagents, commands, and plan mode.
 
 ## Table of Contents
 
@@ -19,316 +19,253 @@ Essential concepts and principles for effective use of Claude Code in software d
 
 ### What is Claude Code?
 
-Claude Code is an AI-powered CLI tool that extends Claude's capabilities for software development. It provides:
+Claude Code is an agentic coding tool. It runs in your terminal (and in the Desktop app, VS Code and JetBrains), reads your code, edits files, runs commands, and works through multi-step tasks with you. You can extend it with memory files, skills, subagents, hooks, MCP servers, plugins and mods.
 
-- **Context-aware assistance** - Understands your codebase and project structure
-- **Tool integration** - Can read files, run commands, make edits
-- **Extensibility** - Supports custom skills, commands, and plugins
-- **Iterative workflows** - Maintains conversation history and context
+### Models
 
-### The Three Memory Systems
+Claude Code runs on the current Claude models. Pick one with an alias:
 
-Claude Code operates with three distinct memory systems:
+| Alias | Model | Use it for |
+|-------|-------|------------|
+| `opus` | Claude Opus 5.5 (`claude-opus-5-5`) | Complex reasoning, large changes |
+| `sonnet` | Claude Sonnet 5.5 (`claude-sonnet-5-5`) | Daily coding |
+| `haiku` | Claude Haiku 5.5 (`claude-haiku-5-5`) | Simple, fast tasks |
+| `fable` | Claude Fable 5.1 (`claude-fable-5-1`) | The hardest and longest-running tasks |
 
-#### 1. Context Window (Working Memory)
+Two more aliases exist: `best` (Fable where you have access to it, otherwise Opus) and `opusplan` (Opus in plan mode, Sonnet for execution). Aliases can resolve to other models on some cloud providers.
 
-- **What it is:** The current conversation, including messages, file contents, and tool outputs
-- **Size:** Limited (tracks approximately 200K tokens for Sonnet 4.5)
-- **Lifecycle:** Exists for the duration of the session
-- **Management:** Must be actively managed to maintain performance
+All four models have a 1M-token context window by default.
 
-**Key point:** Think of context as RAM—it's fast but limited. Keep it lean and focused.
+Ways to set the model, highest priority first:
 
-#### 2. Persistent Memory (CLAUDE.md)
+```text
+/model sonnet                 # in a session (no argument opens a picker)
+claude --model opus           # at startup
+ANTHROPIC_MODEL=haiku         # environment variable
+"model": "opus"               # the model field in a settings file
+```
 
-- **What it is:** A markdown file containing instructions and preferences that persist across sessions
-- **Location:** Project root or home directory (`~/.config/claude/CLAUDE.md`)
-- **Lifecycle:** Permanent until explicitly modified
-- **Use cases:** Coding style, project conventions, recurring instructions
+`/effort` sets the effort level (`low`, `medium`, `high`, `xhigh`, `max`, or `auto`). See [Model configuration](https://code.claude.com/docs/en/model-config).
 
-**Key point:** Think of CLAUDE.md as your configuration file—it sets baseline behavior for all sessions.
+### Three Kinds of Memory
 
-#### 3. Skills and Plugins (Packaged Knowledge)
+It helps to think of Claude Code as having three layers of memory:
 
-- **What they are:** Modular expertise packages that extend Claude's capabilities
-- **Lifecycle:** Installed once, available in all sessions
-- **Loading:** Progressive disclosure (metadata → instructions → resources)
-
-**Key point:** Think of skills as specialized training—they activate when needed without cluttering context.
+1. **The context window** is working memory: the current conversation, files read, and tool output. It lasts one session.
+2. **Memory files** carry knowledge across sessions: `CLAUDE.md` files you write, and auto memory that Claude writes itself.
+3. **Skills and plugins** are packaged knowledge. Only a short description loads at startup; the full content loads when it's needed.
 
 ---
 
 ## Context Window Management
 
-Effective context management is crucial for Claude Code's reliability and performance.
+The context window holds everything Claude knows in the session. It's 1M tokens, which is large but not free: a long, unfocused conversation costs more tokens on every request and gives Claude more noise to sift through.
 
-### Why Context Management Matters
+### See What's in Context
 
-- **Performance:** Smaller context = faster responses
-- **Reliability:** Focused context = more accurate outputs
-- **Cost:** Context size affects API usage
-- **Quality:** Relevant context = better results
-
-### The `/context` Command
-
-Monitor context usage:
-
-```
+```text
 /context
 ```
 
-Shows:
-- Current context size (tokens used)
-- What's in context (files, messages, tool outputs)
-- Percentage of capacity used
+`/context` shows a breakdown of context usage by category, with suggestions, and lists which CLAUDE.md and auto memory files loaded. `/context all` adds per-tool detail.
 
-**Rule of thumb:** If context exceeds 70% capacity, consider:
-- Removing unnecessary files
-- Summarizing earlier conversation
-- Using `/rewind` to backtrack
-- Starting a fresh session
+### Keep Context Focused
 
-### Context Best Practices
+- **Ask for specific files.** "Read `UserService.cs` and `IUserService.cs`" beats "read the whole project".
+- **Search before reading.** Let Claude grep for a symbol, then read only the files that matter.
+- **Delegate large reads to a subagent.** The subagent reads in its own context window and returns a summary.
+- **Compact or clear between tasks.** `/compact` summarizes the conversation; `/clear` starts a new one.
 
-#### 1. Provide Only Relevant Information
+Claude Code also compacts automatically as the window fills, so a full context doesn't end your session.
 
-**❌ Too much:**
-```
-Read all the files in the project
-```
-
-**✅ Targeted:**
-```
-Read the UserService.cs file and its interface IUserService.cs
-```
-
-#### 2. Use Progressive Disclosure
-
-**❌ Front-loading:**
-```
-Read all documentation files before we start
-```
-
-**✅ On-demand:**
-```
-Start with the API overview, we'll reference specific endpoints as needed
-```
-
-#### 3. Explore First, Then Guide
-
-**Good workflow:**
-1. Let Claude explore to understand the codebase
-2. Review what it learned
-3. Guide it to specific areas for detailed work
-4. Monitor context size throughout
-
-#### 4. Leverage Specialized Agents
-
-Specialized agents (like `@pair-programmer`, `@code-reviewer`) have their own context windows:
-
-```
-@code-reviewer review the changes in UserService.cs
-```
-
-Benefits:
-- Separate context for separate tasks
-- Parallel workstreams
-- Focused expertise per task
+For details, see [Context Management](context-management.md).
 
 ---
 
 ## Persistent Memory
 
-The `CLAUDE.md` file stores instructions that apply across all sessions.
+Two mechanisms carry knowledge across sessions: **CLAUDE.md files**, which you write, and **auto memory**, which Claude writes. Both load at the start of every session. Claude treats them as context, not enforced rules; to enforce something, use a [hook](#6-hooks).
 
-### Location
+### CLAUDE.md Locations
 
-**Project-specific:**
-```
-/path/to/your/project/CLAUDE.md
-```
+| Scope | Location | Shared with |
+|-------|----------|-------------|
+| Managed policy | Windows: `C:\Program Files\ClaudeCode\CLAUDE.md`; macOS: `/Library/Application Support/ClaudeCode/CLAUDE.md`; Linux/WSL: `/etc/claude-code/CLAUDE.md` | Everyone in the organization |
+| User | `~/.claude/CLAUDE.md` | Only you, all projects |
+| Project | `./CLAUDE.md` or `./.claude/CLAUDE.md` | The team, through git |
+| Local | `./CLAUDE.local.md` (add it to `.gitignore`) | Only you, this project |
+| Rules | `.claude/rules/*.md` and `~/.claude/rules/*.md` | Depends on location |
 
-**Global (home directory):**
-```
-~/.config/claude/CLAUDE.md
-```
+How they load:
 
-**Priority:** Project-specific overrides global.
+- Files don't override each other. Claude Code **concatenates** them, broadest first, so the more specific file is read last.
+- CLAUDE.md files in your working directory and every directory above it load at launch. Files in subdirectories load when Claude works with files there.
+- Rules with `paths:` frontmatter load only when Claude reads or edits a matching file.
+- If a repository has an `AGENTS.md` and no `CLAUDE.md`, Claude Code reads `AGENTS.md` instead. This repository relies on that.
+- `@path/to/file` inside a CLAUDE.md imports another file.
 
 ### What to Include
 
-**Coding style and conventions:**
-```markdown
-# Coding Style
+Write down what you would otherwise re-explain: build and test commands, conventions, project layout, "always do X" rules. Be concrete enough to verify:
 
-- Use 4 spaces for indentation
-- Follow ATC-Net naming conventions
-- Always include XML documentation for public members
-- Prefer explicit types over `var` for clarity
+```markdown
+# Conventions
+
+- Run `dotnet test` before committing
+- API handlers live in `src/Api/Handlers/`
+- Use file-scoped namespaces
+- Ask before changing database migrations
 ```
 
-**Project structure:**
-```markdown
-# Project Organization
-
-- Controllers: `src/Controllers/`
-- Services: `src/Services/`
-- Models: `src/Models/`
-- Tests: `tests/[Component]Tests/`
-```
-
-**Technology stack:**
-```markdown
-# Tech Stack
-
-- Framework: .NET 6.0
-- Testing: xUnit + Moq
-- Database: PostgreSQL with Entity Framework Core
-- IoT: Azure IoT Hub + IoT Edge
-```
-
-**Common workflows:**
-```markdown
-# Workflows
-
-## Creating a New Feature
-
-1. Create feature branch from `develop`
-2. Implement changes following TDD
-3. Update documentation
-4. Run full test suite
-5. Create PR with description
-```
-
-**Preferences and constraints:**
-```markdown
-# Preferences
-
-- Always ask before modifying database migrations
-- Run tests before committing changes
-- Follow security best practices (OWASP Top 10)
-- Include logging for all external API calls
-```
+Keep each file under about 200 lines. Move multi-step procedures and reference material to [skills](#3-agent-skills), and rules for one part of the codebase to path-scoped rules.
 
 ### What NOT to Include
 
-- **Secrets or credentials** - Use environment variables
-- **Frequently changing information** - Use skills with references/
-- **Large code examples** - Use assets/ in skills
-- **Task-specific instructions** - Use skills or commands
+- **Secrets or credentials.** Use environment variables.
+- **Long procedures or reference docs.** Use a skill, which loads only when needed.
+- **Task-specific instructions.** Put them in the prompt or a skill.
 
 ### Updating CLAUDE.md
 
-**View current content:**
-```
-/claude-md
-```
+- `/init` generates a starting CLAUDE.md from your codebase, or suggests improvements to an existing one.
+- `/memory` lists your memory files and opens one in your editor.
+- Ask Claude directly: "add this to CLAUDE.md".
+- `/doctor prompt-audit` checks your instruction files for outdated or conflicting content.
 
-**Edit:**
-```
-Edit CLAUDE.md to add our new testing conventions
-```
+### Auto Memory
 
-**Best practice:** Update CLAUDE.md iteratively as patterns emerge.
+Auto memory lets Claude keep notes for itself: your preferences, corrections you gave it, and project facts it can't derive from the code.
+
+- Stored per repository in `~/.claude/projects/<project>/memory/`, shared across worktrees, local to your machine.
+- `MEMORY.md` is an index; the first 200 lines (or 25KB) load at the start of every session. Detail goes into topic files next to it.
+- On by default. Toggle it in `/memory`, or set `"autoMemoryEnabled": false` in settings.
+- "Remember that the API tests need a local Redis" goes to auto memory. "Add this to CLAUDE.md" goes to CLAUDE.md.
+- The files are plain markdown. Open the folder from `/memory` to read, edit or delete them.
+
+See [How Claude remembers your project](https://code.claude.com/docs/en/memory).
 
 ---
 
 ## Customization Mechanisms
 
-Claude Code provides five mechanisms for customization, each suited to different needs.
+Each mechanism solves a different problem. [Extend Claude Code](https://code.claude.com/docs/en/features-overview) compares them in depth.
+
+| Mechanism | What it does | Loads |
+|-----------|--------------|-------|
+| CLAUDE.md and rules | Always-on facts and conventions | Every session |
+| Auto memory | Claude's own notes | Every session |
+| Skills | Reusable instructions and workflows, invoked as `/name` | Description at start, body when used |
+| Subagents | Isolated workers with their own context | When spawned |
+| Hooks | Scripts that run on lifecycle events | Outside the context |
+| Mods | Code that changes Claude Code's interface and behavior | Inside Claude Code |
+| MCP servers | Tools for external systems | Tool names at start, schemas on demand |
+| Output styles | Role, tone and response format | Every request |
+| Settings and permissions | Configuration and tool access rules | Not in context |
+| Plugins | Packaging for all of the above | Per component |
 
 ### 1. Slash Commands
 
-**Purpose:** Quick, frequent operations
+Custom commands have been merged into skills. A file at `.claude/commands/deploy.md` and a skill at `.claude/skills/deploy/SKILL.md` both create `/deploy`. Existing `.claude/commands/` files keep working, but use a skill for new work, since skills can bundle supporting files.
 
-**Location:** `.claude/commands/[name].md`
-
-**Invocation:** `/command-name [args]`
-
-**Best for:**
-- Single, focused tasks
-- Operations with explicit parameters
-- Frequently used workflows
-
-**Example:**
+```text
+/deploy staging
 ```
-/format-params
-/add-module TemperatureSensor "Description"
-```
+
+See [Command Creation Guide](../guides/command-creation.md).
 
 ### 2. Subagents (Specialized Agents)
 
-**Purpose:** Task-specific expertise with isolated context
+A subagent runs in its own context window with its own system prompt, tools and permissions, and returns only a summary to your conversation. Define your own as markdown files with `name` and `description` frontmatter in `.claude/agents/` (project) or `~/.claude/agents/` (user). Plugins can ship them in `agents/`.
 
-**Built-in examples:**
-- `@pair-programmer` - Compare approaches, generate alternatives
-- `@system-architect` - Design scalable architecture
-- `@root-cause-analyst` - Investigate unclear bugs
-- `@code-reviewer` - Review code objectively
-
-**Invocation:**
-```
-@code-reviewer review the changes in UserService.cs
-```
-
-**Benefits:**
-- Separate context window
-- Specialized focus
-- Parallel work streams
+See [Working with Agents](#working-with-agents) and the [Agent Creation Guide](../guides/agent-creation.md).
 
 ### 3. Agent Skills
 
-**Purpose:** Modular, discoverable expertise packages
+A skill is a folder with a `SKILL.md` file: frontmatter with a `name` and a `description`, then instructions. It can bundle scripts, references and templates.
 
-**Location:** `.claude/skills/[namespace]/[skill-name]/SKILL.md`
+| Scope | Location |
+|-------|----------|
+| Project | `.claude/skills/<skill-name>/SKILL.md` |
+| Personal | `~/.claude/skills/<skill-name>/SKILL.md` |
+| Plugin | `<plugin>/skills/<skill-name>/SKILL.md`, invoked as `/plugin-name:skill-name` |
 
-**Invocation:** Natural language
-```
-Use the iot-edge-module skill to create a new module named TemperatureSensor
-```
+Claude loads a skill automatically when your task matches its description, or you invoke it with `/skill-name`. Set `disable-model-invocation: true` for skills with side effects so they run only when you name them. `/skills` lists what's available.
 
-**Best for:**
-- Complex, multi-step workflows
-- Domain-specific knowledge
-- Bundled resources (scripts, references, assets)
-
-**Components:**
-- SKILL.md with instructions
-- scripts/ for executable code
-- references/ for documentation
-- assets/ for templates and files
+See [Skill Creation Guide](../guides/skill-creation.md) and [Skills](https://code.claude.com/docs/en/skills).
 
 ### 4. Plugins
 
-**Purpose:** Distributable collections of skills and commands
+A plugin packages skills, subagents, hooks, MCP servers and output styles into one installable unit, distributed through a marketplace. In this repository, skill plugins live in `plugins/<name>/` and are listed in both `.claude-plugin/marketplace.json` (Claude Code) and `.github/plugin/marketplace.json` (GitHub Copilot).
 
-**Location:** `plugins/[plugin-name]/`
+Install one with Claude Code 2.1.275 or later:
 
-**Installation:**
+```text
+/plugin install dotnet --marketplace atc-net/atc-agentic-toolkit
 ```
-Install the azure-iot plugin from the atc-net marketplace
+
+On older versions, add the marketplace first:
+
+```text
+/plugin marketplace add atc-net/atc-agentic-toolkit
+/plugin install dotnet@atc-agentic-toolkit
 ```
 
-**Best for:**
-- Packaging related functionality
-- Team-wide standardization
-- Reusable across projects
-
-**Components:**
-- Multiple skills
-- Multiple commands
-- Plugin-level documentation
+See [Plugin Development Guide](../guides/plugin-development.md).
 
 ### 5. Structured Notes (CLAUDE.md)
 
-**Purpose:** Persistent instructions across sessions
+Always-on instructions for every session. See [Persistent Memory](#persistent-memory).
 
-**Location:** Project root or `~/.config/claude/`
+### 6. Hooks
 
-**Best for:**
-- Coding style and conventions
-- Project structure
-- Recurring preferences
+A hook runs a shell command, HTTP request, prompt or subagent when Claude Code reaches a lifecycle event such as `PreToolUse`, `PostToolUse` or `SessionStart`. Unlike an instruction in CLAUDE.md, a hook always runs, so use hooks for guardrails and automation: format after every edit, block a dangerous command.
+
+Configure hooks under the `hooks` key in a settings file (`~/.claude/settings.json`, `.claude/settings.json` or `.claude/settings.local.json`), in a plugin's `hooks/hooks.json`, or in skill and subagent frontmatter. `/hooks` lists what's configured. This repository keeps its shell hooks in `.claude/plugins/hooks/`.
+
+See [Automate actions with hooks](https://code.claude.com/docs/en/hooks-guide).
+
+### 7. Mods
+
+A mod is a plugin with JavaScript or TypeScript handlers that run inside Claude Code, so it can draw panes, add commands that run without a Claude turn, and step into tool calls. Mods need Claude Code 2.1.287 or later. See [Mod Creation Guide](../guides/mod-creation.md) and [Mod Anatomy](../reference/mod-anatomy.md).
+
+### 8. MCP Servers
+
+MCP servers give Claude tools for external systems: databases, issue trackers, browsers.
+
+```bash
+claude mcp add --transport http notion https://mcp.notion.com/mcp
+```
+
+Project-scoped servers live in `.mcp.json` at the project root and can be committed; local and user servers are stored in `~/.claude.json`. Plugins can ship a `.mcp.json` too. `/mcp` shows connection status and handles OAuth. See [MCP](https://code.claude.com/docs/en/mcp).
+
+### 9. Output Styles
+
+An output style sets Claude's role, tone and response format for the whole session. Built-in styles are Proactive, Concise, Explanatory and Learning, besides Default. Switch with `/output-style concise`, or write your own in `.claude/output-styles/` or `~/.claude/output-styles/`. See [Output styles](https://code.claude.com/docs/en/output-styles).
+
+### 10. Settings and Permissions
+
+Settings files, highest precedence first:
+
+1. Managed settings (organization)
+2. Command-line flags, such as `claude --settings`
+3. `.claude/settings.local.json` (you, this project; not committed)
+4. `.claude/settings.json` (the team, committed)
+5. `~/.claude/settings.json` (you, every project)
+
+Permissions are `allow`, `ask` and `deny` rules on tools:
+
+```json
+{
+  "permissions": {
+    "allow": ["Bash(dotnet test *)"],
+    "deny": ["Read(./.env)"]
+  }
+}
+```
+
+`/config` opens the settings interface; `/config key=value` sets a value directly. `/permissions` manages tool rules. See [Settings](https://code.claude.com/docs/en/settings).
+
+For the folder layout of all of this, see [.claude Folder Structure](../reference/claude-folder-structure.md).
 
 ---
 
@@ -336,247 +273,153 @@ Install the azure-iot plugin from the atc-net marketplace
 
 ### When to Use Specialized Agents
 
-#### @pair-programmer
+Use a subagent when a task would flood your conversation with output you won't need again: searching a large codebase, reading many files, running a long test suite. Its work stays in its own context; only the summary comes back.
 
-**Use when:** You want to compare multiple approaches
+### Built-in Subagents
 
-```
-@pair-programmer compare 2-3 solutions for implementing user authentication with pros and cons of each
-```
+| Agent | What it does |
+|-------|--------------|
+| **Explore** | Fast, read-only search and analysis of a codebase |
+| **Plan** | Read-only research while you're in plan mode |
+| **general-purpose** | Multi-step tasks that need both exploration and changes |
+| **claude** | Catch-all for tasks that don't fit a specialized agent |
+| **statusline-setup** | Configures the status line when you run `/statusline` |
+| **claude-code-guide** | Answers questions about Claude Code itself |
 
-**Output:** Detailed comparison with recommendations
+### Invoking a Subagent
 
-#### @system-architect
+- **Automatically.** Claude delegates when your request matches a subagent's `description`.
+- **By name.** "Use the Explore agent to find where we validate JWT tokens."
+- **With an @-mention.** Type `@` and pick the agent from the list, or type `@agent-<name>`. This guarantees that agent runs.
 
-**Use when:** Designing scalable systems or major features
+A custom subagent is a markdown file:
 
-```
-@system-architect design a scalable architecture for processing IoT telemetry at scale
-```
+```markdown
+---
+name: code-reviewer
+description: Reviews code for quality and security. Use proactively after code changes.
+tools: Read, Glob, Grep
+model: sonnet
+---
 
-**Output:** Architecture diagrams, component descriptions, considerations
-
-#### @root-cause-analyst
-
-**Use when:** Investigating unclear bugs or unexpected behavior
-
-```
-@root-cause-analyst investigate why the temperature readings are intermittently null
-```
-
-**Output:** Systematic analysis, hypothesis testing, root cause identification
-
-#### @code-reviewer
-
-**Use when:** Getting unbiased feedback on code changes
-
-```
-@code-reviewer review the changes in feature/user-authentication branch
+You are a code reviewer. Give specific, actionable feedback on quality,
+security and maintainability.
 ```
 
-**Output:** Code review with suggestions, potential issues, best practices
+To create or change one, ask Claude, or edit the files in `.claude/agents/` directly. See [Subagents](https://code.claude.com/docs/en/sub-agents).
 
 ### Agent Best Practices
 
-- **One agent, one task** - Don't mix multiple responsibilities
-- **Provide context** - Give agents the information they need
-- **Review outputs** - Agents provide recommendations, you make decisions
-- **Iterate** - Use agent feedback to refine your approach
+- **One agent, one job.** Narrow descriptions make delegation reliable.
+- **Give it what it needs.** A subagent doesn't see your conversation, only the task Claude writes for it.
+- **Limit tools.** A reviewer needs `Read`, `Glob` and `Grep`, not `Edit`.
+- **Review the output.** Agents recommend; you decide.
 
 ---
 
 ## Introspection & Discovery
 
-Claude Code's conversational nature enables feature exploration through dialogue. Rather than memorizing every capability, leverage Claude's ability to explain itself and reflect on effective patterns.
-
 ### Ask About Capabilities
 
-Don't assume what Claude can or cannot do—ask directly:
+Ask Claude Code about itself. The built-in claude-code-guide agent answers questions about features, settings, hooks and MCP:
 
-```
-What tools do you have access to for analyzing code?
+```text
+How do I make a hook that runs dotnet format after every edit?
 
-Can you help me understand the authentication patterns in this codebase?
-
-What limitations should I be aware of when working with database migrations?
-
-What's the best way to handle this scenario in our project structure?
+What tools do you have for analyzing this codebase?
 ```
 
-**Benefits:**
-- Discover features you didn't know existed
-- Understand tool limitations before attempting tasks
-- Get contextual advice specific to your situation
-- Reduce trial-and-error
+Type `/` to see every command available in your version, and `/help` for help.
 
 ### Post-Task Reflection
 
-After completing tasks, reflect on what worked:
+After a task goes well, ask what made it work:
 
+```text
+What approach worked best for that refactoring?
+Is there a pattern here we should turn into a skill?
 ```
-What approach worked best for that refactoring task?
-
-Were there any patterns we used that we should codify into a skill?
-
-What would you recommend differently next time?
-
-How could we make this process more efficient in the future?
-```
-
-**Benefits:**
-- Learn from successful patterns
-- Identify opportunities for automation
-- Build domain-specific intuition
-- Continuous improvement of workflows
 
 ### Convert Patterns into Reusable Components
 
-When effective patterns emerge through usage:
+When the same prompt or procedure keeps coming back:
 
-1. **Notice what worked well** - Pay attention to prompts and workflows that consistently produce good results
-2. **Identify if it's repeatable** - Does this pattern apply to multiple scenarios?
-3. **Consider creating a skill or command** - Package the pattern for reuse
-4. **Document in CLAUDE.md** - For simpler patterns, add to project conventions
+1. **A repeated correction** goes into CLAUDE.md.
+2. **A prompt you keep typing** becomes a skill you invoke with `/name`.
+3. **A playbook you keep pasting** becomes a skill with supporting files.
+4. **Something that must happen every time** becomes a hook.
+5. **A setup a second repository needs** becomes a plugin.
 
-**Example workflow:**
-
-```
-# After successfully implementing a feature
-That worked really well. We should capture this pattern for creating new API endpoints.
-
-# Claude helps identify the pattern
-The pattern we used was: 1) Create interface, 2) Implement service, 3) Add controller endpoint, 4) Write tests, 5) Update API documentation.
-
-# Decide how to codify it
-Let's create a slash command /add-endpoint that follows this pattern.
-
-# Create the command
-Create a slash command in .claude/commands/add-endpoint.md that implements this workflow.
-```
-
-### Exploratory Questions
-
-Use Claude as a thought partner:
-
-**Architecture decisions:**
-```
-@system-architect what factors should I consider when deciding between these two approaches?
-```
-
-**Code quality:**
-```
-Review this code and tell me what questions I should be asking about its design.
-```
-
-**Learning opportunities:**
-```
-What advanced C# features could improve this implementation? Explain the trade-offs.
+```text
+That worked well. Create a skill in .claude/skills/add-endpoint/SKILL.md that captures
+the steps we used: interface, service, endpoint, tests, API docs.
 ```
 
 ---
 
 ## Essential Commands
 
+A selection of built-in commands. See the [commands reference](https://code.claude.com/docs/en/commands) for the full list.
+
 ### Navigation and Context
 
-**View context:**
-```
-/context
-```
-
-**Rewind to previous state:**
-```
-/rewind
-```
-
-**Clear context (fresh start):**
-```
-/clear
-```
+| Command | What it does |
+|---------|--------------|
+| `/context` | Show context usage by category |
+| `/compact [instructions]` | Summarize the conversation to free context, optionally with a focus |
+| `/clear` | Start a new conversation with empty context |
+| `/rewind` | Rewind the conversation and/or code to an earlier point, or summarize from a message (aliases `/checkpoint`, `/undo`) |
+| `/autocompact [auto\|<tokens>]` | Set how full the context gets before auto-compact runs |
 
 ### Configuration
 
-Claude Code can be configured at both user and project levels to customize behavior, permissions, and available tools.
-
-**View current settings:**
-```
-/config
-```
-
-Shows all current configuration options and their values.
-
-**Modify settings:**
-```
-/config set [option] [value]
-```
-
-**View CLAUDE.md:**
-```
-/claude-md
-```
+| Command | What it does |
+|---------|--------------|
+| `/config` | Open the settings interface; `/config key=value` sets a value directly |
+| `/model [model]` | Switch model |
+| `/effort [level]` | Set the effort level |
+| `/permissions` | Manage allow, ask and deny rules |
+| `/memory` | Open memory files and toggle auto memory |
+| `/init` | Create or improve a CLAUDE.md |
+| `/hooks` | View configured hooks |
+| `/mcp` | Manage MCP servers |
+| `/plugin` | Install and manage plugins |
+| `/output-style [style]` | List or switch output styles |
+| `/status` | Show version, model, account and connectivity |
+| `/doctor` | Diagnose installation and configuration problems |
 
 #### Configuration Best Practices
 
-1. **Start restrictive, then loosen** - Begin with manual approvals, enable auto-approval as trust builds
-2. **Different configs for different phases** - Exploration vs. implementation vs. refactoring
-3. **Commit project configs** - Share `.claude/config.json` with your team via git
-4. **Document your settings** - Add comments in CLAUDE.md explaining configuration choices
-5. **Review periodically** - Configurations that worked early may need adjustment
+1. **Start restrictive.** Approve tool calls manually until you trust a workflow, then add `allow` rules for the safe ones.
+2. **Commit the team's settings.** Put shared rules in `.claude/settings.json`; keep personal ones in `.claude/settings.local.json`.
+3. **Put guardrails in `deny` rules or hooks**, not in CLAUDE.md, which Claude may not follow every time.
+4. **Review periodically.** Rules that suited early work may be too broad later.
 
 #### When to Adjust Configuration
 
-**Enable auto-approval when:**
-- Working alone on personal projects
-- Rapid prototyping phase
-- High trust in Claude's behavior
-- Frequent, similar operations
+**Loosen permissions** (`acceptEdits`, or more `allow` rules) when you're prototyping alone or running the same safe commands over and over.
 
-**Disable auto-approval when:**
-- Production code modifications
-- Unfamiliar codebase
-- High-risk changes
-- Learning/onboarding phase
-- Pair programming with team
-
-**Restrict tools when:**
-- Security-sensitive projects
-- Want reproducible sessions
-- Corporate/compliance requirements
-- Teaching or demonstrations
+**Tighten them** for production code, an unfamiliar codebase, high-risk changes, or compliance requirements.
 
 ### History and Sessions
 
-**View conversation history:**
-```
-/history
-```
+| Command | What it does |
+|---------|--------------|
+| `/resume [session]` | Resume an earlier conversation, or open the session picker |
+| `/rename [name]` | Name the current session |
+| `/branch [name]` | Branch the conversation to try another direction |
+| `/export [filename]` | Export the conversation as plain text |
 
-**Save session:**
-```
-/save [name]
-```
-
-**Load saved session:**
-```
-/load [name]
-```
+From the shell, `claude --continue` resumes the most recent conversation.
 
 ### Help and Documentation
 
-**Get help:**
-```
-/help
-```
-
-**List available commands:**
-```
-/commands
-```
-
-**List available skills:**
-```
-/skills
-```
+| Command | What it does |
+|---------|--------------|
+| `/help` | Show help and available commands |
+| `/` | Type it to see and filter every command and skill |
+| `/skills` | List available skills |
+| `/usage` | Show session cost, plan limits and activity |
 
 ---
 
@@ -584,314 +427,110 @@ Shows all current configuration options and their values.
 
 ### Incremental Evolution
 
-Treat your Claude Code setup as a living system:
+Build your setup as needs come up, not all at once:
 
-1. **Start simple** - Begin with basic CLAUDE.md and a few commands
-2. **Notice patterns** - Identify repetitive tasks and workflows
-3. **Codify** - Create skills and commands for repeated patterns
-4. **Refine** - Iterate based on real-world usage
-5. **Share** - Distribute effective patterns to your team
+1. **Start with a short CLAUDE.md.** Run `/init` and trim the result.
+2. **Notice what repeats.** Corrections, prompts, procedures.
+3. **Codify it.** CLAUDE.md for facts, skills for workflows, hooks for guarantees.
+4. **Refine with use.** Edit skills that keep needing manual tweaks.
+5. **Share it.** Package what works as a plugin.
 
 ### Planning Modes
 
-For complex features requiring careful thought, Claude Code provides planning modes that separate planning from execution.
+#### Why Use Plan Mode?
 
-#### Why Use Planning Modes?
+Plan mode separates research from changes. Claude reads files and runs commands to explore, then writes a plan, but doesn't edit your source until you approve. Use it for large features, unclear requirements, several possible approaches, or high-risk changes.
 
-**Without planning mode:**
-- Claude might start implementing immediately
-- Risk of wrong direction with wasted effort
-- Hard to get buy-in on approach before work begins
-- Difficult to see full scope upfront
+#### Entering Plan Mode
 
-**With planning mode:**
-- Explicit separation of planning and execution phases
-- Review and adjust plan before any code changes
-- Clear scope and approach documented
-- Team alignment before implementation starts
+- Press **Shift+Tab** to cycle permission modes until you reach plan mode. Press it again to leave without approving.
+- Or prefix a prompt with `/plan`, for example `/plan add role-based authorization to the API`.
+- Or start in plan mode: `claude --permission-mode plan`.
 
-#### Extended Plan Mode (`/plan`)
+#### How It Works
 
-**Activate:**
-```
-/plan
-```
+1. You describe the goal.
+2. Claude explores the codebase read-only, often with the Plan subagent.
+3. Claude presents a plan.
+4. You approve it or choose to keep planning and say what to change. Press `Ctrl+G` to edit the plan in your editor.
+5. On approval, Claude leaves plan mode and starts editing, in auto mode or with manual edit approval, depending on the option you pick.
 
-**When to use:**
-- Building large features (>1 day of work)
-- Unclear requirements needing exploration
-- Multiple possible approaches to evaluate
-- High-risk changes requiring careful planning
-- Need to present plan to stakeholders first
-
-**How it works:**
-1. You describe the goal or problem
-2. Claude researches and explores (read-only)
-3. Claude presents a comprehensive plan
-4. You review, discuss, and refine the plan
-5. You explicitly approve to begin implementation
-6. Claude executes the agreed plan
-
-**Example workflow:**
-
-```
-# Activate plan mode
-/plan
-
-# Describe your goal
-I need to add user role-based authorization to our API.
-Currently we only have authentication. We need to support
-Admin, Manager, and User roles with different permissions.
-
-# Claude explores the codebase
-[Claude reads authentication code, controller structure, etc.]
-
-# Claude presents plan
-Here's my plan:
-1. Create Role enum and update User model
-2. Add roles to JWT token claims
-3. Create authorization policies
-4. Add [Authorize] attributes to controllers
-5. Update tests for role scenarios
-... (detailed steps)
-
-# You review and provide feedback
-This looks good, but let's also add a middleware for logging
-unauthorized access attempts.
-
-# Claude updates plan
-[Plan revised with logging addition]
-
-# You approve
-Looks great, let's proceed with the implementation
-
-# Claude executes plan
-[Implementation begins]
+```text
+/plan We only have authentication today. Add Admin, Manager and User roles
+with different permissions on the API endpoints.
 ```
 
-**Benefits:**
-- Avoid costly mistakes through upfront review
-- Clear documentation of approach
-- Stakeholder buy-in before work begins
-- Opportunity to catch issues early
+#### Phased Plans
 
-#### Structured Plan Mode (`/structured-plan`)
+For work spanning weeks, ask for the plan in phases, each with its own deliverables and verification, and run one phase at a time:
 
-**Activate:**
+```text
+/plan Migrate authentication from our custom JWT to Microsoft Entra ID with no downtime.
+Break it into phases with deliverables and a test for each phase.
 ```
-/structured-plan
-```
-
-**When to use:**
-- Multi-phase projects (weeks or months)
-- Coordinated work across multiple areas
-- Need phased delivery milestones
-- Complex projects requiring staged rollout
-- Multiple team members involved
-
-**How it works:**
-1. Claude breaks work into distinct phases
-2. Each phase has clear deliverables and dependencies
-3. You can execute phases sequentially or in parallel
-4. Each phase can be reviewed independently
-5. Adjustments can be made between phases
-
-**Example workflow:**
-
-```
-# Activate structured plan mode
-/structured-plan
-
-# Describe complex project
-We need to migrate our user authentication from custom JWT
-to Azure AD B2C. We have 50K active users and can't have downtime.
-
-# Claude creates phased plan
-Phase 1: Preparation (Week 1)
-- Research Azure AD B2C setup
-- Create test tenant
-- Document migration strategy
-- Set up development environment
-
-Phase 2: Dual Authentication (Week 2-3)
-- Implement Azure AD B2C alongside existing auth
-- Support both authentication methods
-- Add feature flag for gradual rollout
-
-Phase 3: User Migration (Week 4-5)
-- Create migration scripts
-- Migrate users in batches
-- Monitor for issues
-
-Phase 4: Cutover (Week 6)
-- Direct all new users to Azure AD B2C
-- Monitor metrics
-- Support existing JWT tokens during grace period
-
-Phase 5: Cleanup (Week 7)
-- Remove old authentication code
-- Update documentation
-- Final testing
-
-# Execute phases one at a time
-Let's start with Phase 1
-
-[Complete Phase 1]
-
-# Review before next phase
-Phase 1 looks good. Ready for Phase 2?
-
-[Continue through phases]
-```
-
-**Benefits:**
-- Clear milestones and progress tracking
-- Reduced risk through phased approach
-- Flexibility to adjust between phases
-- Easier team coordination
-
-#### Choosing the Right Mode
-
-| Scenario | Use `/plan` | Use `/structured-plan` | Skip planning |
-|----------|-------------|------------------------|---------------|
-| Single feature, 1-2 days | ✅ If complex | ❌ | Maybe |
-| Large feature, 1-2 weeks | ✅ | ✅ If phased | ❌ |
-| Multi-month project | ❌ | ✅ | ❌ |
-| Quick bug fix | ❌ | ❌ | ✅ |
-| Unclear requirements | ✅ | ✅ If very complex | ❌ |
-| Multiple approaches possible | ✅ | ❌ | ❌ |
-| High-risk change | ✅ | ✅ If large | ❌ |
-| Emergency fix | ❌ | ❌ | ✅ |
 
 #### Planning Mode Best Practices
 
-1. **Be specific in your initial prompt** - Provide context about scale, constraints, and requirements
-2. **Ask questions during planning** - Clarify before approving the plan
-3. **Request alternatives** - "Show me 2-3 approaches" even in plan mode
-4. **Review carefully** - The plan is your blueprint; ensure it's right
-5. **Stay engaged** - Provide feedback and guidance during planning
-6. **Don't skip planning for complex work** - The time invested saves debugging and rework
+1. **Give scale and constraints up front.** Users, downtime limits, deadlines.
+2. **Ask for alternatives.** "Show me two approaches with trade-offs."
+3. **Question the plan before approving it.** It's cheaper to change a plan than code.
+4. **Skip planning for small fixes.** Plan mode pays off on complex work.
 
 ### The Experimentation Mindset
 
-**Philosophy:** Working implementations refined through feedback beat pursuing perfection initially.
+#### Try, Then Refine
 
-#### Embrace Fearless Experimentation
+A working version you refine beats a perfect design you never test. Start with the main use case, use it, and improve what real use exposes.
 
-Claude Code encourages a culture of trying things without fear:
+```text
+Create a basic notification service that sends emails.
 
-- **Try different implementations** - Don't get stuck on the "perfect" approach upfront
-- **Discard unsuccessful approaches** - It's okay to restart with a better understanding
-- **Use `/rewind` liberally** - Explore alternatives without consequence
-- **Commit frequently** - Create safe checkpoints for experimentation
-
-**Example workflow:**
-
+[Later, after hitting rate limits]
+Add a queue so we stay under the provider's rate limit.
 ```
-# Try approach A
-Let's implement authentication using JWT tokens with refresh tokens
 
-[Implementation reveals complexity]
+#### Undo Freely
 
-# Pivot without fear
+`/rewind` restores the conversation, the code Claude edited, or both, to an earlier point. Use it to drop a failed approach and try another:
+
+```text
 /rewind
-Let's try a simpler approach with session-based auth first, then add JWT later if needed
-```
-
-#### Fail Fast, Iterate Quickly
-
-**❌ Perfection-first approach:**
-```
-Design the perfect solution architecture before writing any code.
-Anticipate every edge case up front.
-Don't start until we have all the answers.
-```
-
-**✅ Iteration-first approach:**
-```
-Let's start with a simple working version that handles the main use case.
-We can identify issues through actual usage.
-Refine based on real feedback and metrics.
-```
-
-#### Learn Through Doing
-
-Domain-specific intuition develops through hands-on practice, not just planning:
-
-1. **Start with simple working version** - Get it running
-2. **Identify issues through usage** - Real problems emerge
-3. **Refine based on feedback** - Improve what matters
-4. **Build expertise iteratively** - Learn by doing
-
-**Example:**
-
-```
-# Start simple
-Create a basic notification service that sends emails
-
-# Use and learn
-[After using it, you discover rate limiting issues]
-
-# Refine
-Add a queue system to handle rate limiting
-
-# Use and learn more
-[After more usage, you discover priority needs]
-
-# Refine again
-Add priority levels to the notification queue
+Let's try session-based auth first and add JWT later if we need it.
 ```
 
 #### Git as Your Safety Net
 
-Frequent commits enable fearless experimentation:
+`/rewind` only restores edits made with Claude's file editing tools. It doesn't undo files changed by shell commands (`rm`, `mv`, `cp`), most subagent edits, or changes made outside Claude Code. Commit before risky work:
 
 ```bash
-# Create a checkpoint
 git commit -m "Working version of user service"
-
-# Experiment freely
-[Try new approach with Claude]
-
-# Keep what works
-git commit -m "Improved error handling"
-
-# Or discard what doesn't
-git reset --hard HEAD~1
-/clear  # Start fresh conversation in Claude
+# Experiment with Claude
+git reset --hard HEAD~1   # discard if it didn't work out
 ```
 
-**Best practices:**
-- Commit before trying risky refactorings
-- Use descriptive commit messages
-- Keep commits small and focused
-- Don't fear `/rewind` in Claude or `git reset` in your repo
+Then `/clear` to start fresh.
 
 ### Team Consistency
 
-For teams:
+1. **Commit a project CLAUDE.md and `.claude/settings.json`.**
+2. **Share skills, agents and hooks through a plugin.**
+3. **Review instruction files together** and remove what's stale.
 
-1. **Standardize CLAUDE.md** - Share common conventions
-2. **Create shared plugins** - Distribute team skills
-3. **Document patterns** - Record what works
-4. **Review together** - Discuss effective approaches
+See [Team Standards](team-standards.md).
 
 ### Context Hygiene
 
-- **Monitor regularly** - Check `/context` periodically
-- **Remove when done** - Clear files no longer needed
-- **Summarize long threads** - Condense earlier conversation
-- **Fresh starts** - Don't fear `/clear` for new tasks
+- **Check `/context`** when a session feels slow or unfocused.
+- **`/compact` with a focus** before a long new task.
+- **`/clear`** between unrelated tasks.
+- **Delegate big reads** to a subagent.
 
 ---
 
 ## Resources
 
-- **Official Documentation:** https://docs.claude.com/claude-code
-- **Context Management Guide:** [context-management.md](context-management.md)
-- **Effective Prompts Guide:** [effective-prompts.md](effective-prompts.md)
-- **Team Standards:** [team-standards.md](team-standards.md)
-
----
-
-**Key Takeaway:** Claude Code's effectiveness comes from understanding and managing its three memory systems: context window (working memory), CLAUDE.md (persistent instructions), and skills/plugins (packaged expertise). Master these, and you'll master Claude Code.
+- [Claude Code documentation](https://code.claude.com/docs/en/overview)
+- [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices)
+- [Context Management](context-management.md)
+- [Effective Prompts](effective-prompts.md)
+- [Team Standards](team-standards.md)
