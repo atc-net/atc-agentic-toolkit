@@ -1,706 +1,375 @@
 # Skill Anatomy Reference
 
-Technical specification for SKILL.md file format, frontmatter metadata, and bundled resources.
+Field-by-field reference for the `SKILL.md` format: frontmatter, substitutions, body syntax and supporting files. For a step-by-step walkthrough, see the [Skill Creation Guide](../guides/skill-creation.md).
+
+Sources: the [Claude Code skills docs](https://code.claude.com/docs/en/skills) and the [Agent Skills specification](https://agentskills.io/specification).
+
+## Table of Contents
+
+- [Standards](#standards)
+- [Directory Layout](#directory-layout)
+- [SKILL.md Structure](#skillmd-structure)
+- [Frontmatter: Agent Skills Fields](#frontmatter-agent-skills-fields)
+- [Frontmatter: Claude Code Fields](#frontmatter-claude-code-fields)
+- [Fields That Don't Exist](#fields-that-dont-exist)
+- [Name Rules](#name-rules)
+- [Command Names](#command-names)
+- [Invocation Control](#invocation-control)
+- [String Substitutions](#string-substitutions)
+- [Body Syntax](#body-syntax)
+- [Supporting Files](#supporting-files)
+- [Progressive Disclosure and Size Limits](#progressive-disclosure-and-size-limits)
+- [Where Skills Live](#where-skills-live)
+- [Validation](#validation)
+- [Examples](#examples)
+- [Resources](#resources)
+
+---
+
+## Standards
+
+Skills follow the open [Agent Skills](https://agentskills.io) standard. The standard defines six frontmatter fields and the folder layout. Claude Code accepts all of them and adds its own fields and body features on top.
+
+This repository writes skills to the standard and uses Claude Code fields where they help. The same skill folders are published to both Claude Code and GitHub Copilot, so keep in mind that other tools are only guaranteed the six standard fields.
+
+---
+
+## Directory Layout
+
+```text
+skill-name/
+├── SKILL.md          # Required: frontmatter + instructions
+├── references/       # Optional: docs Claude reads when needed
+├── scripts/          # Optional: code Claude runs
+├── assets/           # Optional: templates, images, data used in output
+└── ...               # Any other files or folders
+```
+
+Only `SKILL.md` is required. The other folder names are conventions from the standard, not rules. For example, [skill-creator](../../plugins/common/skills/skill-creator/) also has `agents/` and `eval-viewer/`.
+
+---
 
 ## SKILL.md Structure
-
-Every skill requires a `SKILL.md` file with two main components:
-
-1. **YAML Frontmatter** (required) - Metadata between `---` delimiters
-2. **Markdown Body** (required) - Instructions and documentation
 
 ```markdown
 ---
 name: skill-name
-description: Brief description of skill purpose and when to use it
-license: MIT
+description: What the skill does. Use when ...
 ---
 
 # Skill Title
 
-Markdown instructions for Claude Code...
+Instructions for Claude.
 ```
+
+- Frontmatter is YAML between `---` markers. Claude Code reads it only when the opening `---` is the first line of the file. Otherwise the whole file is treated as body text.
+- If the YAML doesn't parse, the skill still loads, but with no fields set. `/name` works; automatic triggering doesn't, because there's no description to match.
+- The body is Markdown with no required sections.
+- Boolean fields accept `true`/`false`, `yes`/`no`, `on`/`off` and `1`/`0` (Claude Code 2.1.218+; earlier versions only `true`/`false`).
 
 ---
 
-## YAML Frontmatter
+## Frontmatter: Agent Skills Fields
 
-### Required Fields
+Defined by the [Agent Skills specification](https://agentskills.io/specification). These are the only fields accepted by claude.ai skill uploads, the Skills API and `package_skill.py`. Any other field makes those paths fail with `Unexpected key(s) in SKILL.md frontmatter`.
 
-#### name
+| Field | Spec | Claude Code | Constraints |
+|-------|------|-------------|-------------|
+| `name` | Required | Optional; defaults to the folder name | 1-64 characters; see [Name Rules](#name-rules) |
+| `description` | Required | Recommended | Spec: 1-1024 characters. Say what the skill does and when to use it. |
+| `license` | Optional | Accepted, not acted on | License name or bundled file, e.g. `MIT` or `Complete terms in LICENSE.txt` |
+| `compatibility` | Optional | Accepted, not acted on | 1-500 characters. Environment needs, e.g. `Requires network access` |
+| `metadata` | Optional | Accepted, not acted on | Map of string keys to string values, e.g. `author`, `version` |
+| `allowed-tools` | Optional (experimental) | Pre-approves tools | Spec: space-separated string. Claude Code also accepts commas or a YAML list. |
 
-**Type:** String
+`allowed-tools` in Claude Code grants permission only for the turn that invokes the skill. It doesn't restrict which tools Claude can use; your permission settings still apply to everything else. The grant ends when you send your next message.
 
-**Description:** Skill identifier, must match directory name
+---
 
-**Format:** Lowercase with hyphens
+## Frontmatter: Claude Code Fields
 
-**Example:**
+Claude Code extensions. Other tools may ignore them or reject them.
 
-```yaml
-name: iot-edge-module
-```
+| Field | Default | Description |
+|-------|---------|-------------|
+| `when_to_use` | none | Extra trigger context (phrases, example requests), appended to `description` in the listing. Note the underscores. |
+| `argument-hint` | none | Autocomplete hint, e.g. `"[issue-number]"`. |
+| `arguments` | none | Names for positional arguments, as a space-separated string or YAML list. `arguments: [issue, branch]` makes `$issue` the first argument. |
+| `disable-model-invocation` | `false` | `true`: only the user can invoke it with `/name`. The description leaves Claude's context. Also stops it being preloaded into subagents. |
+| `user-invocable` | `true` | `false`: hidden from the `/` menu; only Claude invokes it. For background knowledge. |
+| `disallowed-tools` | none | Tools removed while the skill is active. Clears on your next message. |
+| `model` | session model | Model for the rest of the current turn. Same values as `/model`, or `inherit`. With `context: fork`, sets the subagent's model. |
+| `effort` | session effort | `low`, `medium`, `high`, `xhigh` or `max`, depending on the model. |
+| `context` | inline | `fork` runs the skill in a subagent. The skill body becomes the subagent's task; it doesn't see your conversation. |
+| `agent` | `general-purpose` | Subagent type for `context: fork`: `Explore`, `Plan`, `general-purpose`, or a custom agent from `.claude/agents/`. |
+| `background` | `true` | With `context: fork`, `false` waits for the subagent's result in the same turn (2.1.218+). |
+| `hooks` | none | Hooks registered when the skill is invoked, kept for the rest of the session. Same format as hooks in settings; `once: true` removes a hook after its first successful run. See [Hooks in skills and agents](https://code.claude.com/docs/en/hooks#hooks-in-skills-and-agents). |
+| `paths` | none | Glob patterns. When set, Claude loads the skill automatically only while working with matching files. |
+| `shell` | `bash` | Shell for `!` commands: `bash` or `powershell`. |
 
-#### description
+Notes:
 
-**Type:** String
+- Field names must match exactly. Claude Code ignores an unknown field without an error.
+- A command file in `.claude/commands/` accepts every field except `name` and `paths`.
+- The combined `description` and `when_to_use` text is cut at 1,536 characters in the skill listing.
 
-**Description:** Clear explanation of what the skill does and when to use it
-
-**Format:** One to three sentences, third person
-
-**Best Practice:** Include "when to use" guidance
-
-**Example:**
-
-```yaml
-description: This skill should be used when users need to scaffold a new Azure IoT Edge module with complete project structure, Dockerfiles, and deployment manifest integration.
-```
-
-### Optional Fields
-
-#### license
-
-**Type:** String
-
-**Description:** License identifier or license file reference
-
-**Examples:**
-
-```yaml
-license: MIT
-license: Apache-2.0
-license: Complete terms in LICENSE.txt
-```
-
-#### version
-
-**Type:** String
-
-**Description:** Semantic version number
-
-**Format:** `major.minor.patch`
-
-**Example:**
-
-```yaml
-version: 1.0.0
-```
-
-#### author
-
-**Type:** String
-
-**Description:** Author name or organization
-
-**Example:**
-
-```yaml
-author: ATC-Net
-```
-
-#### namespace
-
-**Type:** String
-
-**Description:** Plugin namespace (usually plugin name)
-
-**Example:**
-
-```yaml
-namespace: azure-iot
-```
-
-#### category
-
-**Type:** String
-
-**Description:** Skill category for organization
-
-**Values:** development, utilities, documentation, testing, deployment, etc.
-
-**Example:**
-
-```yaml
-category: development
-```
-
-#### keywords
-
-**Type:** Array of strings
-
-**Description:** Searchable keywords
-
-**Example:**
-
-```yaml
-keywords: [azure, iot-edge, scaffolding, dotnet]
-```
-
-### Complete Frontmatter Example
+A `hooks` example:
 
 ```yaml
 ---
-name: iot-edge-module
-namespace: azure-iot
-description: This skill should be used when users need to scaffold a new Azure IoT Edge module with complete project structure, Dockerfiles, and deployment manifest integration.
-version: 1.0.0
-author: ATC-Net
-category: development
-keywords: [azure, iot-edge, scaffolding, modules, dotnet, csharp]
-license: MIT
+name: secure-operations
+description: Perform operations with security checks
+hooks:
+  PreToolUse:
+    - matcher: "Bash"
+      hooks:
+        - type: command
+          command: "./scripts/security-check.sh"
 ---
 ```
 
 ---
 
-## Markdown Body
+## Fields That Don't Exist
 
-### Required Sections
+Earlier versions of this page listed fields that neither Claude Code nor the standard defines. Claude Code ignores them, and claude.ai uploads reject them:
 
-#### Instructions
-
-**Purpose:** Tell Claude Code what to do when the skill is invoked
-
-**Format:** Clear, imperative instructions
-
-**Structure:**
-
-```markdown
-# Skill Name
-
-Brief overview of skill purpose.
-
-## Instructions
-
-When the user invokes this skill, you should:
-
-1. [First step]
-2. [Second step]
-3. [Third step]
-
-## Guidelines
-
-- [Guideline 1]
-- [Guideline 2]
-```
-
-### Recommended Sections
-
-#### About This Skill
-
-**Purpose:** Explain the skill's purpose and value
-
-**Example:**
-
-```markdown
-## About This Skill
-
-This skill automates the creation of Azure IoT Edge modules, reducing setup time from hours to minutes and ensuring consistency across projects.
-```
-
-#### When to Use
-
-**Purpose:** Clarify appropriate use cases
-
-**Example:**
-
-```markdown
-## When to Use
-
-Use this skill when:
-- Creating a new IoT Edge module from scratch
-- Adding a module to an existing IoT Edge solution
-- Standardizing module structure across projects
-```
-
-#### Prerequisites
-
-**Purpose:** List requirements before using the skill
-
-**Example:**
-
-```markdown
-## Prerequisites
-
-- .NET SDK 6.0 or higher
-- Docker Desktop installed
-- Existing IoT Edge solution (or this skill will create one)
-```
-
-#### Examples
-
-**Purpose:** Show concrete usage examples
-
-**Example:**
-
-```markdown
-## Examples
-
-**Basic module:**
-\```
-Use the iot-edge-module skill to create a new module named TemperatureSensor
-\```
-
-**Module with description:**
-\```
-Use the iot-edge-module skill to create a module named DataProcessor that aggregates sensor data
-\```
-```
-
-#### Bundled Resources
-
-**Purpose:** Document scripts, references, and assets included with the skill
-
-**Example:**
-
-```markdown
-## Bundled Resources
-
-**Scripts:**
-- `scripts/create_module.py` - Generates module structure
-- `scripts/update_manifest.py` - Updates deployment manifest
-
-**References:**
-- `references/module-structure.md` - Module directory layout
-- `references/deployment-manifests.md` - Manifest configuration guide
-
-**Assets:**
-- `assets/module-template/` - .NET project template
-```
-
-#### Error Handling
-
-**Purpose:** Guide Claude Code on handling errors
-
-**Example:**
-
-```markdown
-## Error Handling
-
-**If module already exists:**
-- Inform the user
-- Ask if they want to overwrite
-- Require explicit confirmation before proceeding
-
-**If .NET SDK is not installed:**
-- Display error message
-- Provide installation link
-- Do not proceed with module creation
-```
+| Not a field | Use instead |
+|-------------|-------------|
+| `version`, `author` | `metadata: { version: "1.0", author: ATC-Net }` |
+| `namespace` | Nothing. Plugin skills are namespaced by the plugin name automatically. |
+| `category`, `keywords` | Put trigger words in `description` or `when_to_use`. |
 
 ---
 
-## Writing Style Guidelines
+## Name Rules
 
-### Use Imperative Form
+The standard's rules for `name`:
 
-**❌ Don't use second person:**
+- 1-64 characters
+- Lowercase letters `a-z`, digits `0-9` and hyphens only
+- Doesn't start or end with a hyphen, and has no `--`
+- Matches the parent folder name
 
-```markdown
-You should create the module directory...
-```
-
-**✅ Use imperative/infinitive:**
-
-```markdown
-Create the module directory...
-```
-
-### Be Specific and Actionable
-
-**❌ Vague:**
-
-```markdown
-Help the user with their module.
-```
-
-**✅ Specific:**
-
-```markdown
-Create a new IoT Edge module directory at src/Modules/[ModuleName]/ with the following structure:
-- [ModuleName].csproj
-- Program.cs
-- Dockerfile
-- Dockerfile.dev
-```
-
-### Use Structured Steps
-
-**❌ Paragraph form:**
-
-```markdown
-First you need to validate the module name and then create the directory structure and after that generate the project files and finally update the deployment manifest.
-```
-
-**✅ Numbered steps:**
-
-```markdown
-1. Validate the module name (PascalCase, no special characters)
-2. Create directory structure at src/Modules/[ModuleName]/
-3. Generate .NET project file ([ModuleName].csproj)
-4. Create Program.cs with IoT Edge template
-5. Generate Dockerfiles (production and development)
-6. Update deployment.template.json
-```
+Claude Code is less strict, but follow the standard so the skill works everywhere. Claude Code refuses names with control characters, zero-width or private-use characters, direction marks, unusual spaces, `<` or `>`. It also reserves `synced` and `anthropic-skills`.
 
 ---
 
-## Bundled Resources
+## Command Names
 
-### scripts/
+Every skill a user can invoke is also a slash command:
 
-**Purpose:** Executable code for deterministic or repeatedly rewritten tasks
+| Skill location | Command |
+|----------------|---------|
+| `.claude/skills/deploy/SKILL.md` | `/deploy` (or `/<name>` if `name` is set) |
+| `.claude/commands/deploy.md` | `/deploy` |
+| `.claude/commands/frontend/component.md` | `/frontend:component` |
+| `apps/web/.claude/skills/deploy/SKILL.md`, clashing with a root `deploy` | `/apps/web:deploy` |
+| `plugins/dotnet/skills/format-params/SKILL.md` | `/dotnet:format-params` |
 
-**File Types:** `.py`, `.sh`, `.js`, etc.
-
-**When to Include:**
-
-- Same code is rewritten repeatedly
-- Deterministic reliability is needed
-- Complex logic prone to errors if regenerated
-
-**Organization:**
-
-```
-scripts/
-├── main_script.py          # Primary script
-├── helper_script.py        # Supporting script
-└── utils.sh                # Utility functions
-```
-
-**Referencing in SKILL.md:**
-
-```markdown
-To rotate the PDF, execute:
-\```bash
-python scripts/rotate_pdf.py input.pdf output.pdf 90
-\```
-```
-
-### references/
-
-**Purpose:** Documentation loaded into context as needed
-
-**File Types:** `.md` primarily
-
-**When to Include:**
-
-- Documentation Claude should reference
-- Schemas, specifications, standards
-- Domain knowledge, company policies
-- API documentation
-
-**Organization:**
-
-```
-references/
-├── main-concepts.md        # Core information
-├── api-specification.md    # API docs
-├── database-schema.md      # Schema details
-└── examples.md             # Usage examples
-```
-
-**Referencing in SKILL.md:**
-
-```markdown
-## Database Schema
-
-For complete schema details, see references/database-schema.md.
-
-Key tables:
-- Users
-- Orders
-- Products
-```
-
-**Best Practice:** For large files (>10k words), include grep patterns:
-
-```markdown
-To find specific table definitions, search references/database-schema.md for the table name.
-```
-
-### assets/
-
-**Purpose:** Files used in output, not loaded into context
-
-**File Types:** Any - templates, images, fonts, boilerplate code
-
-**When to Include:**
-
-- Templates for generated output
-- Brand assets (logos, fonts)
-- Boilerplate code
-- Sample/starter files
-
-**Organization:**
-
-```
-assets/
-├── templates/
-│   ├── html-template.html
-│   └── config-template.json
-├── images/
-│   └── logo.png
-└── boilerplate/
-    └── starter-project/
-```
-
-**Referencing in SKILL.md:**
-
-```markdown
-Copy the template from assets/templates/config-template.json as the base configuration.
-```
+When names collide: enterprise beats personal, personal beats project, and a skill beats a `.claude/commands/` file with the same name. Plugin skills never collide, because they carry the plugin prefix.
 
 ---
 
-## Progressive Disclosure
+## Invocation Control
 
-Skills use a three-level loading strategy:
+| Frontmatter | User can invoke | Claude can invoke | In context |
+|-------------|-----------------|-------------------|------------|
+| (default) | Yes | Yes | Description always; body when invoked |
+| `disable-model-invocation: true` | Yes | No | Nothing until invoked |
+| `user-invocable: false` | No | Yes | Description always; body when invoked |
 
-### Level 1: Metadata (Always Loaded)
-
-**What:** Frontmatter (`name` and `description`)
-
-**Size:** ~100 words
-
-**Purpose:** Help Claude decide if skill is relevant
-
-**Loaded:** All the time for all skills
-
-### Level 2: SKILL.md Body (Loaded When Triggered)
-
-**What:** Full markdown instructions
-
-**Size:** <5,000 words (recommended)
-
-**Purpose:** Provide instructions for executing the skill
-
-**Loaded:** When Claude activates the skill
-
-### Level 3: Bundled Resources (Loaded As Needed)
-
-**What:** scripts/, references/, assets/
-
-**Size:** Unlimited* (*scripts can execute without reading into context)
-
-**Purpose:** Provide detailed information and resources
-
-**Loaded:** When Claude determines they're needed
-
-**Example Flow:**
-
-User: "Create an IoT Edge module named TemperatureSensor"
-
-1. **Metadata scanned:** Claude sees `iot-edge-module` skill matches
-2. **SKILL.md loaded:** Full instructions are read
-3. **Resources loaded progressively:**
-   - Reads `references/module-structure.md` to understand layout
-   - Executes `scripts/create_module.py` (may not read into context)
-   - Copies files from `assets/module-template/`
+In this repository, knowledge skills such as [csharp-conventions](../../plugins/dotnet/skills/csharp-conventions/SKILL.md) and the Azure skills set `user-invocable: false`. Action skills such as [suggest-commit](../../plugins/git/skills/suggest-commit/SKILL.md) set `disable-model-invocation: true`.
 
 ---
 
-## Size Recommendations
+## String Substitutions
 
-### SKILL.md
+Replaced in the body before Claude sees it:
 
-**Target:** 1,000-3,000 words
+| Variable | Value |
+|----------|-------|
+| `$ARGUMENTS` | Full argument string as typed. If the body has no placeholder, Claude Code appends `ARGUMENTS: <value>`. |
+| `$ARGUMENTS[N]` | Argument by 0-based position. Shell-style quoting: `"hello world"` is one argument. |
+| `$N` | Short form of `$ARGUMENTS[N]`: `$0`, `$1`, ... |
+| `$name` | Named argument from the `arguments` field |
+| `${CLAUDE_SESSION_ID}` | Current session ID |
+| `${CLAUDE_EFFORT}` | Current effort level |
+| `${CLAUDE_SKILL_DIR}` | Folder that contains this `SKILL.md` |
+| `${CLAUDE_PROJECT_DIR}` | Project root |
+| `${CLAUDE_PLUGIN_ROOT}` | Plugin install folder (plugin skills only) |
+| `${CLAUDE_PLUGIN_DATA}` | Plugin's persistent data folder (plugin skills only) |
 
-**Maximum:** 5,000 words
-
-**If larger:** Move content to references/
-
-### Frontmatter Description
-
-**Target:** 1-2 sentences
-
-**Maximum:** 3 sentences
-
-### References
-
-**No strict limit** - Loaded on demand
-
-**Best Practice:** Split into focused files rather than one large file
-
-### Scripts
-
-**Keep focused** - One responsibility per script
-
-**Document well** - Include comments and docstrings
-
-### Assets
-
-**Consider size** - Large assets (>10MB) may slow installation
+- `${CLAUDE_SKILL_DIR}`, `${CLAUDE_PROJECT_DIR}` and the plugin variables are also substituted in `Bash(...)` rules in `allowed-tools`. That lets a skill pre-approve its own script: `allowed-tools: Bash(${CLAUDE_SKILL_DIR}/scripts/render.sh *)`.
+- An indexed placeholder with no argument stays as literal text. A named one becomes empty.
+- Escape a literal `$` before a digit, `ARGUMENTS` or an argument name with a backslash: `\$1.00`.
 
 ---
 
-## Validation Checklist
+## Body Syntax
 
-Before publishing a skill:
+| Syntax | Effect | Notes |
+|--------|--------|-------|
+| `` !`command` `` | Runs the command before Claude sees the skill; output replaces it | Must start a line or follow whitespace. A failure aborts the whole invocation. |
+| ` ```! ` fenced block | Same, for several lines | |
+| `@path` | In a local skill, Claude Code attaches the named file | Mentioned in the docs only in passing; prefer links or `${CLAUDE_SKILL_DIR}` for bundled files |
+| `ultrathink` | Asks for deeper reasoning when the skill runs | |
+| Relative links, e.g. `[schema](references/schema.md)` | Tells Claude where a supporting file is and when to read it | Standard; works everywhere |
 
-### Frontmatter
-
-- [ ] YAML is valid (test with YAML parser)
-- [ ] `name` matches directory name
-- [ ] `description` is clear and includes "when to use"
-- [ ] `name` is lowercase-with-hyphens format
-
-### Instructions
-
-- [ ] Written in imperative form
-- [ ] Steps are numbered and clear
-- [ ] Specific and actionable
-- [ ] Error handling is addressed
-- [ ] Examples are provided
-
-### Resources
-
-- [ ] All referenced resources exist
-- [ ] Scripts are executable
-- [ ] References are accurate
-- [ ] Assets are properly formatted
-- [ ] No unused files
-
-### Testing
-
-- [ ] Skill activates when invoked
-- [ ] Instructions are followed correctly
-- [ ] Scripts execute successfully
-- [ ] Output meets expectations
+`!` injection, `context: fork` and the other Claude Code features don't work in claude.ai chat or the API. The `disableSkillShellExecution` setting turns `!` injection off. In skills synced from claude.ai, `!` commands and `@` references aren't run or attached in local sessions.
 
 ---
 
-## Example: Complete SKILL.md
+## Supporting Files
 
-```markdown
+| Folder | Holds | Loaded |
+|--------|-------|--------|
+| `references/` | Docs, schemas, API specs, policies | Claude reads a file when the body points to it and the task needs it |
+| `scripts/` | Python, PowerShell, Bash, JavaScript... | Run, usually without being read into context |
+| `assets/` | Templates, images, data files used in output | Copied or read when producing output |
+
+Rules from the standard:
+
+- Link files from `SKILL.md` with relative paths from the skill root, and say what each one is for.
+- Keep references one level deep from `SKILL.md`. Avoid chains of files that point to more files.
+- Keep each reference file focused. Smaller files cost less context.
+- Scripts should state their dependencies and give helpful error messages.
+
+In this repository, scripts must run on Windows, macOS and Linux. Prefer Python or PowerShell 7 over bash-only tools.
+
 ---
-name: database-migrator
-namespace: common
-description: This skill should be used when users need to create, apply, or manage Entity Framework Core database migrations for .NET projects.
-version: 1.0.0
-author: ATC-Net
-category: development
-keywords: [database, migrations, entity-framework, dotnet, csharp]
-license: MIT
+
+## Progressive Disclosure and Size Limits
+
+A skill loads in three stages:
+
+| Stage | What | Size guidance |
+|-------|------|---------------|
+| 1. Listing | `name` and `description` (+ `when_to_use`) of every skill, every turn | About 100 tokens per skill (standard). Claude Code cuts each entry at 1,536 characters. |
+| 2. Body | The whole `SKILL.md` body, when the skill is invoked | Under 5,000 tokens recommended (standard); under 500 lines (both) |
+| 3. Resources | Files in `references/`, `scripts/`, `assets/`, as the task needs them | No fixed limit |
+
+Claude Code limits that affect skill design:
+
+- The whole listing has a budget of 1% of the model's context window. When it overflows, the descriptions of the least-used skills are dropped first. Use `/skill-doctor` to see each skill's cost and usage.
+- Once invoked, the body stays in the conversation. Claude Code doesn't re-read the file on later turns.
+- After compaction, Claude Code keeps the first 5,000 tokens of each invoked skill, within a total of 25,000 tokens. Put the most important instructions first.
+
 ---
 
-# Database Migrator
+## Where Skills Live
 
-This skill automates the creation and management of Entity Framework Core migrations, ensuring consistent naming conventions and proper migration structure.
+| Location | Path |
+|----------|------|
+| Enterprise | `.claude/skills/<name>/SKILL.md` in the managed settings folder |
+| Personal | `~/.claude/skills/<name>/SKILL.md` |
+| Project | `.claude/skills/<name>/SKILL.md`, also in parent folders up to the repo root |
+| Nested | `<subdir>/.claude/skills/<name>/SKILL.md`, loaded once Claude works on files there |
+| Plugin | `<plugin>/skills/<name>/SKILL.md` |
+| Older command format | `.claude/commands/<name>.md` |
 
-## When to Use
+In this repository: `plugins/<plugin>/skills/<name>/SKILL.md`, with `plugin.json` at the plugin root pointing at `./skills/`. See the [Plugin Structure Reference](plugin-structure.md).
 
-Use this skill when:
-- Creating a new database migration after model changes
-- Applying migrations to update database schema
-- Rolling back migrations
-- Generating migration scripts for review
+---
 
-## Prerequisites
+## Validation
 
-- .NET SDK 6.0 or higher
-- Entity Framework Core tools installed
-- Existing DbContext in the project
+| Tool | Checks |
+|------|--------|
+| `claude plugin validate plugins/<plugin>` | The plugin's manifest and files |
+| `claude plugin validate <skills folder>` | Finds `SKILL.md` files whose frontmatter doesn't parse, e.g. `.claude/skills`, `~/.claude/skills` or `plugins/<plugin>/skills` (Claude Code 2.1.233+) |
+| `skills-ref validate ./my-skill` | Frontmatter against the Agent Skills standard ([skills-ref](https://github.com/agentskills/agentskills/tree/main/skills-ref)) |
+| `claude --debug` | Shows YAML parse errors and refused names in the debug log |
 
-## Instructions
+The [skill-creator](../../plugins/common/skills/skill-creator/) skill has two scripts that check frontmatter:
 
-### Creating a Migration
+- `quick_validate.py <skill folder>` accepts the standard fields and Claude Code's.
+- `quick_validate.py <skill folder> --strict` accepts the standard fields only, as a claude.ai upload needs.
+- `package_skill.py` builds a `.skill` file for upload, so it always checks strictly.
 
-When the user requests a new migration, you should:
+For testing behaviour rather than format (`claude plugin eval`, skill-creator evals, `/skill-doctor`), see [Testing a Skill](../guides/skill-creation.md#testing-a-skill).
 
-1. **Analyze model changes:**
-   - Identify which entities were added, modified, or removed
-   - Determine the type of change (table addition, column modification, etc.)
-
-2. **Generate migration name:**
-   - Follow the naming pattern from references/naming-conventions.md
-   - Use descriptive names: `AddUsersTable`, `UpdateOrderStatusColumn`
-
-3. **Create the migration:**
-   \```bash
-   dotnet ef migrations add [MigrationName]
-   \```
-
-4. **Review the generated migration:**
-   - Check that Up() and Down() methods are correct
-   - Verify data types and constraints
-   - Ensure indexes are appropriate
-
-5. **Inform the user:**
-   - Report migration name and location
-   - Provide command to apply: `dotnet ef database update`
-
-### Applying Migrations
-
-To apply pending migrations:
-
-1. **List pending migrations:**
-   \```bash
-   dotnet ef migrations list
-   \```
-
-2. **Apply migrations:**
-   \```bash
-   dotnet ef database update
-   \```
-
-3. **Verify success:**
-   - Check for error messages
-   - Confirm database schema matches expectations
-
-## Guidelines
-
-- Always review generated migrations before applying
-- Never auto-apply migrations without user confirmation
-- Include both Up() and Down() methods
-- Test migrations on development environment first
-- Keep migrations focused (one logical change per migration)
-
-## Bundled Resources
-
-**References:**
-- `references/naming-conventions.md` - Migration naming patterns
-- `references/ef-core-best-practices.md` - EF Core guidelines
-
-## Error Handling
-
-**If no model changes detected:**
-- Inform user: "No model changes detected. Migration not created."
-- Suggest reviewing model classes for changes
-
-**If migration fails to apply:**
-- Display the error message
-- Check references/troubleshooting.md for common issues
-- Suggest rolling back: `dotnet ef database update [PreviousMigration]`
-
-**If naming conflicts:**
-- Detect existing migration with similar name
-- Suggest more specific name
-- Ask user for preferred name
+---
 
 ## Examples
 
-**Create migration for new table:**
-\```
-Use the database-migrator skill to create a migration for the new Products table
-\```
+Minimal, standard-only:
 
-**Apply pending migrations:**
-\```
-Use the database-migrator skill to apply all pending migrations
-\```
+```yaml
+---
+name: cosmosdb-indexing
+description: >
+  Azure Cosmos DB indexing strategy best practices: excluding unused paths,
+  composite indexes for ORDER BY, spatial indexes, index types, path syntax,
+  and indexing modes (consistent vs lazy).
+  USE FOR: Cosmos DB indexing policy, exclude paths, composite index ...
+  DO NOT USE FOR: query optimization (use cosmosdb-query-optimization) ...
+---
+```
 
-**Roll back migration:**
-\```
-Use the database-migrator skill to roll back to the AddUsersTable migration
-\```
+From [cosmosdb-indexing](../../plugins/cosmosdb/skills/cosmosdb-indexing/SKILL.md) (description shortened here).
+
+Background knowledge with an environment note, as in the Azure skills:
+
+```yaml
+---
+name: azure-functions
+description: Expert knowledge for Azure Functions development ... Use when wiring Functions to HTTP/storage/queues ...
+compatibility: Requires network access. Uses mcp_microsoftdocs:microsoft_docs_fetch or WebFetch to retrieve documentation.
+user-invocable: false
+---
+```
+
+A user-only command with arguments, from [interview](../../plugins/common/skills/interview/SKILL.md):
+
+```yaml
+---
+name: interview
+description: Conduct a structured interview about a feature or topic to gather requirements and produce a specification. ...
+disable-model-invocation: true
+argument-hint: "<topic or feature description>"
+---
+```
+
+Pre-approved tools, from [playwright-cli](../../plugins/playwright/skills/playwright-cli/SKILL.md):
+
+```yaml
+---
+name: playwright-cli
+description: >
+  Automate browser interactions, test web pages and work with Playwright tests using the playwright-cli command. ...
+allowed-tools: Bash(playwright-cli:*) Bash(npx:*) Bash(npm:*)
+---
+```
+
+Using more Claude Code fields (illustrative, not from this repo):
+
+```yaml
+---
+name: pr-summary
+description: Summarize the changes in the current pull request. Use when the user asks what a PR does.
+context: fork
+agent: Explore
+allowed-tools: Bash(gh *)
+---
+
+## Pull request context
+
+- Diff: !`gh pr diff`
+- Changed files: !`gh pr diff --name-only`
+
+## Task
+
+Summarize this pull request in five bullets or fewer.
 ```
 
 ---
 
 ## Resources
 
-- [Plugin Structure Reference](plugin-structure.md)
 - [Skill Creation Guide](../guides/skill-creation.md)
+- [Command Creation Guide](../guides/command-creation.md)
+- [Plugin Structure Reference](plugin-structure.md)
 - [Marketplace Config Reference](marketplace-config.md)
+- [Claude Code skills docs](https://code.claude.com/docs/en/skills)
+- [Agent Skills specification](https://agentskills.io/specification)
