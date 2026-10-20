@@ -65,7 +65,29 @@ Conducts structured interviews for requirements gathering.
 
 ### skill-creator
 
-Guide for creating effective skills that extend Claude's capabilities.
+Creates and improves skills with you: it drafts the `SKILL.md`, runs test prompts with and without the skill, grades and benchmarks the results, and tunes the description so the skill triggers when it should. Ask Claude to "create a skill for …" or "improve the … skill", or run `/common:skill-creator`.
+
+Its scripts also work on their own. Run them from the repository root.
+
+Check a skill's frontmatter (name, description and the allowed fields):
+
+```bash
+python plugins/common/skills/skill-creator/scripts/quick_validate.py plugins/dotnet/skills/csharp-xunit
+```
+
+Check every skill in the repository:
+
+```bash
+# Bash, Git Bash or zsh
+python plugins/common/skills/skill-creator/scripts/quick_validate.py plugins/*/skills/*/
+```
+
+```powershell
+# PowerShell
+python plugins/common/skills/skill-creator/scripts/quick_validate.py (Get-ChildItem plugins/*/skills/* -Directory)
+```
+
+The check accepts the Agent Skills standard's fields and the ones Claude Code adds, such as `user-invocable`. Add `--strict` to accept only the standard's fields, as a claude.ai upload needs. `python -m scripts.package_skill <skill folder>`, run from the skill-creator folder, packages a skill as a `.skill` file for upload, and it always checks strictly.
 
 ### create-agentsmd
 
@@ -98,7 +120,7 @@ Convert Markdown files to HTML using various tools and approaches.
 ## Requirements
 
 - Node.js (for MCP servers)
-- Python 3.x (for skill-creator scripts)
+- Python 3.x with PyYAML (`pip install pyyaml`), for the skill-creator scripts
 
 ## License
 

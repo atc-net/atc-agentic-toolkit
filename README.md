@@ -174,6 +174,8 @@ Run `/reload-plugins` (or restart) after enabling or disabling.
 
 Installing a mod asks for its options. Change them later in `/config`, where each option is a row under the mod's name. Each mod's README lists its options and has a **Try it** section with prompts to test it.
 
+To build your own, see the [Mod Creation Guide](docs/guides/mod-creation.md) and the [Mod Anatomy Reference](docs/reference/mod-anatomy.md).
+
 ---
 
 ## 📁 Project Structure
@@ -235,6 +237,7 @@ Want to create your own plugins? The toolkit provides a complete framework for d
 **Documentation:**
 
 - [Plugin Development Guide](docs/guides/plugin-development.md)
+- [Mod Creation Guide](docs/guides/mod-creation.md)
 - [Skill Creation Guide](docs/guides/skill-creation.md)
 - [Plugin Structure Reference](docs/reference/plugin-structure.md)
 
@@ -283,6 +286,8 @@ git --version       # Should show Git version
 - [Plugin Development](docs/guides/plugin-development.md) - Creating plugins
 - [Skill Creation](docs/guides/skill-creation.md) - Building skills
 - [Agent Creation](docs/guides/agent-creation.md) - Building specialized agents
+- [Command Creation](docs/guides/command-creation.md) - Slash commands as skills
+- [Mod Creation](docs/guides/mod-creation.md) - Building Claude Code mods
 
 ### ✨ Best Practices
 
@@ -296,6 +301,8 @@ git --version       # Should show Git version
 - [.claude/ Folder Structure](docs/reference/claude-folder-structure.md) - Every canonical file Claude Code reads
 - [Plugin Structure](docs/reference/plugin-structure.md) - Directory layout
 - [Skill Anatomy](docs/reference/skill-anatomy.md) - SKILL.md format
+- [Agent Anatomy](docs/reference/agent-anatomy.md) - Subagent file format
+- [Mod Anatomy](docs/reference/mod-anatomy.md) - Mod files, events, `$` API and limits
 - [Marketplace Config](docs/reference/marketplace-config.md) - marketplace.json schema
 
 ---
