@@ -1,888 +1,248 @@
 # Skill Creation Guide
 
-This guide teaches you how to create effective skills that extend Claude Code with specialized capabilities, domain knowledge, and reusable workflows.
+How to write a skill for Claude Code, from first idea to a tested skill in a plugin. For every frontmatter field and limit, see the [Skill Anatomy Reference](../reference/skill-anatomy.md).
 
 ## Table of Contents
 
-- [What are Skills?](#what-are-skills)
-- [Skill Anatomy](#skill-anatomy)
-- [Progressive Disclosure Principle](#progressive-disclosure-principle)
-- [Skill Creation Process](#skill-creation-process)
-- [Writing Effective Instructions](#writing-effective-instructions)
-- [Bundled Resources](#bundled-resources)
-- [Testing and Validation](#testing-and-validation)
-- [Real-World Examples](#real-world-examples)
-- [Best Practices](#best-practices)
+- [What a Skill Is](#what-a-skill-is)
+- [When to Create a Skill](#when-to-create-a-skill)
+- [Where to Put It](#where-to-put-it)
+- [Step 1: Collect Real Examples](#step-1-collect-real-examples)
+- [Step 2: Create the Folder](#step-2-create-the-folder)
+- [Step 3: Write the Description](#step-3-write-the-description)
+- [Step 4: Choose Who Invokes It](#step-4-choose-who-invokes-it)
+- [Step 5: Write the Body](#step-5-write-the-body)
+- [Step 6: Move Detail into Supporting Files](#step-6-move-detail-into-supporting-files)
+- [Testing a Skill](#testing-a-skill)
+- [Adding a Skill to This Repository](#adding-a-skill-to-this-repository)
+- [Examples to Copy](#examples-to-copy)
+- [Next Steps](#next-steps)
 
 ---
 
-## What are Skills?
+## What a Skill Is
 
-**Skills** are modular, self-contained packages that extend Claude's capabilities by providing specialized knowledge, workflows, and tools. Think of them as "onboarding guides" for specific domains or tasks—they transform Claude from a general-purpose agent into a specialized agent equipped with procedural knowledge.
+A skill is a folder with a `SKILL.md` file: YAML frontmatter that says what it's for, and Markdown instructions Claude follows. Claude sees every skill's name and description, and loads the full instructions only when a task calls for it, or when you type `/skill-name`.
 
-### What Skills Provide
+Skills follow the open [Agent Skills](https://agentskills.io) standard, so the same folder can work in other tools. Claude Code adds extra fields and features on top.
 
-1. **Specialized workflows** - Multi-step procedures for specific domains
-2. **Tool integrations** - Instructions for working with specific file formats or APIs
-3. **Domain expertise** - Company-specific knowledge, schemas, business logic
-4. **Bundled resources** - Scripts, references, and assets for complex and repetitive tasks
+Custom slash commands are skills too. If you want something you trigger yourself with arguments, read the [Command Creation Guide](command-creation.md).
 
-### When to Create a Skill
+---
+
+## When to Create a Skill
 
 Create a skill when:
 
-- You perform the same workflow repeatedly
-- A task requires specialized domain knowledge
-- Claude needs access to schemas, APIs, or documentation
-- You want to standardize team approaches to common tasks
-- A workflow involves multiple steps that need coordination
+- You keep pasting the same instructions, checklist or procedure into chat.
+- A section of `CLAUDE.md` or `AGENTS.md` has grown into a procedure rather than a fact. A skill's body costs almost nothing until it's used; `CLAUDE.md` is loaded every session.
+- Claude needs domain knowledge it doesn't have: your conventions, a schema, an internal API.
+- A task needs a script that should run the same way every time.
+
+Use something else when:
+
+- **A rule must hold every time**, such as "never edit generated files". Use a [hook](https://code.claude.com/docs/en/hooks-guide). Claude can stop following a skill; a hook always runs.
+- **You want to change Claude Code itself**, such as a status line, a panel or a toast. That's a mod: see the [Mod Creation Guide](mod-creation.md).
+- **The task needs its own context and tools**. Use a subagent: see the [Agent Creation Guide](agent-creation.md).
 
 ---
 
-## Skill Anatomy
+## Where to Put It
 
-Every skill consists of a required `SKILL.md` file and optional bundled resources:
+| Scope | Path |
+|-------|------|
+| Just you, all projects | `~/.claude/skills/<name>/SKILL.md` |
+| One repository (commit it) | `.claude/skills/<name>/SKILL.md` |
+| Shared through a plugin | `<plugin>/skills/<name>/SKILL.md` |
 
+In this repository, skills live in plugins: `plugins/<plugin>/skills/<name>/SKILL.md`. Plugin skills run as `/<plugin>:<name>`, for example `/common:excalidraw`.
+
+While drafting, a project or personal skill is quickest to try: Claude Code picks up edits to `.claude/skills/` and `~/.claude/skills/` without a restart. Move it into a plugin when it works.
+
+---
+
+## Step 1: Collect Real Examples
+
+Before writing anything, write down three to five things a user would actually type that should trigger the skill, and one or two that shouldn't. For a migrations skill:
+
+- Should trigger: "add a migration for the new Orders table", "why did my EF migration drop a column?"
+- Shouldn't trigger: "write a SQL query for monthly totals"
+
+Then do one of those tasks with Claude without a skill, and note what you had to explain or correct. That list is what the skill must contain. Anything Claude already does well doesn't need to be in it.
+
+---
+
+## Step 2: Create the Folder
+
+The folder name is the skill name: lowercase letters, digits and hyphens, at most 64 characters. Set `name` to the same value; the standard requires it to match.
+
+```text
+plugins/dotnet/skills/ef-migrations/
+└── SKILL.md
 ```
-skill-name/
-├── SKILL.md (required)
-│   ├── YAML frontmatter metadata (required)
-│   │   ├── name: (required)
-│   │   └── description: (required)
-│   └── Markdown instructions (required)
-└── Bundled Resources (optional)
-    ├── scripts/          - Executable code (Python/Bash/etc.)
-    ├── references/       - Documentation loaded into context as needed
-    └── assets/           - Files used in output (templates, icons, fonts, etc.)
-```
 
-### SKILL.md (required)
+Start with only `SKILL.md`. Add `references/` or `scripts/` later if the skill needs them.
 
-The heart of your skill. Contains:
+The [skill-creator](../../plugins/common/skills/skill-creator/SKILL.md) skill in the `common` plugin can do this step and the next ones with you. Ask Claude to "create a skill for EF Core migrations", or run `/common:skill-creator`.
 
-**YAML Frontmatter:**
+---
+
+## Step 3: Write the Description
+
+The description decides whether Claude uses the skill. Claude reads it next to every other skill's description and picks the ones that fit the task.
+
 ```yaml
 ---
-name: skill-name
-description: Brief description of what the skill does and when to use it
-license: MIT
+name: ef-migrations
+description: Create, review and troubleshoot Entity Framework Core migrations. Use when the user adds or changes entities, asks for a migration, or a migration fails or drops data unexpectedly.
 ---
 ```
 
-**Markdown Body:**
+Guidelines:
 
-- Purpose and overview
-- Instructions for Claude
-- How to use bundled resources
-- Guidelines and best practices
-- Examples
+- Say what it does, then when to use it ("Use when ...").
+- Put the main use case first. Claude Code cuts each listing entry at 1,536 characters, and drops descriptions of rarely used skills when there are too many. The standard allows at most 1,024 characters, so stay under that.
+- Use the words users actually type: product names, file extensions, error codes.
+- Say what it's not for when a neighbouring skill could be confused with it. Many skills here use a `USE FOR:` / `DO NOT USE FOR:` pattern, as in [cosmosdb-indexing](../../plugins/cosmosdb/skills/cosmosdb-indexing/SKILL.md).
+- Avoid vague text like "Helps with databases".
 
-### Bundled Resources (optional)
-
-#### Scripts (`scripts/`)
-
-Executable code for tasks requiring deterministic reliability or repeatedly rewritten.
-
-**When to include:**
-
-- Same code is rewritten repeatedly
-- Deterministic reliability is needed
-- Complex logic that's error-prone if regenerated
-
-**Examples:**
-
-- `scripts/rotate_pdf.py` - PDF rotation tasks
-- `scripts/parse_schema.py` - Database schema parsing
-- `scripts/format_output.sh` - Consistent output formatting
-
-**Benefits:**
-
-- Token efficient
-- Deterministic execution
-- May be executed without loading into context
-- Can be patched for environment-specific adjustments
-
-#### References (`references/`)
-
-Documentation and reference material loaded into context as needed to inform Claude's process.
-
-**When to include:**
-
-- Documentation Claude should reference while working
-- Large datasets or schemas
-- API specifications
-- Company policies or standards
-
-**Examples:**
-
-- `references/finance.md` - Financial schemas
-- `references/api_docs.md` - API specifications
-- `references/policies.md` - Company policies
-- `references/database_schema.md` - Database structure
-
-**Best practices:**
-
-- If files are large (>10k words), include grep search patterns in SKILL.md
-- Information should live in either SKILL.md or references, not both
-- Keep SKILL.md lean; move detailed material to references
-- Make information discoverable without hogging context window
-
-#### Assets (`assets/`)
-
-Files not intended to be loaded into context, but used within Claude's output.
-
-**When to include:**
-
-- Skill needs files for final output
-- Templates or boilerplate code
-- Images, icons, or brand assets
-- Sample documents to copy or modify
-
-**Examples:**
-
-- `assets/logo.png` - Brand assets
-- `assets/template.pptx` - PowerPoint templates
-- `assets/frontend-template/` - HTML/React boilerplate
-- `assets/font.ttf` - Typography files
-
-**Benefits:**
-
-- Separates output resources from documentation
-- Enables Claude to use files without loading into context
-- Provides consistent starting points for generated content
+If you need more trigger text, Claude Code also reads a `when_to_use` field, but other tools don't.
 
 ---
 
-## Progressive Disclosure Principle
+## Step 4: Choose Who Invokes It
 
-Skills use a three-level loading system to manage context efficiently:
+| You want | Set | Example here |
+|----------|-----|--------------|
+| Claude uses it when relevant, and users can type `/name` | Nothing (default) | [excalidraw](../../plugins/common/skills/excalidraw/SKILL.md) |
+| Background knowledge Claude applies; not a command | `user-invocable: false` | [csharp-conventions](../../plugins/dotnet/skills/csharp-conventions/SKILL.md) |
+| Only the user starts it, because it has side effects | `disable-model-invocation: true` | [suggest-commit](../../plugins/git/skills/suggest-commit/SKILL.md) |
 
-### Level 1: Metadata (Always in context ~100 words)
-```yaml
+Other options, all Claude Code only:
+
+- `allowed-tools` pre-approves tools for the turn the skill runs in, so Claude doesn't ask for each `git` call.
+- `paths` loads the skill automatically only when Claude works on matching files, e.g. `"**/*.csproj"`.
+- `context: fork` with `agent: Explore` runs the skill in a subagent that doesn't see the conversation. Use it only when the skill is a complete task, not a set of guidelines.
+- `model` and `effort` override the model and effort for the skill's turn.
+
+See [Frontmatter: Claude Code Fields](../reference/skill-anatomy.md#frontmatter-claude-code-fields) for the full list.
+
 ---
-name: database-migrator
-description: Creates and manages database migrations for Entity Framework Core projects
----
-```
 
-Claude sees this metadata for all available skills, helping it decide when to activate the skill.
+## Step 5: Write the Body
 
-### Level 2: SKILL.md Body (When skill triggers <5k words)
+The body is the prompt Claude follows. It stays in the conversation after the skill loads, and Claude Code doesn't re-read the file later. So:
 
-When Claude determines the skill is needed, the full SKILL.md instructions are loaded:
+- **Be brief.** Every line is a recurring token cost. State what to do; skip background Claude already knows.
+- **Put the most important rules first.** After compaction, Claude Code keeps only the first 5,000 tokens of each skill.
+- **Write standing instructions.** "Run the tests after every edit" keeps working on later turns; "Run the tests" may be read as a one-time step.
+- **Use numbered steps for procedures,** and give an example of the expected output.
+- **Explain the reason for a rule that isn't obvious.** Claude applies a rule better when it knows what it protects against.
 
 ```markdown
-# Database Migrator
+# EF Core Migrations
 
-This skill guides the creation of Entity Framework Core migrations...
+## Rules
 
-## Instructions
+- Never edit a migration that has been applied to a shared database. Add a new one.
+- Name migrations by intent: `AddOrdersTable`, `RenameCustomerEmail`.
 
-To create a migration:
-1. Analyze the model changes...
-2. Generate migration file...
-3. Review and validate...
+## Create a migration
+
+1. Find the `DbContext` and its startup project.
+2. Run `dotnet ef migrations add <Name> --project <data> --startup-project <api>`.
+3. Read the generated `Up()` and `Down()`. Flag any `DropColumn` or `DropTable` to the user before continuing.
+
+## When a migration fails
+
+See [references/troubleshooting.md](references/troubleshooting.md).
 ```
 
-### Level 3: Bundled Resources (As needed by Claude, unlimited*)
-
-Claude loads specific resources when required:
-
-- Reads `references/ef-core-conventions.md` when applying naming standards
-- Executes `scripts/apply_migration.py` to run migrations
-- Copies `assets/migration-template.cs` when scaffolding
-
-*Unlimited because scripts can be executed without reading into context window.
-
-**Why This Matters:**
-
-- Keeps context lean and focused
-- Loads information only when needed
-- Enables complex skills without overwhelming context
-- Improves performance and reliability
+Keep `SKILL.md` under 500 lines. If it grows past that, move detail out (next step).
 
 ---
 
-## Skill Creation Process
+## Step 6: Move Detail into Supporting Files
 
-Follow this six-step process to create effective skills.
+Supporting files are how a skill stays cheap: Claude reads them only when the task needs them. This is progressive disclosure.
 
-### Step 1: Understanding the Skill with Concrete Examples
+| Folder | Put here | Example in this repo |
+|--------|----------|----------------------|
+| `references/` | Long docs, schemas, API notes, per-topic guidance | [excalidraw/references](../../plugins/common/skills/excalidraw/references/) |
+| `scripts/` | Code that must behave the same every time | [excalidraw/scripts](../../plugins/common/skills/excalidraw/scripts/) |
+| `assets/` | Templates and files used in the output | [dataverse-connect/assets](../../plugins/dataverse/skills/dataverse-connect/assets/) |
 
-**Goal:** Clearly understand how the skill will be used in practice.
-
-**Skip this step only if:** The skill's usage patterns are already clearly understood.
-
-**Questions to Ask:**
-
-- What functionality should the skill support?
-- Can you give examples of how this skill would be used?
-- What would a user say that should trigger this skill?
-- Are there edge cases or variations to consider?
-
-**Example:**
-
-For an `image-editor` skill:
-
-- "What functionality should the skill support? Editing, rotating, anything else?"
-- "Can you give examples like 'Remove red-eye from this image' or 'Rotate this image'?"
-- "What other image operations are needed?"
-
-**Best Practice:** Don't overwhelm users with too many questions at once. Start with the most important and follow up as needed.
-
-**Conclusion:** Complete this step when there's a clear sense of the functionality the skill should support.
-
----
-
-### Step 2: Planning the Reusable Skill Contents
-
-**Goal:** Identify what scripts, references, and assets would be helpful.
-
-**Analysis Process:**
-For each concrete example:
-
-1. Consider how to execute it from scratch
-2. Identify reusable resources that would help
-
-**Example 1: PDF Editor Skill**
-
-**Query:** "Help me rotate this PDF"
-
-**Analysis:**
-
-- Rotating a PDF requires re-writing the same code each time
-- **Solution:** Create `scripts/rotate_pdf.py` to store reusable code
-
-**Example 2: Frontend Webapp Builder Skill**
-
-**Query:** "Build me a todo app" or "Build me a dashboard"
-
-**Analysis:**
-- Writing a frontend requires the same boilerplate HTML/React each time
-- **Solution:** Create `assets/hello-world/` template with boilerplate project files
-
-**Example 3: BigQuery Skill**
-
-**Query:** "How many users have logged in today?"
-
-**Analysis:**
-
-- Querying BigQuery requires re-discovering table schemas each time
-- **Solution:** Create `references/schema.md` documenting table schemas
-
-**Output:** A list of reusable resources to include: scripts, references, and assets.
-
----
-
-### Step 3: Initializing the Skill
-
-**Goal:** Create the skill directory structure and template files.
-
-**Skip this step only if:** The skill already exists and needs iteration or updating.
-
-**Using the skill-creator Skill:**
-
-The fastest way to initialize a skill:
-
-```
-Use the skill-creator skill to create a new skill named my-custom-skill
-```
-
-This generates:
-
-- Proper directory structure
-- SKILL.md template with frontmatter
-- Example resource directories
-- Placeholder files you can customize or delete
-
-**Manual Initialization:**
-
-If you prefer manual setup:
-
-```bash
-# Create skill directory
-mkdir -p plugins/my-plugin/skills/my-custom-skill
-cd plugins/my-plugin/skills/my-custom-skill
-
-# Create SKILL.md
-touch SKILL.md
-
-# Create resource directories
-mkdir scripts references assets
-
-# Add example files (optional)
-touch scripts/example_script.py
-touch references/example_reference.md
-touch assets/example_template.txt
-```
-
-**After initialization:** Customize or remove generated files as needed.
-
----
-
-### Step 4: Edit the Skill
-
-**Goal:** Write instructions and create resources for another Claude instance to use.
-
-#### Start with Reusable Skill Contents
-
-Implement the resources identified in Step 2:
-
-**Scripts:**
-
-```python
-# scripts/rotate_pdf.py
-import sys
-from PyPDF2 import PdfReader, PdfWriter
-
-def rotate_pdf(input_path, output_path, rotation=90):
-    reader = PdfReader(input_path)
-    writer = PdfWriter()
-
-    for page in reader.pages:
-        page.rotate(rotation)
-        writer.add_page(page)
-
-    with open(output_path, 'wb') as output_file:
-        writer.write(output_file)
-
-if __name__ == '__main__':
-    rotate_pdf(sys.argv[1], sys.argv[2], int(sys.argv[3]))
-```
-
-**References:**
+Link each file from `SKILL.md` and say when to read it:
 
 ```markdown
-# references/database_schema.md
-
-## Users Table
-
-| Column | Type | Description |
-|--------|------|-------------|
-| id | UUID | Primary key |
-| email | VARCHAR(255) | User email address |
-| created_at | TIMESTAMP | Account creation time |
+- Before choosing colours, read [references/color-palette.md](references/color-palette.md).
+- To render a PNG, run `python ${CLAUDE_SKILL_DIR}/scripts/render_excalidraw.py <file>`.
 ```
 
-**Assets:**
-
-```html
-<!-- assets/template.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Template</title>
-</head>
-<body>
-    <h1>Hello World</h1>
-</body>
-</html>
-```
-
-**Delete unused examples:** The initialization creates example files in `scripts/`, `references/`, and `assets/`. Delete any not needed for your skill.
-
-#### Update SKILL.md
-
-**Writing Style:** Use **imperative/infinitive form** (verb-first instructions), not second person.
-
-- ✅ Good: "To accomplish X, do Y"
-- ✅ Good: "Analyze the input file"
-- ❌ Bad: "You should do X"
-- ❌ Bad: "If you need to do X"
-
-This maintains consistency and clarity for AI consumption.
-
-**Questions to Answer:**
-
-1. **What is the purpose of the skill?** (A few sentences)
-2. **When should the skill be used?**
-3. **How should Claude use the skill in practice?**
-
-**Example SKILL.md:**
-
-```markdown
----
-name: pdf-editor
-description: This skill should be used when users need to manipulate PDF files, including rotating pages, merging documents, or extracting content.
-license: MIT
----
-
-# PDF Editor
-
-This skill provides tools for common PDF manipulation tasks.
-
-## Purpose
-
-The PDF editor skill enables reliable, consistent PDF manipulation without rewriting the same code repeatedly. It handles rotation, merging, splitting, and content extraction.
-
-## When to Use
-
-Use this skill when users ask to:
-- Rotate PDF pages (90°, 180°, 270°)
-- Merge multiple PDFs
-- Split PDFs into separate files
-- Extract text or images from PDFs
-
-## Instructions
-
-### Rotating PDFs
-
-To rotate a PDF:
-
-1. Confirm the rotation angle (90, 180, or 270 degrees)
-2. Execute the rotation script:
-   ```bash
-   python scripts/rotate_pdf.py input.pdf output.pdf 90
-   ```
-3. Verify the output file was created successfully
-4. Inform the user of the result
-
-### Merging PDFs
-
-To merge multiple PDFs:
-
-1. Collect all input file paths
-2. Confirm the desired output order
-3. Execute the merge script:
-   ```bash
-   python scripts/merge_pdfs.py output.pdf input1.pdf input2.pdf input3.pdf
-   ```
-4. Report success with output file location
-
-## Error Handling
-
-If a PDF file cannot be opened:
-
-- Check that the file exists and is a valid PDF
-- Verify file permissions
-- Try opening the file with a PDF reader to confirm it's not corrupted
-
-If rotation or merging fails:
-
-- Review the error message from the script
-- Check available disk space
-- Ensure output directory exists and is writable
-
-## References
-
-- `scripts/rotate_pdf.py` - Rotate PDF pages
-- `scripts/merge_pdfs.py` - Merge multiple PDFs
-- `scripts/split_pdf.py` - Split PDF into separate files
-- `scripts/extract_text.py` - Extract text content
-```
+- Keep links one level deep. Don't make reference files point to further reference files.
+- Don't repeat content: a fact lives in `SKILL.md` or in a reference, not both.
+- Use `${CLAUDE_SKILL_DIR}` in commands so the path works wherever the skill is installed.
+- Scripts must run on Windows, macOS and Linux. Use Python or PowerShell 7 rather than bash-only tools, and list dependencies (e.g. a `requirements.txt`).
 
 ---
 
-### Step 5: Packaging a Skill (Optional)
+## Testing a Skill
 
-**Goal:** Create a distributable zip file of your skill.
+Seeing a skill trigger only tells you Claude found it. Test two things separately: does it trigger on the right prompts, and is the result better than without it?
 
-**Note:** This step is typically handled by the `skill-creator` skill or manual processes. The ATC Agentic Toolkit doesn't currently include packaging scripts, but you can create a simple zip file:
+### Try it by hand
 
-```bash
-# From the plugin directory
-cd plugins/my-plugin/skills
+1. Start a fresh session, so leftover context from writing the skill doesn't hide gaps.
+2. Ask "What skills are available?" and check yours is listed.
+3. Type each "should trigger" prompt from step 1 and check Claude loads the skill. Type the "shouldn't trigger" prompts and check it doesn't.
+4. Invoke it directly with `/name` (or `/<plugin>:<name>`).
+5. Run the same prompts with the skill turned off and compare. For a project or personal skill, set it to `"off"` in `skillOverrides` in your settings. That setting doesn't apply to plugin skills; use `claude plugin eval` for those (below).
 
-# Create a zip file
-zip -r my-custom-skill.zip my-custom-skill/
-```
+If it doesn't trigger, make the description more specific to how users phrase the task. If it triggers too often, narrow the description or set `disable-model-invocation: true`.
 
-**What to include:**
+### Measure it
 
-- SKILL.md file
-- All scripts/, references/, and assets/ directories
-- Any supporting files
-- README if helpful
+- **skill-creator.** The [skill-creator](../../plugins/common/skills/skill-creator/SKILL.md) skill in this repo runs test prompts with and without the skill, grades the results, benchmarks them, and can tune the description. It stores cases in `evals/evals.json` inside the skill folder.
+- **`claude plugin eval`.** For skills in a plugin (Claude Code 2.1.269+). From the plugin folder, `claude plugin eval init` drafts eval cases with you, and `claude plugin eval .` runs each case with and without the plugin and reports the difference. A `tool_used: Skill` grader checks the skill was chosen. Runs use your plan or API usage. See [Test plugins with evals](https://code.claude.com/docs/en/plugin-evals). Its case format isn't the same as skill-creator's.
+- **`/skill-doctor`.** Shows each skill's context cost and how often it's used, so you can spot skills that never trigger (Claude Code 2.1.252+).
 
-**Validation Checklist:**
+### Check the format
 
-- [ ] YAML frontmatter is valid
-- [ ] Required fields (name, description) are present
-- [ ] Instructions are clear and imperative
-- [ ] Bundled resources are referenced in SKILL.md
-- [ ] File naming follows conventions
-- [ ] Directory structure is correct
+- `claude plugin validate plugins/<plugin>/skills` finds `SKILL.md` files whose frontmatter doesn't parse (Claude Code 2.1.233+).
+- `python plugins/common/skills/skill-creator/scripts/quick_validate.py <skill folder>...` checks the name, the description and that every field is one Claude Code knows. Give it `plugins/*/skills/*/` to check every skill in the repository; the [common plugin's README](../../plugins/common/README.md#skill-creator) has the PowerShell form.
+- `claude --debug` shows YAML errors and refused names. A skill with broken YAML still loads, but with no description, so it never triggers on its own.
 
 ---
 
-### Step 6: Iterate
+## Adding a Skill to This Repository
 
-**Goal:** Improve the skill based on real-world usage.
+1. Create `plugins/<plugin>/skills/<name>/SKILL.md`, with `name` matching the folder.
+2. Write the description and body as above. Use `user-invocable: false` for knowledge skills and `disable-model-invocation: true` for skills with side effects, as the existing skills do.
+3. Add the skill to the plugin's `README.md` under `## Skills`.
+4. Run `claude plugin validate plugins/<plugin>` and `claude plugin validate plugins/<plugin>/skills`.
+5. Test it as described above.
 
-**Iteration workflow:**
-
-1. **Use the skill** on real tasks
-2. **Notice struggles or inefficiencies**
-3. **Identify improvements** needed in SKILL.md or resources
-4. **Implement changes** and test again
-5. **Repeat** until the skill performs reliably
-
-**Common iterations:**
-
-- Adding more detailed instructions for edge cases
-- Including additional reference documentation
-- Creating new scripts for repeated operations
-- Improving error handling guidance
-- Clarifying ambiguous instructions
-
-**Fresh context advantage:** Often improvements are identified right after using the skill, when the performance is fresh in mind.
+You don't need to touch the marketplace files to add a skill to an existing plugin: `plugin.json` already points at `./skills/`. A new plugin must be added to both `.claude-plugin/marketplace.json` and `.github/plugin/marketplace.json`; see the [Plugin Development Guide](plugin-development.md).
 
 ---
 
-## Writing Effective Instructions
-
-### Be Specific and Actionable
-
-**❌ Vague:**
-
-```markdown
-Help the user with their database.
-```
-
-**✅ Specific:**
-
-```markdown
-Analyze the Entity Framework Core models, identify changes since the last migration, and generate a new migration file with appropriate naming following the format `YYYYMMDDHHMMSS_DescriptiveAction.cs`.
-```
-
-### Use Step-by-Step Guidance
-
-**❌ High-level:**
-
-```markdown
-Create an API endpoint.
-```
-
-**✅ Step-by-step:**
-
-```markdown
-To create an API endpoint:
-1. Determine the HTTP method (GET, POST, PUT, DELETE)
-2. Define the route pattern following RESTful conventions
-3. Create the controller action with appropriate attributes
-4. Implement request validation
-5. Add XML documentation comments
-6. Generate response with proper status codes
-```
-
-### Include Examples
-
-**❌ Abstract:**
-
-```markdown
-Name the migration appropriately.
-```
-
-**✅ With examples:**
-
-```markdown
-Name the migration following this pattern:
-- Adding a table: `Add{TableName}Table` (e.g., `AddUsersTable`)
-- Modifying a column: `Update{TableName}{ColumnName}` (e.g., `UpdateUsersEmailColumn`)
-- Creating an index: `CreateIndexOn{TableName}{ColumnName}` (e.g., `CreateIndexOnUsersEmail`)
-```
-
-### Handle Edge Cases
-
-**❌ Happy path only:**
-
-```markdown
-Execute the script to process the file.
-```
-
-**✅ With error handling:**
-
-```markdown
-Execute the script to process the file:
-```bash
-python scripts/process_file.py input.txt output.txt
-```
-
-If the script fails:
-
-- Check that input.txt exists and is readable
-- Verify output directory is writable
-- Review error message for specific issues
-- Consult references/troubleshooting.md for common problems
-```
-
----
-
-## Bundled Resources
-
-### When to Bundle Scripts
-
-**Bundle scripts when:**
-- The same code is rewritten repeatedly (e.g., PDF rotation)
-- Deterministic reliability is critical (e.g., financial calculations)
-- Logic is complex and error-prone if regenerated (e.g., parsing algorithms)
-
-**Don't bundle scripts when:**
-- The code is simple and varies significantly (e.g., print statements)
-- Flexibility is more important than consistency
-- The script would need constant updates
-
-### When to Bundle References
-
-**Bundle references when:**
-- Documentation is needed while Claude works (e.g., API specs)
-- Schema or structure needs to be referenced (e.g., database schema)
-- Company-specific knowledge is required (e.g., policies, standards)
-- Information is stable and doesn't change frequently
-
-**Don't bundle references when:**
-- Information is available via web search
-- Content changes frequently (link to live docs instead)
-- Documentation is brief enough to include in SKILL.md
-
-### When to Bundle Assets
-
-**Bundle assets when:**
-- Templates provide consistent starting points (e.g., boilerplate code)
-- Brand or style assets are needed (e.g., logos, fonts)
-- Sample files should be copied or modified (e.g., config templates)
-
-**Don't bundle assets when:**
-- Files are very large (>10MB)
-- Assets are available via package managers or CDNs
-- Content is generated from scratch each time
-
----
-
-## Testing and Validation
-
-### Manual Testing
-
-1. **Install the skill** in a test project:
-```bash
-cp -r plugins/my-plugin/skills/my-custom-skill /path/to/test/plugins/test-plugin/skills/
-```
-
-2. **Invoke the skill:**
-
-```
-Use the my-custom-skill skill to [test scenario]
-```
-
-3. **Verify behavior:**
-
-- Are instructions clear?
-- Does Claude follow the workflow correctly?
-- Are bundled resources used appropriately?
-- Do error cases work as expected?
-
-### Validation Checklist
-
-**Structure:**
-
-- [ ] SKILL.md exists with valid YAML frontmatter
-- [ ] Required fields: name, description
-- [ ] Directory structure is correct
-
-**Content:**
-
-- [ ] Description is specific about when to use the skill
-- [ ] Instructions are clear and imperative
-- [ ] Examples are provided for complex operations
-- [ ] Error handling is addressed
-- [ ] Bundled resources are referenced in SKILL.md
-
-**Resources:**
-
-- [ ] Scripts are tested and work correctly
-- [ ] References contain accurate information
-- [ ] Assets are usable and properly formatted
-- [ ] No unnecessary files are included
-
-**Quality:**
-
-- [ ] Instructions are unambiguous
-- [ ] Edge cases are handled
-- [ ] Performance is acceptable
-- [ ] Context usage is optimized (progressive disclosure)
-
----
-
-## Real-World Examples
-
-### Example 1: Database Migrator Skill
-
-**Use Case:** Create Entity Framework Core migrations consistently.
-
-**Structure:**
-
-```
-database-migrator/
-├── SKILL.md
-├── scripts/
-│   └── apply_migration.py
-└── references/
-    ├── ef-core-conventions.md
-    └── naming-patterns.md
-```
-
-**SKILL.md excerpt:**
-
-```markdown
----
-name: database-migrator
-description: This skill should be used when users need to create, apply, or manage Entity Framework Core database migrations for .NET projects.
----
-
-To create a migration:
-1. Analyze model changes since the last migration
-2. Generate a migration name following the pattern in references/naming-patterns.md
-3. Create the migration file with `dotnet ef migrations add [MigrationName]`
-4. Review the generated migration for correctness
-5. Apply with `scripts/apply_migration.py` if approved
-```
-
-### Example 2: API Documentation Generator Skill
-
-**Use Case:** Generate OpenAPI specifications from API controllers.
-
-**Structure:**
-
-```
-api-docs-generator/
-├── SKILL.md
-├── scripts/
-│   ├── analyze_controllers.py
-│   └── generate_openapi.py
-├── references/
-│   └── openapi-3.0-spec.md
-└── assets/
-    └── openapi-template.json
-```
-
-**SKILL.md excerpt:**
-
-```markdown
----
-name: api-docs-generator
-description: This skill should be used when users need to generate OpenAPI 3.0 specifications from ASP.NET Core API controllers, including parameter definitions, response schemas, and examples.
----
-
-To generate API documentation:
-1. Analyze controllers in the specified namespace with `scripts/analyze_controllers.py`
-2. Extract endpoint definitions, parameters, and return types
-3. Use `assets/openapi-template.json` as the base structure
-4. Generate OpenAPI 3.0 JSON following `references/openapi-3.0-spec.md`
-5. Validate the generated specification
-6. Write to the specified output path
-```
-
-### Example 3: Test Generator Skill
-
-**Use Case:** Generate unit tests for C# classes.
-
-**Structure:**
-
-```
-test-generator/
-├── SKILL.md
-└── references/
-    ├── xunit-patterns.md
-    ├── moq-examples.md
-    └── test-naming-conventions.md
-```
-
-**SKILL.md excerpt:**
-
-```markdown
----
-name: test-generator
-description: This skill should be used when users need to generate xUnit unit tests for C# classes, including test setup, assertions, and mocking with Moq.
----
-
-To generate unit tests:
-1. Analyze the target class and its public methods
-2. Identify dependencies that need mocking
-3. For each public method, create tests covering:
-   - Happy path scenarios
-   - Edge cases
-   - Exception handling
-4. Follow naming conventions from references/test-naming-conventions.md
-5. Use Moq patterns from references/moq-examples.md for dependencies
-6. Include XML documentation for test purposes
-```
-
----
-
-## Best Practices
-
-### Metadata Quality
-
-**Do:**
-
-- Be specific about what the skill does
-- Describe when to use it (not just what it is)
-- Use third person: "This skill should be used when..."
-- Include key capabilities in the description
-
-**Don't:**
-
-- Use vague descriptions like "Helps with databases"
-- Write in first or second person
-- Make the description too long (aim for 1-2 sentences)
-
-### Instruction Clarity
-
-**Do:**
-
-- Use imperative verbs (Analyze, Create, Validate)
-- Break complex tasks into numbered steps
-- Include concrete examples
-- Reference bundled resources explicitly
-- Address error cases
-
-**Don't:**
-
-- Use passive voice
-- Assume knowledge of internal processes
-- Skip error handling
-- Leave instructions ambiguous
-
-### Context Optimization
-
-**Do:**
-
-- Keep SKILL.md under 5k words
-- Move detailed content to references/
-- Use progressive disclosure
-- Bundle scripts for repetitive code
-- Reference resources as needed
-
-**Don't:**
-
-- Duplicate information between SKILL.md and references
-- Include entire documentation in SKILL.md
-- Bundle resources that are rarely used
-- Load everything into context at once
-
-### Resource Organization
-
-**Do:**
-
-- Use clear, descriptive filenames
-- Organize by type (scripts/, references/, assets/)
-- Document what each resource does
-- Keep resources focused and modular
-
-**Don't:**
-
-- Mix resource types in the same directory
-- Create deep nested structures
-- Include unused or example files
-- Forget to reference resources in SKILL.md
+## Examples to Copy
+
+| Skill | Why look at it |
+|-------|----------------|
+| [skill-creator](../../plugins/common/skills/skill-creator/SKILL.md) | A large skill with `references/`, `scripts/`, `agents/` and `assets/` |
+| [excalidraw](../../plugins/common/skills/excalidraw/SKILL.md) | A trigger-rich description, focused references and a render script |
+| [cosmosdb-indexing](../../plugins/cosmosdb/skills/cosmosdb-indexing/SKILL.md) | A short skill with `USE FOR` / `DO NOT USE FOR` |
+| [csharp-conventions](../../plugins/dotnet/skills/csharp-conventions/SKILL.md) | Background knowledge with `user-invocable: false` |
+| [fix-trailing-newlines](../../plugins/dotnet/skills/fix-trailing-newlines/SKILL.md) | A task skill that runs a bundled script |
+| [interview](../../plugins/common/skills/interview/SKILL.md) | A user-only skill with arguments |
 
 ---
 
 ## Next Steps
 
-- Review the [Plugin Development Guide](plugin-development.md) for creating full plugins
-- Study the [skill-creator SKILL.md](../../plugins/common/skills/skill-creator/SKILL.md) as a reference
-- Explore [Skill Anatomy Reference](../reference/skill-anatomy.md) for technical details
-- Read [Claude Code Fundamentals](../best-practices/claude-code-fundamentals.md) for context management
-
----
+- [Skill Anatomy Reference](../reference/skill-anatomy.md) for every field, substitution and limit
+- [Command Creation Guide](command-creation.md) for skills you invoke with arguments
+- [Plugin Development Guide](plugin-development.md) to package skills in a plugin
+- [Claude Code Fundamentals](../best-practices/claude-code-fundamentals.md) for context management
+- [Skills in the Claude Code docs](https://code.claude.com/docs/en/skills) and [skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices)
