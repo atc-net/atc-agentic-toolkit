@@ -6,6 +6,23 @@ Docker and containerization best practices covering Dockerfile optimization, mul
 
 This plugin provides background knowledge skills that help AI coding agents create optimized, secure Docker images and container configurations. Skills are automatically loaded when working with Dockerfiles, docker-compose files, and container-related code.
 
+## Install
+
+In Claude Code 2.1.275 or newer:
+
+```text
+/plugin install docker --marketplace atc-net/atc-agentic-toolkit
+```
+
+In GitHub Copilot CLI, or an older Claude Code, add the marketplace first:
+
+```text
+/plugin marketplace add atc-net/atc-agentic-toolkit
+/plugin install docker@atc-agentic-toolkit
+```
+
+For VS Code, see the [Quick Start](../../README.md#-quick-start).
+
 ## Skills
 
 ### docker-conventions

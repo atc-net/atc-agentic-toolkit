@@ -8,6 +8,23 @@ This plugin helps AI coding agents work against a Dataverse environment through 
 
 Start with `dataverse-connect` in a new project. It installs the tools, signs you in, writes `.env`, copies the shared `scripts/auth.py` helper into the project and registers the MCP server.
 
+## Install
+
+In Claude Code 2.1.275 or newer:
+
+```text
+/plugin install dataverse --marketplace atc-net/atc-agentic-toolkit
+```
+
+In GitHub Copilot CLI, or an older Claude Code, add the marketplace first:
+
+```text
+/plugin marketplace add atc-net/atc-agentic-toolkit
+/plugin install dataverse@atc-agentic-toolkit
+```
+
+For VS Code, see the [Quick Start](../../README.md#-quick-start).
+
 ## Skills
 
 ### dataverse-overview

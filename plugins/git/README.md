@@ -6,6 +6,23 @@ Git workflow utilities including commit message generators and PR descriptions.
 
 This plugin provides skills for streamlining Git workflows.
 
+## Install
+
+In Claude Code 2.1.275 or newer:
+
+```text
+/plugin install git --marketplace atc-net/atc-agentic-toolkit
+```
+
+In GitHub Copilot CLI, or an older Claude Code, add the marketplace first:
+
+```text
+/plugin marketplace add atc-net/atc-agentic-toolkit
+/plugin install git@atc-agentic-toolkit
+```
+
+For VS Code, see the [Quick Start](../../README.md#-quick-start).
+
 ## Skills
 
 ### suggest-commit
