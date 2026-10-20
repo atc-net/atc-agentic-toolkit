@@ -1,459 +1,404 @@
 # Plugin Development Guide
 
-This comprehensive guide covers everything you need to create, test, and distribute custom plugins for the ATC Agentic Toolkit.
+How to create, test and register a plugin in the ATC Agentic Toolkit.
+
+The toolkit has three kinds of plugin:
+
+| Kind | Folder | Manifest | Runs in | Listed in |
+|------|--------|----------|---------|-----------|
+| Skill plugin | `plugins/<name>/` | `plugin.json` at the plugin root | Claude Code and GitHub Copilot | Both marketplace files |
+| Hooks plugin | `.claude/plugins/hooks/` | `.claude-plugin/plugin.json` | Claude Code | `.claude-plugin/marketplace.json` only |
+| Mod | `plugins/atc-<name>/` | `.claude-plugin/plugin.json` | Claude Code 2.1.287 or newer | `.claude-plugin/marketplace.json` only |
+
+Most of this guide is about skill plugins. To build a mod, see the [Mod Creation Guide](mod-creation.md).
 
 ## Table of Contents
 
 - [What is a Plugin?](#what-is-a-plugin)
-- [Plugin Architecture](#plugin-architecture)
+- [Where the Manifest Lives](#where-the-manifest-lives)
 - [Creating Your First Plugin](#creating-your-first-plugin)
-- [Adding Skills](#adding-skills)
-- [Adding Agents](#adding-agents)
 - [Adding Commands](#adding-commands)
+- [Hooks](#hooks)
+- [User Configuration](#user-configuration)
+- [Dependencies](#dependencies)
 - [Testing Your Plugin](#testing-your-plugin)
 - [Registering in Marketplace](#registering-in-marketplace)
+- [Installing](#installing)
 - [Distribution Strategies](#distribution-strategies)
+- [Versioning](#versioning)
 - [Best Practices](#best-practices)
-- [Advanced Topics](#advanced-topics)
 
 ---
 
 ## What is a Plugin?
 
-A **plugin** is a packaged collection of:
+A plugin is a folder of components that load together:
 
-- **Skills** - Modular expertise packages for complex tasks
-- **Agents** - Specialized personas with domain expertise
-- **Commands** - Quick slash commands for common operations
-- **Documentation** - README and reference materials
-- **Metadata** - Configuration for marketplace registration
+- **Skills**: `skills/<name>/SKILL.md`. Claude loads a skill when its description matches the task. You can also run it as `/<plugin>:<skill>`, for example `/dotnet:csharp-async`.
+- **Agents**: `agents/<name>.md`. Subagents with their own context window and tools. Claude delegates to them, or you call one with `@agent-<plugin>:<name>`.
+- **Commands**: `commands/<name>.md`. The older single-file format. Skills replace commands for new work.
+- **MCP servers**: `.mcp.json` at the plugin root. They start when the plugin is enabled.
+- **Hooks**: `hooks/hooks.json`. Commands that run on Claude Code events, or a mod's TypeScript module.
+- **README.md**: what the plugin does and how to install it.
 
-Plugins enable:
-
-- **Reusability** - Share expertise across projects and teams
-- **Modularity** - Bundle related functionality together
-- **Discoverability** - Marketplace registration makes plugins findable
-- **Consistency** - Standardize approaches to common problems
+Every component is namespaced under the plugin name, so two plugins can each ship a skill called `review`.
 
 ---
 
-## Plugin Architecture
+## Where the Manifest Lives
 
-### Directory Structure
+Claude Code's standard location for a plugin manifest is `.claude-plugin/plugin.json`. The manifest is optional. Without one, Claude Code loads whatever it finds in the standard layout (`skills/`, `agents/`, `commands/`, `hooks/hooks.json`, `.mcp.json`) and takes the plugin name from the marketplace entry.
 
-```
-plugins/[plugin-name]/
-├── README.md                           # Plugin documentation
-├── skills/                             # Skill definitions
-│   ├── [skill-name]/
-│   │   ├── SKILL.md                    # Skill instructions and metadata
-│   │   ├── references/                 # Supporting documentation
-│   │   │   ├── [topic1].md
-│   │   │   └── [topic2].md
-│   │   └── examples/                   # Optional usage examples
-│   │       └── [example].md
-│   └── [another-skill]/
-│       └── SKILL.md
-├── agents/                             # Agent persona definitions
-│   ├── [agent-name].md
-│   └── [another-agent].md
-└── commands/                           # Slash command definitions
-    ├── [command-name].md
-    └── [another-command].md
-```
+This repository's skill plugins put `plugin.json` at the plugin root instead. That file is for GitHub Copilot. Copilot CLI looks for a manifest in this order: `.plugin/plugin.json`, `plugin.json`, `.github/plugin/plugin.json`, `.claude-plugin/plugin.json`.
 
-### File Purposes
+Claude Code doesn't read a root `plugin.json`. To Claude Code, a skill plugin here has no manifest:
 
-**README.md** - Plugin-level documentation:
-- Overview and purpose
-- List of skills, agents, and commands
-- Features and use cases
-- Requirements and dependencies
-- Usage examples
+- It finds `skills/` and `.mcp.json` by their default locations.
+- The plugin's entry in `.claude-plugin/marketplace.json` acts as the manifest.
+- Its version is the git commit it was installed from.
 
-**SKILL.md** - Individual skill definition:
-- Skill metadata (name, description, category)
-- Detailed instructions for Claude Code
-- Progressive disclosure structure
-- Reference to bundled documentation
+You can see this for yourself. `claude --plugin-dir ./plugins/bicep plugin list` shows `bicep@inline` with `Version: unknown`.
 
-**agents/*.md** - Agent persona definitions:
-- Agent metadata (name, description, model)
-- Purpose and specialized expertise
-- Capabilities and behavioral traits
-- Knowledge base and response approach
-- Example interactions
+So the rule is:
 
-**commands/*.md** - Slash command definitions:
-- Command syntax and arguments
-- Implementation instructions
-- Usage examples
+- **Skill plugins** keep `plugin.json` at the root, with fields Copilot reads: `name`, `version`, `description` and `skills`.
+- **Anything that needs a Claude-only field** (`userConfig`, `dependencies`, `hooks`, `types`) uses `.claude-plugin/plugin.json`. A root `plugin.json` can't carry these, because Claude Code never reads it. Mods and the hooks plugin use `.claude-plugin/plugin.json` for this reason.
+
+See [Plugin Structure Reference](../reference/plugin-structure.md) for every manifest field.
 
 ---
 
 ## Creating Your First Plugin
 
-Plugins are created manually by setting up the directory structure. Once the plugin structure exists, you can add components (skills, agents, commands) to it.
+### Step 1: Create the folder
 
-### Step 1: Create Plugin Directory Structure
-
-```bash
-# Navigate to your project's plugins directory
-cd plugins/
-
-# Create plugin directory
-mkdir my-awesome-plugin
-cd my-awesome-plugin
-
-# Create subdirectories for components
-mkdir skills agents commands
-
-# Create plugin README
-touch README.md
+```text
+plugins/my-plugin/
+├── plugin.json
+├── README.md
+└── skills/
+    └── my-skill/
+        └── SKILL.md
 ```
 
-**Note:** The `skill-creator` skill can be used later to add individual skills to your plugin, but it does not create the plugin structure itself.
+Add `agents/` or `.mcp.json` only when the plugin needs them.
 
-### Step 2: Write the Plugin README
+Name the folder in lowercase kebab-case. The folder name, the `name` in `plugin.json` and the marketplace entry `name` must all match. The `atc-` prefix is used for mods. `claude plugin validate` rejects names that start with `claude-` or `anthropic-`.
 
-Create a comprehensive README for your plugin:
+### Step 2: Write plugin.json
+
+```json
+{
+  "name": "my-plugin",
+  "version": "1.0.0",
+  "description": "One sentence on what the plugin covers",
+  "skills": "./skills/"
+}
+```
+
+This is the same shape every skill plugin in `plugins/` uses.
+
+### Step 3: Add skills
+
+Each skill is a folder under `skills/` with a `SKILL.md`. The frontmatter needs at least `name` and `description`. The description decides when Claude loads the skill, so say what it does and when to use it.
 
 ```markdown
-# My Awesome Plugin
-
-Brief description of what your plugin does.
-
-## Overview
-
-Detailed explanation of the plugin's purpose, target use cases, and benefits.
-
-## Skills
-
-### skill-name-one
-
-Description of what this skill does.
-
-**Features:**
-- Feature 1
-- Feature 2
-- Feature 3
-
-**Usage:**
-\```
-Use the skill-name-one skill to [describe task]
-\```
-
-## Commands
-
-### /command-name-one
-
-Description of what this command does.
-
-**Usage:**
-\```
-/command-name-one [argument1] [argument2]
-\```
-
-**Example:**
-\```
-/command-name-one myValue "description here"
-\```
-
-## Requirements
-
-- List any dependencies
-- Specific versions if needed
-- External tools required
-
-## License
-
-MIT
-```
-
+---
+name: my-skill
+description: Conventions for writing X. Use when creating or reviewing X files.
 ---
 
-## Adding Skills
+# My Skill
 
-Skills define workflows and processes that Claude executes. They use progressive disclosure (metadata → instructions → references) for optimal context management.
+Instructions for Claude...
+```
 
-### Creating a Skill
+To scaffold a skill, run `/common:skill-creator`. For the full format, see the [Skill Creation Guide](skill-creation.md) and [Skill Anatomy Reference](../reference/skill-anatomy.md).
 
-1. Create skill directory under `plugins/[plugin-name]/skills/[skill-name]/`
-2. Write `SKILL.md` with YAML frontmatter and instructions
-3. Add reference documentation in `references/` (optional)
-4. Test the skill by invoking it: `Use the [skill-name] skill to...`
+### Step 4: Add agents (optional)
 
-**For detailed instructions, see:** [Skill Creation Guide](skill-creation.md)
+A subagent is one Markdown file in `agents/`: frontmatter, then a free-form system prompt.
+
+```markdown
+---
+name: security-reviewer
+description: Reviews code changes for security issues. Use after edits to authentication or input handling.
+tools: Read, Grep, Glob
+model: inherit
+---
+
+You are a security reviewer. Read the changed files and report injection, authentication and secrets-handling risks.
+```
+
+- In a plugin, the subagent is named `<plugin>:<name>`, here `my-plugin:security-reviewer`.
+- Test it with `@agent-my-plugin:security-reviewer <task>`, or with a plain request that matches its description.
+- Plugin subagents ignore `permissionMode`, `hooks`, `mcpServers` and `initialPrompt`. Put hooks and MCP servers at the plugin level instead.
+
+No plugin in this repository ships an `agents/` folder yet. For every field, see the [Agent Anatomy Reference](../reference/agent-anatomy.md) and the [Agent Creation Guide](agent-creation.md).
+
+### Step 5: Add MCP servers (optional)
+
+Declare servers in `.mcp.json` at the plugin root. This is the `dotnet` plugin's file:
+
+```json
+{
+  "mcpServers": {
+    "nuget": {
+      "type": "stdio",
+      "command": "dnx",
+      "args": ["NuGet.Mcp.Server", "--source", "https://api.nuget.org/v3/index.json", "--yes"]
+    }
+  }
+}
+```
+
+In `/mcp` the server shows as `plugin:dotnet:nuget`. Its tools are named `mcp__plugin_dotnet_nuget__<tool>`. Use that form in permission rules and hook matchers. Use `${CLAUDE_PLUGIN_ROOT}` to point at a file inside the plugin.
+
+### Step 6: Write the README
+
+Keep it short: one paragraph on what the plugin does, an **Install** section, and one entry per skill, agent or MCP server. Copy the layout of an existing one, such as [plugins/bicep/README.md](../../plugins/bicep/README.md).
 
 ---
 
 ## Adding Commands
 
-Commands provide quick, parameterized access to common operations via slash commands (e.g., `/format-params`).
+A command is a single Markdown file. `commands/deploy.md` in `my-plugin` runs as `/my-plugin:deploy`. Commands take the same frontmatter as skills.
 
-### Creating a Command
-
-1. Create markdown file under `plugins/[plugin-name]/commands/[command-name].md`
-2. Write command instructions including arguments, examples, and error handling
-3. Test the command: `/command-name [arguments]`
-
-**Naming:** Use lowercase with hyphens (e.g., `/add-module`, `/format-params`)
-
-**For detailed instructions, see:** [Command Creation Guide](command-creation.md)
+Skills replace commands for new work. A skill also runs by name, and it can carry supporting files in its folder. Keep `commands/` for files you're moving over from `.claude/commands/`. See the [Command Creation Guide](command-creation.md).
 
 ---
 
-## Adding Agents
+## Hooks
 
-Agents define specialized personas that Claude adopts to provide domain-specific expertise. Agents define WHO Claude becomes (persona), while skills define WHAT Claude does (workflow).
+A plugin's shell hooks go in `hooks/hooks.json`, under a top-level `"hooks"` key. The shape is the same as the `hooks` object in `settings.json`, so you can copy a settings hook across unchanged:
 
-### Creating an Agent
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/format.js"]
+          }
+        ]
+      }
+    ]
+  }
+}
+```
 
-1. Create markdown file under `plugins/[plugin-name]/agents/[agent-name].md`
-2. Write agent definition with YAML frontmatter (name, description, model)
-3. Include sections: Purpose, Capabilities, Behavioral Traits, Knowledge Base, Response Approach, Example Interactions
-4. Test the agent: `@agent-name [task description]`
+- Hooks register when the plugin loads. They don't wait for one of the plugin's skills to run.
+- With `args`, the command runs without a shell (exec form), so paths need no quoting. Without `args`, it runs through a shell. In that case, wrap `${CLAUDE_PLUGIN_ROOT}` in double quotes.
+- Hook processes get `CLAUDE_PLUGIN_ROOT`, `CLAUDE_PLUGIN_DATA`, `CLAUDE_PROJECT_DIR` and one `CLAUDE_PLUGIN_OPTION_<KEY>` per user configuration option.
+- For events and handler types, see the [hooks reference](https://code.claude.com/docs/en/hooks).
 
-**When to use:** Domain expertise, consistent philosophy, specialized persona (e.g., `frontend-developer`, `database-architect`)
+In this repository, shell hooks live in the `hooks` plugin at `.claude/plugins/hooks/`. It plays sounds on `SessionStart`, `Stop` and `PermissionRequest`. It is listed only in the Claude marketplace.
 
-**For detailed instructions, see:** [Agent Creation Guide](agent-creation.md)
+A mod uses the same `hooks/hooks.json` file with a `modules` key, `{ "modules": ["./register.tsx"] }`, which loads a TypeScript module into Claude Code. See the [Mod Creation Guide](mod-creation.md) and [Mod Anatomy Reference](../reference/mod-anatomy.md).
+
+---
+
+## User Configuration
+
+`userConfig` in `.claude-plugin/plugin.json` declares options that Claude Code asks for when the plugin is enabled. This is `atc-progress`:
+
+```json
+{
+  "userConfig": {
+    "autoOpen": {
+      "type": "string",
+      "title": "Open the agents pane",
+      "description": "off: only /atc-progress opens it. agents: it also opens by itself, once per session, when the first subagent starts.",
+      "default": "off",
+      "options": ["off", "agents"]
+    }
+  }
+}
+```
+
+- `type`, `title` and `description` are required. `type` is `string`, `number`, `boolean`, `directory` or `file`.
+- Optional fields: `default`, `required`, `options` (a fixed list for a `string`; needs Claude Code 2.1.271+), `multiple`, `sensitive`, and `min` / `max` for numbers.
+- An unknown key inside an option is an error, and the plugin doesn't load.
+- Values are saved under `pluginConfigs` in the user's `settings.json`. A `sensitive` value goes to the system credential store instead. Users change values later in `/config`.
+- A plugin reads a value as `${user_config.KEY}` in MCP and LSP server config, in exec-form hook `args`, and in skill and agent text. Hook processes get it as `CLAUDE_PLUGIN_OPTION_<KEY>`. A mod gets it in the `options` argument of `register`.
+
+`userConfig` is a Claude Code field. A root `plugin.json` can't use it, so skill plugins in this repository have no options.
+
+---
+
+## Dependencies
+
+`dependencies` lists plugins that must be enabled for this one to work:
+
+```json
+{
+  "dependencies": ["common", "other-plugin@other-marketplace"]
+}
+```
+
+Each entry is `"name"`, `"name@marketplace"`, or `{ "name": "...", "marketplace": "...", "version": "..." }`. A bare name resolves against the plugin's own marketplace. For a skill plugin, which has no Claude manifest, put the field on the plugin's entry in `.claude-plugin/marketplace.json`. No plugin in this repository uses dependencies yet. See [plugin dependencies](https://code.claude.com/docs/en/plugins/dependencies).
 
 ---
 
 ## Testing Your Plugin
 
-### Development Testing
+### Load it for one session
 
-During development, test your plugin within the same repository:
+Point `--plugin-dir` at the plugin folder:
 
-1. **Test skills:**
-```
-Use the my-skill skill to [test scenario]
-```
-
-Verify:
-- Claude Code recognizes the skill
-- Instructions are clear and actionable
-- Output meets expectations
-- Edge cases are handled
-
-3. **Test agents:**
-```
-@my-specialist [task description]
+```bash
+claude --plugin-dir ./plugins/my-plugin
 ```
 
-Verify:
-- Agent adopts the defined persona
-- Responses reflect specialized expertise
-- Behavioral traits are evident
-- Knowledge base is referenced appropriately
+- The plugin loads as `my-plugin@inline` and its skills run as `/my-plugin:<skill>`.
+- Use an absolute path to load it while you work in another project. Repeat the flag to load several plugins.
+- After you edit a file, run `/reload-plugins`.
+- To see what loaded, run `claude --plugin-dir ./plugins/my-plugin plugin details my-plugin`. It lists the skills, agents, hooks and MCP servers it found.
 
-4. **Test commands:**
+Point the flag at one plugin folder, not at `plugins/`. Given a folder of plugins, `--plugin-dir` loads only the children that have a `.claude-plugin/plugin.json`, so it skips skill plugins.
+
+### Validate
+
+| Command | What it checks |
+|---------|----------------|
+| `claude plugin validate plugins/my-plugin` | Skill, agent and command frontmatter, plus `.claude-plugin/plugin.json` and `hooks/hooks.json` when present |
+| `claude plugin validate .` (from the repo root) | `.claude-plugin/marketplace.json` |
+| `claude plugin validate .github/plugin/marketplace.json` | The Copilot marketplace file |
+| `claude plugin test plugins/atc-my-mod` | Runs a mod's `*.test.ts` and `*.test.tsx` files |
+
+Add `--strict` to turn warnings into failures in CI. A skill whose frontmatter doesn't parse still loads, but with every field dropped, so validate every plugin you change.
+
+### Checklist
+
+- [ ] Folder name, `plugin.json` `name` and both marketplace entries match
+- [ ] Every `SKILL.md` has `name` and a `description` that says when to use it
+- [ ] `claude plugin validate` passes for the plugin and both marketplace files
+- [ ] Each skill runs from `--plugin-dir` and does what its description promises
+- [ ] README lists every skill, agent and MCP server
+- [ ] No secrets, and no paths or values that only work on your machine
+
+### Install from your branch
+
+`--plugin-dir` is the normal way to test. Use this route only to check the real install path, by adding the marketplace at your branch:
+
+```text
+/plugin marketplace add atc-net/atc-agentic-toolkit#my-branch
+/plugin install my-plugin@atc-agentic-toolkit
 ```
-/my-command test-arg "test value"
-```
 
-Verify:
-- Command autocompletes
-- Arguments are parsed correctly
-- Expected behavior occurs
-- Error handling works
-
-### Testing Checklist
-
-- [ ] Plugin directory structure is correct
-- [ ] README.md is complete and accurate
-- [ ] All SKILL.md files have valid frontmatter
-- [ ] All agent .md files have valid frontmatter
-- [ ] Instructions are clear and unambiguous
-- [ ] Reference documentation is helpful
-- [ ] Agent personas are well-defined and consistent
-- [ ] Commands parse arguments correctly
-- [ ] Error messages are informative
-- [ ] Examples work as documented
-- [ ] No conflicts with existing plugins
-- [ ] Performance is acceptable
-
-### Marketplace Testing
-
-Once your plugin is ready, register it in the marketplace and test installation:
-
-1. Register plugin in `plugin.json`
-2. Push changes to your repository
-3. Add the marketplace in Claude Code
-4. Install the plugin from marketplace: `Install the [plugin-name] plugin from [marketplace-name] marketplace`
-5. Verify all functionality works when installed via marketplace
+You can only register one marketplace per name. If you already have `atc-agentic-toolkit` added, you have to remove it first with `/plugin marketplace remove atc-agentic-toolkit`. Removing a marketplace uninstalls every plugin from it and deletes their data, options and secrets, so reinstall and reconfigure them afterwards.
 
 ---
 
 ## Registering in Marketplace
 
-To make your plugin discoverable, add it to `plugin.json`:
+Add an entry to both marketplace files, with the same `name`, `source` and `description`:
+
+- `.claude-plugin/marketplace.json` (Claude Code)
+- `.github/plugin/marketplace.json` (GitHub Copilot)
 
 ```json
 {
-  "plugins": [
-    {
-      "name": "my-awesome-plugin",
-      "version": "1.0.0",
-      "description": "Brief description of your plugin",
-      "author": { "name": "Your Name" },
-      "source": "./plugins/my-awesome-plugin",
-      "category": "utilities",
-      "keywords": ["keyword1", "keyword2"],
-      "license": "MIT",
-      "strict": true
-    }
-  ]
+  "name": "my-plugin",
+  "source": "./plugins/my-plugin",
+  "description": "One sentence on what the plugin covers"
 }
 ```
 
-**Key fields:** name (must match directory), version (semver), description (one sentence), source (relative path), category, keywords
+Mods and the hooks plugin go only in `.claude-plugin/marketplace.json`. Copilot doesn't run them.
 
-**For complete specification, see:** [Marketplace Config Reference](../reference/marketplace-config.md)
+Then add a row, A–Z, to the matching table under **Available Plugins** in the [root README](../../README.md).
+
+For every field, see the [Marketplace Config Reference](../reference/marketplace-config.md).
+
+---
+
+## Installing
+
+In Claude Code 2.1.275 or newer, one command adds the marketplace and installs the plugin:
+
+```text
+/plugin install my-plugin --marketplace atc-net/atc-agentic-toolkit
+```
+
+In older versions, add the marketplace first:
+
+```text
+/plugin marketplace add atc-net/atc-agentic-toolkit
+/plugin install my-plugin@atc-agentic-toolkit
+```
+
+From a shell, use `claude plugin install my-plugin@atc-agentic-toolkit`.
+
+In GitHub Copilot CLI:
+
+```bash
+copilot plugin marketplace add atc-net/atc-agentic-toolkit
+copilot plugin install my-plugin@atc-agentic-toolkit
+```
+
+For VS Code, see the [root README](../../README.md).
 
 ---
 
 ## Distribution Strategies
 
-### Strategy 1: Public Marketplace (Recommended)
+### Public: this repository
 
-**Best for:** Open-source plugins shared with the community
+Add the plugin here, register it in both marketplace files and open a pull request. Users install it from the `atc-agentic-toolkit` marketplace in Claude Code or Copilot.
 
-Plugins work with both **GitHub Copilot** and **Claude Code**, so a single plugin can serve users of either platform.
+### Private: your own marketplace
 
-1. Add plugin to public `atc-agentic-toolkit` repository
-2. Register in marketplace.json
-3. Submit pull request
-4. Users install via: `Install the [plugin-name] plugin from atc-net marketplace`
+1. Fork or copy the repository for your organization.
+2. Give the marketplace a new `name` in both marketplace files, because a user can't register two marketplaces with the same name.
+3. Add your plugins and register them.
+4. Team members run `/plugin marketplace add your-org/your-repo`. Git credentials that can clone the repository are enough for a private one.
 
-**Advantages:**
-- Maximum discoverability
-- Community contributions
-- Version control and history
-- Dual-platform support (GitHub Copilot and Claude Code)
+To have a project offer the marketplace automatically, add it under `extraKnownMarketplaces` in the project's `.claude/settings.json`. See [Create a marketplace](https://code.claude.com/docs/en/plugin-marketplaces).
 
-### Strategy 2: Private Marketplace
+---
 
-**Best for:** Internal company plugins
+## Versioning
 
-1. Fork `atc-agentic-toolkit` for your organization
-2. Add internal plugins
-3. Register in your marketplace.json
-4. Team members add your marketplace and install plugins:
-   - `Add the your-org marketplace from https://github.com/your-org/atc-agentic-toolkit`
-   - `Install the [plugin-name] plugin from the your-org marketplace`
+Use semantic versioning (`major.minor.patch`).
 
-**Advantages:**
-- Control over distribution
-- Internal tools remain private
-- Custom approval process
-- Consistent installation experience
+- **Skill plugin**: bump `version` in the root `plugin.json`, which Copilot reads. Claude Code ignores that field and versions the plugin by git commit, so each pushed commit is a new version.
+- **Mod or hooks plugin**: bump `version` in `.claude-plugin/plugin.json` to release. Claude Code keeps users on the cached copy until this string changes, however many commits you push.
+- **Marketplace**: both marketplace files have their own `version`. Keep them in step.
+
+Updates aren't automatic. Auto-update is off by default for marketplaces that aren't Anthropic's, so users run `claude plugin update <name>@atc-agentic-toolkit`, or turn on auto-update in `/plugin` under **Marketplaces**.
+
+Don't add `version` to a marketplace entry. When `plugin.json` also sets one, `plugin.json` wins and `claude plugin validate` warns.
 
 ---
 
 ## Best Practices
 
-### Plugin Design
-
-**Do:**
-
-- Focus on a specific domain or problem space
-- Provide clear, actionable documentation
-- Include working examples
-- Handle errors gracefully
-- Follow ATC-Net conventions for .NET projects
-
-**Don't:**
-
-- Create overly broad or unfocused plugins
-- Duplicate functionality from existing plugins
-- Include poorly tested or experimental code
-- Ignore error handling
-- Hard-code project-specific values
-
-### Skill Design
-
-- Use **progressive disclosure**: Metadata → Instructions → References
-- Write **clear, imperative instructions**
-- Provide **concrete examples**
-- Bundle **relevant reference documentation**
-- Keep **context lean and focused**
-
-See [Skill Creation Guide](skill-creation.md) for detailed best practices.
-
-### Command Design
-
-- Use **descriptive names** that indicate purpose
-- **Validate arguments** before execution
-- Provide **helpful error messages**
-- Include **usage examples** in definition
-- **Document expected behavior** clearly
-
-See [Command Creation Guide](command-creation.md) for detailed best practices.
-
-### Agent Design
-
-- Define **clear domain boundaries** for expertise
-- Specify **behavioral principles** and problem-solving philosophy
-- Include **concrete example interactions** showing agent value
-- Reference **authoritative sources** with versions in knowledge base
-- Explain **when to use agents vs. skills**
-
-See [Agent Creation Guide](agent-creation.md) for detailed best practices.
-
-### Documentation
-
-- Write for **mixed audience** (beginners and experts)
-- Use **code examples** liberally
-- Explain **why**, not just **how**
-- Keep **README concise**, link to detailed docs
-- Include **troubleshooting** section
-
----
-
-## Advanced Topics
-
-### Versioning
-
-Follow **semantic versioning** (semver): Major.Minor.Patch (e.g., 1.2.3)
-- Update in `marketplace.json`, skill frontmatter, and README.md
-
-### Performance
-
-Large plugins impact context size:
-- Bundle only essential references
-- Use progressive disclosure
-- Keep instructions concise
-
-### Security
-
-- Never include secrets
-- Validate user input
-- Warn about destructive operations
-- Document security implications
-
----
-
-
----
-
-## Next Steps
-
-- Read the [Skill Creation Guide](skill-creation.md) for detailed skill authoring
-- Review [Command Creation Guide](command-creation.md) for command best practices
-- Study [Plugin Structure Reference](../reference/plugin-structure.md) for technical specs
-- Explore existing plugins for inspiration and patterns
+- Keep a plugin to one domain. Put unrelated skills in separate plugins.
+- Check that an existing plugin doesn't already cover the topic.
+- Make each skill description specific. A vague description loads the skill at the wrong time, or never.
+- Keep `SKILL.md` lean and move detail into `references/`, which load only when needed.
+- Never include secrets. Read credentials from environment variables or `userConfig` with `sensitive: true`.
+- Make scripts and hooks work on Windows, macOS and Linux.
+- Warn before destructive operations.
 
 ---
 
 ## Resources
 
-- [Skill Creation Guide](skill-creation.md)
-- [Command Creation Guide](command-creation.md)
 - [Plugin Structure Reference](../reference/plugin-structure.md)
 - [Marketplace Config Reference](../reference/marketplace-config.md)
-- [Best Practices](../best-practices/)
+- [Skill Creation Guide](skill-creation.md)
+- [Agent Creation Guide](agent-creation.md)
+- [Command Creation Guide](command-creation.md)
+- [Mod Creation Guide](mod-creation.md)
+- Official docs: [Create plugins](https://code.claude.com/docs/en/plugins) ·
+  [Plugin manifest reference](https://code.claude.com/docs/en/plugins-reference) ·
+  [Plugin commands](https://code.claude.com/docs/en/plugins/cli-reference)
 
 ---
 
