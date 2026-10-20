@@ -1,801 +1,265 @@
 # Command Creation Guide
 
-This guide teaches you how to create effective slash commands that provide quick access to common tasks and workflows in Claude Code.
+How to write your own slash commands for Claude Code, and how they relate to skills.
 
 ## Table of Contents
 
-- [What are Commands?](#what-are-commands)
-- [When to Create a Command](#when-to-create-a-command)
-- [Command Structure](#command-structure)
-- [Writing Command Instructions](#writing-command-instructions)
-- [Argument Handling](#argument-handling)
-- [Error Handling](#error-handling)
+- [Commands Are Skills](#commands-are-skills)
+- [When to Write a Command](#when-to-write-a-command)
+- [Where Command Files Live](#where-command-files-live)
+- [Write Your First Command](#write-your-first-command)
+- [Frontmatter for Commands](#frontmatter-for-commands)
+- [Arguments](#arguments)
+- [Inject Live Context with `!`](#inject-live-context-with-)
+- [Reference Files](#reference-files)
+- [Examples in This Repository](#examples-in-this-repository)
 - [Testing Commands](#testing-commands)
-- [Real-World Examples](#real-world-examples)
-- [Best Practices](#best-practices)
+- [Checklist](#checklist)
+- [Next Steps](#next-steps)
 
 ---
 
-## What are Commands?
+## Commands Are Skills
 
-**Slash commands** are quick shortcuts that provide rapid access to common tasks without the overhead of invoking a full skill. They're invoked with the `/` prefix followed by the command name and optional arguments.
+Custom commands have merged into skills. These two files both create `/deploy` and behave the same way:
 
-### Characteristics
-
-- **Fast invocation** - Type `/command-name` for instant access
-- **Argument support** - Accept parameters for flexibility
-- **Task-specific** - Focus on a single, well-defined operation
-- **Lightweight** - No metadata or bundled resources
-- **Auto-completion** - Claude Code suggests commands as you type
-
-### Commands vs. Skills
-
-| Aspect | Commands | Skills |
-|--------|----------|--------|
-| **Invocation** | `/command-name [args]` | Natural language prompt |
-| **Complexity** | Simple, single task | Complex, multi-step workflows |
-| **Arguments** | Explicit parameters | Context from conversation |
-| **Resources** | None bundled | Scripts, references, assets |
-| **Use Case** | Quick, frequent operations | Specialized domain expertise |
-
----
-
-## When to Create a Command
-
-Create a command when:
-
-✅ **The task is quick and straightforward**
-- Formatting code
-- Running a specific tool
-- Generating boilerplate
-
-✅ **The operation is performed frequently**
-- Adding a module
-- Creating a test file
-- Updating documentation
-
-✅ **Arguments make the task more efficient**
-- `/add-module ModuleName "Description"`
-- `/format-params --strict`
-- `/generate-tests ClassName`
-
-✅ **The workflow doesn't require decision-making**
-- Clear inputs → deterministic outputs
-- No complex branching logic
-- Minimal context needed
-
-❌ **Don't create a command when:**
-- The task requires extended conversation
-- Decision-making is needed during execution
-- Multiple steps with dependencies are involved
-- Domain expertise or bundled resources would help
-- The operation varies significantly based on context
-
-**Rule of thumb:** If it takes more than 3 sentences to describe what the command does, it's probably better as a skill.
-
----
-
-## Command Structure
-
-### Directory Location
-
-Commands are stored in the `commands/` directory of your plugin:
-
-```
-plugins/my-plugin/
-└── commands/
-    ├── my-command.md
-    ├── another-command.md
-    └── quick-fix.md
+```text
+.claude/commands/deploy.md
+.claude/skills/deploy/SKILL.md
 ```
 
-### File Naming
+Every skill you can invoke is a slash command. What makes a skill feel like a "command" is how it's invoked: you type `/name`, and Claude doesn't load it on its own.
 
-- **File name must match command name:** `format-params.md` → `/format-params`
-- **Use lowercase with hyphens:** `add-module.md`, not `AddModule.md`
-- **Be descriptive:** `generate-tests.md`, not `gt.md`
-- **Avoid conflicts:** Check for existing commands first
+`.claude/commands/*.md` files still work, but prefer a skill directory for new work. A skill directory can hold supporting files (scripts, reference docs), and a skill accepts every frontmatter field. A command file accepts the same fields except `name` and `paths`. If a skill and a command file share a name, the skill wins.
 
-### Basic Structure
+Built-in commands such as `/help`, `/compact` and `/model` are part of Claude Code. You can't edit them, and this guide doesn't cover them. See the [commands reference](https://code.claude.com/docs/en/commands).
+
+---
+
+## When to Write a Command
+
+Write a command (a skill you invoke yourself) when:
+
+- The workflow has side effects and you want to decide when it runs: committing, deploying, posting a message, rewriting many files.
+- You run the same prompt often and want to type `/name` instead of pasting it.
+- The prompt needs inputs you supply each time, like an issue number or a file name.
+
+Let Claude invoke it instead (a normal skill) when the content is knowledge Claude should apply whenever it's relevant, such as coding conventions. See the [Skill Creation Guide](skill-creation.md).
+
+---
+
+## Where Command Files Live
+
+| Location | Path | Invoke as |
+|----------|------|-----------|
+| Project | `.claude/skills/<name>/SKILL.md` | `/<name>` |
+| Project, older format | `.claude/commands/<name>.md` | `/<name>` |
+| Project, older format, in a subfolder | `.claude/commands/frontend/component.md` | `/frontend:component` |
+| Personal (all your projects) | `~/.claude/skills/<name>/SKILL.md` | `/<name>` |
+| Plugin | `plugins/<plugin>/skills/<name>/SKILL.md` | `/<plugin>:<name>` |
+
+Commit `.claude/skills/` to share project commands with your team.
+
+In this repository, commands ship inside skill plugins. After you install a plugin, its skills run with the plugin prefix. For example:
+
+```text
+/plugin install dotnet --marketplace atc-net/atc-agentic-toolkit
+/dotnet:format-params
+```
+
+The one-step install needs Claude Code 2.1.275 or newer. On older versions, run `/plugin marketplace add atc-net/atc-agentic-toolkit` and then `/plugin install dotnet@atc-agentic-toolkit`.
+
+A plugin can also have a `commands/` folder of flat Markdown files. Claude Code still loads it, but its docs recommend `skills/` for new plugins, and no plugin in this repository uses `commands/`.
+
+---
+
+## Write Your First Command
+
+This command fixes a GitHub issue by number. Save it as `.claude/skills/fix-issue/SKILL.md`:
 
 ```markdown
-# Command Title
+---
+description: Fix a GitHub issue by number, following this repo's coding standards
+disable-model-invocation: true
+argument-hint: "[issue-number]"
+---
 
-Brief description of what the command does (1-2 sentences).
+Fix GitHub issue $ARGUMENTS.
 
-## Instructions
+1. Read the issue with `gh issue view $ARGUMENTS`.
+2. Find the code involved and make the smallest change that fixes it.
+3. Add or update tests that cover the fix.
+4. Run the tests and report the result.
+```
 
-When the user invokes `/command-name [arg1] [arg2]`, you should:
+Then run it:
 
-1. [First step - validate arguments]
-2. [Second step - perform main action]
-3. [Third step - report results]
+```text
+/fix-issue 123
+```
+
+Claude receives the body with `$ARGUMENTS` replaced by `123`. The folder name gives the command its name. `disable-model-invocation: true` means only you can start it.
+
+Keep the body short and direct. Once a command runs, its text stays in the conversation and costs tokens on every later turn.
+
+---
+
+## Frontmatter for Commands
+
+All fields are optional. These are the ones most useful for commands. The [Skill Anatomy Reference](../reference/skill-anatomy.md) lists every field.
+
+| Field | Use |
+|-------|-----|
+| `description` | What the command does. Shown in the `/` menu. If you leave it out, Claude Code uses the first line of the body. |
+| `argument-hint` | Hint shown during autocomplete, e.g. `"[issue-number]"` or `"[filename] [format]"`. |
+| `arguments` | Names for positional arguments, e.g. `arguments: [issue, branch]`, so the body can use `$issue` and `$branch`. |
+| `disable-model-invocation` | `true` stops Claude from running the command on its own. Use it for anything with side effects. |
+| `allowed-tools` | Tools Claude can use without asking during the turn that runs the command, e.g. `Bash(git add *) Bash(git commit *)`. |
+| `model` | Model to use for the rest of that turn, e.g. `haiku` for a cheap formatting task. |
+| `effort` | Effort level for the command: `low`, `medium`, `high`, `xhigh` or `max`. |
+| `context` / `agent` | `context: fork` runs the command in a subagent of type `agent` (e.g. `Explore`). The subagent doesn't see your conversation. |
+| `shell` | Shell for `!` commands: `bash` (default) or `powershell`. |
+
+Field names must match exactly. Claude Code ignores an unknown field without an error, so a typo fails silently.
+
+---
 
 ## Arguments
 
-- `arg1` (required): Description of first argument
-- `arg2` (optional): Description of second argument, defaults to [value]
+Text after the command name becomes its arguments.
 
-## Examples
+| Placeholder | Expands to |
+|-------------|------------|
+| `$ARGUMENTS` | The full argument string as typed |
+| `$ARGUMENTS[0]`, `$ARGUMENTS[1]`, ... | One argument by position, starting at 0 |
+| `$0`, `$1`, ... | Short form of `$ARGUMENTS[N]` |
+| `$name` | A named argument declared in the `arguments` field |
 
-\```
-/command-name value1 "value with spaces"
-\```
+Arguments split on spaces, with shell-style quoting:
 
-Expected output:
-- [Describe what the user should see]
+```markdown
+---
+description: Migrate a component from one language to another
+argument-hint: "[component] [from] [to]"
+disable-model-invocation: true
+---
 
-## Error Handling
-
-If [error condition]:
-- [How to inform the user]
-- [What corrective action to suggest]
-
-## Notes
-
-- [Any special considerations]
-- [Related commands or skills]
+Migrate the $0 component from $1 to $2. Preserve all existing behaviour and tests.
 ```
+
+```text
+/migrate-component SearchBar JavaScript TypeScript
+/migrate-component "Search Bar" JavaScript TypeScript
+```
+
+Rules worth knowing:
+
+- If you pass arguments but the body has no placeholder, Claude Code appends `ARGUMENTS: <your input>` to the end, so Claude still sees them.
+- An indexed placeholder with no matching argument (`$2` when you passed one) stays as literal text. A named placeholder with no matching argument becomes an empty string.
+- To write a literal `$1.00` in the body, escape it: `\$1.00`.
+
+Other substitutions work in commands too, such as `${CLAUDE_SKILL_DIR}` (the skill's folder) and `${CLAUDE_PROJECT_DIR}` (the project root). See [String Substitutions](../reference/skill-anatomy.md#string-substitutions).
 
 ---
 
-## Writing Command Instructions
+## Inject Live Context with `!`
 
-### Be Direct and Actionable
+`` !`command` `` runs a shell command before Claude sees the command text and puts the output in its place. Claude gets real data, not an instruction to go and fetch it.
 
-Commands should have clear, imperative instructions.
-
-**❌ Vague:**
 ```markdown
-Help the user format their code.
+---
+description: Suggest a commit message for the staged changes
+disable-model-invocation: true
+allowed-tools: Bash(git diff *) Bash(git log *)
+---
+
+## Staged changes
+
+!`git diff --cached --stat`
+
+!`git diff --cached`
+
+## Recent commits
+
+!`git log --oneline -10`
+
+## Task
+
+Suggest a conventional commit message for the staged changes above, matching the style of the recent commits.
 ```
 
-**✅ Direct:**
-```markdown
-When the user invokes `/format-params`, you should:
-1. Find all `.cs` files in the current project
-2. Apply parameter formatting following ATC-Net conventions
-3. Report the number of files modified
-4. List any files that had errors
+For several commands, use a fenced block opened with ` ```! `:
+
+````markdown
+```!
+dotnet --version
+git status --short
 ```
+````
 
-### Use Numbered Steps
+How it behaves:
 
-Break the command workflow into clear, sequential steps.
-
-**Example:**
-```markdown
-## Instructions
-
-When the user invokes `/add-iot-edge-module [ModuleName] "[Description]"`, you should:
-
-1. **Validate arguments:**
-   - ModuleName: Must be PascalCase, no spaces
-   - Description: Required, brief module purpose
-
-2. **Create module structure:**
-   - Create directory: `src/Modules/[ModuleName]/`
-   - Generate .csproj file with .NET 6.0 target
-   - Create Program.cs with IoT Edge boilerplate
-
-3. **Generate Dockerfiles:**
-   - Create Dockerfile (production)
-   - Create Dockerfile.dev (development)
-
-4. **Update deployment manifest:**
-   - Add module to deployment.template.json
-   - Configure routing if first module
-
-5. **Integrate with solution:**
-   - Add project reference to solution file
-   - Report success with module location
-```
-
-### Include Context About Purpose
-
-Help Claude understand *why* steps are being performed.
-
-**Example:**
-```markdown
-2. **Validate input format:**
-   - Check that the namespace follows .NET naming conventions
-   - This ensures generated code will compile without errors
-```
+- The `!` must be at the start of a line or follow whitespace.
+- If any command fails (non-zero exit), the whole command is aborted and Claude sees nothing. Append `|| true` to a command that can legitimately exit non-zero.
+- Injected commands don't prompt for permission. Outside auto mode, a command that your permission rules don't allow aborts the run, so list it in `allowed-tools`.
+- On Windows without Git Bash, the commands run through PowerShell. Setting `shell: bash` there makes the command fail. Commands like `git` and `dotnet` work in both shells, so prefer them to bash-only tools.
+- The `disableSkillShellExecution` setting turns this off. Each command is then replaced with `[shell command execution disabled by policy]`.
 
 ---
 
-## Argument Handling
+## Reference Files
 
-### Defining Arguments
-
-Be explicit about:
-- Argument names and order
-- Required vs. optional
-- Expected format
-- Default values
-
-**Example:**
-```markdown
-## Arguments
-
-- `module-name` (required): Module name in PascalCase (e.g., TemperatureSensor)
-- `description` (required): Brief description of module purpose, enclosed in quotes if it contains spaces
-- `--framework` (optional): Target framework, defaults to net6.0
-- `--output-dir` (optional): Output directory, defaults to src/Modules/
-```
-
-### Handling Optional Arguments
-
-Show how optional arguments affect behavior:
+To point a command at files that ship with it, put them in the skill folder and link to them with a relative path, or use `${CLAUDE_SKILL_DIR}` in a command:
 
 ```markdown
-If `--framework` is provided:
-- Use the specified framework in .csproj file
-- Validate that it's a supported .NET version
+Follow the rules in [references/style.md](references/style.md).
 
-If `--framework` is not provided:
-- Default to net6.0
-- Proceed without validation
+Run `python ${CLAUDE_SKILL_DIR}/scripts/check.py` and fix what it reports.
 ```
 
-### Validating Arguments
-
-Always validate before executing:
-
-```markdown
-1. **Validate arguments:**
-   - Check `module-name` matches pattern: ^[A-Z][a-zA-Z0-9]*$
-   - If invalid, inform user and show correct format
-   - Check `description` is not empty
-   - If missing, prompt user to provide it
-```
-
-### Handling Spaces and Special Characters
-
-Document how to handle arguments with spaces:
-
-```markdown
-## Examples
-
-For arguments with spaces, use quotes:
-
-\```
-/add-module TemperatureSensor "Processes temperature data from IoT sensors"
-\```
-
-For paths with spaces on Windows:
-\```
-/generate-docs "C:\My Projects\API Documentation\output.json"
-\```
-```
+The Claude Code docs also mention that, in a local skill, Claude Code attaches files named by `@path` references in the body. They don't describe this in more detail, so test it before you rely on it. A link or `${CLAUDE_SKILL_DIR}` path is the documented way to reach bundled files.
 
 ---
 
-## Error Handling
+## Examples in This Repository
 
-### Anticipate Common Errors
-
-Think through what can go wrong:
-
-```markdown
-## Error Handling
-
-**If module name is invalid:**
-- Show error: "Module name must be PascalCase (e.g., TemperatureSensor)"
-- Provide correct format example
-- Do not proceed with creation
-
-**If module directory already exists:**
-- Show error: "Module '[ModuleName]' already exists at [path]"
-- Ask user if they want to overwrite
-- Require explicit confirmation before proceeding
-
-**If solution file not found:**
-- Show error: "No solution file found in current directory"
-- Suggest running command from solution root
-- Offer to create without solution integration
-
-**If .NET SDK not available:**
-- Show error: "dotnet command not found"
-- Provide installation link
-- Do not proceed
-```
-
-### Provide Actionable Feedback
-
-Don't just report errors—guide users to solutions:
-
-**❌ Not helpful:**
-```markdown
-If the command fails, show an error.
-```
-
-**✅ Helpful:**
-```markdown
-If file write fails due to permissions:
-- Show error: "Cannot write to [path] - permission denied"
-- Suggest: "Try running from a directory where you have write access"
-- Alternative: "Use --output-dir to specify a different location"
-```
+| Skill | What it shows |
+|-------|---------------|
+| [interview](../../plugins/common/skills/interview/SKILL.md) | `disable-model-invocation`, `argument-hint` and `$ARGUMENTS` in one command |
+| [suggest-commit](../../plugins/git/skills/suggest-commit/SKILL.md) | A user-only command that runs git and prints a suggestion |
+| [suggest-pr](../../plugins/git/skills/suggest-pr/SKILL.md) | The same pattern for pull request descriptions |
+| [format-params](../../plugins/dotnet/skills/format-params/SKILL.md) | A user-only command that rewrites files across a project |
+| [fix-trailing-newlines](../../plugins/dotnet/skills/fix-trailing-newlines/SKILL.md) | A skill with a bundled script in `scripts/` |
 
 ---
 
 ## Testing Commands
 
-### Manual Testing
+1. Type `/` and check that the command shows up with its description and argument hint. If it's missing, check the folder name for odd characters and run `claude --debug`.
+2. Run it with typical arguments, with none, and with a quoted multi-word argument.
+3. Check that `disable-model-invocation: true` holds: ask for the task in plain words and confirm Claude doesn't start the command on its own.
+4. Check the frontmatter parses: `claude plugin validate .claude/skills` for project commands, or `claude plugin validate plugins/<plugin>/skills` for a plugin in this repo (Claude Code 2.1.233+). If the YAML is broken, the command still runs but without its frontmatter.
 
-1. **Create the command file:**
-```bash
-cd plugins/my-plugin/commands
-```
-
-2. **Write command definition:**
-Create `my-command.md` with proper structure.
-
-3. **Test in Claude Code:**
-```
-/my-command test-arg "test value"
-```
-
-4. **Verify behavior:**
-- Command auto-completes correctly
-- Arguments are parsed properly
-- Instructions are followed
-- Output meets expectations
-- Errors are handled gracefully
-
-### Test Scenarios
-
-Test with various inputs:
-
-**Valid inputs:**
-```
-/add-module TemperatureSensor "Temperature processing"
-/add-module DataAggregator "Aggregates sensor data"
-```
-
-**Edge cases:**
-```
-/add-module Test ""                    # Empty description
-/add-module lowercase "Test"           # Invalid casing
-/add-module Has Spaces "Test"          # Spaces in name
-/add-module "ValidName" Description    # Quotes in wrong place
-```
-
-**Error conditions:**
-```
-/add-module                            # Missing arguments
-/add-module TooManyArgs One Two Three  # Too many arguments
-```
-
-### Validation Checklist
-
-- [ ] Command file is named correctly (matches command name)
-- [ ] Instructions are clear and imperative
-- [ ] All arguments are documented with types and requirements
-- [ ] Required vs. optional is specified
-- [ ] Examples show correct usage
-- [ ] Error handling covers common failures
-- [ ] Command performs single, focused task
-- [ ] No conflicts with existing commands
+Claude Code picks up edits to `.claude/skills/` and `~/.claude/skills/` during a session. For a plugin you're developing, run `/reload-plugins` after a change.
 
 ---
 
-## Real-World Examples
-
-### Example 1: Format Parameters Command
-
-**File:** `format-params.md`
-
-**Command:** `/format-params`
-
-```markdown
-# Format Parameters
-
-Formats C# method parameters across all .cs files in the project for consistency with ATC-Net coding conventions.
-
-## Instructions
-
-When the user invokes `/format-params`, you should:
-
-1. **Find all C# files:**
-   - Search recursively for `*.cs` files in the current directory
-   - Exclude `bin/` and `obj/` directories
-
-2. **Apply formatting rules:**
-   - Ensure parameters are on separate lines if there are 3+ parameters
-   - Align parameter names consistently
-   - Apply proper indentation (4 spaces per level)
-   - Format attributes above parameters correctly
-
-3. **Process each file:**
-   - Read the file content
-   - Apply formatting transformations
-   - Write back only if changes were made
-   - Track files modified vs. skipped
-
-4. **Report results:**
-   - List files that were modified
-   - Show count of total files processed
-   - Report any files that had errors
-   - Indicate if no changes were needed
-
-## Arguments
-
-None. This command operates on all .cs files in the current project.
-
-## Examples
-
-\```
-/format-params
-\```
-
-Expected output:
-\```
-Formatting C# parameters...
-
-Modified files:
-- src/Services/DataService.cs
-- src/Controllers/ApiController.cs
-- src/Models/UserModel.cs
-
-Processed: 15 files
-Modified: 3 files
-Errors: 0 files
-\```
-
-## Error Handling
-
-**If no .cs files are found:**
-- Inform user: "No C# files found in current directory"
-- Suggest: "Ensure you're running this command from a .NET project directory"
-
-**If file read fails:**
-- Report which file failed
-- Continue processing remaining files
-- Include in error count at end
-
-**If file write fails:**
-- Report permission or access issues
-- Skip that file
-- Continue with others
-- List failed files in summary
-
-## Notes
-
-- This command follows ATC-Net coding conventions
-- It's safe to run multiple times (idempotent)
-- No changes are made to files that already comply
-- Related skill: `code-quality` for more advanced refactoring
-```
-
----
-
-### Example 2: Add IoT Edge Module Command
-
-**File:** `add-iot-edge-module.md`
-
-**Command:** `/add-iot-edge-module [ModuleName] "[Description]"`
-
-```markdown
-# Add IoT Edge Module
-
-Quick command to scaffold a new Azure IoT Edge module with complete project structure, Dockerfiles, and deployment configuration.
-
-## Instructions
-
-When the user invokes `/add-iot-edge-module [ModuleName] "[Description]"`, you should:
-
-1. **Validate arguments:**
-   - ModuleName: Must be PascalCase (e.g., TemperatureSensor)
-   - Description: Required, brief module purpose
-   - If invalid, show error and correct format
-
-2. **Check preconditions:**
-   - Verify solution file exists in current or parent directory
-   - Confirm src/Modules/ directory exists or can be created
-   - Check that module doesn't already exist
-
-3. **Create module structure:**
-   - Directory: `src/Modules/[ModuleName]/`
-   - Project file: `[ModuleName].csproj` targeting net6.0
-   - Program.cs with IoT Edge module template
-   - Supporting files: .dockerignore, module.json
-
-4. **Generate Dockerfiles:**
-   - `Dockerfile` for production (alpine-based)
-   - `Dockerfile.dev` for development (with debugging)
-
-5. **Update deployment manifest:**
-   - Add module entry to deployment.template.json
-   - Configure default routing if first module
-   - Set image repository pattern
-
-6. **Integrate with solution:**
-   - Add project reference to .sln file
-   - Verify successful addition
-
-7. **Report results:**
-   - Confirm module creation
-   - Show module directory path
-   - List files created
-   - Provide next steps (build, deploy)
-
-## Arguments
-
-- `ModuleName` (required): Module name in PascalCase, no spaces or special characters
-- `Description` (required): Brief description of module purpose, use quotes if it contains spaces
-
-## Examples
-
-**Simple module:**
-\```
-/add-iot-edge-module TemperatureSensor "Reads temperature from sensors"
-\```
-
-**Module with complex description:**
-\```
-/add-iot-edge-module DataAggregator "Aggregates and filters sensor data before sending to IoT Hub"
-\```
-
-Expected output:
-\```
-Creating IoT Edge module: TemperatureSensor
-
-✓ Created directory: src/Modules/TemperatureSensor/
-✓ Generated project file: TemperatureSensor.csproj
-✓ Created Program.cs with IoT Edge template
-✓ Generated Dockerfile (production)
-✓ Generated Dockerfile.dev (development)
-✓ Updated deployment.template.json
-✓ Added to solution file
-
-Module created successfully!
-Location: src/Modules/TemperatureSensor/
-
-Next steps:
-1. Implement module logic in Program.cs
-2. Build: dotnet build src/Modules/TemperatureSensor
-3. Test: docker build -f src/Modules/TemperatureSensor/Dockerfile.dev
-4. Deploy: Update deployment manifest and push to IoT Hub
-\```
-
-## Error Handling
-
-**If ModuleName is invalid:**
-- Error: "Module name must be PascalCase (e.g., TemperatureSensor, not temperature_sensor)"
-- Do not proceed with creation
-
-**If module already exists:**
-- Error: "Module 'TemperatureSensor' already exists at src/Modules/TemperatureSensor/"
-- Ask: "Do you want to overwrite? (This will delete existing code)"
-- Require explicit confirmation
-
-**If solution file not found:**
-- Error: "No .sln file found in current directory or parent directories"
-- Suggest: "Run this command from your solution root, or create module without solution integration"
-- Option: Proceed without adding to solution (ask user)
-
-**If deployment.template.json not found:**
-- Warning: "No deployment.template.json found"
-- Action: Create module but skip manifest update
-- Inform: "You'll need to manually add the module to your deployment manifest"
-
-## Notes
-
-- This command is a quick shortcut to the full `iot-edge-module` skill
-- For more complex scenarios, use the skill instead
-- Module follows ATC-Net conventions and best practices
-- Includes logging, service patterns, and constants by default
-- Related skill: `iot-edge-module` for guided setup
-```
-
----
-
-### Example 3: Generate Tests Command
-
-**File:** `generate-tests.md`
-
-**Command:** `/generate-tests [ClassName] [--framework xunit|nunit]`
-
-```markdown
-# Generate Tests
-
-Generates unit test file for a specified C# class with test stubs for all public methods.
-
-## Instructions
-
-When the user invokes `/generate-tests [ClassName] [--framework xunit|nunit]`, you should:
-
-1. **Parse arguments:**
-   - Extract ClassName (required)
-   - Extract framework flag (optional, defaults to xunit)
-   - Validate framework is either xunit or nunit
-
-2. **Locate the class:**
-   - Search for `[ClassName].cs` in the project
-   - If multiple matches, ask user to specify path
-   - If not found, report error
-
-3. **Analyze the class:**
-   - Read the class file
-   - Identify all public methods
-   - Note method signatures (parameters, return types)
-   - Identify dependencies for mocking
-
-4. **Generate test file:**
-   - Create test class name: `[ClassName]Tests`
-   - Use appropriate test framework syntax
-   - Generate test method for each public method
-   - Include setup/teardown if dependencies exist
-   - Add using statements
-   - Add XML documentation
-
-5. **Write test file:**
-   - Location: `tests/[ClassName]Tests.cs` or alongside source
-   - Create test directory if it doesn't exist
-   - Confirm write location with user if ambiguous
-
-6. **Report results:**
-   - Confirm test file creation
-   - List test methods generated
-   - Provide instructions to run tests
-
-## Arguments
-
-- `ClassName` (required): Name of the class to generate tests for (e.g., UserService)
-- `--framework` (optional): Test framework to use, either `xunit` or `nunit`, defaults to `xunit`
-
-## Examples
-
-**Basic usage (xUnit):**
-\```
-/generate-tests UserService
-\```
-
-**Specify framework:**
-\```
-/generate-tests ProductService --framework nunit
-\```
-
-Expected output:
-\```
-Generating tests for UserService...
-
-Found class: src/Services/UserService.cs
-Public methods: 5
-
-Generated: tests/UserServiceTests.cs
-Test methods:
-- GetUserById_ValidId_ReturnsUser
-- GetUserById_InvalidId_ReturnsNull
-- CreateUser_ValidUser_ReturnsSuccess
-- UpdateUser_ValidUser_ReturnsSuccess
-- DeleteUser_ValidId_ReturnsSuccess
-
-Run tests: dotnet test tests/UserServiceTests.cs
-\```
-
-## Error Handling
-
-**If class not found:**
-- Error: "Class 'UserService' not found in project"
-- Suggest: "Check class name spelling or specify full namespace"
-- Option: "Search for similar class names?"
-
-**If multiple classes found:**
-- List all matches with paths
-- Ask user to specify which one
-- Provide command with path: `/generate-tests Namespace.ClassName`
-
-**If test file already exists:**
-- Warning: "Test file tests/UserServiceTests.cs already exists"
-- Ask: "Overwrite, append, or cancel?"
-- Wait for user decision
-
-**If invalid framework specified:**
-- Error: "Framework must be 'xunit' or 'nunit', got '[value]'"
-- Show correct usage
-- Do not proceed
-
-## Notes
-
-- Test methods follow naming convention: MethodName_Scenario_ExpectedResult
-- Includes TODO comments for test implementation
-- Dependencies are identified and marked for mocking
-- XML documentation is generated for each test
-- Related skill: `test-coverage` for analyzing existing test coverage
-```
-
----
-
-## Best Practices
-
-### Naming Conventions
-
-**Do:**
-- Use descriptive, verb-noun patterns: `/add-module`, `/generate-docs`
-- Use lowercase with hyphens: `/format-params`
-- Make purpose immediately clear: `/run-tests`
-
-**Don't:**
-- Use abbreviations: `/fmt` instead of `/format`
-- Use underscores: `/add_module`
-- Use camelCase or PascalCase: `/AddModule`
-- Create overly long names: `/add-new-iot-edge-module-with-dockerfile`
-
-### Documentation Quality
-
-**Do:**
-- Start with a brief (1-2 sentence) description
-- Use numbered steps in instructions
-- Include complete argument documentation
-- Provide multiple usage examples
-- Handle errors gracefully with helpful messages
-
-**Don't:**
-- Write vague or ambiguous instructions
-- Assume user knowledge
-- Skip error handling
-- Forget to document optional arguments
-- Leave out examples
-
-### Argument Design
-
-**Do:**
-- Put required arguments first
-- Use clear, descriptive argument names
-- Document expected formats
-- Provide sensible defaults for optional arguments
-- Show how to handle spaces and special characters
-
-**Don't:**
-- Create commands with too many arguments (>4)
-- Use unclear abbreviations
-- Make argument order confusing
-- Forget to validate inputs
-- Assume argument types
-
-### Error Messages
-
-**Do:**
-- Explain what went wrong
-- Suggest corrective actions
-- Provide examples of correct usage
-- Link to related documentation
-- Continue gracefully when possible
-
-**Don't:**
-- Just say "Error"
-- Use technical jargon
-- Leave users stuck
-- Crash without explanation
-- Give up on first error
-
-### Command Scope
-
-**Do:**
-- Keep commands focused on one task
-- Make commands quick to execute
-- Use skills for complex workflows
-- Provide escape hatches to related skills
-- Consider frequency of use
-
-**Don't:**
-- Try to do too much in one command
-- Create commands that need multiple steps of user interaction
-- Duplicate skill functionality
-- Create commands for rare operations
+## Checklist
+
+- [ ] Lives in `.claude/skills/<name>/SKILL.md` (or a plugin's `skills/`), not a new `.claude/commands/` file
+- [ ] Folder name is lowercase with hyphens and says what the command does
+- [ ] `description` and `argument-hint` are set
+- [ ] `disable-model-invocation: true` if it has side effects
+- [ ] `allowed-tools` lists every `!` command and tool it needs, and nothing more
+- [ ] Every argument placeholder is filled by the examples you tested
+- [ ] `!` commands work in both bash and PowerShell, or `shell` is set
 
 ---
 
 ## Next Steps
 
-- Review [Plugin Development Guide](plugin-development.md) for creating complete plugins
-- Study [Skill Creation Guide](skill-creation.md) for more complex workflows
-- Check existing commands in [code-refactoring](../../plugins/code-refactoring/commands/) and [azure-iot](../../plugins/azure-iot/commands/) plugins
-- Explore [Command Reference](../reference/plugin-structure.md#commands) for technical specifications
-
----
-
-**Ready to create your first command?** Add a command file to your plugin's `commands/` directory and start coding!
+- [Skill Creation Guide](skill-creation.md) for skills Claude invokes on its own
+- [Skill Anatomy Reference](../reference/skill-anatomy.md) for every frontmatter field
+- [Plugin Development Guide](plugin-development.md) to package commands in a plugin
+- [Plugin Structure Reference](../reference/plugin-structure.md#commands) for the `commands/` folder in plugins
+- [Skills in the Claude Code docs](https://code.claude.com/docs/en/skills)

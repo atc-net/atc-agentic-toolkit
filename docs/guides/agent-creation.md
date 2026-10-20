@@ -1,665 +1,235 @@
 # Agent Creation Guide
 
-This guide teaches you how to create effective agents that provide specialized personas and domain expertise for Claude Code.
+How to write a Claude Code subagent, test it, and ship it in one of this repository's plugins.
+Every frontmatter field is covered in the [Agent Anatomy Reference](../reference/agent-anatomy.md).
+This guide doesn't repeat that table.
+
+Source of truth: the official [subagents docs](https://code.claude.com/docs/en/sub-agents).
 
 ## Table of Contents
 
-- [What are Agents?](#what-are-agents)
-- [Agent Anatomy](#agent-anatomy)
-- [Agent Creation Process](#agent-creation-process)
-- [Writing Effective Agents](#writing-effective-agents)
-- [Real-World Examples](#real-world-examples)
-- [Best Practices](#best-practices)
-- [Agents vs. Skills](#agents-vs-skills)
+- [What a Subagent Is](#what-a-subagent-is)
+- [Subagent or Skill?](#subagent-or-skill)
+- [Create a Subagent](#create-a-subagent)
+- [Write a Description That Routes](#write-a-description-that-routes)
+- [Write the System Prompt](#write-the-system-prompt)
+- [Limit Tools and Pick a Model](#limit-tools-and-pick-a-model)
+- [Test It](#test-it)
+- [Ship It in a Plugin](#ship-it-in-a-plugin)
+- [Checklist](#checklist)
+- [Resources](#resources)
 
 ---
 
-## What are Agents?
+## What a Subagent Is
 
-**Agents** are specialized personas that Claude adopts to provide domain-specific expertise. Unlike skills (which define workflows), agents define WHO Claude becomes - the expertise, approach, and behavioral traits of a specialist in a particular domain.
+A subagent is a separate assistant that the main Claude session hands a task to. It has:
 
-### What Agents Provide
+- its own context window, so its file reads, search results and logs stay out of your conversation
+- its own system prompt (the body of its Markdown file)
+- its own tool access and, optionally, its own model and effort level
 
-1. **Specialized Expertise** - Deep knowledge in a specific technology or domain
-2. **Consistent Approach** - Defined behavioral traits and problem-solving methodology
-3. **Domain Philosophy** - How to think about and approach problems in that domain
-4. **Authoritative Knowledge** - Reference to standards, best practices, and frameworks
+The subagent does the work and returns one result to the main session. That is the point of a
+subagent: it keeps verbose, self-contained work out of the main context.
 
-### When to Create an Agent
+A subagent starts fresh. It gets its system prompt, the message Claude sends when delegating, your
+CLAUDE.md files and the git status. It does not see the conversation so far. Write the system prompt
+so the subagent can do its job from the delegation message alone.
 
-Create an agent when:
-- Defining a specialized role or persona (e.g., React developer, security analyst)
-- Providing expertise across many scenarios in a domain
-- Establishing a consistent philosophy or approach
-- The focus is on WHO Claude becomes, not WHAT Claude does
-
-**Don't create an agent when:**
-- Defining a specific step-by-step workflow → Use a skill instead
-- Task requires bundled scripts or assets → Use a skill instead
-- Operation is quick and parameterized → Use a command instead
+Claude Code also ships built-in subagents (for example `Explore`, `Plan` and `general-purpose`).
+You don't need to recreate those.
 
 ---
 
-## Agent Anatomy
+## Subagent or Skill?
 
-Every agent consists of a single markdown file with YAML frontmatter and structured content.
+| Use a subagent when | Use a skill when |
+|---|---|
+| The work produces a lot of output you only need a summary of (searching, reviewing, running tests) | The main session should follow a workflow or conventions directly |
+| The task needs a narrower tool set than the main session (for example read-only) | You want to bundle scripts, references or templates |
+| The task benefits from a different model or effort level | The user should be able to run it as a `/command` |
+| Several independent tasks can run in parallel | The guidance should shape the main conversation's own answers |
 
-### File Structure
+The two combine well. A subagent can preload skills with its `skills` field, and a skill can tell
+Claude to delegate parts of its workflow to a subagent. For skills, see the
+[Skill Creation Guide](skill-creation.md).
 
+---
+
+## Create a Subagent
+
+A subagent is one Markdown file: YAML frontmatter, then the system prompt.
+
+```markdown
+---
+name: code-reviewer
+description: Reviews code changes for correctness, security and readability. Use proactively after code is written or modified.
+tools: Read, Grep, Glob, Bash
+model: inherit
+---
+
+You are a senior code reviewer. You never edit files.
+
+When invoked:
+1. Run `git diff` to see the changes.
+2. Read the changed files and enough surrounding code to judge them.
+3. Check correctness, error handling, security, naming and test coverage.
+
+Report findings grouped as Critical, Warning and Suggestion. For each finding, give the file,
+the line and a concrete fix. If you find nothing worth changing, say so in one line.
 ```
-agents/[agent-name].md
-```
 
-### YAML Frontmatter
+Two ways to create it:
+
+- **Ask Claude.** Describe the subagent and where to save it, for example: "Create a project
+  subagent in `.claude/agents/` that reviews diffs read-only." Claude writes the file.
+- **Write the file yourself** in one of these folders:
+
+| Folder | Available in |
+|---|---|
+| `.claude/agents/` | This project (check it into git to share with the team) |
+| `~/.claude/agents/` | All your projects |
+| `plugins/<plugin>/agents/` | Every project where the plugin is enabled |
+
+If two subagents share a name, the higher-priority location wins. The reference lists the
+[full precedence order](../reference/agent-anatomy.md#locations-and-precedence).
+
+Claude Code watches `.claude/agents/` and `~/.claude/agents/`, so an added or edited file is used on
+the next delegation, with no restart. Restart only when you created the folder itself during the
+session, or when the folder sits in a directory added with `--add-dir`.
+
+The `/agents` command no longer opens an editor. It reminds you to ask Claude or to edit the
+folders directly.
+
+---
+
+## Write a Description That Routes
+
+Claude decides when to delegate by matching your request against each subagent's `description`.
+The description is routing logic, not a bio.
+
+- Say what the subagent does and when to use it.
+- Name the trigger: "after code is written or modified", "when a test fails", "for SQL questions".
+- Add "use proactively" if Claude should delegate without being asked.
+- Make it specific enough to pick this subagent over the others you have.
+- Keep it short. Claude Code warns at startup when all subagent descriptions together pass about
+  15,000 tokens. Put detail in the system prompt, not the description.
 
 ```yaml
----
-name: agent-name
-description: Brief description of agent expertise and domain
-model: sonnet
----
-```
+# Too vague: never wins a routing decision
+description: Helps with databases
 
-**Fields:**
-- `name` (required): Agent identifier, lowercase with hyphens
-- `description` (required): One-sentence summary of expertise
-- `model` (optional): Preferred Claude model (sonnet, opus, haiku)
-
-### Content Sections
-
-A well-structured agent includes:
-
-1. **Purpose** - Define the specialized role
-2. **Capabilities** - Organize expertise into categories
-3. **Behavioral Traits** - Define problem-solving approach
-4. **Knowledge Base** - List authoritative sources
-5. **Response Approach** - Define how the agent structures responses
-6. **Example Interactions** - Provide concrete use cases
-
----
-
-## Agent Creation Process
-
-### Step 1: Define the Domain
-
-**Goal:** Clearly identify the agent's area of expertise.
-
-**Questions to answer:**
-- What specific domain does this agent cover?
-- What technologies or methodologies are in scope?
-- What problems does this agent solve?
-- What level of expertise? (Generalist vs. specialist)
-
-**Example:**
-
-❌ Too broad: "Developer"
-✅ Well-defined: "React and Next.js specialist focusing on modern web applications, performance optimization, and accessibility"
-
-❌ Too narrow: "Button component creator"
-✅ Well-defined: "Frontend developer expert in component architecture and design systems"
-
-### Step 2: Identify Core Capabilities
-
-**Goal:** Break down the domain into organized categories of expertise.
-
-**Categories to consider:**
-- Core framework/technology knowledge
-- Architecture and design patterns
-- Performance optimization
-- Security considerations
-- Testing strategies
-- Tooling and developer experience
-- Integration patterns
-- Domain-specific best practices
-
-**Example for Frontend Developer Agent:**
-
-```markdown
-## Capabilities
-
-### Core React Expertise
-- React 19+ features (hooks, concurrent features, transitions)
-- Component composition and patterns
-- State management strategies
-
-### Next.js Mastery
-- App Router and file-based routing
-- Server and client components
-- Data fetching patterns
-
-### Performance Optimization
-- Code splitting and lazy loading
-- Image and font optimization
-- Bundle size analysis
-```
-
-### Step 3: Define Behavioral Traits
-
-**Goal:** Establish how the agent thinks and approaches problems.
-
-**Behavioral aspects:**
-- What values does the agent prioritize?
-- What questions does the agent always ask?
-- What assumptions does the agent challenge?
-- What trade-offs does the agent consider?
-
-**Example:**
-
-```markdown
-## Behavioral Traits
-
-- Prioritize user experience and performance equally
-- Always consider accessibility from the start
-- Question whether client-side rendering is necessary
-- Prefer composition over inheritance
-- Advocate for type safety with TypeScript
-- Consider the maintainability impact of architectural decisions
-```
-
-### Step 4: Establish Knowledge Base
-
-**Goal:** Reference authoritative sources the agent relies on.
-
-**Include:**
-- Official documentation and versions
-- Standards and specifications
-- Established best practice resources
-- Relevant frameworks and tools
-
-**Example:**
-
-```markdown
-## Knowledge Base
-
-- React 19+ Official Documentation
-- Next.js 15+ Documentation
-- TypeScript 5.x Handbook
-- Web Content Accessibility Guidelines (WCAG) 2.1
-- Core Web Vitals standards
-- MDN Web Docs
-```
-
-### Step 5: Define Response Approach
-
-**Goal:** Establish how the agent structures and delivers responses.
-
-**Response methodology:**
-1. How does the agent understand requests?
-2. What factors does the agent consider?
-3. How does the agent structure solutions?
-4. What does the agent include in responses?
-5. How does the agent handle uncertainty?
-
-**Example:**
-
-```markdown
-## Response Approach
-
-1. Understand the specific frontend challenge and user requirements
-2. Consider performance, accessibility, and maintainability implications
-3. Propose solutions that balance immediate needs with long-term sustainability
-4. Provide code examples using modern React/Next.js patterns
-5. Explain trade-offs between different approaches
-6. Suggest testing strategies for the solution
-7. Recommend next steps or potential improvements
-```
-
-### Step 6: Provide Example Interactions
-
-**Goal:** Show concrete examples of how the agent would handle real scenarios.
-
-**Include 3-5 examples:**
-- Variety of common use cases
-- Different complexity levels
-- Clear problem → approach pattern
-
-**Example:**
-
-```markdown
-## Example Interactions
-
-**Example 1: Component Architecture**
-User: "How should I structure a complex form component with validation?"
-Agent approach: Analyze requirements → Recommend composition strategy → Suggest validation library → Provide code example with React Hook Form → Explain accessibility considerations
-
-**Example 2: Performance Optimization**
-User: "My page is loading slowly with many images"
-Agent approach: Identify bottleneck → Recommend Next.js Image component → Suggest lazy loading strategy → Provide implementation → Explain Core Web Vitals impact
+# Routes well
+description: Runs read-only SQL against the reporting database to answer data questions. Use proactively when the user asks about counts, trends or totals.
 ```
 
 ---
 
-## Writing Effective Agents
+## Write the System Prompt
 
-### Writing Style Guidelines
+The body is the subagent's whole system prompt. It does not get the Claude Code system prompt.
+Write it like a brief to a capable colleague who just walked in:
 
-**Use declarative language:**
-```markdown
-✅ "Expert React and Next.js developer specializing in..."
-❌ "You are an expert React developer..."
+1. **Role and limits.** "You are a read-only code reviewer. You never edit files." Second person is
+   fine and is what the official examples use.
+2. **Steps.** What to do first, what to check, when to stop.
+3. **Output.** The shape of the result the main session gets back: headings, a list, a verdict,
+   file and line references. The main session only sees this output, so make it complete and
+   compact.
+4. **Edge cases.** What to do when there is nothing to report, when input is missing, or when the
+   task is out of scope.
 
-✅ "Prioritize user experience and performance"
-❌ "You should prioritize user experience..."
-```
-
-**Be specific about expertise:**
-```markdown
-✅ "Mastery of React 19+ features including Server Components, Actions, and use hook"
-❌ "Good with React"
-
-✅ "Deep understanding of Next.js App Router, server/client component patterns, and streaming"
-❌ "Knows Next.js"
-```
-
-**Define clear boundaries:**
-```markdown
-✅ "Specializes in frontend development with React and Next.js"
-❌ "Full-stack developer who can do everything"
-```
-
-### Organizing Capabilities
-
-**Group by theme:**
-```markdown
-## Capabilities
-
-### Core Framework Knowledge
-- [Specific features]
-
-### Architecture & Design
-- [Patterns and principles]
-
-### Developer Experience
-- [Tools and workflows]
-```
-
-**Not:**
-```markdown
-## Capabilities
-
-- React
-- Next.js
-- TypeScript
-- Testing
-- Performance
-- Accessibility
-- [Long unorganized list]
-```
-
-### Behavioral Traits
-
-**Do:**
-- Express values and priorities
-- Define decision-making criteria
-- Establish consistent philosophy
-- Show what makes this agent unique
-
-**Don't:**
-- List generic advice
-- Copy behavioral traits from other agents
-- Skip this section
-- Make it vague or abstract
+Keep one job per subagent. A "full-stack expert" with a long list of capabilities routes badly and
+gives Claude no reason to delegate. Long persona sections (capabilities, knowledge base, behavioural
+traits) are optional. Include them only when they change what the subagent does.
 
 ---
 
-## Real-World Examples
+## Limit Tools and Pick a Model
 
-### Example 1: Frontend Developer Agent
+**Tools.** Without `tools`, a subagent inherits every tool available to subagents, including MCP
+tools. Grant the minimum:
 
-Based on https://github.com/wshobson/agents frontend-developer agent:
+| Job | Suggested tools |
+|---|---|
+| Review or research | `Read, Grep, Glob` (add `Bash` for `git diff` or test runs) |
+| Fix bugs | `Read, Edit, Bash, Grep, Glob` |
+| Everything except one risky tool | omit `tools`, set `disallowedTools: Write` |
 
-```markdown
----
-name: frontend-developer
-description: Expert React and Next.js developer specializing in modern web applications with focus on performance, accessibility, and user experience
-model: sonnet
----
+To block specific shell commands rather than all of Bash, use a `permissions.deny` rule in
+settings. A `disallowedTools` entry such as `Bash(git push *)` removes the whole Bash tool.
 
-# Frontend Developer Agent
+**Model.** Use `inherit` to follow the main session's model. Pick an alias (`haiku`, `sonnet`,
+`opus`, `fable`) or a full id such as `claude-haiku-5-5` when the task clearly calls for one: a fast,
+cheap model for searching and summarising, a stronger one for review and design. The reference
+explains [what happens when you omit `model`](../reference/agent-anatomy.md#model-resolution).
 
-## Purpose
-
-Expert React 19+ and Next.js 15+ developer specializing in building modern, performant web applications. Focus on component architecture, state management, and delivering excellent user experiences while maintaining code quality and accessibility standards.
-
-## Capabilities
-
-### Core React Expertise
-- React 19+ features: Server Components, Actions, use hook, transitions
-- Advanced hooks patterns and custom hooks design
-- Component composition and render optimization
-- Context API and prop drilling solutions
-
-### Next.js Mastery
-- App Router architecture and file-based routing
-- Server and Client Components strategy
-- Data fetching with Server Actions and API routes
-- Middleware, intercepting routes, and parallel routes
-
-### Frontend Architecture
-- Component library and design system development
-- State management (Context, Zustand, Redux Toolkit)
-- Code organization and project structure
-- Micro-frontend patterns when appropriate
-
-### Performance Optimization
-- Core Web Vitals optimization
-- Code splitting and lazy loading strategies
-- Image and font optimization
-- Bundle size analysis and reduction
-
-### Styling Approaches
-- Tailwind CSS utility-first development
-- CSS Modules for component-scoped styles
-- CSS-in-JS when beneficial (styled-components, Emotion)
-- Design token systems
-
-### Testing Strategies
-- Unit testing with Vitest or Jest
-- Component testing with React Testing Library
-- Integration testing patterns
-- End-to-end testing with Playwright
-
-### Accessibility
-- WCAG 2.1 Level AA compliance
-- Semantic HTML and ARIA patterns
-- Keyboard navigation and focus management
-- Screen reader compatibility
-
-### Developer Tools
-- TypeScript for type safety
-- ESLint and Prettier for code quality
-- Git workflow and branching strategies
-- Modern build tools (Vite, Turbopack)
-
-## Behavioral Traits
-
-- Prioritize user experience and performance equally
-- Always consider accessibility from the start, not as an afterthought
-- Question whether client-side rendering is necessary for each feature
-- Prefer composition over inheritance in component design
-- Advocate for TypeScript to catch errors early
-- Consider the maintainability impact of architectural decisions
-- Value explicit over implicit code patterns
-- Recommend established patterns over novel approaches unless justified
-
-## Knowledge Base
-
-- React 19+ Official Documentation
-- Next.js 15+ Documentation
-- TypeScript 5.x Handbook
-- Web Content Accessibility Guidelines (WCAG) 2.1
-- Core Web Vitals and Lighthouse scoring
-- MDN Web Docs for web standards
-- npm package ecosystem and best practices
-
-## Response Approach
-
-1. Understand the specific frontend challenge and context
-2. Consider performance implications and Core Web Vitals impact
-3. Evaluate accessibility requirements for the feature
-4. Propose solutions using modern React/Next.js patterns
-5. Provide code examples with TypeScript when appropriate
-6. Explain trade-offs between different implementation approaches
-7. Suggest testing strategies for the solution
-8. Recommend monitoring and optimization techniques
-
-## Example Interactions
-
-**Example 1: Complex Form with Validation**
-User: "I need to build a multi-step form with complex validation"
-Agent approach: Analyze requirements → Recommend React Hook Form for performance → Design multi-step state management → Implement with Zod schema validation → Add accessibility labels → Provide testing examples
-
-**Example 2: Performance Issue**
-User: "Page with image gallery loads slowly"
-Agent approach: Identify bottleneck → Recommend Next.js Image component → Implement lazy loading with Intersection Observer → Add blur placeholder → Measure Core Web Vitals improvement → Suggest CDN caching strategy
-
-**Example 3: Component Architecture**
-User: "How should I structure a reusable modal component?"
-Agent approach: Design component API → Implement with portal for DOM positioning → Add keyboard trap for accessibility → Handle focus management → Provide animation options → Include usage examples with different content types
-```
-
-### Example 2: Database Architect Agent
-
-```markdown
----
-name: database-architect
-description: Expert database architect specializing in PostgreSQL, data modeling, query optimization, and scalable database design
-model: sonnet
----
-
-# Database Architect Agent
-
-## Purpose
-
-Expert database architect with deep knowledge of PostgreSQL and relational database design. Specializes in data modeling, query optimization, indexing strategies, and building scalable database architectures for high-traffic applications.
-
-## Capabilities
-
-### Data Modeling
-- Entity-relationship design
-- Normalization and denormalization strategies
-- Schema evolution and versioning
-- Domain-driven design with databases
-
-### PostgreSQL Expertise
-- Advanced query optimization
-- Index design (B-tree, GiST, GIN, BRIN)
-- Partitioning strategies
-- Full-text search implementation
-- JSON/JSONB for semi-structured data
-
-### Performance Optimization
-- Query plan analysis (EXPLAIN ANALYZE)
-- Slow query identification and resolution
-- Connection pooling strategies
-- Caching layers (Redis, Memcached)
-
-### Scalability Patterns
-- Read replicas and replication
-- Sharding strategies
-- Connection pooling
-- Database proxies (PgBouncer, PgPool)
-
-### Security & Compliance
-- Role-based access control (RBAC)
-- Row-level security
-- Encryption at rest and in transit
-- Audit logging
-- GDPR and data privacy compliance
-
-## Behavioral Traits
-
-- Always start with understanding data access patterns before designing schema
-- Prefer simple solutions that meet current needs over complex over-engineering
-- Question whether every query needs real-time data or can use caching
-- Advocate for database constraints to maintain data integrity
-- Consider backup and recovery strategies upfront
-- Value measurable performance improvements over premature optimization
-
-## Knowledge Base
-
-- PostgreSQL 15+ Official Documentation
-- Database Reliability Engineering principles
-- Martin Fowler's Patterns of Enterprise Application Architecture
-- PostgreSQL Performance Tuning documentation
-- ACID properties and transaction isolation levels
-- CAP theorem and eventual consistency
-
-## Response Approach
-
-1. Understand the data access patterns and query requirements
-2. Analyze the data volume and growth projections
-3. Design schema considering normalization trade-offs
-4. Recommend appropriate indexes based on query patterns
-5. Suggest caching strategies for frequently accessed data
-6. Provide migration strategy for schema changes
-7. Include monitoring and alerting recommendations
-
-## Example Interactions
-
-**Example 1: Slow Query**
-User: "Query returning user orders is taking 5 seconds"
-Agent approach: Request EXPLAIN ANALYZE output → Identify missing index → Recommend compound index on user_id and created_at → Suggest query rewrite if needed → Provide before/after performance comparison
-
-**Example 2: Schema Design**
-User: "Designing schema for e-commerce product catalog with variants"
-Agent approach: Analyze product attribute patterns → Recommend EAV vs. JSONB vs. separate tables → Design for query efficiency → Include indexing strategy → Suggest caching approach → Provide migration scripts
-
-**Example 3: Scaling Database**
-User: "Database struggling with increased traffic"
-Agent approach: Analyze bottleneck (CPU, I/O, connections) → Recommend read replicas for read-heavy workload → Suggest connection pooling → Implement query caching → Consider table partitioning → Provide monitoring setup
-```
+**Effort.** Set `effort` (`low` to `max`) if the subagent should think more or less than the session.
 
 ---
 
-## Best Practices
+## Test It
 
-### Agent Design
+1. Save the file in `.claude/agents/` of a test project.
+2. Run it explicitly. Type `@`, pick the subagent, or type `@agent-code-reviewer` followed by the
+   task. An @-mention guarantees that subagent runs. You can also ask in plain words: "Use the
+   code-reviewer subagent on my last change."
+3. Test routing. Send a few realistic requests without naming the subagent, such as "I just
+   refactored the parser, can you check it?", and see whether Claude delegates. If it doesn't,
+   sharpen the description.
+4. Check the result. The main session gets only the subagent's final output. If that output is
+   vague or too long, fix the Output section of the prompt.
+5. If the file doesn't show up, run `claude --debug` and check the
+   [rules for skipped files](../reference/agent-anatomy.md#files-claude-code-skips).
 
-**Do:**
-- Focus on a specific, well-defined domain
-- Establish clear behavioral principles
-- Provide concrete examples
-- Reference authoritative sources
-- Define a consistent problem-solving approach
-
-**Don't:**
-- Create overly generic "do-everything" agents
-- Duplicate capabilities across multiple agents
-- Skip behavioral traits section
-- Forget example interactions
-- Make agents too narrow (use skills for specific tasks)
-
-### Domain Boundaries
-
-**Clear boundaries:**
-```markdown
-✅ "Frontend React/Next.js developer"
-✅ "PostgreSQL database architect"
-✅ "Security analyst for web applications"
-```
-
-**Too broad:**
-```markdown
-❌ "Full-stack developer"
-❌ "Database expert" (which database?)
-❌ "Security specialist" (which domain?)
-```
-
-### Knowledge Base
-
-**Specific and versioned:**
-```markdown
-✅ React 19+ Official Documentation
-✅ PostgreSQL 15+ Performance Guide
-✅ OWASP Top 10 2021
-```
-
-**Vague:**
-```markdown
-❌ "React docs"
-❌ "Database knowledge"
-❌ "Security best practices"
-```
+To run a whole session as the subagent (its prompt, tools and model on the main thread), start
+Claude Code with `claude --agent code-reviewer`.
 
 ---
 
-## Agents vs. Skills
+## Ship It in a Plugin
 
-### Key Differences
+1. Move the file to `plugins/<plugin>/agents/<name>.md`. Subfolders are allowed and become part of
+   the name.
+2. Plugin subagents are namespaced. In a plugin called `dotnet`, `agents/code-reviewer.md` is
+   invoked as `@agent-dotnet:code-reviewer`. Mention the plugin name in the plugin's README.
+3. Don't rely on hooks or MCP servers in the frontmatter. Plugins ignore those fields and a few
+   others for security ([details](../reference/agent-anatomy.md#plugin-subagents)). Ship hooks in the
+   plugin's `hooks/hooks.json` and MCP servers in its `.mcp.json` instead.
+4. Validate: `claude plugin validate ./plugins/<plugin>`.
+5. Test it in a session with the plugin loaded, for example `claude --plugin-dir ./plugins/<plugin>`,
+   or install it from the marketplace:
+   `/plugin install <plugin> --marketplace atc-net/atc-agentic-toolkit` (Claude Code 2.1.275+), or
+   `/plugin marketplace add atc-net/atc-agentic-toolkit` then `/plugin install <plugin>@atc-agentic-toolkit`.
 
-| Aspect | Agents | Skills |
-|--------|---------|--------|
-| **Purpose** | Define WHO Claude becomes | Define WHAT Claude does |
-| **Focus** | Persona and expertise | Workflow and process |
-| **Structure** | Single .md file | Directory with SKILL.md + resources |
-| **Resources** | No bundled resources | Can bundle scripts, references, assets |
-| **Invocation** | `@agent-name` | Natural language |
-| **Use Case** | Domain expertise | Specific tasks |
+None of this repository's plugins ships an `agents/` folder yet. The `agents/*.md` files under
+`plugins/common/skills/skill-creator/` are instruction files that the skill reads before it starts
+a subagent. They have no frontmatter and Claude Code does not load them as subagents.
 
-### When to Use Each
-
-**Use an Agent:**
-- Providing expertise across many scenarios
-- Establishing consistent domain philosophy
-- Adopting a specialized role
-- "I need a React expert to help with various frontend challenges"
-
-**Use a Skill:**
-- Executing a specific workflow
-- Bundling scripts or documentation
-- Step-by-step processes
-- "I need to scaffold an IoT Edge module"
-
-**Use Both:**
-Many plugins benefit from having both:
-- Agent: `frontend-developer` (general React/Next.js expertise)
-- Skill: `create-react-component` (specific scaffolding workflow)
+If you want to change Claude Code's interface or react to subagent events with code (for example a
+live subagent pane), that is a mod, not a subagent. See the [Mod Creation Guide](mod-creation.md).
 
 ---
 
-## Quick Reference Card
+## Checklist
 
-### Agent File Template
-
-```markdown
----
-name: agent-name
-description: One-sentence expertise description
-model: sonnet
----
-
-# Agent Name
-
-## Purpose
-[2-3 sentences defining role]
-
-## Capabilities
-### Category 1
-- Bullet points
-
-### Category 2
-- Bullet points
-
-## Behavioral Traits
-- Value 1
-- Priority 2
-
-## Knowledge Base
-- Source 1
-- Framework 2
-
-## Response Approach
-1. Step 1
-2. Step 2
-
-## Example Interactions
-**Example 1:** [Title]
-User: [Question]
-Agent approach: [Response strategy]
-```
-
-### File Location
-
-```
-plugins/[plugin-name]/agents/[agent-name].md
-```
-
-### Naming Convention
-
-- Lowercase with hyphens
-- Descriptive of expertise: `frontend-developer.md`
-- Focus on domain: `database-architect.md`
+- [ ] One job per subagent.
+- [ ] `description` says what and when, and is short enough to route well.
+- [ ] System prompt covers role, steps, output shape and edge cases.
+- [ ] `tools` is the smallest set that works.
+- [ ] `model` is `inherit` or a deliberate choice.
+- [ ] Tested with an `@agent-` mention and with a plain request.
+- [ ] For plugins: no reliance on `hooks`, `mcpServers`, `permissionMode` or `initialPrompt`, and
+      `claude plugin validate` passes.
 
 ---
 
 ## Resources
 
+- [Agent Anatomy Reference](../reference/agent-anatomy.md): every frontmatter field, locations, naming
 - [Plugin Development Guide](plugin-development.md)
-- [Agent Anatomy Reference](../reference/agent-anatomy.md)
 - [Plugin Structure Reference](../reference/plugin-structure.md)
-- [Example Agents](https://github.com/wshobson/agents) - Community examples
-
----
-
-**Ready to create your first agent?** Start by defining the domain expertise, then build out the capabilities and behavioral traits. Test with real scenarios to refine the agent's persona and approach.
+- [Skill Creation Guide](skill-creation.md)
+- [Mod Creation Guide](mod-creation.md)
+- [Claude Code subagents docs](https://code.claude.com/docs/en/sub-agents)
+- [Claude Code plugin components: agents](https://code.claude.com/docs/en/plugins/components#agents)
