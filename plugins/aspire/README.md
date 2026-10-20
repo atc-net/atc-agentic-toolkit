@@ -6,6 +6,23 @@ Aspire distributed application orchestration skills covering AppHost, CLI, integ
 
 This plugin provides skills for working with .NET Aspire, a polyglot toolchain for building observable, production-ready distributed applications.
 
+## Install
+
+In Claude Code 2.1.275 or newer:
+
+```text
+/plugin install aspire --marketplace atc-net/atc-agentic-toolkit
+```
+
+In GitHub Copilot CLI, or an older Claude Code, add the marketplace first:
+
+```text
+/plugin marketplace add atc-net/atc-agentic-toolkit
+/plugin install aspire@atc-agentic-toolkit
+```
+
+For VS Code, see the [Quick Start](../../README.md#-quick-start).
+
 ## Skills
 
 ### aspire
