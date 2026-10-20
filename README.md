@@ -15,6 +15,9 @@ A curated collection of prompts, skills, plugins, and best practices for AI codi
   - [💡 What is ATC Agentic Toolkit?](#-what-is-atc-agentic-toolkit)
   - [🚀 Quick Start](#-quick-start)
   - [🔌 Available Plugins](#-available-plugins)
+    - [Skill plugins](#skill-plugins)
+    - [Hooks](#hooks)
+    - [Mods](#mods)
   - [🧩 Mods](#-mods)
   - [📁 Project Structure](#-project-structure)
   - [🛠️ Plugin Development](#️-plugin-development)
@@ -73,10 +76,9 @@ ATC Agentic Toolkit solves this by providing:
    /plugin update <plugin>@atc-agentic-toolkit
    ```
 
-### 🆚 VS Code / VS Code Insiders (Preview)
+### 🆚 VS Code
 
-> [!IMPORTANT]
-> VS Code plugin support is a preview feature and subject to change. You may need to enable it first.
+Turn on agent plugins and add the marketplace in your `settings.json`:
 
 ```jsonc
 // settings.json
@@ -86,33 +88,52 @@ ATC Agentic Toolkit solves this by providing:
 }
 ```
 
-Once configured, type `/plugins` in Copilot Chat or use the `@agentPlugins` filter in Extensions to browse and install plugins from the marketplace.
+Then browse and install the plugins in one of these ways:
+
+- In the Extensions view, search for `@agentPlugins`.
+- Run **Chat: Open Customizations** from the Command Palette and open **Plugins**.
+
+The first install from the marketplace asks you to trust it. `chat.plugins.marketplaces` is still marked experimental, and your organization may limit which plugins and marketplaces you can use. See [Agent plugins in VS Code](https://code.visualstudio.com/docs/agent-customization/agent-plugins).
 
 ---
 
 ## 🔌 Available Plugins
 
+Everything below is a plugin, installed from the same marketplace. They come in three kinds.
+
+### Skill plugins
+
+Skills, agents and MCP servers. They work in Claude Code and GitHub Copilot.
+
 | Plugin | Description |
 |--------|-------------|
-| [common](plugins/common/) | Common base skills including documentation generators, implementation planning, and utility tools |
-| [dotnet](plugins/dotnet/) | C#/.NET development skills including refactoring, testing, async patterns, and NuGet management |
+| [aspire](plugins/aspire/) | Aspire distributed application orchestration skills |
+| [atc](plugins/atc/) | ATC.NET library skills including REST API source generation from OpenAPI specs, WPF controls, and cross-platform XAML development |
 | [azure](plugins/azure/) | Azure services skills covering 200+ cloud services, IoT, AI, data, networking, and more |
+| [bicep](plugins/bicep/) | Azure Bicep IaC best practices, naming conventions, modularization, and security patterns |
+| [common](plugins/common/) | Common base skills including documentation generators, implementation planning, and utility tools |
 | [cosmosdb](plugins/cosmosdb/) | Azure Cosmos DB data modeling workflow and best-practice rules for partitioning, queries, SDK usage, indexing, and more |
 | [dataverse](plugins/dataverse/) | Microsoft Dataverse and Power Platform skills covering connection setup, data, queries, schema, solutions, administration, and security |
-| [aspire](plugins/aspire/) | Aspire distributed application orchestration skills |
+| [docker](plugins/docker/) | Docker and containerization best practices covering Dockerfile optimization, multi-stage builds, security, and orchestration |
+| [dotnet](plugins/dotnet/) | C#/.NET development skills including refactoring, testing, async patterns, and NuGet management |
 | [git](plugins/git/) | Git workflow utilities including commit message generators and PR descriptions |
 | [github](plugins/github/) | GitHub platform skills including CI/CD workflow conventions for GitHub Actions and GitHub issue management |
 | [playwright](plugins/playwright/) | Browser automation and testing skills using Playwright |
-| [web](plugins/web/) | Web development skills covering HTML, CSS, JavaScript, web APIs, security, performance, and accessibility |
-| [bicep](plugins/bicep/) | Azure Bicep IaC best practices, naming conventions, modularization, and security patterns |
-| [docker](plugins/docker/) | Docker and containerization best practices covering Dockerfile optimization, multi-stage builds, security, and orchestration |
 | [powershell](plugins/powershell/) | PowerShell cmdlet development and scripting best practices based on Microsoft guidelines |
-| [atc](plugins/atc/) | ATC.NET library skills including REST API source generation from OpenAPI specs, WPF controls, and cross-platform XAML development |
 | [security](plugins/security/) | Security best practices and OWASP Top 10 guidelines for secure coding across all languages and frameworks |
-| [hooks](.claude/plugins/hooks/) | Automation hooks for Claude Code sessions (Claude Code only) |
-| [atc-progress](plugins/atc-progress/) | Mod: implementation-plan progress bar above the prompt and a live subagents pane (Claude Code only) |
-| [atc-blast-radius](plugins/atc-blast-radius/) | Mod: holds risky shell commands and shows what they would delete before you choose Proceed or Cancel (Claude Code only) |
-| [atc-replay-theater](plugins/atc-replay-theater/) | Mod: step through the last turn's file edits one diff at a time (Claude Code only) |
+| [web](plugins/web/) | Web development skills covering HTML, CSS, JavaScript, web APIs, security, performance, and accessibility |
+
+### Hooks
+
+Shell hooks that run on Claude Code events. Claude Code only.
+
+| Plugin | Description |
+|--------|-------------|
+| [hooks](.claude/plugins/hooks/) | Automation hooks for Claude Code sessions: notifications and workflow enhancements |
+
+### Mods
+
+Mods change Claude Code itself while it runs: a bar above the prompt, a side pane, a check before a risky command. They need Claude Code 2.1.287 or newer. See [🧩 Mods](#-mods) for the list, with what each one shows, its commands and its settings.
 
 ---
 
@@ -125,8 +146,8 @@ Mods are plugins that change Claude Code itself while it runs. They can add a ba
 
 | Mod | What it shows | Commands | Settings |
 |-----|---------------|----------|----------|
-| [atc-progress](plugins/atc-progress/) | A plan bar above the prompt (from `plan/*.md`) and a subagents pane with model, context, tokens, estimated cost and time | `/atc-progress [plans\|plan [path]\|continue [path]\|open\|close\|hide\|show\|help]` | `autoOpen`: `off` / `agents` |
 | [atc-blast-radius](plugins/atc-blast-radius/) | Before `rm -rf`, `Remove-Item -Recurse`, `git reset --hard`, `git clean`, a force push or a migration runs: what it would delete or throw away, then **Cancel** / **Proceed** | none (works on its own) | none |
+| [atc-progress](plugins/atc-progress/) | A plan bar above the prompt (from `plan/*.md`) and a subagents pane with model, context, tokens, estimated cost and time | `/atc-progress [plans\|plan [path]\|continue [path]\|open\|close\|hide\|show\|help]` | `autoOpen`: `off` / `agents` |
 | [atc-replay-theater](plugins/atc-replay-theater/) | After a turn that edited files, a hint above the prompt, then a pane that steps through each edit's diff with Prev / Next | `/atc-replay [close\|clear\|help]` | none |
 
 ### Install a mod
@@ -170,6 +191,11 @@ graph TD
     E --> I[agents/]
     E --> K[plugin.json]
 
+    B --> P["atc-mod-name/ (mod)"]
+    P --> Q[".claude-plugin/plugin.json"]
+    P --> R["hooks/hooks.json"]
+    P --> S["hooks/register.tsx + tests"]
+
     C --> J[marketplace.json]
     G --> L[marketplace.json]
 
@@ -179,6 +205,7 @@ graph TD
 
     style A fill:#e1f5ff
     style B fill:#fff4e1
+    style P fill:#ffe1e1
     style C fill:#f0e1ff
     style G fill:#f0e1ff
     style D fill:#e1ffe1
@@ -187,9 +214,10 @@ graph TD
 **Key Directories:**
 
 - `plugins/` - Plugin implementations (skills, agents, configs)
+- `plugins/atc-*/` - Claude Code mods (TypeScript function hooks; Claude Code 2.1.287 or newer)
 - `.claude/plugins/hooks/` - Claude Code specific hooks
-- `.claude-plugin/` - Claude Code marketplace configuration
-- `.github/plugin/` - GitHub Copilot marketplace configuration
+- `.claude-plugin/` - Claude Code marketplace configuration (skill plugins and mods)
+- `.github/plugin/` - GitHub Copilot marketplace configuration (skill plugins only)
 - `docs/` - Comprehensive documentation (guides, best practices, reference)
 
 ---
@@ -202,7 +230,7 @@ Want to create your own plugins? The toolkit provides a complete framework for d
 2. **Define your plugin** in `plugin.json` at the plugin root
 3. **Create skills** in `plugins/[your-plugin]/skills/`
 4. **Test locally** in your project
-5. **Register** in both `.claude-plugin/marketplace.json` and `.github/plugin/marketplace.json`
+5. **Register** in both `.claude-plugin/marketplace.json` and `.github/plugin/marketplace.json`. A mod goes only in `.claude-plugin/marketplace.json`.
 
 **Documentation:**
 
@@ -236,13 +264,13 @@ Check a mod with `claude plugin validate plugins/<mod>` and `claude plugin test 
 - **.NET SDK** (9.0 or higher) - [Download](https://dotnet.microsoft.com/download)
 - **Python 3.x** - [Download](https://www.python.org/downloads/)
 - **GitHub Copilot** (CLI or VS Code extension) - or -
-- **Claude Code CLI** - [Installation Guide](https://code.claude.com/docs/en/overview)
+- **Claude Code CLI** - [Installation Guide](https://code.claude.com/docs/en/overview). The one-step `/plugin install <plugin> --marketplace …` needs 2.1.275 or newer, and mods need 2.1.287 or newer.
 - **Git** - [Download](https://git-scm.com/downloads)
 
 ```bash
 dotnet --version    # Should show 9.0 or higher
 python --version    # Should show 3.x
-claude --version    # Should show Claude Code CLI version
+claude --version    # Should show 2.1.287 or newer for mods
 git --version       # Should show Git version
 ```
 
