@@ -69,7 +69,8 @@ def package_skill(skill_path, output_dir=None):
 
     # Run validation before packaging
     print("🔍 Validating skill...")
-    valid, message = validate_skill(skill_path)
+    # A .skill file is for a claude.ai upload, which takes only the Agent Skills standard's fields.
+    valid, message = validate_skill(skill_path, strict=True)
     if not valid:
         print(f"❌ Validation failed: {message}")
         print("   Please fix the validation errors before packaging.")
@@ -133,4 +134,6 @@ def main():
 
 
 if __name__ == "__main__":
+    # A Windows console's code page can't print every character this script prints.
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     main()
