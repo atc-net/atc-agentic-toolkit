@@ -1,6 +1,7 @@
 {
   "name": "atc-agentic-toolkit",
   "version": "3.4.0",
+  "description": "Skills, agents and MCP servers for .NET, Azure, web, data and DevOps work",
   "owner": { "name": "atc-net" },
   "plugins": [
     {
