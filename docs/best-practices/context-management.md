@@ -1,6 +1,6 @@
 # Context Management
 
-Advanced techniques for managing Claude Code's context window to maintain performance, reliability, and quality.
+How to keep Claude Code's context window focused: what fills it, how to watch it, and the commands that compact, clear or rewind it.
 
 ## Table of Contents
 
@@ -17,51 +17,26 @@ Advanced techniques for managing Claude Code's context window to maintain perfor
 
 ### What is Context?
 
-The **context window** is Claude's working memory during a session. It includes:
+The **context window** is everything Claude knows in the current session:
 
-- **Conversation messages** - Your prompts and Claude's responses
-- **File contents** - Files read during the session
-- **Tool outputs** - Results from bash commands, searches, etc.
-- **System messages** - Instructions and configuration
+- **Startup content.** The system prompt, your CLAUDE.md files (or AGENTS.md), auto memory, skill descriptions, and MCP tool names. All of this loads before you type anything.
+- **Conversation messages.** Your prompts and Claude's responses.
+- **File contents.** Every file Claude reads, plus any path-scoped rules and nested CLAUDE.md files that load alongside them.
+- **Tool output.** Results from shell commands, searches and hooks.
 
 ### Context Size Limits
 
-**For Claude Sonnet 4.5:** Approximately 200,000 tokens
+Claude Opus 5.5, Sonnet 5.5, Haiku 5.5 and Fable 5.1 all have a **1M-token** context window by default. Claude Code compacts automatically at about 967K tokens on these models. You can change that point with `/autocompact` (see [Advanced Techniques](#advanced-techniques)).
 
-**Token estimation:**
-
-- 1 token ≈ 4 characters
-- 1 token ≈ 0.75 words
-- 1,000 lines of code ≈ 10,000-15,000 tokens
-
-**Example sizes:**
-
-- Small file (100 lines): ~1,000 tokens
-- Medium file (500 lines): ~5,000 tokens
-- Large file (2,000 lines): ~20,000 tokens
-- Typical conversation message: 50-200 tokens
+A token is roughly four characters of English text. Treat that as a rough guide only. `/context` gives you the real numbers.
 
 ### Why Context Management Matters
 
-**Performance:**
+A 1M window means you rarely run out, but size still matters:
 
-- Larger context = slower responses
-- Focused context = faster turnaround
-
-**Reliability:**
-
-- Smaller context = more accurate outputs
-- Relevant context = better decision-making
-
-**Quality:**
-
-- Clean context = fewer errors
-- Appropriate context = more relevant responses
-
-**Cost:**
-
-- Context size affects API usage
-- Efficient context = lower costs
+- **Quality.** Old, unrelated conversation is noise. Claude has more to sift through, and an outdated decision from an hour ago can steer it wrong.
+- **Cost and speed.** The whole context is sent with every request, so a bloated conversation costs more tokens on every turn.
+- **Compaction loses detail.** When the window fills, a summary replaces the conversation. You choose what survives only if you compact yourself.
 
 ---
 
@@ -69,57 +44,30 @@ The **context window** is Claude's working memory during a session. It includes:
 
 ### The `/context` Command
 
-Check current context status:
-
-```
+```text
 /context
 ```
 
-**Output shows:**
+`/context` shows current usage as a colored grid, broken down by category, with optimization suggestions for context-heavy tools, memory bloat and capacity warnings. It also lists the CLAUDE.md and auto memory files that loaded, under **Memory files**. Use `/context all` for more detail, including tokens per MCP tool.
 
-- Total tokens used
-- Percentage of capacity
-- Files in context
-- Recent tool outputs
-- Conversation summary
+Other useful views:
 
-**Interpretation:**
-
-| Usage | Status | Action |
-|-------|--------|--------|
-| 0-30% | 🟢 Healthy | Continue normally |
-| 31-50% | 🟡 Monitor | Be selective about what you add |
-| 51-70% | 🟠 Caution | Consider cleanup or reset |
-| 71-90% | 🔴 Critical | Immediate cleanup needed |
-| 91-100% | ⛔ At capacity | Reset or rewind required |
+- `/memory` opens the CLAUDE.md and auto memory files that load each session.
+- `/skill-doctor` shows what each skill costs in context and how often it's used.
+- `/mcp` shows MCP server status, so you can disconnect servers you aren't using.
 
 ### Regular Context Checks
 
-**Best practice:** Check context at transition points:
-
-```
-# After exploration phase
-/context
-
-# Before starting implementation
-/context
-
-# After reading multiple files
-/context
-
-# When switching to a new feature
-/context
-```
+Check `/context` at natural transition points: after a long exploration, before starting implementation, and when you switch to a different feature.
 
 ### Warning Signs
 
-Context may be too large if you notice:
+The context probably needs attention if:
 
-- Responses becoming slower
-- Claude missing earlier context
-- Repeated information in responses
-- Decreased accuracy
-- Context nearing 70%+ capacity
+- Claude repeats an approach you already rejected.
+- It follows an earlier decision you have since changed.
+- Responses drift from the current task toward something you discussed earlier.
+- `/context` shows a large share taken by old tool output or files you no longer need.
 
 ---
 
@@ -127,104 +75,86 @@ Context may be too large if you notice:
 
 ### Strategy 1: Targeted File Reading
 
-**❌ Too broad:**
+**Too broad:**
 
-```
+```text
 Read all files in the src/ directory
 ```
 
-**✅ Targeted:**
+**Targeted:**
 
-```
+```text
 Read UserService.cs and its interface IUserService.cs
 ```
 
-**Advanced:**
+You can also ask for part of a file:
 
-```
+```text
 Read the first 100 lines of UserService.cs to understand its structure
 ```
 
-### Strategy 2: Remove Files When Done
+### Strategy 2: Compact with a Focus
 
-After you're finished with a file:
+There's no command to drop one file from context. Instead, compact the conversation and tell Claude what to keep:
 
-```
-We're done with UserService.cs. You can remove it from context if needed to free up space.
-```
-
-Or be explicit:
-
-```
-Remove all files from context. We're starting a new feature.
+```text
+/compact focus on the auth bug fix and the files we changed
 ```
 
-### Strategy 3: Summarize Long Conversations
+The summary keeps what you choose, instead of what the automatic pass guesses is important. Run it before a long new task.
 
-For long-running sessions:
+### Strategy 3: Summarize Part of the Conversation
 
-```
-Summarize our conversation so far, focusing on the key decisions and implementation details. Then we'll start fresh with that summary.
-```
-
-**Claude will:**
-
-1. Create a concise summary
-2. You copy the summary
-3. Use `/clear` to reset
-4. Paste summary to start fresh with clean context
+`/rewind` can summarize part of the conversation instead of all of it. Run `/rewind`, pick a message, and choose **Summarize from here** or **Summarize up to here**. Use it to condense a long debugging detour while keeping the rest intact.
 
 ### Strategy 4: Progressive File Loading
 
-Load files as needed, not upfront:
+Load files as you need them, not up front.
 
-**❌ Front-loading:**
+**Front-loading:**
 
+```text
+Read all controller, service and model files so you understand the system
 ```
-Read all controller files, all service files, and all model files so you understand the system
-```
 
-**✅ Progressive:**
+**Progressive:**
 
-```
-Let's start with the UserController. As we work, we'll look at related files when they become relevant.
+```text
+Start with UserController. We'll look at related files as they become relevant.
 ```
 
 ### Strategy 5: Use Specialized Agents
 
-Agents have separate context windows:
+A subagent runs in its own context window. It reads files and runs searches there, and only its final summary comes back to your conversation.
 
-```
-# Main session context is getting full
-# Delegate specific task to an agent
-
-@code-reviewer review UserService.cs for security issues
+```text
+Use the Explore agent to find every place we validate JWT tokens.
+Report the file paths and a one-line summary of each.
 ```
 
-**Benefits:**
+What a subagent sees:
 
-- Agent has its own clean context
-- Main session context is preserved
-- Parallel work without context pollution
+- Its own system prompt and the task Claude writes for it. It doesn't see your conversation.
+- CLAUDE.md and a git status snapshot. The built-in Explore and Plan agents start without either.
+- Not your auto memory. A subagent can keep its own if its definition sets `memory`.
+
+The exception is a **fork** (`/subtask <task>`), which inherits your full conversation and works in the background.
+
+Use subagents for side tasks whose output you won't need again: codebase searches, long test runs, reading many files to answer one question. See [Subagents](https://code.claude.com/docs/en/sub-agents).
 
 ### Strategy 6: Grep Before Reading
 
-Search first, read second:
+**Reading blindly:**
 
-**❌ Reading blindly:**
-
-```
+```text
 Read all files that might contain validation logic
 ```
 
-**✅ Search then read:**
+**Search, then read:**
 
-```
-Search for "ValidationException" to find validation-related files
-
-[Results: 3 files found]
-
-Now read the Validators/UserValidator.cs file
+```text
+Search for "ValidationException" and list the files that throw it.
+Then read only the validator for users.
 ```
 
 ---
@@ -233,242 +163,172 @@ Now read the Validators/UserValidator.cs file
 
 ### The Three-Level Loading Strategy
 
-**Level 1:** Metadata only
-
-```
-List the public methods in UserService.cs
-```
-
-**Level 2:** Specific sections
-
-```
-Show me just the CreateUser method from UserService.cs
-```
-
-**Level 3:** Full content
-
-```
-Now read the full UserService.cs file
-```
+1. **Overview.** "List the public methods in UserService.cs."
+2. **Section.** "Show me just the CreateUser method."
+3. **Full content.** "Now read the whole file; we're going to change it."
 
 ### Applying Progressive Disclosure
 
-**Scenario:** Understanding a large codebase
+```text
+# Overview
+List the files in src/ grouped by directory.
 
-**❌ All at once:**
+# Structure
+For each controller in src/Controllers/, list the public endpoints.
 
-```
-Read all files in src/ so you understand the architecture
-```
+# Deep dive
+Read UserController.cs; we'll work on it.
 
-**✅ Progressive:**
-
-```
-# Level 1: Overview
-List all files in src/ organized by directory
-
-# Level 2: Structure
-For each controller in src/Controllers/, list the public endpoints
-
-# Level 3: Deep dive
-Now read UserController.cs as we'll be working on it
-
-# Level 4: Related files
-Based on UserController, which service does it use? Read that service file.
+# Related files
+Which service does UserController use? Read that one.
 ```
 
 ### Skills Use Progressive Disclosure Automatically
 
-When you use a skill:
+Claude Code loads skills in stages:
 
-**Metadata loaded:** Skill name and description (always in context)
-**Instructions loaded:** When skill activates (~5k words)
-**Resources loaded:** As Claude determines they're needed
+- **At startup:** only each skill's name and description.
+- **When the skill is used:** the full `SKILL.md` body.
+- **As needed:** the skill's supporting files, which Claude reads when the instructions point to them.
 
-**You don't need to manage this!** Skills handle progressive disclosure automatically.
+A skill with `disable-model-invocation: true` costs nothing until you invoke it, because even its description stays out of context.
+
+MCP servers work the same way: tool names load at startup, and full tool schemas load on demand.
 
 ---
 
 ## When to Reset Context
 
+### Using `/compact`
+
+```text
+/compact [instructions]
+```
+
+Summarizes the conversation so far and continues the same session. Claude Code also does this automatically as the window fills.
+
+What survives compaction:
+
+| Content | After compaction |
+|---------|------------------|
+| System prompt and output style | Still apply |
+| Project-root CLAUDE.md and rules without `paths:` | Re-injected from disk |
+| Auto memory | Re-injected from disk |
+| Skill descriptions | Rebuilt and re-injected (Claude Code 2.1.304+) |
+| A plan written in plan mode | Re-injected from disk |
+| Rules with `paths:` and nested CLAUDE.md files | Reloaded on demand when Claude touches a matching file |
+| Files Claude read or edited | Up to five re-read, most recently modified first |
+| Invoked skill bodies | Re-injected, capped at 5,000 tokens per skill and 25,000 in total |
+| Everything else in the conversation | Replaced by the summary |
+
+Two consequences:
+
+- An instruction that must survive compaction belongs in the project-root CLAUDE.md, not in chat or a path-scoped rule.
+- Put the most important instructions near the top of a `SKILL.md`, because a long skill is truncated from the end.
+
 ### Using `/rewind`
 
-Go back to a previous state:
-
-```
+```text
 /rewind
 ```
 
+Goes back to an earlier point in the conversation, the code Claude edited, or both. Aliases: `/checkpoint`, `/undo`.
+
 **Use when:**
 
-- You want to try a different approach
-- Recent changes caused issues
-- Context became cluttered with a failed attempt
+- You want to try a different approach.
+- A recent change broke something.
+- A failed attempt cluttered the conversation.
 
-**Benefits:**
-
-- Preserves most of context
-- Removes recent additions
-- Quick recovery from mistakes
+`/rewind` restores only edits made with Claude's file editing tools. Files changed by shell commands (`rm`, `mv`, `cp`), most subagent edits, and changes made outside Claude Code aren't tracked, so commit before risky work. Checkpoints don't replace git.
 
 ### Using `/clear`
 
-Complete context reset:
-
-```
+```text
 /clear
 ```
+
+Starts a new conversation with empty context. CLAUDE.md and auto memory load again, as at any session start. The previous conversation isn't deleted: `/resume` brings it back. Pass a name (`/clear auth-spike`) to label it in the `/resume` picker.
 
 **Use when:**
 
-- Starting a completely new task
-- Context is critically full (>80%)
-- Switching to different part of codebase
-- Session has been very long
-
-**Benefits:**
-
-- Fresh, clean context
-- Best performance
-- No carryover confusion
-
-**Drawbacks:**
-
-- Loses all conversation history
-- Must re-establish context
-- File reads are lost
-
-**Mitigation:** Summarize before clearing (see Strategy 3 above)
+- You're switching to unrelated work.
+- The conversation is full of a finished task.
+- Claude keeps returning to an approach you've abandoned.
 
 ### Strategic Reset Points
 
-**Good times to reset:**
+**Good times to compact or clear:**
 
-- Between major features
-- After completing a self-contained task
-- When switching between projects
-- Before starting a deep debugging session
-- After a long exploratory phase
+- Between features.
+- After a self-contained task is done.
+- Before a long debugging session.
+- After a long exploration, once you've chosen an approach.
 
-**Example workflow:**
-```
-# Phase 1: Exploration and design
-[Work on understanding system, propose solution]
-/context  # Check: 65% full
+```text
+# After exploring and agreeing on a design
+/compact keep the agreed design for role-based authorization and the list of files to change
 
-# Summarize and reset
-Summarize our design decisions and approach
-
-/clear
-
-# Phase 2: Fresh start with summary
-[Paste summary]
-Now let's implement the user authentication system we designed
+# Then implement in the same session
+Implement step 1 of the design.
 ```
 
 ---
 
 ## Advanced Techniques
 
-### Technique 1: Context Budgeting
+### Technique 1: Set the Auto-Compact Point
 
-Allocate context budget by phase:
+`/autocompact` sets how full the context window gets before automatic compaction runs:
 
-```
-Total: 200k tokens
-
-Phase 1 - Exploration (target: 30k tokens)
-- Codebase overview
-- Related files
-- Architecture understanding
-
-Phase 2 - Implementation (target: 60k tokens)
-- Files being modified
-- Test files
-- Related dependencies
-
-Phase 3 - Testing (target: 40k tokens)
-- Test results
-- Error messages
-- Debugging information
-
-Reserve: 70k tokens for overhead and buffers
+```text
+/autocompact 500k
+/autocompact auto
 ```
 
-### Technique 2: Context Checkpointing
+`auto` returns to the default for your model. `claude --autocompact 500k` sets it for one session. Compacting earlier keeps each request smaller; compacting later keeps more detail. See [Model configuration](https://code.claude.com/docs/en/model-config).
 
-Create restore points:
+### Technique 2: Write Durable Notes to Files
 
-```
-# At a good state
-Summarize our current implementation status: what's done, what's next, key files and their purposes
+Knowledge that should outlive the session doesn't belong in the conversation:
 
-# Save that summary
-[Copy Claude's summary to a file: context-checkpoint.md]
+- **Project facts and conventions** go in CLAUDE.md: "add this to CLAUDE.md".
+- **Preferences and corrections** go in auto memory: "remember that the API tests need a local Redis". Claude saves them to `~/.claude/projects/<project>/memory/`, and the first 200 lines (or 25KB) of `MEMORY.md` load each session.
+- **Progress on a multi-session task** goes in a plan or notes file in the repository, which a fresh session can read.
 
-# Later, if context gets messy
-/clear
-[Paste checkpoint summary]
-Let's continue from where we left off
+```text
+Write our current status to docs/plans/auth-migration.md: what's done,
+what's next, and the key files. Then I'll /clear and continue from that file.
 ```
 
 ### Technique 3: Two-Session Workflow
 
-Use separate sessions for different concerns:
+Split research and implementation:
 
-**Session 1: Research and exploration**
+1. **Research session.** Explore, compare options, and write the chosen design to a file. Plan mode (Shift+Tab) suits this.
+2. **Implementation session.** `/clear`, or start a new session, and point Claude at the design file.
 
-- Understand codebase
-- Explore options
-- Design approach
-- Create summary
+### Technique 4: Use Plan Mode for Exploration
 
-**Session 2: Implementation**
-
-- Start fresh with summary from Session 1
-- Focus solely on implementation
-- Clean context = better code
-
-### Technique 4: File Content Rotation
-
-For long tasks involving many files:
-
-```
-# Start
-Read FileA.cs, FileB.cs, FileC.cs
-
-# Work with A and B
-[Make changes]
-
-# Rotate: Done with A, need D
-We're done with FileA.cs. Read FileD.cs which we'll need next.
-
-# Rotate: Done with B, need E
-We're done with FileB.cs. Read FileE.cs for the next step.
-```
+In plan mode, Claude researches read-only and often delegates that research to the Plan subagent, so much of the exploration stays out of your context. The approved plan is saved to disk and survives compaction. Enter it with Shift+Tab or `/plan <task>`.
 
 ### Technique 5: Context-Aware Skill Design
 
-When creating skills, optimize for context:
+When you write skills:
 
-**In SKILL.md:**
-
-- Keep instructions lean (<5k words)
-- Move detailed info to references/
-- Use progressive disclosure principles
-- Let Claude load references/ as needed
-
-**Example:**
+- Keep `SKILL.md` focused, with the most important instructions first.
+- Move detailed reference material into separate files the skill points to.
+- Write a precise `description`, since it loads into every session.
+- Use `disable-model-invocation: true` for skills you only run by hand.
 
 ```markdown
 ## Database Schema
 
-For complete schema details, see references/schema.md
+For the full schema, see references/schema.md.
 
 Key tables:
 - Users (id, email, password_hash)
 - Orders (id, user_id, total, status)
-- Products (id, name, price)
 ```
 
 Not:
@@ -476,8 +336,16 @@ Not:
 ```markdown
 ## Database Schema
 
-[Paste entire 50-table schema here]
+[The entire 50-table schema pasted here]
 ```
+
+### Technique 6: Keep Startup Context Lean
+
+Everything that loads at startup is paid for on every request:
+
+- Keep each CLAUDE.md under about 200 lines. Move rules for one area into `.claude/rules/` with `paths:` frontmatter.
+- Turn off skills and MCP servers you don't use (`/skills`, `/mcp`, `/skill-doctor`).
+- Run `/doctor prompt-audit` to find stale or conflicting instructions.
 
 ---
 
@@ -485,22 +353,20 @@ Not:
 
 ### Do
 
-- ✅ **Monitor regularly** - Check `/context` at transition points
-- ✅ **Load progressively** - Start with metadata, drill down as needed
-- ✅ **Remove when done** - Clear out files no longer needed
-- ✅ **Use grep first** - Search before reading
-- ✅ **Summarize and reset** - For long sessions, summarize then `/clear`
-- ✅ **Use specialized agents** - Delegate to agents for separate contexts
-- ✅ **Think ahead** - Plan what context you'll need
+- **Check `/context`** at transition points.
+- **Load progressively.** Overview first, details when needed.
+- **Search before reading.**
+- **`/compact` with a focus** before a long new task.
+- **`/clear` between unrelated tasks.**
+- **Delegate large reads** to a subagent.
+- **Write durable knowledge to files**: CLAUDE.md, auto memory, or a plan file.
 
 ### Don't
 
-- ❌ **Don't front-load** - Avoid "read everything" approaches
-- ❌ **Don't ignore warnings** - Act when context reaches 70%
-- ❌ **Don't keep everything** - Remove files after use
-- ❌ **Don't forget to check** - Monitor context size
-- ❌ **Don't fear resets** - `/clear` and `/rewind` are your friends
-- ❌ **Don't work blind** - Use `/context` to see what's loaded
+- **Don't front-load** with "read everything".
+- **Don't rely on chat for rules** that must survive compaction.
+- **Don't keep a finished task's conversation** around for the next one.
+- **Don't fear resets.** `/rewind`, `/compact` and `/clear` are cheap, and `/resume` brings back a cleared conversation.
 
 ---
 
@@ -508,45 +374,32 @@ Not:
 
 **Before starting a session:**
 
-- [ ] Clear understanding of what files you'll need
-- [ ] Plan to load progressively, not all at once
-- [ ] Know when you'll check context size
+- [ ] Know which files and areas you'll need.
+- [ ] Decide whether to start in plan mode.
 
 **During a session:**
 
-- [ ] Check `/context` every 30-60 minutes
-- [ ] Remove files when no longer needed
-- [ ] Use grep before reading files
-- [ ] Consider specialized agents for separate tasks
+- [ ] Search before reading files.
+- [ ] Send searches and long-output tasks to a subagent.
+- [ ] Check `/context` when switching phases.
 
-**When context reaches 50%:**
+**When the conversation gets long or unfocused:**
 
-- [ ] Evaluate what's in context
-- [ ] Remove unnecessary files or messages
-- [ ] Consider if you should rewind or reset
-- [ ] Be selective about new additions
-
-**When context reaches 70%:**
-
-- [ ] Immediate cleanup required
-- [ ] Consider `/rewind` to previous state
-- [ ] Or summarize and `/clear` for fresh start
-- [ ] Finish current task before adding more
+- [ ] `/compact` with instructions about what to keep.
+- [ ] Or `/rewind` and summarize part of the conversation.
+- [ ] Or, if the task is done, write notes to a file and `/clear`.
 
 **After completing a feature:**
 
-- [ ] Summarize key decisions and implementation
-- [ ] Consider `/clear` for next feature
-- [ ] Save any important context to files
+- [ ] Put lasting conventions in CLAUDE.md.
+- [ ] `/clear` before the next feature.
 
 ---
 
 ## Resources
 
-- [Claude Code Fundamentals](claude-code-fundamentals.md) - Understanding context window
+- [Claude Code Fundamentals](claude-code-fundamentals.md) - Models, memory and customization
 - [Effective Prompts](effective-prompts.md) - Providing context efficiently
 - [Skill Creation Guide](../guides/skill-creation.md) - Progressive disclosure in skills
-
----
-
-**Key Takeaway:** Context management is like managing RAM—keep only what you need, remove what you're done with, and reset when things get cluttered. Clean context = reliable Claude Code.
+- [Explore the context window](https://code.claude.com/docs/en/context-window) - Official interactive walkthrough
+- [How Claude remembers your project](https://code.claude.com/docs/en/memory) - CLAUDE.md and auto memory

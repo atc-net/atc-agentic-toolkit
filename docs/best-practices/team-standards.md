@@ -1,11 +1,12 @@
 # Team Standards
 
-Guidelines for standardizing AI-assisted development practices across ATC-Net teams.
+How to share Claude Code instructions, settings and plugins across ATC-Net teams, so everyone gets the same behavior.
 
 ## Table of Contents
 
 - [Why Team Standards Matter](#why-team-standards-matter)
 - [Shared CLAUDE.md](#shared-claudemd)
+- [Shared Settings](#shared-settings)
 - [Plugin Distribution](#plugin-distribution)
 - [Coding Conventions](#coding-conventions)
 - [Workflow Standards](#workflow-standards)
@@ -16,435 +17,192 @@ Guidelines for standardizing AI-assisted development practices across ATC-Net te
 
 ## Why Team Standards Matter
 
-### The Problem
+Without shared configuration, every developer gets slightly different results: code style depends on who wrote the prompt, good patterns stay with one person, and new team members start from zero.
 
-Without standards, teams experience:
+Commit the configuration to the repository instead:
 
-- **Inconsistent AI outputs** - Different prompts yield different code styles
-- **Knowledge silos** - Effective patterns aren't shared
-- **Onboarding friction** - New team members lack guidance
-- **Quality variance** - Code quality depends on who wrote the prompt
-- **Repeated work** - Same problems solved multiple times
+| What | Where | Shared with |
+|------|-------|-------------|
+| Instructions | `AGENTS.md`, `CLAUDE.md` or `.claude/CLAUDE.md` | Everyone who clones the repo |
+| Settings, permissions, hooks | `.claude/settings.json` | Everyone who clones the repo |
+| Skills, agents, MCP servers | Plugins from a team marketplace | Everyone who installs them |
 
-### The Solution
-
-Standardized Claude Code configuration provides:
-
-- ✅ **Consistent behavior** - AI follows team conventions automatically
-- ✅ **Shared knowledge** - Best practices are codified and distributed
-- ✅ **Faster onboarding** - New members inherit team expertise
-- ✅ **Quality assurance** - Standards are enforced in AI outputs
-- ✅ **Efficiency** - Don't reinvent solutions
+Personal preferences go in files that are not committed: `CLAUDE.local.md`, `.claude/settings.local.json`, and the files under `~/.claude/`.
 
 ---
 
 ## Shared CLAUDE.md
 
-### Creating a Team CLAUDE.md
+### Where Instructions Live
 
-**Purpose:** Establish baseline behavior for all team members' Claude Code sessions.
+Claude Code loads instruction files at the start of every session:
 
-**Location:** Project repository root (`/CLAUDE.md`)
+| File | Scope |
+|------|-------|
+| `./CLAUDE.md` or `./.claude/CLAUDE.md` | The project. Commit it so the team shares it |
+| `./CLAUDE.local.md` | You, in this project. Add it to `.gitignore` |
+| `~/.claude/CLAUDE.md` | You, in every project |
+| `.claude/rules/*.md` | Rules for the project; with `paths` frontmatter they load only for matching files |
+| Managed `CLAUDE.md` | Everyone in the organization, deployed by IT |
 
-**Example Structure:**
+Auto memory (the notes Claude writes itself) is per user and per repository. It does not replace a shared instruction file.
 
-```markdown
+Run `/init` to generate a first `CLAUDE.md` from the codebase, then edit it.
+
+### AGENTS.md
+
+`AGENTS.md` is the instruction file that other coding agents, including GitHub Copilot, read. This repository uses one: [`AGENTS.md`](../../AGENTS.md) at the root, and no `CLAUDE.md`.
+
+Claude Code (v2.1.277 or later) reads `AGENTS.md` directly, but by default only when there is no `CLAUDE.md`, `.claude/CLAUDE.md` or `CLAUDE.local.md` in the working directory or above it:
+
+- **Only `AGENTS.md`:** Claude reads it. Good for repositories that also serve Copilot.
+- **Both files:** Claude reads only `CLAUDE.md`. Put `@AGENTS.md` on the first line of `CLAUDE.md` to import it, then add Claude-specific instructions below.
+- **A personal `CLAUDE.local.md`** in a project that relies on `AGENTS.md` also stops `AGENTS.md` from loading. Import `@AGENTS.md` or change the Project instructions setting in `/config`.
+
+On teams with Windows users, use the `@AGENTS.md` import rather than a symlink; Git checks symlinks out as plain text files unless `core.symlinks` is enabled.
+
+### Example Team CLAUDE.md
+
+Keep the file short; the Claude Code docs suggest under 200 lines per file, because longer files use more context and are followed less reliably. State what Claude can't discover from the code. Leave detailed C# conventions to skills such as `dotnet:csharp-conventions` and `dotnet:csharp-xunit`, which load only when relevant.
+
+````markdown
 # ATC-Net Team Standards
 
-This file defines coding standards and practices for the ATC-Net team. All team members should have Claude Code configured to follow these guidelines.
-
-## Coding Style
-
-### General Principles
-- Follow Microsoft C# Coding Conventions
-- Prioritize readability over cleverness
-- Write self-documenting code with clear names
-- Keep methods focused and small (under 50 lines)
-
-### Naming Conventions
-- **Classes:** PascalCase (e.g., `UserService`, `OrderRepository`)
-- **Interfaces:** IPascalCase (e.g., `IUserService`, `IOrderRepository`)
-- **Methods:** PascalCase (e.g., `GetUserById`, `CreateOrder`)
-- **Private fields:** _camelCase (e.g., `_userRepository`, `_logger`)
-- **Properties:** PascalCase (e.g., `UserId`, `EmailAddress`)
-- **Constants:** PascalCase (e.g., `MaxRetryAttempts`, `DefaultTimeout`)
-
-### File Organization
-- One class per file
-- File name matches class name
-- Organize using statements: System → Third-party → Internal
-- Use file-scoped namespaces (C# 10+)
-
-### Documentation
-- XML documentation for all public members
-- Include `<summary>`, `<param>`, `<returns>`, and `<exception>` tags
-- Document WHY, not just WHAT
-- Include examples for complex methods
-
-## Project Structure
-
-### Directory Layout
-
-```
-src/
-├── Controllers/          # API endpoints
-├── Services/            # Business logic
-├── Repositories/        # Data access
-├── Models/              # Data models
-│   ├── Entities/        # Database entities
-│   ├── DTOs/            # Data transfer objects
-│   └── ViewModels/      # UI models
-├── Validation/          # FluentValidation validators
-├── Middleware/          # ASP.NET middleware
-└── Extensions/          # Extension methods
-
-tests/
-├── UnitTests/           # xUnit unit tests
-├── IntegrationTests/    # Integration tests
-└── TestHelpers/         # Test utilities
-```
-
-### Namespace Structure
-Follow directory structure:
-- `ATC.ProjectName.Controllers`
-- `ATC.ProjectName.Services`
-- `ATC.ProjectName.Repositories`
-
 ## Technology Stack
+- .NET 10 (current LTS), ASP.NET Core, Entity Framework Core
+- PostgreSQL, EF Core migrations
+- Azure: IoT Hub, Blob Storage, Service Bus, Key Vault
+- Tests: xUnit, NSubstitute, FluentAssertions
 
-### Required Frameworks
-- **.NET:** 6.0 or higher
-- **Web Framework:** ASP.NET Core
-- **ORM:** Entity Framework Core
-- **Testing:** xUnit + Moq
-- **Validation:** FluentValidation
-- **Logging:** Microsoft.Extensions.Logging with Serilog
+## Build and Test
+- Build: `dotnet build`
+- Test: `dotnet test`
+- Coverage: `dotnet test --collect:"XPlat Code Coverage"`
 
-### Database
-- **Primary:** PostgreSQL
-- **Migrations:** Entity Framework Core migrations
-- **Connection:** Use connection strings from appsettings.json/environment variables
+## Conventions
+- Follow the dotnet plugin's csharp-conventions skill
+- File-scoped namespaces, one type per file
+- XML documentation on all public members
+- Async all the way for I/O; pass CancellationToken
+- Secrets come from Azure Key Vault or environment variables, never from code
 
-### Cloud Services
-- **Platform:** Azure
-- **IoT:** Azure IoT Hub + IoT Edge
-- **Storage:** Azure Blob Storage
-- **Messaging:** Azure Service Bus
+## Project Layout
+- src/Api/ - Controllers and endpoints
+- src/Domain/ - Business logic
+- src/Infrastructure/ - Data access and external services
+- tests/ - Unit and integration tests
 
-## Development Workflows
+## Testing
+- Test method naming: MethodName_Scenario_ExpectedResult
+- Arrange / Act / Assert
+- Minimum 80% coverage; critical business logic fully covered
 
-### Git Workflow
-- **Main branch:** `main` (protected, requires PR)
-- **Development branch:** `develop`
-- **Feature branches:** `feature/[feature-name]`
-- **Bug fix branches:** `bugfix/[bug-description]`
-- **Release branches:** `release/v[version]`
+## Git
+- Branches: feature/<name>, bugfix/<name>
+- Conventional Commits: feat, fix, docs, refactor, test, chore
+- Never commit to main directly; open a PR
 
-### Commit Messages
-Follow Conventional Commits:
-```
-type(scope): description
+## Review Carefully
+- Authentication and authorization
+- Database migrations
+- Security-sensitive and performance-critical code
+````
 
-[optional body]
+### Maintaining the Shared File
 
-[optional footer]
-```
+- Keep it in git and change it through pull requests.
+- When Claude repeats a mistake, add one line that prevents it.
+- Remove lines that no longer matter; a short file is followed more closely.
+- Review it when you upgrade .NET or change tools.
 
-Types: feat, fix, docs, style, refactor, test, chore
+---
 
-### Pull Request Requirements
-- All tests pass
-- Code reviewed by at least one team member
-- No merge conflicts
-- Follows coding standards
-- Includes tests for new functionality
-- Documentation updated if needed
+## Shared Settings
 
-## Testing Standards
+`.claude/settings.json` is the shared project settings file. Commit it so teammates get the same permissions, hooks, environment variables and plugins. Personal overrides go in `.claude/settings.local.json`, which Claude Code keeps out of git when it creates the file.
 
-### Unit Tests
-- Test all public methods
-- Use AAA pattern (Arrange, Act, Assert)
-- One assertion per test when possible
-- Mock external dependencies
-- Test method naming: `MethodName_Scenario_ExpectedResult`
-
-### Code Coverage
-- Minimum 80% code coverage
-- 100% coverage for critical business logic
-- Use `dotnet test --collect:"XPlat Code Coverage"` to measure
-
-### Test Structure
-
-```csharp
-public class UserServiceTests
-{
-    [Fact]
-    public async Task GetUserById_ValidId_ReturnsUser()
-    {
-        // Arrange
-        var userId = Guid.NewGuid();
-        var expectedUser = new User { Id = userId, Email = "test@example.com" };
-        var mockRepo = new Mock<IUserRepository>();
-        mockRepo.Setup(r => r.GetByIdAsync(userId)).ReturnsAsync(expectedUser);
-        var service = new UserService(mockRepo.Object);
-
-        // Act
-        var result = await service.GetUserById(userId);
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.Equal(userId, result.Id);
-    }
-}
-```
-
-## Error Handling
-
-### Exception Strategy
-- Use specific exceptions (ArgumentException, InvalidOperationException, etc.)
-- Create custom exceptions for domain-specific errors
-- Include helpful error messages
-- Log exceptions with full context
-
-### API Error Responses
-Return consistent error format:
+Example: allow the build and test commands without a prompt, and block reading secrets:
 
 ```json
 {
-  "error": {
-    "code": "VALIDATION_ERROR",
-    "message": "User email is required",
-    "details": {
-      "field": "email",
-      "constraint": "required"
-    }
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(dotnet build *)",
+      "Bash(dotnet test *)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)"
+    ]
   }
 }
 ```
 
-## Security Standards
-
-### Authentication & Authorization
-- Use JWT tokens for API authentication
-- Store secrets in Azure Key Vault, never in code
-- Validate all user inputs
-- Use parameterized queries (Entity Framework does this)
-- Apply principle of least privilege
-
-### OWASP Top 10
-Be aware of and prevent:
-- Injection attacks
-- Broken authentication
-- Sensitive data exposure
-- XML external entities (XXE)
-- Broken access control
-- Security misconfigurations
-- Cross-site scripting (XSS)
-- Insecure deserialization
-- Using components with known vulnerabilities
-- Insufficient logging and monitoring
-
-## Performance Guidelines
-
-### Database Queries
-- Use async/await for all database operations
-- Apply appropriate indexes
-- Use pagination for large result sets
-- Avoid N+1 queries (use Include/ThenInclude)
-- Use Select() to project only needed fields
-
-### API Performance
-- Response time under 200ms for simple endpoints
-- Use caching for frequently accessed data
-- Implement rate limiting
-- Use compression for responses
-
-## Logging Standards
-
-### Log Levels
-- **Trace:** Very detailed, typically only in development
-- **Debug:** Detailed information for debugging
-- **Information:** General informational messages
-- **Warning:** Unexpected but recoverable situations
-- **Error:** Errors that require attention
-- **Critical:** Critical errors requiring immediate action
-
-### Structured Logging
-
-```csharp
-_logger.LogInformation(
-    "User {UserId} created order {OrderId} with total {Total}",
-    userId, orderId, total);
-```
-
-### What to Log
-- Authentication/authorization events
-- All exceptions with full stack traces
-- Performance metrics for critical operations
-- External API calls and responses
-- Database query performance issues
-
-## Claude Code Usage
-
-### When to Use Claude Code
-- Writing boilerplate code
-- Implementing standard patterns
-- Creating unit tests
-- Refactoring existing code
-- Exploring unfamiliar codebases
-- Generating documentation
-
-### When to Review Carefully
-- Authentication/authorization logic
-- Database migrations
-- Security-sensitive code
-- Performance-critical sections
-- Complex business logic
-
-### Prompting Standards
-Always include in prompts:
-- Target framework (.NET 6)
-- Following ATC-Net conventions
-- Include XML documentation
-- Write unit tests
-- Use dependency injection
-
-Example prompt:
-```
-Create a new UserService in .NET 6 that implements IUserService. Follow ATC-Net conventions, include XML documentation, use dependency injection for IUserRepository and ILogger, and write xUnit tests.
-```
-
-## Code Review Checklist
-
-### Before Requesting Review
-- [ ] All tests pass locally
-- [ ] Code follows ATC-Net conventions
-- [ ] XML documentation is complete
-- [ ] No commented-out code
-- [ ] No debugging statements (Console.WriteLine, etc.)
-- [ ] Error handling is appropriate
-- [ ] Security implications considered
-- [ ] Performance implications considered
-
-### Reviewer Checklist
-- [ ] Code is understandable and maintainable
-- [ ] Tests cover the changes
-- [ ] No security vulnerabilities
-- [ ] Follows team standards
-- [ ] Documentation is clear
-- [ ] Error handling is robust
-- [ ] No performance regressions
-
-## Onboarding New Team Members
-
-### Setup Checklist
-- [ ] Clone team repositories
-- [ ] Install required tools (.NET SDK, PostgreSQL, Azure CLI)
-- [ ] Install Claude Code CLI
-- [ ] Configure CLAUDE.md (copy from repo root)
-- [ ] Install team plugins from atc-agentic-toolkit
-- [ ] Review team standards documentation
-- [ ] Complete onboarding tasks with Claude Code
-
-### Recommended Plugins
-Install these from atc-agentic-toolkit:
-- `common` - Base utilities and skill creator
-- `code-refactoring` - C# code quality tools
-- `azure-iot` - (if working on IoT projects)
-
-### First Tasks with Claude Code
-1. Use `/format-params` on an existing project
-2. Generate tests for a simple service class
-3. Create a new feature following team standards
-4. Have Claude Code review your changes
-
-## Resources
-
-### Internal
-- ATC-Net GitHub: https://github.com/atc-net
-- Team Wiki: [Internal wiki URL]
-- Code Review Guidelines: [Internal doc]
-
-### External
-- Microsoft C# Coding Conventions: [URL]
-- Entity Framework Core Best Practices: [URL]
-- ASP.NET Core Security: [URL]
-
-## Continuous Improvement
-
-### Feedback Loop
-- Suggest improvements to team standards
-- Share effective Claude Code prompts and patterns
-- Document new best practices as they emerge
-- Update CLAUDE.md based on team experiences
-
-### Regular Reviews
-- Review team standards quarterly
-- Update for new .NET versions
-- Incorporate lessons learned
-- Share success stories
-
----
-
-## Questions?
-
-Reach out to the team lead or post in the #development channel.
-
----
-
-*Last updated: [Date]*
-*Version: 1.0*
-```
-
-### Maintaining Shared CLAUDE.md
-
-**Version control:** Keep in git repository
-**Updates:** Through pull requests with team review
-**Communication:** Announce changes to team
-**Documentation:** Include change log
+Run `/status` to confirm which settings files loaded. For organization-wide policy that users can't override, use [managed settings](https://code.claude.com/docs/en/managed-settings).
 
 ---
 
 ## Plugin Distribution
 
-### Team Plugin Repository
+Plugins package skills, agents, hooks and MCP servers. A marketplace is a repository with a `.claude-plugin/marketplace.json` file that lists plugins and where to fetch them. See [Marketplace Configuration](../reference/marketplace-config.md) and [Plugin Development](../guides/plugin-development.md).
 
-**Strategy:** Create a private marketplace for your organization
+### Install from atc-agentic-toolkit
 
-1. **Fork atc-agentic-toolkit** for your organization:
-   ```bash
-   # Fork on GitHub: your-org/atc-agentic-toolkit
-   ```
+```text
+/plugin marketplace add atc-net/atc-agentic-toolkit
+/plugin install dotnet@atc-agentic-toolkit
+```
 
-2. **Add internal plugins** to the forked repository:
-   - Create plugins in `plugins/`
-   - Register in `plugin.json`
-   - Document in team README
+On Claude Code 2.1.275 or later, one step does both:
 
-3. **Team members add the marketplace** in Claude Code:
-   ```
-   Add the your-org marketplace from https://github.com/your-org/atc-agentic-toolkit
-   ```
+```text
+/plugin install dotnet --marketplace atc-net/atc-agentic-toolkit
+```
 
-4. **Install plugins from your private marketplace**:
-   ```
-   Install the [plugin-name] plugin from the your-org marketplace
-   ```
+### Share Plugins Through the Repository
 
-### Internal Plugins
+To give every contributor the same plugins, register the marketplace and enable the plugins in the repository's `.claude/settings.json`:
 
-**For company-specific plugins:**
+```json
+{
+  "extraKnownMarketplaces": {
+    "atc-agentic-toolkit": {
+      "source": { "source": "github", "repo": "atc-net/atc-agentic-toolkit" }
+    }
+  },
+  "enabledPlugins": {
+    "common@atc-agentic-toolkit": true,
+    "dotnet@atc-agentic-toolkit": true
+  }
+}
+```
 
-1. Add to your organization's marketplace repository
-2. Register in `plugin.json`
-3. Document in team README
-4. Announce to team (they install via marketplace)
+The key under `extraKnownMarketplaces` must match the `name` in the marketplace's `marketplace.json`. Claude Code registers the marketplace only after a contributor accepts the workspace trust dialog for the folder. This repository's own [`.claude/settings.json`](../../.claude/settings.json) registers a marketplace with `extraKnownMarketplaces` in the same way.
 
-**Example internal plugin:**
-- `company-api-generator` - Generates APIs following company patterns
-- `internal-deployment` - Automates deployment to internal infrastructure
-- `company-security-scan` - Runs company security checklist
+### Team Marketplace for Internal Plugins
+
+For company-specific plugins, keep your own marketplace repository and register it next to atc-net's:
+
+1. Create a repository with `.claude-plugin/marketplace.json` and your plugins under `plugins/`.
+2. Add each plugin as an entry in `marketplace.json` (`name`, `source`, `description`). The entry name must match the `name` in the plugin's `plugin.json`.
+3. If skill plugins should also work in GitHub Copilot, list them in `.github/plugin/marketplace.json` too, as this repository does. Mods don't run in Copilot, so list them only in `.claude-plugin/marketplace.json`.
+4. Check it with `claude plugin validate .` before you push.
+5. Teammates add it with `/plugin marketplace add your-org/your-marketplace`, or you add it to `.claude/settings.json` as shown above.
+
+If you fork atc-agentic-toolkit instead, change the `name` in both `marketplace.json` files; otherwise the fork collides with the atc-net marketplace of the same name. Private repositories work as long as each user has read access with their git credentials.
+
+Plugins can also be Claude Code mods, which change Claude Code's own interface and behavior. See [Mod Creation](../guides/mod-creation.md) and [Mod Anatomy](../reference/mod-anatomy.md).
+
+### Recommended Plugins
+
+From atc-agentic-toolkit:
+
+- `common` - Implementation planning, markdown conventions, skill creator, coding discipline
+- `dotnet` - C# conventions, xUnit tests, async patterns, NuGet management
+- `git` - Commit messages and PR descriptions
+- `security` - OWASP-based security review
+- `azure` - Azure service skills (if you work on Azure projects)
 
 ---
 
@@ -452,52 +210,26 @@ Reach out to the team lead or post in the #development channel.
 
 ### ATC-Net Specific Patterns
 
-**Service pattern:**
+**Service pattern** (sealed, primary constructor, `CancellationToken` passed through; see `dotnet:csharp-conventions` for the full rules):
+
 ```csharp
-public class UserService : IUserService
+public sealed class UserService(
+    IUserRepository repository,
+    ILogger<UserService> logger) : IUserService
 {
-    private readonly IUserRepository _repository;
-    private readonly ILogger<UserService> _logger;
-
-    public UserService(IUserRepository repository, ILogger<UserService> logger)
+    public Task<User?> GetUserByIdAsync(
+        Guid userId,
+        CancellationToken cancellationToken)
     {
-        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    }
-
-    public async Task<User?> GetUserByIdAsync(Guid userId)
-    {
-        _logger.LogInformation("Retrieving user with ID: {UserId}", userId);
-        return await _repository.GetByIdAsync(userId);
-    }
-}
-```
-
-**Repository pattern:**
-```csharp
-public class UserRepository : IUserRepository
-{
-    private readonly ApplicationDbContext _context;
-
-    public UserRepository(ApplicationDbContext context)
-    {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-    }
-
-    public async Task<User?> GetByIdAsync(Guid userId)
-    {
-        return await _context.Users
-            .FirstOrDefaultAsync(u => u.Id == userId);
+        logger.LogInformation("Retrieving user with ID: {UserId}", userId);
+        return repository.GetByIdAsync(userId, cancellationToken);
     }
 }
 ```
 
 ### Enforcing with Claude Code
 
-In prompts, always include:
-```
-Follow ATC-Net patterns: use dependency injection, include XML documentation, log appropriately, and write unit tests with xUnit and Moq.
-```
+Put conventions in the shared instruction file and in skills, so you don't have to repeat them in every prompt. The `dotnet` plugin's skills cover C# style, tests and async code. Plugin skills run as slash commands prefixed with the plugin name, for example `/dotnet:format-params` to apply the team's parameter line-break formatting.
 
 ---
 
@@ -506,28 +238,26 @@ Follow ATC-Net patterns: use dependency injection, include XML documentation, lo
 ### Feature Development Workflow
 
 1. **Planning**
-   - Use Claude Code in plan mode to design approach
-   - Document architecture decisions
+   - Press `Shift+Tab` to enter plan mode and agree on the approach before Claude edits files
+   - Record architecture decisions
 
 2. **Implementation**
-   - Create feature branch
+   - Create a feature branch
    - Use Claude Code for boilerplate and standard patterns
-   - Write code following team standards
 
 3. **Testing**
-   - Generate unit tests with Claude Code
-   - Run full test suite
-   - Achieve minimum 80% code coverage
+   - Ask Claude to write and run the unit tests
+   - Run the full test suite
+   - Meet the minimum coverage
 
 4. **Review**
-   - Use `@code-reviewer` agent for pre-review
-   - Address issues found
-   - Submit PR for team review
+   - Run `/code-review` to check your branch for bugs before you open a PR (`/code-review --fix` also applies the findings)
+   - Address the findings
+   - Submit the PR for team review
 
 5. **Integration**
    - Respond to review comments
    - Merge when approved
-   - Verify deployment to development environment
 
 ---
 
@@ -536,43 +266,45 @@ Follow ATC-Net patterns: use dependency injection, include XML documentation, lo
 ### Code Documentation
 
 **Required:**
+
 - XML documentation for all public members
-- README.md for each major module
-- Inline comments for complex logic
+- A README.md for each major module
+- Comments for logic that isn't obvious from the code
 
 **Example:**
+
 ```csharp
 /// <summary>
 /// Retrieves a user by their unique identifier.
 /// </summary>
 /// <param name="userId">The unique identifier of the user to retrieve.</param>
+/// <param name="cancellationToken">The cancellation token.</param>
 /// <returns>
 /// A <see cref="User"/> object if found; otherwise, null.
 /// </returns>
 /// <exception cref="ArgumentException">
 /// Thrown when userId is empty.
 /// </exception>
-public async Task<User?> GetUserByIdAsync(Guid userId)
+public Task<User?> GetUserByIdAsync(
+    Guid userId,
+    CancellationToken cancellationToken)
 {
     if (userId == Guid.Empty)
     {
         throw new ArgumentException("User ID cannot be empty", nameof(userId));
     }
 
-    return await _repository.GetByIdAsync(userId);
+    return repository.GetByIdAsync(userId, cancellationToken);
 }
 ```
 
+The `dotnet:csharp-docs` skill covers XML documentation conventions.
+
 ### Architecture Documentation
 
-**Maintain:**
-- System architecture diagrams
-- API documentation (OpenAPI/Swagger)
-- Database schema documentation
-- Deployment guides
+Maintain system architecture diagrams, API documentation (OpenAPI), database schema documentation, and deployment guides. Claude Code can generate and update them:
 
-**Use Claude Code to generate/update:**
-```
+```text
 Generate OpenAPI documentation for all controllers in the API project
 ```
 
@@ -589,23 +321,29 @@ Generate OpenAPI documentation for all controllers in the API project
 ### Pre-Push
 
 - Integration tests pass
-- Code coverage meets minimum (80%)
-- No security vulnerabilities (scan with tools)
+- Code coverage meets the minimum (80%)
+- No known vulnerable packages
 
 ### Pre-Merge
 
-- All CI/CD checks pass
+- All CI checks pass
 - Code reviewed and approved
 - Documentation updated
 - Tests added for new features
 
 ### Claude Code Quality Check
 
-Use `@code-reviewer` agent before committing:
+Run the built-in review before you commit:
 
+```text
+/code-review
 ```
-@code-reviewer review my changes for security, performance, and maintainability issues
-```
+
+`/code-review` reviews the changes on your branch for correctness bugs and follows your `CLAUDE.md`. For a security-focused pass, use the `security` plugin's OWASP skill.
+
+### Enforce Gates with Hooks
+
+Instructions are guidance; hooks are guaranteed. Hooks are shell commands that Claude Code runs at fixed points, configured under `hooks` in `.claude/settings.json` so the whole team gets them. For example, a `PostToolUse` hook with an `Edit|Write` matcher can run a formatter after every edit, and a `PreToolUse` hook can block a tool call by exiting with code 2. See the [hooks guide](https://code.claude.com/docs/en/hooks-guide). This repository keeps its own shell hooks in `.claude/plugins/hooks/`.
 
 ---
 
@@ -614,7 +352,6 @@ Use `@code-reviewer` agent before committing:
 - [Claude Code Fundamentals](claude-code-fundamentals.md)
 - [Effective Prompts](effective-prompts.md)
 - [Context Management](context-management.md)
-
----
-
-**Key Takeaway:** Consistent standards + Shared configuration = Predictable quality. Codify your best practices in CLAUDE.md and plugins, and let Claude Code enforce them automatically.
+- [Claude Code memory (CLAUDE.md and AGENTS.md)](https://code.claude.com/docs/en/memory)
+- [Claude Code settings](https://code.claude.com/docs/en/settings)
+- [Create a plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces)
