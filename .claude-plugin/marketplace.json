@@ -98,6 +98,11 @@
       "name": "atc-replay-theater",
       "source": "./plugins/atc-replay-theater",
       "description": "Mod (Claude Code 2.1.287+): after a turn that edited files, step through the edits one diff at a time in a pane (/atc-replay)"
+    },
+    {
+      "name": "atc-reflect",
+      "source": "./plugins/atc-reflect",
+      "description": "Mod (Claude Code 2.1.287+): turns corrections in your prompts into one-line rules above the prompt, to save to CLAUDE.md or ~/.claude/CLAUDE.md, edit or skip; remember: <rule> keeps one straight away"
     }
   ]
 }
