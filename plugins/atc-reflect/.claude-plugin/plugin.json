@@ -1,0 +1,29 @@
+{
+  "name": "atc-reflect",
+  "version": "0.1.0",
+  "description": "Claude Code mod: spots corrections in your prompts (\"no, use pnpm\") and offers each as a one-line rule above the prompt, to save to CLAUDE.md or ~/.claude/CLAUDE.md, edit or skip. remember: <rule> keeps one straight away. Works on Windows, macOS and Linux. Requires Claude Code 2.1.287+.",
+  "author": {
+    "name": "atc-net"
+  },
+  "homepage": "https://github.com/atc-net/atc-agentic-toolkit/tree/main/plugins/atc-reflect",
+  "repository": "https://github.com/atc-net/atc-agentic-toolkit",
+  "keywords": [
+    "mod",
+    "claude-md",
+    "memory",
+    "rules"
+  ],
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "detect": {
+      "type": "string",
+      "title": "Find rules",
+      "description": "auto: prompts that look like a correction are checked by Haiku. remember-only: only remember: prompts are kept, and nothing is sent to a model.",
+      "default": "auto",
+      "options": [
+        "auto",
+        "remember-only"
+      ]
+    }
+  }
+}
