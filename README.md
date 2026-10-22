@@ -148,6 +148,7 @@ Mods are plugins that change Claude Code itself while it runs. They can add a ba
 |-----|---------------|----------|----------|
 | [atc-blast-radius](plugins/atc-blast-radius/) | Before `rm -rf`, `Remove-Item -Recurse`, `git reset --hard`, `git clean`, a force push or a migration runs: what it would delete or throw away, then **Cancel** / **Proceed** | none (works on its own) | none |
 | [atc-progress](plugins/atc-progress/) | A plan bar above the prompt (from `plan/*.md`) and a subagents pane with model, context, tokens, estimated cost and time | `/atc-progress [plans\|plan [path]\|continue [path]\|open\|close\|hide\|show\|help]` | `autoOpen`: `off` / `agents` |
+| [atc-reflect](plugins/atc-reflect/) | When a prompt corrects Claude ("no, use pnpm"), a one-line rule above the prompt to save to `CLAUDE.md` or `~/.claude/CLAUDE.md`, edit or skip; `remember: <rule>` keeps one straight away | `/atc-reflect [pause\|resume\|clear\|help]` | `detect`: `auto` / `remember-only` |
 | [atc-replay-theater](plugins/atc-replay-theater/) | After a turn that edited files, a hint above the prompt, then a pane that steps through each edit's diff with Prev / Next | `/atc-replay [close\|clear\|help]` | none |
 
 ### Install a mod
