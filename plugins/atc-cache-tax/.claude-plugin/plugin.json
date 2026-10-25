@@ -1,0 +1,41 @@
+{
+  "name": "atc-cache-tax",
+  "version": "0.1.0",
+  "description": "Claude Code mod: holds a big prompt once when the prompt cache has expired and shows what re-caching the conversation costs, and /atc-keepwarm keeps the cache warm while you're away with cheap pings that stop by themselves. /atc-cache-tax shows the cache's state. Works on Windows, macOS and Linux. Requires Claude Code 2.1.287+.",
+  "author": {
+    "name": "atc-net"
+  },
+  "homepage": "https://github.com/atc-net/atc-agentic-toolkit/tree/main/plugins/atc-cache-tax",
+  "repository": "https://github.com/atc-net/atc-agentic-toolkit",
+  "keywords": [
+    "mod",
+    "prompt-cache",
+    "cost",
+    "tokens"
+  ],
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "guard": {
+      "type": "string",
+      "title": "When the cache has expired",
+      "description": "ask: a prompt that would re-cache 50k+ tokens is held once with the cost, and Enter sends it. notice: it is sent, and the cost is shown. off: nothing.",
+      "default": "ask",
+      "options": [
+        "ask",
+        "notice",
+        "off"
+      ]
+    },
+    "cacheTtl": {
+      "type": "string",
+      "title": "Prompt cache lifetime",
+      "description": "auto: worked out like Claude Code does (one hour on a Claude subscription, five minutes otherwise, unless promptCacheTtl or CLAUDE_CODE_PROMPT_CACHE_TTL says else). 5m or 1h: what you know it to be.",
+      "default": "auto",
+      "options": [
+        "auto",
+        "5m",
+        "1h"
+      ]
+    }
+  }
+}
