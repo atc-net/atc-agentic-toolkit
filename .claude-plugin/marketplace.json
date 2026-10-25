@@ -103,6 +103,11 @@
       "name": "atc-reflect",
       "source": "./plugins/atc-reflect",
       "description": "Mod (Claude Code 2.1.287+): turns corrections in your prompts into one-line rules above the prompt, to save to CLAUDE.md or ~/.claude/CLAUDE.md, edit or skip; remember: <rule> keeps one straight away"
+    },
+    {
+      "name": "atc-cache-tax",
+      "source": "./plugins/atc-cache-tax",
+      "description": "Mod (Claude Code 2.1.287+): holds a big prompt once when the prompt cache has expired and shows what re-caching costs; /atc-keepwarm keeps the cache warm while you're away"
     }
   ]
 }
