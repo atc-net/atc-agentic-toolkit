@@ -78,7 +78,7 @@ When the cache has already expired, keep-warm doesn't ping: that would cost the 
 **When it pays off.** With the one-hour lifetime, a two-hour break costs two pings instead of one rewrite. With the five-minute lifetime a ping goes out every 4 minutes, so keep-warm only pays off for breaks up to roughly an hour (less on older models, where reads cost more). For a longer break, let the cache expire.
 
 > [!NOTE]
-> Claude Code sends pings like this with the five-minute lifetime. It isn't documented whether a ping's read also extends a one-hour entry. The mod checks: if a later ping reads nothing, or your next prompt has to write the whole conversation again, keep-warm stops and tells you so. Every rewrite is counted under "Cache rewrites" in `/atc-cache-tax`. If keep-warm stops like that on your account, it doesn't help there.
+> Claude Code sends pings like this with the five-minute lifetime, and it isn't documented whether a ping's read also extends a one-hour entry. On a Claude subscription it does: in a test, a 177k-token conversation stayed cached through a break of over an hour with one ping, and the next prompt didn't have to write it to the cache again. Other setups may behave differently, so the mod keeps checking. If a later ping reads nothing, or your next prompt has to write the whole conversation again, keep-warm stops and tells you so. Every rewrite is counted under "Cache rewrites" in `/atc-cache-tax`.
 
 ## Install
 
