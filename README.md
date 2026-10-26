@@ -153,6 +153,34 @@ Mods are plugins that change Claude Code itself while it runs. They can add a ba
 | [atc-reflect](plugins/atc-reflect/) | When a prompt corrects Claude ("no, use pnpm"), a one-line rule above the prompt to save to `CLAUDE.md` or `~/.claude/CLAUDE.md`, edit or skip; `remember: <rule>` keeps one straight away | `/atc-reflect [pause\|resume\|clear\|help]` | `detect`: `auto` / `remember-only` |
 | [atc-replay-theater](plugins/atc-replay-theater/) | After a turn that edited files, a hint above the prompt, then a pane that steps through each edit's diff with Prev / Next | `/atc-replay [close\|clear\|help]` | none |
 
+### What they look like
+
+Screenshots from Claude Code in Windows Terminal (fullscreen), in a small demo repository.
+
+**atc-blast-radius**: Claude was asked to run `rm -rf build`. The command waits until you choose, with what it would delete.
+
+![atc-blast-radius holding rm -rf build, listing the three files it would delete, with Cancel selected and Proceed below](docs/images/mods/atc-blast-radius.png)
+
+**atc-cache-tax**: `/atc-keepwarm 90m`, then `/atc-cache-tax`. The card shows the cache, the cost of re-caching and the guard; the row above the prompt counts down keep-warm.
+
+![atc-cache-tax card with the cache warm, the context size and re-caching cost, the guard and keep-warm, and the keep-warm row above the prompt](docs/images/mods/atc-cache-tax.png)
+
+**atc-filetree**: the tree beside the chat. `cart.js` is lit purple because Claude just read it, modified files are yellow with `+N -N`, new files are green, and the ignored `build` folder is dimmed.
+
+![atc-filetree pane beside the chat with git colors, line counts, file ages and the file Claude just read lit purple](docs/images/mods/atc-filetree.png)
+
+**atc-progress**: the plan bar above the prompt, and the subagents pane after Claude ran two Explore agents.
+
+![atc-progress plan bar above the prompt and the subagents pane listing two finished Explore agents with model, context, tokens, cost and time](docs/images/mods/atc-progress.png)
+
+**atc-reflect**: after `remember: use pnpm, not npm, in this repo`, the rule waits above the prompt to be saved, edited or skipped.
+
+![atc-reflect band above the prompt with the rule and save to CLAUDE.md, save to ~/.claude/CLAUDE.md, edit and skip](docs/images/mods/atc-reflect.png)
+
+**atc-replay-theater**: after Claude edited two files, `/atc-replay` steps through each edit's diff.
+
+![atc-replay-theater pane showing step 1 of 2, the diff of src/cart/cart.js in red and green, and Prev, Next and Close](docs/images/mods/atc-replay-theater.png)
+
 ### Install a mod
 
 ```text
