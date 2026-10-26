@@ -1,0 +1,54 @@
+{
+  "name": "atc-filetree",
+  "version": "0.1.0",
+  "description": "Claude Code mod: the files of your folder in a pane beside the chat (/atc-filetree), with git status, +/- line counts and the branch, the files Claude reads, writes and commits lit up, keyboard navigation, search, open a file (in VS Code on Windows), and files handed to Claude with your next prompt. Works on Windows, macOS and Linux. Requires Claude Code 2.1.287+.",
+  "author": {
+    "name": "atc-net"
+  },
+  "homepage": "https://github.com/atc-net/atc-agentic-toolkit/tree/main/plugins/atc-filetree",
+  "repository": "https://github.com/atc-net/atc-agentic-toolkit",
+  "keywords": [
+    "mod",
+    "files",
+    "tree",
+    "git"
+  ],
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "activity": {
+      "type": "string",
+      "title": "Light up Claude's files",
+      "description": "on: files Claude reads (purple), writes (orange) and commits (green) are lit for two minutes. off: no marks.",
+      "default": "on",
+      "options": ["on", "off"]
+    },
+    "follow": {
+      "type": "string",
+      "title": "Follow Claude",
+      "description": "on: the tree opens the folders of each file Claude reads or writes and moves the cursor to it. off: the tree stays where you put it.",
+      "default": "on",
+      "options": ["on", "off"]
+    },
+    "openAtStart": {
+      "type": "string",
+      "title": "Open at start",
+      "description": "on: the tree opens when a session starts, once the terminal is 144 columns wide: beside the chat in a fullscreen terminal, above the prompt otherwise. off: open it with /atc-filetree.",
+      "default": "off",
+      "options": ["on", "off"]
+    },
+    "column": {
+      "type": "string",
+      "title": "Column",
+      "description": "What the right-hand column shows for each file: age (5m, 3d), size, date, or none.",
+      "default": "age",
+      "options": ["age", "size", "date", "none"]
+    },
+    "glyphs": {
+      "type": "string",
+      "title": "Icons",
+      "description": "plain: arrows on folders only, which every terminal draws. nerd: file and folder icons, which need a Nerd Font.",
+      "default": "plain",
+      "options": ["plain", "nerd"]
+    }
+  }
+}
