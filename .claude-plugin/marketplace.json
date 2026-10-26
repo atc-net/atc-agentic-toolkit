@@ -108,6 +108,11 @@
       "name": "atc-cache-tax",
       "source": "./plugins/atc-cache-tax",
       "description": "Mod (Claude Code 2.1.287+): holds a big prompt once when the prompt cache has expired and shows what re-caching costs; /atc-keepwarm keeps the cache warm while you're away"
+    },
+    {
+      "name": "atc-filetree",
+      "source": "./plugins/atc-filetree",
+      "description": "Mod (Claude Code 2.1.287+): the files of your folder in a pane beside the chat (/atc-filetree), with git status, the files Claude reads, writes and commits lit up, keyboard navigation, search and opening files (in VS Code on Windows)"
     }
   ]
 }
