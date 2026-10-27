@@ -130,9 +130,9 @@ async function readPlan($: EngineInterface, path: string, mtimeMs?: number): Pro
 
 const samePath = (a: string, b: string) => a.replace(/\\/g, '/').toLowerCase() === b.replace(/\\/g, '/').toLowerCase()
 
-/** The markdown files under <cwd>/plan, newest first. */
+/** The markdown files under <root>/plan, newest first. */
 async function planFiles($: EngineInterface): Promise<{ path: string; mtimeMs: number }[]> {
-  const dir = joinPath(await $.session.cwd(), 'plan')
+  const dir = joinPath(await $.session.root(), 'plan')
   if (!(await $.fs.exists(dir).catch(() => false))) return []
   const entries = await $.fs.list(dir).catch(() => [])
   return entries
@@ -142,7 +142,7 @@ async function planFiles($: EngineInterface): Promise<{ path: string; mtimeMs: n
     .map(f => ({ path: joinPath(dir, f.name), mtimeMs: f.mtimeMs }))
 }
 
-/** The newest plan in progress under <cwd>/plan, else the newest planned one. */
+/** The newest plan in progress under <root>/plan, else the newest planned one. */
 async function scanPlans($: EngineInterface): Promise<Plan | null> {
   let best: { plan: Plan; rank: number } | null = null
   for (const file of await planFiles($)) {
@@ -182,7 +182,7 @@ async function refreshPlan($: EngineInterface): Promise<void> {
   if (fresh && fresh.mtimeMs !== active.mtimeMs) await update($, plan, () => fresh)
 }
 
-/** Every plan under <cwd>/plan: in progress first, then planned, then the rest; newest first within each. */
+/** Every plan under <root>/plan: in progress first, then planned, then the rest; newest first within each. */
 async function listPlans($: EngineInterface): Promise<Plan[]> {
   const found: Plan[] = []
   for (const file of await planFiles($)) {
