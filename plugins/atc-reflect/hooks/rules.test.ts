@@ -1,6 +1,6 @@
 import { expect, test } from 'claude-code/testing'
 
-import { addRule, classifierPrompt, explicitRule, isCandidate, joinPath, parseVerdict, SECTION, userFolder } from './rules'
+import { addRule, classifierPrompt, explicitRule, isCandidate, isInside, joinPath, parseVerdict, SECTION, userFolder } from './rules'
 
 test('only prompts that sound like a correction are candidates', async () => {
   for (const text of ['no, use pnpm not npm', "Don't add comments to the code", 'always run the tests first', 'brug ikke var i C#']) {
@@ -75,4 +75,12 @@ test("the person's Claude folder is found on Windows, macOS and Linux", async ()
   expect(userFolder({})).toBeUndefined()
   expect(joinPath('E:\\proj', 'CLAUDE.md')).toBe('E:\\proj\\CLAUDE.md')
   expect(joinPath('/repo/', 'CLAUDE.md')).toBe('/repo/CLAUDE.md')
+})
+
+test('a folder is inside the project root, whichever separators and drive case it has', async () => {
+  expect(isInside('D:\\Code\\app\\src\\i18n', 'd:/Code/app')).toBe(true)
+  expect(isInside('/repo', '/repo/')).toBe(true)
+  expect(isInside('/repo-other', '/repo')).toBe(false)
+  expect(isInside('/Repo/src', '/repo')).toBe(false)
+  expect(isInside('/repo', '/repo/src')).toBe(false)
 })

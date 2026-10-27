@@ -8,6 +8,7 @@ import {
   classifierPrompt,
   explicitRule,
   isCandidate,
+  isInside,
   joinPath,
   normalized,
   parseVerdict,
@@ -80,12 +81,27 @@ async function storedSkipped($: EngineInterface): Promise<string[]> {
 
 /**
  * Puts this folder's waiting rules in the state, from the store, which holds every folder's. The
- * folder is the session's project root, which a shell `cd` doesn't move.
+ * folder is the session's project root, which a shell `cd` doesn't move. A rule kept before that,
+ * under the folder the shell had moved to, is moved up to this root.
  */
 async function loadPending($: EngineInterface): Promise<void> {
   const folder = await $.session.root()
-  const rules = (await storedPending($)).filter(rule => rule.folder === folder)
-  await update($, pending, () => rules)
+  const stored = await storedPending($)
+  const here = new Set(stored.filter(rule => rule.folder === folder).map(rule => normalized(rule.text)))
+  let isMoved = false
+  const moved: Rule[] = []
+  for (const rule of stored) {
+    if (rule.isRoot || rule.folder === folder || !isInside(rule.folder, folder)) {
+      moved.push(rule)
+      continue
+    }
+    isMoved = true
+    if (here.has(normalized(rule.text))) continue
+    here.add(normalized(rule.text))
+    moved.push({ ...rule, folder, isRoot: true })
+  }
+  if (isMoved) await $.store.set(PENDING_KEY, moved)
+  await update($, pending, () => moved.filter(rule => rule.folder === folder))
 }
 
 async function removePending($: EngineInterface, id: string): Promise<void> {
@@ -108,7 +124,7 @@ async function addPending($: EngineInterface, memory: Memory, text: string, scop
     await $.store.set(SKIPPED_KEY, skipped.filter(k => k !== key))
   }
   const at = await $.clock.now()
-  const rule: Rule = { id: `${at.toString(36)}-${++memory.count}`, text, scope, folder, at }
+  const rule: Rule = { id: `${at.toString(36)}-${++memory.count}`, text, scope, folder, isRoot: true, at }
   await $.store.set(PENDING_KEY, [...stored, rule].slice(-KEPT_PENDING))
   if ((await $.session.root()) === folder) await update($, pending, rules => [...rules, rule])
   return true

@@ -245,6 +245,28 @@ test('rules wait in the store for their own folder, and come back in a new sessi
   expect((await reflect($)).text).toBe('Finding rules in your prompts.\n1 rule waiting here:\n1. Use pnpm')
 })
 
+test('a rule kept under a subfolder before the root fix moves up to the root, and saves there', async ($, on) => {
+  const waiting = [
+    { id: 'a', text: 'Use pnpm', scope: 'project', folder: '/repo/src/i18n', at: 1 },
+    { id: 'b', text: 'Use cargo', scope: 'project', folder: '/repo/crates', at: 2, isRoot: true },
+    { id: 'c', text: 'use pnpm.', scope: 'project', folder: '/repo', at: 3, isRoot: true },
+    { id: 'd', text: 'Prefer records', scope: 'project', folder: '/repo/api', at: 4 },
+  ]
+  await session($, on, { store: { pending: waiting } })
+  // The duplicate of a root rule is dropped; a nested project's own root keeps its rules.
+  expect((await reflect($)).text).toBe('Finding rules in your prompts.\n2 rules waiting here:\n1. use pnpm.\n2. Prefer records')
+})
+
+test('a legacy rule kept under a subfolder saves to the root CLAUDE.md', async ($, on) => {
+  const waiting = [{ id: 'a', text: 'Use pnpm', scope: 'project', folder: '\\repo\\src\\i18n', at: 1 }]
+  const { files } = await session($, on, { store: { pending: waiting } })
+  const band = await bandOf($, 'terminal')
+  await band.press({ key: 'save-project' })
+  await band.unmount()
+  expect(files['/repo/CLAUDE.md']).toContain('- Use pnpm\n')
+  expect(files['/repo/src/i18n/CLAUDE.md']).toBeUndefined()
+})
+
 test('/atc-reflect pause stops the model checks; remember: still works', async ($, on) => {
   const { clock, asked } = await session($, on, { verdicts: { 'no, use pnpm not npm': PNPM } })
   expect((await reflect($, 'pause')).text).toMatch(/^Paused for this session/)

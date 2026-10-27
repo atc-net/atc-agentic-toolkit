@@ -8,8 +8,13 @@ export type Rule = {
   text: string
   /** Where the rule would be saved first. */
   scope: RuleScope
-  /** The session's folder when the rule was found: its `CLAUDE.md` is the project one. */
+  /** The session's project root when the rule was found: its `CLAUDE.md` is the project one. */
   folder: string
+  /**
+   * True when `folder` is the project root. Rules kept before it was may name the folder the
+   * shell had moved to instead; a session at a root above it takes them over.
+   */
+  isRoot?: boolean
   /** When it was found, in milliseconds since the epoch. */
   at: number
 }
