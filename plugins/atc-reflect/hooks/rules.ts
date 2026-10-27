@@ -154,6 +154,17 @@ export function joinPath(folder: string, name: string): string {
   return folder.endsWith('/') || folder.endsWith('\\') ? `${folder}${name}` : `${folder}${sep}${name}`
 }
 
+/** Whether a folder is the root or beneath it, whichever separators they use; a drive path ignores case. */
+export function isInside(folder: string, root: string): boolean {
+  const key = (path: string) => {
+    const slashed = path.replace(/\\/g, '/').replace(/\/+$/, '')
+    return /^[A-Za-z]:/.test(slashed) ? slashed.toLowerCase() : slashed
+  }
+  const f = key(folder)
+  const r = key(root)
+  return f === r || f.startsWith(`${r}/`)
+}
+
 /** The person's Claude Code folder: CLAUDE_CONFIG_DIR, else `.claude` in their home folder. */
 export function userFolder(env: { configDir?: string; userProfile?: string; home?: string }): string | undefined {
   if (env.configDir) return env.configDir
