@@ -182,7 +182,8 @@ async function measureDelete($: EngineInterface, text: string, cwd: string | nul
   if (dir === null) return unknown(text, "it's not clear which folder it runs in")
   if ((await $.fs.stat(dir).catch(() => null))?.kind !== 'dir') return unknown(text, `the folder it runs in (${dir}) isn't there`)
   const sessionDir = await $.session.cwd()
-  const session = normalize(sessionDir)
+  // The project root, which a shell `cd` into one of its folders doesn't move.
+  const project = normalize(await $.session.root())
   const home = await homeOf($)
   const tally: Tally = { files: 0, dirs: 0, bytes: 0, samples: [], isCapped: false }
   const notes: string[] = []
@@ -209,7 +210,7 @@ async function measureDelete($: EngineInterface, text: string, cwd: string | nul
       const where = normalize(abs)
       if (/^(?:[a-z]:)?\/?$/.test(where)) notes.push(`⚠ ${raw} is the root of a drive or of the file system`)
       else if (home !== undefined && where === normalize(home)) notes.push(`⚠ ${raw} is your home folder`)
-      else if (session === where || session.startsWith(`${where}/`)) notes.push(`⚠ ${raw} holds this whole project folder`)
+      else if (project === where || project.startsWith(`${where}/`)) notes.push(`⚠ ${raw} holds this whole project folder`)
       if (await walk($, abs, tally)) found.push(path)
       else if (!isAbsolute(path)) missing.push(raw)
     }
