@@ -8,8 +8,10 @@ const norm = (path: string) => path.replace(/\\/g, '/').replace(/^[A-Za-z]:/, ''
 type Answer = string | 'dismiss'
 
 type Setup = {
-  /** The session's folder; a file is put in it so it exists. */
+  /** The session's folder, where the shell is; a file is put in it so it exists. */
   cwd?: string
+  /** The project root, when a `cd` took the shell away from it. */
+  root?: string
   /** Files by absolute path, with their sizes; folders are implied by the paths. */
   files?: Record<string, number>
   /** Git's answer to an argv, keyed by the arguments joined with spaces. */
@@ -23,7 +25,7 @@ type Setup = {
 }
 
 async function session($: Engine, on: On, setup: Setup) {
-  const { cwd = '/repo', git = {}, repo = 'yes', answer = 'Cancel', isBroken = false } = setup
+  const { cwd = '/repo', root = cwd, git = {}, repo = 'yes', answer = 'Cancel', isBroken = false } = setup
   const files: Record<string, number> = { [`${norm(cwd)}/README.md`]: 10, ...setup.files }
   const asked: { question: string }[] = []
   const ran: string[] = []
@@ -32,6 +34,7 @@ async function session($: Engine, on: On, setup: Setup) {
     if (isBroken) throw new Error('no folder')
     return { value: cwd }
   })
+  on('session.root', async () => ({ value: root }))
   on('env.get', async (_$, e) => ({ value: e.name === 'HOME' ? '/home/me' : undefined }))
   on('fs.stat', async (_$, e) => {
     const path = norm(e.path)
@@ -160,6 +163,14 @@ test("Windows: a Git Bash path that isn't on a drive is held unmeasured", async 
   await $.tool.call({ tool: 'Bash', command: 'rm -rf /tmp/cache' } as never)
   expect(asked[0]?.question).toContain("files that can't be measured")
   expect(ran).toEqual([])
+})
+
+test('only a path that holds the project root is called the whole project, wherever the shell is', async ($, on) => {
+  const { asked } = await session($, on, { cwd: '/repo/src', root: '/repo', files: { '/repo/src/a.ts': 10 } })
+  await $.tool.call({ tool: 'Bash', command: 'rm -rf /repo/src' } as never)
+  expect(asked[0]?.question).not.toContain('whole project')
+  await $.tool.call({ tool: 'Bash', command: 'rm -rf /repo' } as never)
+  expect(asked[1]?.question).toContain('holds this whole project folder')
 })
 
 test("a cd into a folder that isn't there is held", async ($, on) => {
