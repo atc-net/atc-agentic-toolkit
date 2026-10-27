@@ -1,6 +1,6 @@
 {
   "name": "atc-progress",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Claude Code mod: a progress bar above the prompt for the active implementation plan (plan/*.md), plus a live subagents pane (/atc-progress) with model, context, tokens, estimated cost and time. Requires Claude Code 2.1.287+.",
   "author": {
     "name": "atc-net"
