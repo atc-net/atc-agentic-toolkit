@@ -1,6 +1,6 @@
 {
   "name": "atc-reflect",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Claude Code mod: spots corrections in your prompts (\"no, use pnpm\") and offers each as a one-line rule above the prompt, to save to CLAUDE.md or ~/.claude/CLAUDE.md, edit or skip. remember: <rule> keeps one straight away. Works on Windows, macOS and Linux. Requires Claude Code 2.1.287+.",
   "author": {
     "name": "atc-net"

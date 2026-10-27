@@ -1,6 +1,6 @@
 {
   "name": "atc-blast-radius",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Claude Code mod: holds a risky shell command (rm -rf, Remove-Item -Recurse, git reset --hard, git clean, force pushes, database migrations) and shows what it would delete or throw away before you choose Proceed or Cancel. Works with the Bash and PowerShell tools on Windows, macOS and Linux. Requires Claude Code 2.1.287+.",
   "author": {
     "name": "atc-net"

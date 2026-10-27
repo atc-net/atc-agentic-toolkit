@@ -1,6 +1,6 @@
 {
   "name": "atc-filetree",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Claude Code mod: the files of your folder in a pane beside the chat (/atc-filetree), with git status, +/- line counts and the branch, the files Claude reads, writes and commits lit up, keyboard navigation, search, open a file (in VS Code on Windows), and files handed to Claude with your next prompt. Works on Windows, macOS and Linux. Requires Claude Code 2.1.287+.",
   "author": {
     "name": "atc-net"
