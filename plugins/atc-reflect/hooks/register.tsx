@@ -78,9 +78,12 @@ async function storedSkipped($: EngineInterface): Promise<string[]> {
   return Array.isArray(value) ? (value as string[]) : []
 }
 
-/** Puts this folder's waiting rules in the state, from the store, which holds every folder's. */
+/**
+ * Puts this folder's waiting rules in the state, from the store, which holds every folder's. The
+ * folder is the session's project root, which a shell `cd` doesn't move.
+ */
 async function loadPending($: EngineInterface): Promise<void> {
-  const folder = await $.session.cwd()
+  const folder = await $.session.root()
   const rules = (await storedPending($)).filter(rule => rule.folder === folder)
   await update($, pending, () => rules)
 }
@@ -107,7 +110,7 @@ async function addPending($: EngineInterface, memory: Memory, text: string, scop
   const at = await $.clock.now()
   const rule: Rule = { id: `${at.toString(36)}-${++memory.count}`, text, scope, folder, at }
   await $.store.set(PENDING_KEY, [...stored, rule].slice(-KEPT_PENDING))
-  if ((await $.session.cwd()) === folder) await update($, pending, rules => [...rules, rule])
+  if ((await $.session.root()) === folder) await update($, pending, rules => [...rules, rule])
   return true
 }
 
@@ -237,7 +240,7 @@ export const register: Register = (on, options) => {
       const edited = memory.editing
       memory.editing = undefined
       if (edited !== undefined) await removePending($, edited.id)
-      const isAdded = await addPending($, memory, explicit.rule, edited?.scope ?? 'project', await $.session.cwd(), true)
+      const isAdded = await addPending($, memory, explicit.rule, edited?.scope ?? 'project', await $.session.root(), true)
       clearBox($, e.text)
       return { drop: isAdded ? 'atc-reflect kept the rule. Save it from the band above the prompt.' : 'atc-reflect: that rule is waiting already.' }
     }
@@ -245,7 +248,7 @@ export const register: Register = (on, options) => {
     const entered = await next(e)
     try {
       if (!isTyped || entered.drop !== undefined || !isModelOn || (await read($, isPaused)) || !isCandidate(e.text)) return entered
-      if (memory.queue.length < MAX_QUEUED) memory.queue.push({ text: e.text, folder: await $.session.cwd() })
+      if (memory.queue.length < MAX_QUEUED) memory.queue.push({ text: e.text, folder: await $.session.root() })
       schedule($, memory)
     } catch {
       // Finding a rule is never worth failing a prompt for.

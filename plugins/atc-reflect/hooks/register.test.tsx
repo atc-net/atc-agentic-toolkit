@@ -13,6 +13,9 @@ const BAND = {
 const norm = (path: string) => path.replace(/\\/g, '/').replace(/^[A-Za-z]:/, '')
 
 type Setup = {
+  /** The project root. */
+  root?: string
+  /** Where the shell is, when a `cd` took it away from the root. */
   cwd?: string
   /** File texts by path. Writes change them. */
   files?: Record<string, string>
@@ -26,7 +29,7 @@ type Setup = {
 }
 
 async function session($: Engine, on: On, setup: Setup = {}) {
-  const { cwd = '/repo', verdicts = {} } = setup
+  const { root = '/repo', cwd = root, verdicts = {} } = setup
   const files: Record<string, string> = {}
   for (const [path, text] of Object.entries(setup.files ?? {})) files[norm(path)] = text
   const clock: MockClock = mock.clock(on, { now: 1_000_000 })
@@ -38,6 +41,7 @@ async function session($: Engine, on: On, setup: Setup = {}) {
   const filled: string[] = []
   const prompts: string[] = []
 
+  on('session.root', async () => ({ value: root }))
   on('session.cwd', async () => ({ value: cwd }))
   on('fs.read', async (_$, e) => {
     const text = files[norm(e.path)]
@@ -75,7 +79,7 @@ async function session($: Engine, on: On, setup: Setup = {}) {
   on('ui.render', async () => ({ type: 'engine', ref: 0 }) as never)
   on('command.register', async () => ({ value: undefined }) as never)
   on('session.start', async (_$, e) => ({ cwd: e.cwd }))
-  await $.session.start({ cwd, surface: 'terminal', isInteractive: true })
+  await $.session.start({ cwd: root, surface: 'terminal', isInteractive: true })
   return { files, clock, rows, asked, toasts, filled, prompts, box }
 }
 
@@ -136,6 +140,16 @@ test('save writes the rule into the project CLAUDE.md and tells the model', asyn
   expect(toasts.at(-1)).toBe('Saved to CLAUDE.md.')
   expect(JSON.stringify(rows.appended())).toContain('Follow it from now on: Use pnpm, not npm.')
   expect(await ruleOn($, 'terminal')).toBeUndefined()
+})
+
+test('save writes to the project root CLAUDE.md after a shell cd moved into a subfolder', async ($, on) => {
+  const { files } = await session($, on, { root: '/repo', cwd: '/repo/src/i18n/locales/en' })
+  await typed($, 'remember: Use pnpm')
+  const band = await bandOf($, 'terminal')
+  await band.press({ key: 'save-project' })
+  await band.unmount()
+  expect(files['/repo/CLAUDE.md']).toContain('- Use pnpm\n')
+  expect(files['/repo/src/i18n/locales/en/CLAUDE.md']).toBeUndefined()
 })
 
 test('save to ~/.claude/CLAUDE.md creates the file in the home folder', async ($, on) => {
