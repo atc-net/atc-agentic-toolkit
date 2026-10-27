@@ -136,7 +136,7 @@ function clampTop(first: number, at: number, room: number, total: number): numbe
 }
 
 async function rootOf($: EngineInterface): Promise<string> {
-  return (await read($, root)) || (await $.session.cwd())
+  return (await read($, root)) || (await $.session.root())
 }
 
 async function listDir($: EngineInterface, memory: Memory, base: string, dir: string): Promise<Entry[] | null> {
@@ -508,9 +508,9 @@ async function isShown($: EngineInterface): Promise<boolean> {
 
 /** `/atc-filetree <path>`: shows another folder. */
 async function pinFolder($: EngineInterface, memory: Memory, arg: string): Promise<string> {
-  const cwd = await $.session.cwd()
+  const project = await $.session.root()
   const isAbsolute = arg.startsWith('/') || arg.startsWith('\\') || isWindowsPath(arg) || arg.startsWith('~')
-  const asked = isAbsolute ? arg : toDisk(cwd, slash(arg), isWindowsPath(cwd))
+  const asked = isAbsolute ? arg : toDisk(project, slash(arg), isWindowsPath(project))
   const stat = await $.fs.stat(asked, { resolve: true }).catch(() => null)
   if (stat === null || stat.kind !== 'dir') return `${arg} is not a folder.`
   const folder = stat.realPath ?? asked
@@ -695,10 +695,10 @@ export const register: Register = (on, options) => {
       description: 'Show the files of this folder in a pane, with git status and what Claude reads and writes',
       argumentHint: '[path|refresh|unpick|close|help]',
     })
-    const cwd = await $.session.cwd()
+    const project = await $.session.root()
     const held = await read($, root)
-    memory.isWindows = isWindowsPath(held || cwd)
-    if (held === '') await update($, root, () => cwd)
+    memory.isWindows = isWindowsPath(held || project)
+    if (held === '') await update($, root, () => project)
     // A reload keeps the state, and the pane with it: read what changed meanwhile.
     if (await read($, isOpen)) scheduleRefresh($, memory)
     else if (memory.config.openAtStart === 'on') void openPane($, memory, false).catch(() => undefined)

@@ -33,7 +33,9 @@ type Setup = {
   git?: Git | null
   options?: Record<string, unknown>
   uname?: string
-  /** The session's folder; a drive letter makes it Windows. */
+  /** The session's project root; a drive letter makes it Windows. */
+  root?: string
+  /** Where the shell is, when a `cd` took it away from the root. */
   cwd?: string
   /** Whether `where.exe code.cmd` finds VS Code, on Windows. */
   hasVscode?: boolean
@@ -44,7 +46,8 @@ const LAUNCHER = 'C:\\Code\\bin\\code.cmd'
 const STATUS = ['# branch.head main', '# branch.ab +2 -0', '1 .M N... 100644 100644 100644 a a README.md', '? src/lib/new.ts', '! dist/', ''].join('\0')
 
 async function session($: Engine, on: On, setup: Setup = {}) {
-  const cwd = setup.cwd ?? '/repo'
+  const root = setup.root ?? '/repo'
+  const cwd = setup.cwd ?? root
   const clock: MockClock = mock.clock(on, { now: NOW })
   const files = setup.files ?? { 'README.md': 100, 'src/a.ts': 2048, 'src/lib/b.ts': 10, 'src/lib/new.ts': 5, 'dist/out.js': 1, 'tools/x.ps1': 1, 'tools/run': 1 }
   const git = setup.git === null ? null : { prefix: '', status: STATUS, numstat: ['3\t1\tREADME.md', ''].join('\0'), ...setup.git }
@@ -53,6 +56,7 @@ async function session($: Engine, on: On, setup: Setup = {}) {
   const toasts: string[] = []
   const opened: string[] = []
 
+  on('session.root', async () => ({ value: root }))
   on('session.cwd', async () => ({ value: cwd }))
   on('fs.list', async (_$, e) => {
     const dir = norm(e.path).replace(/^\/repo\/?/, '')
@@ -125,7 +129,7 @@ async function session($: Engine, on: On, setup: Setup = {}) {
   on('tool.call', async () => ({ result: 'ok' }) as never)
   on('prompt.submit', async (_$, e) => ({ text: e.text, context: e.context }) as never)
   on('session.start', async (_$, e) => ({ cwd: e.cwd }))
-  await $.session.start({ cwd, surface: 'terminal', isInteractive: true })
+  await $.session.start({ cwd: root, surface: 'terminal', isInteractive: true })
   return { clock, runs, toasts, opened }
 }
 
@@ -354,6 +358,18 @@ test('/atc-filetree <path> shows that folder; /atc-filetree again closes the tre
   expect(((await filetree($)) as { text: string }).text).toBe('Tree closed.')
 })
 
+test("the tree and /atc-filetree <path> start at the project root, not where the shell's cd went", async ($, on) => {
+  await session($, on, { root: '/repo', cwd: '/repo/src/lib' })
+  await filetree($)
+  const ui = await pane($)
+  expect(await rows(ui)).toEqual(['› dist', 'src', 'tools', 'README.md'])
+  await ui.unmount()
+  expect(((await filetree($, 'src')) as { text: string }).text).toMatch(/^Showing .*src/)
+  const shown = await pane($)
+  expect(await rows(shown)).toEqual(['› lib', 'a.ts'])
+  await shown.unmount()
+})
+
 test('Enter in an empty search field closes the search', async ($, on) => {
   await session($, on)
   await filetree($)
@@ -381,7 +397,7 @@ test('the cursor follows the focus ring, so l, h and o act on the row the arrows
 })
 
 test('on Windows a file opens in VS Code through its cli, scripts too; without VS Code it says so', async ($, on) => {
-  const { runs } = await session($, on, { cwd: 'C:\\repo' })
+  const { runs } = await session($, on, { root: 'C:\\repo' })
   await filetree($)
   const ui = await pane($)
   await ui.press({ key: 'row:README.md' })
@@ -396,7 +412,7 @@ test('on Windows a file opens in VS Code through its cli, scripts too; without V
 })
 
 test('on Windows without VS Code nothing is started, and a note says why', async ($, on) => {
-  const { runs, toasts } = await session($, on, { cwd: 'C:\\repo', hasVscode: false })
+  const { runs, toasts } = await session($, on, { root: 'C:\\repo', hasVscode: false })
   await filetree($)
   const ui = await pane($)
   await ui.press({ key: 'row:README.md' })
