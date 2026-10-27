@@ -28,7 +28,7 @@ The bar follows the newest plan by itself until you choose one. After that, the 
 
 ### Following (the default)
 
-- When a session starts, it reads `<cwd>/plan/*.md` and picks the newest plan whose front matter says `status: 'In progress'`. If there is none, it picks the newest `Planned` one.
+- When a session starts, it reads `plan/*.md` in the project root and picks the newest plan whose front matter says `status: 'In progress'`. If there is none, it picks the newest `Planned` one.
 - Any `Write` or `Edit` to a `plan/*.md` file makes that plan the active one and redraws the bar.
 - At the end of every turn, the newest file in `plan/` takes over the bar if it was changed after the active plan and is `In progress` or `Planned`. That catches plans written by the shell or by hand, too.
 

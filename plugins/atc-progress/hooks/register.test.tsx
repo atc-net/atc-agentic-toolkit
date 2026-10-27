@@ -2,7 +2,7 @@ import { expect, mock, test } from 'claude-code/testing'
 import type { Engine } from 'claude-code/testing'
 import type { On } from 'claude-code'
 
-const CWD = '/repo'
+const ROOT = '/repo'
 const PLAN_PATH = '/repo/plan/feature-demo-1.md'
 
 function planText(ticks: [boolean, boolean, boolean, boolean, boolean]): string {
@@ -51,7 +51,9 @@ async function session($: Engine, on: On, files: Record<string, string>, mtimes:
   mock.clock(on, { now: Date.parse('2026-10-17T10:00:00Z') })
   const paths = () => Object.keys(files)
   const mtimeOf = (path: string) => mtimes[path] ?? 1
-  on('session.cwd', async () => ({ value: CWD }))
+  on('session.root', async () => ({ value: ROOT }))
+  // The shell's cd moved away from the root; plans stay where the root is.
+  on('session.cwd', async () => ({ value: `${ROOT}/src` }))
   on('fs.exists', async (_$, e) => ({ value: paths().some(k => k === norm(e.path) || k.startsWith(`${norm(e.path)}/`)) }))
   on('fs.list', async (_$, e) => ({
     value: paths()
@@ -96,7 +98,7 @@ async function session($: Engine, on: On, files: Record<string, string>, mtimes:
   })
   on('turn.complete', async (_$, e) => ({ text: e.answer }) as never)
   on('session.start', async (_$, e) => ({ cwd: e.cwd }))
-  await $.session.start({ cwd: CWD, surface: 'terminal', isInteractive: true })
+  await $.session.start({ cwd: ROOT, surface: 'terminal', isInteractive: true })
 }
 
 async function bandTexts($: Engine, surface: 'terminal' | 'desktop') {
