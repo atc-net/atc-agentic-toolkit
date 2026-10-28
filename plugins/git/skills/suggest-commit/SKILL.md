@@ -22,6 +22,7 @@ NEVER use `cd <path> && git` compound commands — they trigger security approva
 - Reference or incorporate any code changes you may have seen, made, or discussed earlier in this conversation — they are not the source of truth; only the staged diff output is
 - Include the "Generated with Claude Code" footer, "Co-Authored-By: Claude" line, or any other Claude Code attribution text
 - Add any text outside the code fence — no preamble, no trailing notes, change analysis, or commentary
+- Mention plans, phases, steps, tasks or items, or any reference number — issue, ticket, bug, work item or PR numbers (`#123`, `AB#4567`, `JIRA-89`), plan item numbers ("Phase 2, item 3") or similar IDs — not even when the branch name, the conversation or a plan file contains one. Describe what the code change does, nothing else
 
 These footers are for actual commits only, NOT for commit suggestions.
 
@@ -72,6 +73,12 @@ type(scope): short description
 - No period at end of description
 - Keep description under 50 characters (72 max)
 - Scope is optional but recommended for clarity
+- No plan, item, issue, bug or other reference numbers in the description or the bullets
+
+| Instead of | Write |
+|------------|-------|
+| `fix(auth): resolve bug #482 in token refresh` | `fix(auth): refresh expired tokens before retrying` |
+| `feat(api): implement phase 2 item 3 of the plan` | `feat(api): add paging to device search` |
 
 #### Commit Types
 

@@ -51,11 +51,17 @@ git diff origin/${BASE_BRANCH}..HEAD                  # Full diff for deeper ana
 
 ### Step 4: Generate PR Title
 
-Create a concise PR title (under 70 characters):
+Create a concise PR title (under 70 characters) that reads as plain, normal text:
 
 - Use imperative mood ("Add", "Fix", "Update", "Refactor")
 - Be specific about what changed
-- Match the repository's existing PR/commit style
+- Capitalize the first word; keep product and proper names as they are spelled
+- Never use Conventional Commits format: no `type:` or `type(scope):` prefix, even when the commits use one
+
+| Instead of | Write |
+|------------|-------|
+| `fix(auth): refresh expired tokens` | `Refresh expired tokens before retrying requests` |
+| `feat: add device search paging` | `Add paging to device search` |
 
 ### Step 5: Generate PR Summary
 
@@ -151,11 +157,12 @@ PR Title: <the suggested title>
 - Lines longer than 72 characters — shorten or split
 - Multi-line bullets — each bullet must be one line only
 - Any text outside the code fence — no preamble, no trailing notes, branch analysis, or commentary
+- Work outside this branch's diff — changes needed in other repositories, services or pipelines, release coordination, or follow-up tasks. A PR for an application migration doesn't mention infrastructure that must be released with it, and an infrastructure PR doesn't mention the application. Describe only what this PR changes, even when the conversation or a plan covers more
 
 ## Guidelines
 
 - Keep the PR title under 70 characters
 - Keep change descriptions concise but informative (focus on the "what" and "why")
 - If the branch has many commits, synthesize them into logical groups rather than listing each commit
-- Match the tone and style of the repository's existing PRs when possible
+- Match the tone and style of the repository's existing PRs when possible, but keep the title plain text even when they don't
 - If commits follow Conventional Commits format, use that to inform categorization
