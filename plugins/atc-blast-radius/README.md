@@ -28,6 +28,13 @@ Run it?
 
 Commands with nothing at risk run without a question. Examples: `git reset --hard` with a clean working tree, `git clean -f` with no untracked files, or `rm -rf /full/path/build` when that folder isn't there.
 
+Scratch work runs without a question too:
+- **Temp folders.** Anything below a folder named `tmp` or `temp` outside the project, in any case and with `/` or `\`. A project's own `src/temp` is still guarded. Examples: `/tmp/…`, `C:\Users\me\AppData\Local\Temp\…` (Claude's scratchpad) and `$env:TEMP\…`. Anything below the folder in `TMPDIR`, `TEMP` or `TMP` counts too, such as macOS's `/var/folders/…/T`.
+- **Test output.** `test-results`, `playwright-report`, `blob-report`, `.playwright-mcp` and `.playwright-cli`. Playwright's config lives in `playwright.config.*`, outside these folders.
+- **Linked git worktrees.** Deletes inside a worktree that `git worktree list` names, or one under `.claude/worktrees`, run freely. So do `git checkout`, `git restore`, `git reset --hard` and `git clean` that run there. A force push from a worktree still asks, because it changes the remote.
+
+A scratch folder that holds the project itself keeps its guard. That covers a project kept in a temp folder and a session started inside a worktree. The temp folder itself (`rm -rf /tmp`) is guarded too, as is the main working tree.
+
 When in doubt, it asks rather than lets a command through:
 - **A relative path that isn't found** (`rm -rf build` with no `build` in the session's folder). Claude's shell keeps its own folder between commands, so it may be somewhere else where `build` does exist.
 - **A folder that doesn't exist**, such as one a `cd` points to.
@@ -70,7 +77,7 @@ Warnings are added when a path is a drive or file-system root, your home folder,
 
 - **Where it hooks in.** It hooks `tool.call` for the Bash and PowerShell tools.
 - **Measuring.** It measures with Claude Code's own file API and with `git`, run with arguments and never through a shell. It needs no `bash`, `find`, `du` or `sleep`, so it behaves the same on every platform. A big tree is counted up to 20,000 entries or 5 seconds, and the count then shows a `+`.
-- **Git Bash paths.** On Windows, the Bash tool's drive paths (`/e/work/build`) are measured on that drive (`E:\work\build`). Other Git Bash paths such as `/tmp` can't be followed, so the command is held with a note.
+- **Git Bash paths.** On Windows, the Bash tool's drive paths (`/e/work/build`) are measured on that drive (`E:\work\build`). Git Bash's `/tmp` is a temp folder, so it runs without a question. Other Git Bash paths such as `/usr/share` can't be followed, so the command is held with a note.
 - **Asking.** The question uses Claude Code's own dialog, with **Cancel** as the first option. The files or commits it would touch are listed in the question itself, up to 10 of them.
 - **Failures.** If the mod fails while checking a command, the command is refused, not let through. Claude is told why, and you can turn the mod off with `/plugin` if you want the command to run.
 - **Permissions.** It only adds a check and never replaces one. After **Proceed**, Claude Code's normal permission rules still apply: a prompt in default mode, the classifier in auto mode, and your allow and deny rules.

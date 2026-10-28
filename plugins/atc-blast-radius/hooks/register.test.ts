@@ -160,9 +160,114 @@ test('Windows: a Git Bash drive path is measured on that drive', async ($, on) =
 
 test("Windows: a Git Bash path that isn't on a drive is held unmeasured", async ($, on) => {
   const { asked, ran } = await session($, on, { cwd: 'E:\\scratch' })
-  await $.tool.call({ tool: 'Bash', command: 'rm -rf /tmp/cache' } as never)
+  await $.tool.call({ tool: 'Bash', command: 'rm -rf /usr/share/cache' } as never)
   expect(asked[0]?.question).toContain("files that can't be measured")
   expect(ran).toEqual([])
+})
+
+test('deletes in a temp folder run without asking, whichever way the folder is written', async ($, on) => {
+  const { asked, ran } = await session($, on, {
+    cwd: 'E:\\scratch',
+    files: { '/users/me/appdata/local/temp/claude/x/scratchpad/out.txt': 10 },
+  })
+  const commands: Array<['Bash' | 'PowerShell', string]> = [
+    ['Bash', 'diff /tmp/ip_1.txt /tmp/ip_3.txt; rm -f /tmp/ip_*.txt'],
+    ['PowerShell', 'Remove-Item -Recurse -Force C:\\Users\\me\\AppData\\Local\\Temp\\claude\\x\\scratchpad'],
+    ['PowerShell', 'Remove-Item -Recurse -Force "$env:TEMP\\foo"'],
+    ['Bash', 'rm -rf "${TMPDIR}/build-cache" /var/tmp/x'],
+  ]
+  for (const [tool, command] of commands) await $.tool.call({ tool, command } as never)
+  expect(asked).toEqual([])
+  expect(ran).toHaveLength(commands.length)
+})
+
+test('a temp folder itself, or one that holds the project, is still guarded', async ($, on) => {
+  const { asked } = await session($, on, {
+    cwd: '/tmp/demo',
+    files: { '/tmp/demo/build/a.js': 10, '/tmp/other/b.js': 10 },
+  })
+  await $.tool.call({ tool: 'Bash', command: 'rm -rf build' } as never)
+  expect(linesOf(asked)[0]).toBe('rm -rf build would delete 1 file in 1 folder (10 B).')
+  await $.tool.call({ tool: 'Bash', command: 'rm -rf /tmp/../tmp/demo' } as never)
+  expect(asked[1]?.question).toContain('holds this whole project folder')
+})
+
+test("a temp folder that is the project's own is guarded; test output in a project under temp is not", async ($, on) => {
+  const { asked, ran } = await session($, on, {
+    files: { '/repo/src/Temp/data.json': 10, '/repo/tmp/fixtures/a.json': 10 },
+  })
+  await $.tool.call({ tool: 'Bash', command: 'rm -rf src/Temp' } as never)
+  await $.tool.call({ tool: 'Bash', command: 'rm -rf tmp/fixtures' } as never)
+  expect(asked).toHaveLength(2)
+  expect(ran).toEqual([])
+})
+
+test('test output in a project kept in a temp folder runs without asking', async ($, on) => {
+  const { asked, ran } = await session($, on, { cwd: '/tmp/demo', files: { '/tmp/demo/test-results/a.png': 10 } })
+  await $.tool.call({ tool: 'Bash', command: 'rm -rf test-results' } as never)
+  expect(asked).toEqual([])
+  expect(ran).toHaveLength(1)
+})
+
+test('scratch targets are left out of a delete that also touches the project', async ($, on) => {
+  const { asked } = await session($, on, { files: { ...BUILD, '/repo/test-results/run.json': 10 } })
+  await $.tool.call({ tool: 'Bash', command: 'rm -rf /tmp/x test-results build' } as never)
+  expect(linesOf(asked)[0]).toBe('rm -rf /tmp/x test-results build would delete 3 files in 2 folders (3.1 KB).')
+})
+
+test('test output from Playwright runs without asking', async ($, on) => {
+  const { asked, ran } = await session($, on, {
+    files: { '/repo/test-results/a.png': 10, '/repo/.playwright-mcp/page.yml': 10, '/repo/web/playwright-report/index.html': 10 },
+  })
+  await $.tool.call({ tool: 'Bash', command: 'rm -rf test-results .playwright-mcp web/playwright-report' } as never)
+  await $.tool.call({ tool: 'Bash', command: 'rm -rf .playwright-cli/traces' } as never)
+  expect(asked).toEqual([])
+  expect(ran).toHaveLength(2)
+})
+
+const WORKTREES = {
+  'worktree list --porcelain':
+    'worktree /repo\nHEAD abc\nbranch refs/heads/main\n\nworktree /work/repo-feature\nHEAD def\nbranch refs/heads/feature\n',
+  'status --porcelain': ' M src/a.ts\n',
+  'status --porcelain -- .': ' M src/a.ts\n',
+}
+
+test('deletes in a linked worktree run without asking, the main tree is still guarded', async ($, on) => {
+  const { asked, ran } = await session($, on, {
+    files: { '/work/repo-feature/src/a.ts': 10, '/repo/.claude/worktrees/agent-1/b.ts': 10, ...BUILD },
+    git: WORKTREES,
+  })
+  await $.tool.call({ tool: 'Bash', command: 'rm -rf /work/repo-feature' } as never)
+  await $.tool.call({ tool: 'Bash', command: 'rm -rf .claude/worktrees/agent-1' } as never)
+  expect(asked).toEqual([])
+  expect(ran).toHaveLength(2)
+  await $.tool.call({ tool: 'Bash', command: 'rm -rf build' } as never)
+  expect(asked).toHaveLength(1)
+})
+
+test('git checkout runs without asking in a linked worktree, and asks in the main tree', async ($, on) => {
+  const { asked, ran } = await session($, on, { git: WORKTREES })
+  await $.tool.call({ tool: 'Bash', command: 'git -C /work/repo-feature checkout -- .' } as never)
+  await $.tool.call({ tool: 'Bash', command: 'cd /work/repo-feature && git reset --hard' } as never)
+  expect(asked).toEqual([])
+  expect(ran).toHaveLength(2)
+  await $.tool.call({ tool: 'Bash', command: 'git checkout -- .' } as never)
+  expect(linesOf(asked)[0]).toBe('git checkout -- . would throw away changes in 1 file.')
+})
+
+test('a session started in a worktree keeps that worktree guarded', async ($, on) => {
+  const { asked } = await session($, on, {
+    cwd: '/repo/.claude/worktrees/agent-1',
+    files: { '/repo/.claude/worktrees/agent-1/build/a.js': 10 },
+  })
+  await $.tool.call({ tool: 'Bash', command: 'rm -rf build' } as never)
+  expect(asked).toHaveLength(1)
+})
+
+test('a force push from a linked worktree still asks', async ($, on) => {
+  const { asked } = await session($, on, { git: WORKTREES })
+  await $.tool.call({ tool: 'Bash', command: 'git -C /work/repo-feature push --force' } as never)
+  expect(asked).toHaveLength(1)
 })
 
 test('only a path that holds the project root is called the whole project, wherever the shell is', async ($, on) => {
