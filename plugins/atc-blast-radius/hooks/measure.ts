@@ -57,6 +57,92 @@ export function normalize(path: string): string {
   return (parts.join('/') || '/').toLowerCase()
 }
 
+/** Whether `path` is `folder` or below it, both normalized. */
+function isIn(path: string, folder: string): boolean {
+  return path === folder || path.startsWith(folder.endsWith('/') ? folder : `${folder}/`)
+}
+
+/** Folders a test run writes its output to, whatever the project. */
+const TEST_OUTPUT = new Set(['test-results', 'playwright-report', 'blob-report', '.playwright-mcp', '.playwright-cli'])
+
+/** A temp folder written as a variable: `$TMPDIR`, `${TEMP}`, `$env:TEMP`, `%TMP%`. */
+const TEMP_VARIABLE = /^(?:\$\{?(?:TEMP|TMP|TMPDIR)\}?|\$env:(?:TEMP|TMP)|%(?:TEMP|TMP)%)(?=[\\/]|$)/i
+
+/** A path with a leading temp-folder variable written as `/tmp`, which counts as one just the same. */
+export function withTempVariable(path: string): string {
+  return path.replace(TEMP_VARIABLE, '/tmp')
+}
+
+/** Where scratch work goes: temp folders, test output and linked git worktrees. */
+type Scratch = { temps: string[]; worktrees: string[] }
+
+/**
+ * The temp folder a normalized path is below, or null: one named `tmp` or `temp` (Claude's scratchpad
+ * is below one) or one the environment names (macOS's `/var/folders/…/T`). A `temp` folder inside the
+ * project is the project's own, not scratch.
+ */
+function tempOf(where: string, temps: readonly string[], project: string): string | null {
+  const parts = where.split('/')
+  const named = parts.findIndex((part, n) => (part === 'tmp' || part === 'temp') && n < parts.length - 1)
+  const folder = named > 0 ? parts.slice(0, named + 1).join('/') : temps.find(root => where !== root && isIn(where, root))
+  return folder !== undefined && !isIn(folder, project) ? folder : null
+}
+
+/** The test-output folder a normalized path is in, or null. */
+function outputOf(where: string): string | null {
+  const parts = where.split('/')
+  const output = parts.findIndex(part => TEST_OUTPUT.has(part))
+  return output > 0 ? parts.slice(0, output + 1).join('/') : null
+}
+
+/** The linked worktree a normalized path is in, listed by git or under `.claude/worktrees`, or null. */
+function worktreeOf(where: string, worktrees: readonly string[]): string | null {
+  const listed = worktrees.find(folder => isIn(where, folder))
+  if (listed !== undefined) return listed
+  const parts = where.split('/')
+  const claude = parts.findIndex((part, n) => part === '.claude' && parts[n + 1] === 'worktrees')
+  const name = parts[claude + 2]
+  return claude > 0 && name !== undefined && name !== '' && !/[*?[]/.test(name) ? parts.slice(0, claude + 3).join('/') : null
+}
+
+/**
+ * Whether a scratch folder leaves the project alone: a project kept in a temp folder, or a session
+ * started in a worktree, keeps its guard.
+ */
+function isApart(folder: string | null, project: string): boolean {
+  return folder !== null && !isIn(project, folder)
+}
+
+/**
+ * Whether deleting at `where` touches only scratch work: a temp folder, test output or a linked
+ * worktree, none of which holds the project.
+ */
+export function isScratch(where: string, project: string, scratch: Scratch): boolean {
+  return [tempOf(where, scratch.temps, project), outputOf(where), worktreeOf(where, scratch.worktrees)].some(folder =>
+    isApart(folder, project),
+  )
+}
+
+/**
+ * The temp folders the environment names, and the project's linked worktrees (git lists the main
+ * working tree first). A git that doesn't answer lists no worktrees, so nothing is let through.
+ */
+async function scratchFor($: EngineInterface, project: string): Promise<Scratch> {
+  const session = await $.session.cwd()
+  const home = await homeOf($)
+  const named = await Promise.all([
+    $.env.get('TMPDIR').catch(() => undefined),
+    $.env.get('TEMP').catch(() => undefined),
+    $.env.get('TMP').catch(() => undefined),
+  ])
+  const temps = named.filter((path): path is string => !!path).map(path => normalize(path)).filter(path => path.split('/').length > 2)
+  const listed = lines(await git($, project, ['worktree', 'list', '--porcelain']))
+    .filter(line => line.startsWith('worktree '))
+    .map(line => line.slice('worktree '.length).trim())
+  const worktrees = listed.slice(1).map(path => normalize(hostPath(session, path, home) ?? path))
+  return { temps, worktrees }
+}
+
 async function homeOf($: EngineInterface): Promise<string | undefined> {
   return (await $.env.get('HOME').catch(() => undefined)) ?? (await $.env.get('USERPROFILE').catch(() => undefined))
 }
@@ -99,11 +185,16 @@ async function repoState($: EngineInterface, dir: string): Promise<'repo' | 'non
   return /not a git repository/i.test(ran.stderr) ? 'none' : 'unknown'
 }
 
-/** Measures a git finding only inside a work tree; `none` means git itself will refuse it. */
+/**
+ * Measures a git finding only inside a work tree; `none` means git itself will refuse it. With
+ * `isLocal` (it changes only the work tree, not a remote) it runs freely in a linked worktree that
+ * isn't the project's own.
+ */
 async function inRepo(
   $: EngineInterface,
   text: string,
   cwd: string | null,
+  isLocal: boolean,
   measure: (dir: string) => Promise<Part>,
 ): Promise<Part> {
   const dir = await folderOf($, cwd)
@@ -111,6 +202,13 @@ async function inRepo(
   const state = await repoState($, dir)
   if (state === 'none') return { text, summary: 'do nothing (not a git repository)', details: [], isAtRisk: false }
   if (state === 'unknown') return unknown(text, `git couldn't be asked about ${dir}`)
+  if (isLocal) {
+    const project = normalize(await $.session.root())
+    const { worktrees } = await scratchFor($, project)
+    if (isApart(worktreeOf(normalize(dir), worktrees), project)) {
+      return { text, summary: 'change only a linked worktree', details: [], isAtRisk: false }
+    }
+  }
   return measure(dir)
 }
 
@@ -185,16 +283,20 @@ async function measureDelete($: EngineInterface, text: string, cwd: string | nul
   // The project root, which a shell `cd` into one of its folders doesn't move.
   const project = normalize(await $.session.root())
   const home = await homeOf($)
+  const scratch = await scratchFor($, project)
   const tally: Tally = { files: 0, dirs: 0, bytes: 0, samples: [], isCapped: false }
   const notes: string[] = []
   const found: string[] = []
   const missing: string[] = []
-  for (const raw of targets) {
+  for (const written of targets) {
+    const raw = withTempVariable(written)
     if (/[$%`({]/.test(raw)) {
-      notes.push(`${raw}: can't be measured (a variable or expression)`)
+      notes.push(`${written}: can't be measured (a variable or expression)`)
       continue
     }
     const target = hostPath(sessionDir, raw, home)
+    // Git Bash's own `/tmp` can't be followed, but it is a temp folder all the same.
+    if (isScratch(normalize(target === null ? raw : joinPath(dir, target)), project, scratch)) continue
     if (target === null) {
       notes.push(`${raw}: can't be measured (no home folder, or a Git Bash path that isn't on a drive)`)
       continue
@@ -208,6 +310,7 @@ async function measureDelete($: EngineInterface, text: string, cwd: string | nul
     for (const path of paths) {
       const abs = joinPath(dir, path)
       const where = normalize(abs)
+      if (isScratch(where, project, scratch)) continue
       if (/^(?:[a-z]:)?\/?$/.test(where)) notes.push(`⚠ ${raw} is the root of a drive or of the file system`)
       else if (home !== undefined && where === normalize(home)) notes.push(`⚠ ${raw} is your home folder`)
       else if (project === where || project.startsWith(`${where}/`)) notes.push(`⚠ ${raw} holds this whole project folder`)
@@ -228,7 +331,7 @@ async function measureDelete($: EngineInterface, text: string, cwd: string | nul
     }
   }
   if (found.length === 0 && !unmeasured && !isDangerous) {
-    return { text, summary: 'delete nothing (no such files)', details: [], isAtRisk: false }
+    return { text, summary: 'delete nothing at risk (no such files, or only scratch files)', details: [], isAtRisk: false }
   }
   const tracked = found.length ? lines(await git($, dir, ['ls-files', '--', ...found])).length : 0
   const plus = tally.isCapped ? '+' : ''
@@ -355,13 +458,13 @@ export async function measureOne($: EngineInterface, finding: Finding): Promise<
     case 'delete':
       return measureDelete($, text, cwd, finding.targets)
     case 'git-reset-hard':
-      return inRepo($, text, cwd, dir => measureReset($, text, dir, finding.ref))
+      return inRepo($, text, cwd, true, dir => measureReset($, text, dir, finding.ref))
     case 'git-discard':
-      return inRepo($, text, cwd, dir => measureDiscard($, text, dir, finding.paths, finding.isAll))
+      return inRepo($, text, cwd, true, dir => measureDiscard($, text, dir, finding.paths, finding.isAll))
     case 'git-clean':
-      return inRepo($, text, cwd, dir => measureClean($, text, dir, finding.args))
+      return inRepo($, text, cwd, true, dir => measureClean($, text, dir, finding.args))
     case 'git-force-push':
-      return inRepo($, text, cwd, dir => measurePush($, text, dir, finding.remote, finding.refspecs, finding.hasLease))
+      return inRepo($, text, cwd, false, dir => measurePush($, text, dir, finding.remote, finding.refspecs, finding.hasLease))
     case 'migration':
       return {
         text,
