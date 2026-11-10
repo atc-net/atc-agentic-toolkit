@@ -17,7 +17,7 @@ Every prompt sends the whole conversation to the model again: the system prompt,
 
 | What happens | Price, as a share of the normal input price |
 |--------------|-------------------------------------------|
-| Reading from the cache | 0.1x (0.05x on Opus 5.5 and Sonnet 5.5, 0.025x on Fable 5.1) |
+| Reading from the cache | 0.1x (0.05x on Opus 5.5 and Sonnet 5.5, 0.025x on Fable and Mythos 5.1 and 5.2) |
 | Writing to the cache, five-minute lifetime | 1.25x |
 | Writing to the cache, one-hour lifetime | 2x |
 
