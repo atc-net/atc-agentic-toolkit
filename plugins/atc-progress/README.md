@@ -95,7 +95,7 @@ Use a scratch project for this, because the steps below create `plan/` files and
 
 ## Cost estimate
 
-Cost is a rough estimate based on token counts and list prices (Opus 5.5, Sonnet 5.5, Haiku 5.5, Fable 5.1, as of 2026-10). Cache writes are priced at the one-hour rate. It isn't a bill, and on a subscription nothing extra is charged.
+Cost is a rough estimate based on token counts and list prices (Opus 5.5, Sonnet 5.5, Haiku 5.5, Fable 5.2, as of 2026-11). Cache writes are priced at the one-hour rate. It isn't a bill, and on a subscription nothing extra is charged.
 
 ## Develop
 

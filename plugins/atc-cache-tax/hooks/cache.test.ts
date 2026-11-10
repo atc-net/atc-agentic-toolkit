@@ -1,6 +1,6 @@
 import { expect, test } from 'claude-code/testing'
 
-import { contextOf, formatDuration, formatTokens, formatUsd, isPingDue, parseWindow, rewriteCost, stateOf, stopReason, ttlOf } from './cache'
+import { contextOf, costOf, formatDuration, formatTokens, formatUsd, isPingDue, parseWindow, rewriteCost, stateOf, stopReason, ttlOf } from './cache'
 
 const MINUTE = 60_000
 const usage = (reads: number, writes: number) => ({ input_tokens: 10, output_tokens: 100, cache_read_input_tokens: reads, cache_creation_input_tokens: writes })
@@ -47,6 +47,23 @@ test('costs follow the model and the lifetime', async () => {
   expect(rewriteCost('claude-sonnet-4-5', 1_000_000, '5m')).toBe(3.75)
   expect(rewriteCost('some-other-model', 1_000_000, '1h')).toBe(0)
   expect(contextOf(usage(1000, 200))).toBe(1310)
+})
+
+test('each Fable, Mythos and Sonnet version has its own price', async () => {
+  const read = (model: string) => costOf(model, { input_tokens: 0, output_tokens: 0, cache_read_input_tokens: 1_000_000, cache_creation_input_tokens: 0 }, '1h')
+  expect(rewriteCost('claude-fable-5-2', 1_000_000, '1h')).toBe(16)
+  expect(rewriteCost('claude-mythos-5-2', 1_000_000, '5m')).toBe(10)
+  expect(read('claude-fable-5-2').toFixed(4)).toBe('0.2000')
+  expect(rewriteCost('claude-fable-5-1', 1_000_000, '1h')).toBe(20)
+  expect(read('claude-fable-5-1').toFixed(4)).toBe('0.2500')
+  expect(read('claude-fable-5').toFixed(4)).toBe('1.0000')
+  expect(rewriteCost('claude-fable-9-9', 1_000_000, '1h')).toBe(16)
+  expect(rewriteCost('claude-sonnet-5', 1_000_000, '5m')).toBe(2.5)
+  expect(read('claude-sonnet-5').toFixed(4)).toBe('0.2000')
+  expect(read('claude-sonnet-5-5').toFixed(4)).toBe('0.1000')
+  expect(rewriteCost('claude-sonnet-4-6', 1_000_000, '5m')).toBe(3.75)
+  expect(rewriteCost('claude-sonnet-9-9', 1_000_000, '5m')).toBe(2.5)
+  expect(read('claude-sonnet-9-9').toFixed(4)).toBe('0.1000')
 })
 
 test('figures are short', async () => {

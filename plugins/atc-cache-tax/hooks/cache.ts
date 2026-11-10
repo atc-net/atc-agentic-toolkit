@@ -1,4 +1,4 @@
-// List prices in USD per million tokens (Anthropic first-party API, as of 2026-10). A cache write
+// List prices in USD per million tokens (Anthropic first-party API, as of 2026-11). A cache write
 // costs 2x input for a one-hour entry and 1.25x for a five-minute one; a cache read 0.1x, less on
 // the newest models.
 // Everything this mod shows in dollars is an estimate, never a bill.
@@ -6,12 +6,18 @@
 /** `read` is the cache-read rate as a share of the input price. */
 type Price = { input: number; output: number; read: number }
 
+// The first match wins, so a version comes before its family. A Fable, Mythos or Sonnet id
+// this list doesn't know is priced as the current one.
 const PRICES: { match: RegExp; price: Price }[] = [
-  { match: /fable|mythos/i, price: { input: 10, output: 50, read: 0.025 } },
+  { match: /(fable|mythos)-5[-.]1/i, price: { input: 10, output: 50, read: 0.025 } },
+  { match: /(fable|mythos)-5(?![-.]\d)/i, price: { input: 10, output: 50, read: 0.1 } },
+  { match: /fable|mythos/i, price: { input: 8, output: 40, read: 0.025 } },
   { match: /opus-5-5|opus-5\.5/i, price: { input: 4, output: 20, read: 0.05 } },
   { match: /opus/i, price: { input: 5, output: 25, read: 0.1 } },
   { match: /sonnet-5-5|sonnet-5\.5/i, price: { input: 2, output: 10, read: 0.05 } },
-  { match: /sonnet/i, price: { input: 3, output: 15, read: 0.1 } },
+  { match: /sonnet-5(?![-.]\d)/i, price: { input: 2, output: 10, read: 0.1 } },
+  { match: /sonnet-4/i, price: { input: 3, output: 15, read: 0.1 } },
+  { match: /sonnet/i, price: { input: 2, output: 10, read: 0.05 } },
   { match: /haiku-5|haiku-5\.5/i, price: { input: 0.1, output: 0.5, read: 0.1 } },
   { match: /haiku/i, price: { input: 1, output: 5, read: 0.1 } },
 ]
