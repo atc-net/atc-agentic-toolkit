@@ -1,7 +1,7 @@
 {
   "name": "atc-cache-tax",
   "version": "0.1.1",
-  "description": "Claude Code mod: holds a big prompt once when the prompt cache has expired and shows what re-caching the conversation costs, and /atc-keepwarm keeps the cache warm while you're away with cheap pings that stop by themselves. /atc-cache-tax shows the cache's state. Works on Windows, macOS and Linux. Requires Claude Code 2.1.287+.",
+  "description": "Claude Code mod: holds a big prompt once when the prompt cache has expired and shows what re-caching the conversation costs, and /atc-keepwarm keeps the cache warm while you're away with cheap pings that stop by themselves, or auto keep-warm does it after every answer. /atc-cache-tax shows the cache's state. Works on Windows, macOS and Linux. Requires Claude Code 2.1.287+.",
   "author": {
     "name": "atc-net"
   },
@@ -24,6 +24,19 @@
         "ask",
         "notice",
         "off"
+      ]
+    },
+    "autoKeepWarm": {
+      "type": "string",
+      "title": "Auto keep-warm",
+      "description": "off: keep-warm runs only when you start it with /atc-keepwarm. 1h to 4h: after every answer, keep the cache warm by itself for up to this long while you're away, when the context is 50k+ tokens. A break never costs more in pings than half of one rewrite.",
+      "default": "off",
+      "options": [
+        "off",
+        "1h",
+        "2h",
+        "3h",
+        "4h"
       ]
     },
     "cacheTtl": {

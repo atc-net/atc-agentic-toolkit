@@ -9,6 +9,7 @@ atc-cache-tax stops you from paying to re-send a long conversation after a break
 
 - **The guard.** When the prompt cache has expired and the conversation is big, your next prompt is held once, with what it will cost. Press Enter again to send it.
 - **Keep-warm.** `/atc-keepwarm 2h` keeps the cache warm while you're at lunch or in a meeting, with small pings that stop by themselves when they no longer help.
+- **Auto keep-warm.** Set `autoKeepWarm` to `3h`, and you don't have to remember `/atc-keepwarm`: after every answer the cache is kept warm by itself for up to three hours, and a break never costs more in pings than half of one rewrite.
 - **The card.** `/atc-cache-tax` shows whether the cache is warm, how big the conversation is and what re-caching it costs.
 
 ## Why this matters
@@ -75,6 +76,32 @@ It stops by itself, with a notice, when:
 
 When the cache has already expired, keep-warm doesn't ping: that would cost the full rewrite. Pings start again after your next prompt.
 
+## Auto keep-warm
+
+If you forget to run `/atc-keepwarm` before a break, let the mod do it. Set `autoKeepWarm` in `/config` to how long a break may be kept warm: `1h`, `2h`, `3h` or `4h`. It's `off` until you set it. To try it for one session, use `/atc-keepwarm auto 3h`.
+
+With it on, every answer from Claude starts a quiet keep-warm window that ends that long after the answer, and your next prompt ends it again. In practice the cache stays warm for up to three hours after you stopped working. The pings are the same as keep-warm's: shortly before the cache would expire, never while Claude works, never on a cache that has already expired.
+
+- **Only for a big conversation.** Under 50k tokens a rewrite is cheap, so no window starts.
+- **A cost limit.** A break never costs more in pings than half of what writing the conversation to the cache again would cost. With the one-hour lifetime the time limit comes first: three hours is at most three pings, about 7.5% of a rewrite. With the five-minute lifetime the cost limit comes first: it stops after about 50 minutes on Opus 5.5, 25 on older models and 100 on Fable, before the pings cost more than they could save.
+- **Out of sight until it pings.** The row above the prompt shows only once a ping has gone out:
+
+  ```text
+  ♨ auto keep-warm cache warm · next ping in 49m · 2h9m left · 1 ping, $0.03   off
+  ```
+
+- **Told when you're back.** When pings went out, your first prompt after the break says what they did:
+
+  ```text
+  While you were away, auto keep-warm sent 2 pings (about $0.05), so this prompt read 120k tokens
+  from the cache instead of writing them to it again (about $0.96).
+  ```
+
+  Or, when the window ended first: `... sent 3 pings (about $0.07), then stopped: its 3h were up.`
+- **It turns itself off when the pings don't help.** When a ping finds the cache already expired, when your first prompt after pings still has to write the whole conversation again, or when a ping fails twice, auto keep-warm is off for the rest of the session, with a notice. A ping can only find the cache expired when it lives shorter than the mod thinks, as over a plan's limit (see [Limits](#limits)), and then every later break would pay a whole rewrite for its ping. The other stop reasons of keep-warm end only that break's window.
+- **A manual window wins.** `/atc-keepwarm 5h` runs as usual. When it ends, auto keep-warm starts again after the next answer. `/atc-keepwarm off` ends the current window; `/atc-keepwarm auto off` turns auto keep-warm off for the session.
+- **Every open session pings by itself.** Five idle terminals with big conversations means five sets of pings, each within its own limits. Close the sessions you're done with.
+
 **When it pays off.** With the one-hour lifetime, a two-hour break costs two pings instead of one rewrite. With the five-minute lifetime a ping goes out every 4 minutes, so keep-warm only pays off for breaks up to roughly an hour (less on older models, where reads cost more). For a longer break, let the cache expire.
 
 > [!NOTE]
@@ -95,7 +122,8 @@ Answer `y` to add the marketplace and pick a scope. The mod is active straight a
 | `/atc-cache-tax` | Shows the cache (warm or expired, time left, its lifetime and why), the conversation's size, what re-caching it costs, the guard, keep-warm, and the rewrites this session |
 | `/atc-cache-tax guard <mode>` | Sets the guard for this session only: `ask` holds the prompt once and shows the cost, so you choose; `notice` sends it and shows the cost; `off` does nothing. The `guard` setting in `/config` is the lasting choice. `/atc-cache-tax guard` alone shows the current mode. |
 | `/atc-keepwarm 90m` | Keeps the cache warm for 90 minutes. Takes `90m`, `2h`, `2h30m`, up to `12h`, or `always` |
-| `/atc-keepwarm off` | Stops keep-warm |
+| `/atc-keepwarm auto 3h` | Turns auto keep-warm on for this session: `1h`, `2h`, `3h` or `4h`. `/atc-keepwarm auto off` turns it off, and `/atc-keepwarm auto` alone shows it. The `autoKeepWarm` setting in `/config` is the lasting choice. |
+| `/atc-keepwarm off` | Stops keep-warm, or the current auto window |
 | `/atc-keepwarm status` | Same as `/atc-cache-tax` |
 
 Click **off** on the band to stop keep-warm too.
@@ -107,6 +135,7 @@ Set in `/config`, or under `pluginConfigs` in your settings:
 | Setting | Values | Default |
 |---------|--------|---------|
 | `guard` | `ask`: hold the prompt once and show the cost, so you choose. `notice`: send it and show the cost. `off`: nothing. | `ask` |
+| `autoKeepWarm` | `off`: keep-warm runs only when you start it. `1h`, `2h`, `3h` or `4h`: after every answer, keep the cache warm by itself for up to this long. See [Auto keep-warm](#auto-keep-warm). | `off` |
 | `cacheTtl` | `auto`: worked out the way Claude Code does it. `5m` or `1h`: the lifetime you know you have. | `auto` |
 
 With `auto`, the lifetime comes from, in order: `FORCE_PROMPT_CACHING_5M`, `CLAUDE_CODE_PROMPT_CACHE_TTL`, the `promptCacheTtl` setting, `ENABLE_PROMPT_CACHING_1H`, and finally one hour on a Claude subscription and five minutes otherwise. When the mod sees the cache still warm more than five minutes after a request, it takes the lifetime to be one hour. `/atc-cache-tax` says which one it uses and why.
@@ -114,7 +143,7 @@ With `auto`, the lifetime comes from, in order: `FORCE_PROMPT_CACHING_5M`, `CLAU
 ## Limits
 
 - **Estimates.** Prices are list prices per model. On a subscription the cost is plan usage, not money.
-- **Over your plan's limit.** When a subscription draws on usage credits, Claude Code drops to the five-minute lifetime. The mod can't see that; set `cacheTtl` to `5m` while it lasts.
+- **Over your plan's limit.** When a subscription draws on usage credits, Claude Code drops to the five-minute lifetime. The mod can't see that; set `cacheTtl` to `5m` while it lasts. Without it, the first auto keep-warm ping finds the cache expired, pays to write the conversation to it once, and turns auto keep-warm off for the session.
 - **It knows the conversation once Claude has answered.** After a restart, `--resume`, `--continue`, or moving the conversation to the background and back, the guard waits for the next answer before it can judge, and keep-warm waits for it before it pings. A reload of the mod, after an update for example, keeps what it knew.
 - **Model and effort switches.** Switching model or effort usually starts a new cache. The guard doesn't know about that switch; keep-warm notices it at its next ping and stops.
 - **Keep-warm runs only while the session is open.** Closing Claude Code ends it. `always` runs until `/atc-keepwarm off`.
@@ -149,6 +178,13 @@ FORCE_PROMPT_CACHING_5M=1 claude
 6. Wait about 5 minutes. The band shows `1 ping` and the next ping in about 4 minutes.
 7. Wait another 5 minutes, then type a prompt. It isn't held, because the cache stayed warm.
 8. `/atc-keepwarm off`, or click **off** on the band.
+
+**Auto keep-warm**
+
+9. `/atc-keepwarm auto 1h`, then ask Claude something so it answers. `/atc-cache-tax` shows `Keep-warm: auto, 1h more`. There's no row above the prompt yet.
+10. Wait about 5 minutes. The row shows `auto keep-warm` with `1 ping`.
+11. Wait another 2 minutes, so the cache would have expired without the ping, then type a prompt. It isn't held, and a notice says what the pings did: `While you were away, auto keep-warm sent 1 ping ...`. The row is gone until the next break.
+12. `/atc-keepwarm auto off`.
 
 Close the session afterwards so the forced five-minute lifetime doesn't stay. In PowerShell, run `Remove-Item Env:FORCE_PROMPT_CACHING_5M` before starting Claude again.
 
