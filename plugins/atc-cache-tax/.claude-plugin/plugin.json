@@ -1,6 +1,6 @@
 {
   "name": "atc-cache-tax",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Claude Code mod: holds a big prompt once when the prompt cache has expired and shows what re-caching the conversation costs, and /atc-keepwarm keeps the cache warm while you're away with cheap pings that stop by themselves, or auto keep-warm does it after every answer. /atc-cache-tax shows the cache's state. Works on Windows, macOS and Linux. Requires Claude Code 2.1.287+.",
   "author": {
     "name": "atc-net"
