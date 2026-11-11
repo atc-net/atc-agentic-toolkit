@@ -93,9 +93,27 @@ The check accepts the Agent Skills standard's fields and the ones Claude Code ad
 
 Generate an AGENTS.md file for a repository.
 
+### create-assessment-report
+
+Assess a repository as a product and write an Assessment & Roadmap report to `plans/assessment-roadmap.md`: a competitive analysis against named alternatives, new features, improvements, performance, bugs and security, testing and documentation gaps, CI/CD and library concerns, and a sequenced roadmap with milestones.
+
+```text
+/common:create-assessment-report
+/common:create-assessment-report focus on the TCP server
+```
+
+Or ask Claude to "assess this repository" or "make a roadmap for this repo".
+
+- **Every finding has a stable ID** (`BUG-02`, `FEAT-01`), a priority (🔴 need, 🟡 nice, 🔵 maybe), a status, an effort (S, M, L) and evidence: a `path:line` in the repository, or a named competitor. Anything it couldn't verify is marked `⚠️ unverified`.
+- **Run it again** to update the same report. IDs are kept, rejected items (❌) stay rejected, and a "Changed since last run" note says what moved.
+- **atc-net repositories** are also checked against the atc-net pipeline standard. It first works out how the repository releases (one package or several, versioned together or apart, published from the release workflow or from a workflow per package) and then compares it with an atc-net reference repository of the same shape: release-please, Trusted Publishing, pinned actions and so on. Other repositories get a general CI/CD assessment instead.
+- It uses the search, docs and package tools it has for competitor features, package versions and advisories, and says which ones it used.
+
+For an architecture deep dive with refactored code, use [senior-engineer-audit](skills/senior-engineer-audit/SKILL.md) instead.
+
 ### create-implementation-plan
 
-Create resumable implementation plan files for features, refactoring, or architecture changes, with per-phase verification and handoff summaries.
+Create resumable implementation plan files in `plans/` for features, refactoring, or architecture changes, with per-phase verification and handoff summaries.
 
 ### create-llms
 

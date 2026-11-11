@@ -111,7 +111,7 @@ Skills, agents and MCP servers. They work in Claude Code and GitHub Copilot.
 | [atc](plugins/atc/) | ATC.NET library skills including REST API source generation from OpenAPI specs, WPF controls, and cross-platform XAML development |
 | [azure](plugins/azure/) | Azure services skills covering 200+ cloud services, IoT, AI, data, networking, and more |
 | [bicep](plugins/bicep/) | Azure Bicep IaC best practices, naming conventions, modularization, and security patterns |
-| [common](plugins/common/) | Common base skills including documentation generators, implementation planning, and utility tools |
+| [common](plugins/common/) | Common base skills including documentation generators, repository assessments, implementation planning, and utility tools |
 | [cosmosdb](plugins/cosmosdb/) | Azure Cosmos DB data modeling workflow and best-practice rules for partitioning, queries, SDK usage, indexing, and more |
 | [dataverse](plugins/dataverse/) | Microsoft Dataverse and Power Platform skills covering connection setup, data, queries, schema, solutions, administration, and security |
 | [docker](plugins/docker/) | Docker and containerization best practices covering Dockerfile optimization, multi-stage builds, security, and orchestration |

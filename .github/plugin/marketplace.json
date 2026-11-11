@@ -7,7 +7,7 @@
     {
       "name": "common",
       "source": "./plugins/common",
-      "description": "Common base skills including documentation generators, implementation planning, and utility tools"
+      "description": "Common base skills including documentation generators, repository assessments, implementation planning, and utility tools"
     },
     {
       "name": "dotnet",
