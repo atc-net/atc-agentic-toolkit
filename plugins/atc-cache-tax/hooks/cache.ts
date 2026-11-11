@@ -100,6 +100,19 @@ export function parseWindow(text: string): number | null | undefined {
   return ms > 0 && ms <= MAX_WINDOW_MS ? ms : undefined
 }
 
+/** How long auto keep-warm may keep a break warm, by the `autoKeepWarm` setting. */
+const AUTO_WINDOWS: Record<string, number> = { '1h': 60 * 60_000, '2h': 120 * 60_000, '3h': 180 * 60_000, '4h': 240 * 60_000 }
+
+/** `1h` to `4h`, `off` (null), or undefined for anything else. */
+export function parseAuto(text: unknown): number | null | undefined {
+  if (typeof text !== 'string') return undefined
+  const t = text.trim().toLowerCase()
+  return t === 'off' ? null : AUTO_WINDOWS[t]
+}
+
+/** Auto keep-warm spends at most this share of one rewrite on pings during a break. */
+export const AUTO_BUDGET_SHARE = 0.5
+
 export const formatTokens = (n: number): string =>
   n >= 1_000_000 ? `${(n / 1_000_000).toFixed(1)}M` : n >= 1000 ? `${Math.round(n / 1000)}k` : `${n}`
 

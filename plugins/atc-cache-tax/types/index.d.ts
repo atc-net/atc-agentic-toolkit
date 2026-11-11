@@ -1,5 +1,12 @@
 /** A keep-warm window while it runs. */
 export type KeepWarm = {
+  /**
+   * `manual` for one started with `/atc-keepwarm <time>`; `auto` for one started by auto keep-warm
+   * after an answer, which ends at the next request. Missing in a window saved by 0.1: manual.
+   */
+  kind?: 'manual' | 'auto'
+  /** An auto window's most it may spend on pings, in USD: half of what a rewrite costs. */
+  budgetUsd?: number
   /** When the window ends, in milliseconds since the epoch; null runs until `/atc-keepwarm off`. */
   until: number | null
   pings: number

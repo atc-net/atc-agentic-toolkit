@@ -254,3 +254,144 @@ test('with prompt caching off, nothing is held and keep-warm refuses', async ($,
   expect(sent).toEqual(['hello'])
   expect((await command($, 'atc-keepwarm', '2h')).text).toMatch(/^Prompt caching is off/)
 })
+
+test('auto keep-warm is off unless it is set', { options: { autoKeepWarm: 'off' } }, async ($, on) => {
+  const { clock, forks, turn } = await session($, on, { isSubscription: true })
+  await turn(usageOf(0, 120_000))
+  await clock.advance(51 * MINUTE)
+  expect(forks).toHaveLength(0)
+  expect((await command($, 'atc-cache-tax')).text).toMatch(/Auto keep-warm: off \(the autoKeepWarm setting in \/config/)
+})
+
+test('auto keep-warm pings after an answer, shows only once it has pinged, and says what it did on return', { options: { autoKeepWarm: '3h' } }, async ($, on) => {
+  const { clock, forks, toasts, turn } = await session($, on, { isSubscription: true })
+  await turn(usageOf(0, 120_000))
+  expect(await bandText($, 'terminal')).toBeUndefined()
+  expect((await command($, 'atc-cache-tax')).text).toMatch(/Keep-warm: auto, 3h more; 0 pings, about <\$0\.01 of at most \$0\.48 for this break/)
+
+  await clock.advance(51 * MINUTE)
+  expect(forks).toHaveLength(1)
+  for (const surface of SURFACES) expect(await bandText($, surface)).toMatch(/^auto keep-warm cache warm · next ping in 49m · 2h9m left · 1 ping, \$0\.\d\d$/)
+  await clock.advance(50 * MINUTE)
+  expect(forks).toHaveLength(2)
+
+  // Back: the prompt reads the cache, and the window ends until the answer starts a new one.
+  expect((await typed($, 'back')).drop).toBeUndefined()
+  await turn(usageOf(120_000, 500))
+  expect(toasts.at(-1)).toMatch(
+    /^While you were away, auto keep-warm sent 2 pings \(about \$0\.\d\d\), so this prompt read 120k tokens from the cache instead of writing them to it again \(about \$0\.96\)\.$/,
+  )
+  expect(await bandText($, 'terminal')).toBeUndefined()
+  expect((await command($, 'atc-cache-tax')).text).toMatch(/Keep-warm: auto, 3h more; 0 pings/)
+})
+
+test("auto keep-warm claims no saving when you're back before the cache would have expired", { options: { autoKeepWarm: '3h' } }, async ($, on) => {
+  const { clock, forks, toasts, turn } = await session($, on, { isSubscription: true })
+  await turn(usageOf(0, 120_000))
+  await clock.advance(51 * MINUTE)
+  expect(forks).toHaveLength(1)
+  await clock.advance(4 * MINUTE)
+  await typed($, 'back')
+  await turn(usageOf(120_000, 500))
+  expect(toasts).toEqual([])
+})
+
+test('auto keep-warm ends quietly when its time is up, and says so on return', { options: { autoKeepWarm: '1h' } }, async ($, on) => {
+  const { clock, forks, toasts, turn } = await session($, on, { isSubscription: true })
+  await turn(usageOf(0, 120_000))
+  await clock.advance(51 * MINUTE)
+  expect(forks).toHaveLength(1)
+  await clock.advance(60 * MINUTE)
+  expect(forks).toHaveLength(1)
+  expect(toasts).toEqual([])
+  expect(await bandText($, 'terminal')).toBeUndefined()
+
+  await clock.advance(30 * MINUTE)
+  await typed($, 'back')
+  await typed($, 'back')
+  await turn(usageOf(0, 120_000))
+  expect(toasts.at(-1)).toMatch(/^While you were away, auto keep-warm sent 1 ping \(about \$0\.\d\d\), then stopped: its 1h were up\.$/)
+  // Not the pings' fault: auto keep-warm stays on.
+  expect((await command($, 'atc-cache-tax')).text).toMatch(/Auto keep-warm: up to 1h after each answer/)
+})
+
+test('with the five-minute lifetime, auto keep-warm stops at half of what a rewrite costs', { options: { autoKeepWarm: '4h' } }, async ($, on) => {
+  const { clock, forks, toasts, turn } = await session($, on)
+  await turn(usageOf(0, 120_000))
+  for (let minute = 0; minute < 60; minute++) await clock.advance(MINUTE)
+  // A rewrite costs about $0.60 here and a ping about $0.03: ten pings, every 4 minutes.
+  expect(forks).toHaveLength(10)
+  expect(await bandText($, 'terminal')).toBeUndefined()
+
+  await typed($, 'back')
+  await typed($, 'back')
+  await turn(usageOf(0, 120_000))
+  expect(toasts.at(-1)).toMatch(/^While you were away, auto keep-warm sent 10 pings \(about \$0\.28\), then stopped: it reached its cost limit/)
+})
+
+test("auto keep-warm turns itself off for the session when its pings didn't keep the cache", { options: { autoKeepWarm: '3h' } }, async ($, on) => {
+  const { clock, forks, toasts, turn } = await session($, on, { isSubscription: true })
+  await turn(usageOf(0, 120_000))
+  await clock.advance(51 * MINUTE)
+  expect(forks).toHaveLength(1)
+  await clock.advance(19 * MINUTE)
+  await typed($, 'back')
+  await turn(usageOf(0, 120_000))
+  expect(toasts.at(-1)).toMatch(/^Auto keep-warm is off for this session: the pings didn't keep this account's cache warm\. 1 ping/)
+
+  await clock.advance(51 * MINUTE)
+  expect(forks).toHaveLength(1)
+  expect((await command($, 'atc-cache-tax')).text).toMatch(/Auto keep-warm: off for this session, because the pings didn't keep/)
+})
+
+test('auto keep-warm turns itself off for the session when a ping finds the cache expired, as over a plan limit', { options: { autoKeepWarm: '3h' } }, async ($, on) => {
+  const { clock, forks, toasts, turn } = await session($, on, { isSubscription: true, pings: [usageOf(0, 120_000)] })
+  await turn(usageOf(0, 120_000))
+  await clock.advance(51 * MINUTE)
+  expect(forks).toHaveLength(1)
+  expect(toasts.at(-1)).toMatch(/^Auto keep-warm is off for this session: a ping found the cache already expired, so it lives shorter than the mod assumed .* setting cacheTtl to 5m .*\. 1 ping, about \$\d\.\d\d\.$/)
+
+  // The next break pays no second rewrite.
+  await typed($, 'back')
+  await typed($, 'back')
+  await turn(usageOf(0, 120_000))
+  await clock.advance(51 * MINUTE)
+  expect(forks).toHaveLength(1)
+})
+
+test('a manual window wins over auto keep-warm, which starts again after the next answer', { options: { autoKeepWarm: '3h' } }, async ($, on) => {
+  const { clock, forks, toasts, turn } = await session($, on, { isSubscription: true })
+  await turn(usageOf(0, 120_000))
+  await command($, 'atc-keepwarm', '30m')
+  expect(await bandText($, 'terminal')).toMatch(/^keep-warm /)
+  await clock.advance(31 * MINUTE)
+  expect(toasts.at(-1)).toMatch(/^Keep-warm stopped, its time is up/)
+
+  await turn(usageOf(120_000, 500))
+  await clock.advance(51 * MINUTE)
+  expect(forks).toHaveLength(1)
+  expect(await bandText($, 'terminal')).toMatch(/^auto keep-warm /)
+})
+
+test('auto keep-warm skips a small context', { options: { autoKeepWarm: '3h' } }, async ($, on) => {
+  const { clock, forks, turn } = await session($, on, { isSubscription: true })
+  await turn(usageOf(0, 20_000))
+  await clock.advance(51 * MINUTE)
+  expect(forks).toHaveLength(0)
+})
+
+test('/atc-keepwarm auto turns it on and off for the session', async ($, on) => {
+  const { clock, forks, turn } = await session($, on, { isSubscription: true })
+  await turn(usageOf(0, 120_000))
+  expect((await command($, 'atc-keepwarm', 'auto 2h')).text).toMatch(/^Auto keep-warm on for this session: after each answer the cache is kept warm for up to 2h/)
+  await clock.advance(51 * MINUTE)
+  expect(forks).toHaveLength(1)
+  expect((await command($, 'atc-keepwarm', 'off')).text).toMatch(/^Keep-warm off\. 1 ping, about \$0\.\d\d\. Auto keep-warm starts again after Claude's next answer/)
+
+  await turn(usageOf(120_000, 500))
+  expect((await command($, 'atc-keepwarm', 'auto off')).text).toBe('Auto keep-warm off for this session.')
+  await clock.advance(51 * MINUTE)
+  expect(forks).toHaveLength(1)
+  expect((await command($, 'atc-keepwarm', 'auto 9h')).text).toMatch(/^"9h" is not an auto time/)
+  expect((await command($, 'atc-keepwarm', 'auto')).text).toMatch(/^Auto keep-warm: off \(/)
+})
