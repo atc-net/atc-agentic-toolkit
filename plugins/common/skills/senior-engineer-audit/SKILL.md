@@ -8,7 +8,8 @@ description: >
   when the user asks to audit, review, or assess an entire codebase, understand an unfamiliar/inherited
   project, do a deep code review, find architectural or scalability problems, or "act like a senior
   engineer" auditing the code. For .NET-specific design-pattern review use dotnet:dotnet-design-pattern-review;
-  for security-focused review use security:security-owasp.
+  for security-focused review use security:security-owasp; for a product roadmap with competitive
+  analysis and a re-runnable findings report in plans/, use common:create-assessment-report.
 ---
 
 # Senior Engineer Audit
