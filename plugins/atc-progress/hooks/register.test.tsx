@@ -3,7 +3,7 @@ import type { Engine } from 'claude-code/testing'
 import type { On } from 'claude-code'
 
 const ROOT = '/repo'
-const PLAN_PATH = '/repo/plan/feature-demo-1.md'
+const PLAN_PATH = '/repo/plans/feature-demo-1.md'
 
 function planText(ticks: [boolean, boolean, boolean, boolean, boolean]): string {
   const row = (n: number) => `| TASK-00${n} | Task ${n} | ${ticks[n - 1] ? '✅' : ''} | |`
@@ -213,8 +213,8 @@ test('a newer plan file, written by any tool, takes over the bar when the turn e
   const mtimes: Record<string, number> = { [PLAN_PATH]: 1 }
   await session($, on, files, mtimes)
   // Written by the shell, say: no Write or Edit call to see.
-  files['/repo/plan/feature-hello-1.md'] = "---\ngoal: Say hello\nstatus: 'In progress'\n---\n### Implementation Phase 1\n| Task | Description | Completed | Date |\n|---|---|---|---|\n| TASK-001 | a | | |\n"
-  mtimes['/repo/plan/feature-hello-1.md'] = 5
+  files['/repo/plans/feature-hello-1.md'] = "---\ngoal: Say hello\nstatus: 'In progress'\n---\n### Implementation Phase 1\n| Task | Description | Completed | Date |\n|---|---|---|---|\n| TASK-001 | a | | |\n"
+  mtimes['/repo/plans/feature-hello-1.md'] = 5
   await $.turn.complete({ answer: 'planned', durationMs: 5, isAborted: false, turnId: 'm1', reason: 'answer' } as never)
   const ui = await $.ui.mount({ plugin: 'atc-progress', surface: 'terminal', ...BAND })
   expect(await ui.find({ type: 'Text', text: 'Say hello' })).toBeDefined()
@@ -267,6 +267,28 @@ test('the continue button is hidden while Claude is working', async ($, on) => {
   await idle.unmount()
 })
 
+test('a plan in the old plan/ folder still shows on the bar', async ($, on) => {
+  await session($, on, { '/repo/plan/feature-demo-1.md': planText([true, true, false, false, false]) })
+  expect(await bandTexts($, 'terminal')).toEqual({ goal: 1, tasks: 'Tasks 2/5', phase: 'Phase 2/2' })
+})
+
+test('another document in plans/, such as an assessment report, is not a plan', async ($, on) => {
+  const REPORT = '/repo/plans/assessment-roadmap.md'
+  const report = '# Repository Assessment & vNext Roadmap\n\n## 0. Executive Summary\n\n* `BUG-01` 🔴⬜ **Something** — *S* · Fix it.\n'
+  const files: Record<string, string> = { [PLAN_PATH]: planText([true, true, true, false, false]), [REPORT]: report }
+  const mtimes: Record<string, number> = { [PLAN_PATH]: 1, [REPORT]: 5 }
+  await session($, on, files, mtimes)
+  expect(await bandTexts($, 'terminal')).toEqual({ goal: 1, tasks: 'Tasks 3/5', phase: 'Phase 2/2' })
+
+  // Written by Claude, and newest at the end of the turn: the bar stays on the plan.
+  await $.tool.call({ tool: 'Write', file_path: REPORT, content: report } as never)
+  await $.turn.complete({ answer: 'assessed', durationMs: 5, isAborted: false, turnId: 'm1', reason: 'answer' } as never)
+  expect((await bandTexts($, 'terminal')).goal).toBe(1)
+
+  expect((await $.command.run({ command: 'atc-progress', args: 'plans' } as never)).text).toMatch(/^1 plan listed/)
+  expect((await $.command.run({ command: 'atc-progress', args: `plan ${REPORT}` } as never)).text).toBe(`Could not read a plan at ${REPORT}.`)
+})
+
 test('/atc-progress plans lists every plan and a pick puts it on the bar and tells Claude', async ($, on) => {
   const notes: string[] = []
   on('session.append', async (_$, e, next) => {
@@ -280,8 +302,9 @@ test('/atc-progress plans lists every plan and a pick puts it on the bar and tel
   await session(
     $,
     on,
-    { [PLAN_PATH]: planText([true, false, false, false, false]), '/repo/plan/old-1.md': done, '/repo/plan/next-1.md': later },
-    { [PLAN_PATH]: 1, '/repo/plan/old-1.md': 3, '/repo/plan/next-1.md': 2 },
+    // Old work sits in plan/, where plans were written before plans/: both folders are listed.
+    { [PLAN_PATH]: planText([true, false, false, false, false]), '/repo/plan/old-1.md': done, '/repo/plans/next-1.md': later },
+    { [PLAN_PATH]: 1, '/repo/plan/old-1.md': 3, '/repo/plans/next-1.md': 2 },
   )
   const result = await $.command.run({ command: 'atc-progress', args: 'plans' } as never)
   expect(result.text).toMatch(/^3 plans listed/)
@@ -296,10 +319,10 @@ test('/atc-progress plans lists every plan and a pick puts it on the bar and tel
   expect(notes[0]).toMatch(/next-1\.md \("Next up"/)
 })
 
-const OLDER = '/repo/plan/older-1.md'
+const OLDER = '/repo/plans/older-1.md'
 const olderPlan = "---\ngoal: Older work\nstatus: 'In progress'\n---\n### Implementation Phase 1\n| Task | Description | Completed | Date |\n|---|---|---|---|\n| TASK-001 | a | ✅ | |\n| TASK-002 | b | | |\n"
 
-test('a picked plan stays on the bar at turn end, even with a newer plan in plan/', async ($, on) => {
+test('a picked plan stays on the bar at turn end, even with a newer plan in plans/', async ($, on) => {
   on('ui.toast', async () => ({ value: undefined }) as never)
   await session($, on, { [PLAN_PATH]: planText([true, false, false, false, false]), [OLDER]: olderPlan }, { [PLAN_PATH]: 9, [OLDER]: 1 })
   expect((await bandTexts($, 'terminal')).tasks).toBe('Tasks 1/5')

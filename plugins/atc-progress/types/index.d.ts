@@ -44,7 +44,7 @@ declare module 'claude-code' {
       isPlanHidden: boolean
       /** True once the user chose the plan on the bar: only the user moves it then. */
       isPinned: boolean
-      /** Every plan under plan/, for the picker pane. */
+      /** Every plan under plans/ (and plan/), for the picker pane. */
       plans: Plan[]
       agents: AgentRun[]
       now: number

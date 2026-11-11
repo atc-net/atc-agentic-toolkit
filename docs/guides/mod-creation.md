@@ -302,7 +302,7 @@ A mod made only of hooks is active straight away. Settings declared in `userConf
 
 | File | What it does |
 |------|--------------|
-| `hooks/plan.ts` | Pure functions: parses `plan/*.md` implementation plans (goal, phases, ticked tasks). No `$`, so it's easy to test. |
+| `hooks/plan.ts` | Pure functions: parses `plans/*.md` implementation plans (goal, phases, ticked tasks). No `$`, so it's easy to test. |
 | `hooks/cost.ts` | Pure functions: a rough token cost estimate per model |
 | `hooks/register.tsx` | The hooks |
 | `types/index.d.ts` | The `$.state` contract: the active plan, the plan list, the subagent runs |

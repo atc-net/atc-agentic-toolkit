@@ -1,6 +1,6 @@
 import { expect, test } from 'claude-code/testing'
 
-import { currentPhase, isFinished, isPlanPath, parsePlan, planRank } from './plan'
+import { currentPhase, isFinished, isImplementationPlan, isPlanPath, parsePlan, planRank } from './plan'
 
 const PLAN = [
   '---',
@@ -40,7 +40,7 @@ const PLAN = [
 ].join('\r\n')
 
 test('parses goal, status, phases and ticked tasks', async () => {
-  const plan = parsePlan('/repo/plan/feature-demo-1.md', PLAN)
+  const plan = parsePlan('/repo/plans/feature-demo-1.md', PLAN)
   expect(plan.goal).toBe('Ship the demo')
   expect(plan.status).toBe('In progress')
   expect(plan.phases).toEqual([
@@ -55,7 +55,7 @@ test('parses goal, status, phases and ticked tasks', async () => {
 })
 
 test('a template placeholder goal falls back to the first heading', async () => {
-  const plan = parsePlan('/repo/plan/x.md', '---\ngoal: [Concise Title]\nstatus: Planned\n---\n# Upgrade the API\n')
+  const plan = parsePlan('/repo/plans/x.md', '---\ngoal: [Concise Title]\nstatus: Planned\n---\n# Upgrade the API\n')
   expect(plan.goal).toBe('Upgrade the API')
   expect(planRank(plan)).toBe(1)
   expect(plan.total).toBe(0)
@@ -63,7 +63,7 @@ test('a template placeholder goal falls back to the first heading', async () => 
 
 test('a phase without a Status line takes its status from its tasks', async () => {
   const text = '### Implementation Phase 1\n| TASK-001 | a | ✅ | |\n| TASK-002 | b | ✅ | |\n'
-  const plan = parsePlan('/repo/plan/no-status.md', text)
+  const plan = parsePlan('/repo/plans/no-status.md', text)
   expect(plan.goal).toBe('no-status')
   expect(plan.phases[0]?.status).toBe('Complete')
   expect(isFinished(plan)).toBe(true)
@@ -80,21 +80,29 @@ test('a pipe inside a task description does not move the Completed column', asyn
     '| TASK-005 | An escaped \\| pipe | ✅ | 2026-10-17 |',
     '| TASK-006 | Not yet | | |',
   ].join('\n')
-  const plan = parsePlan('/repo/plan/pipes.md', text)
+  const plan = parsePlan('/repo/plans/pipes.md', text)
   expect(plan.done).toBe(2)
   expect(plan.total).toBe(3)
 })
 
 test('a table with the Completed column elsewhere is still read', async () => {
   const text = ['### Implementation Phase 1', '| Task | Completed | Description |', '|---|---|---|', '| TASK-001 | ✅ | first |', '| TASK-002 | | second |'].join('\n')
-  const plan = parsePlan('/repo/plan/columns.md', text)
+  const plan = parsePlan('/repo/plans/columns.md', text)
   expect(plan.done).toBe(1)
   expect(plan.total).toBe(2)
 })
 
-test('recognises plan paths on either separator', async () => {
+test('recognises plan paths in plans/ and the old plan/, on either separator', async () => {
+  expect(isPlanPath('/repo/plans/feature-x-1.md')).toBe(true)
+  expect(isPlanPath('E:\\repo\\plans\\feature-x-1.md')).toBe(true)
   expect(isPlanPath('/repo/plan/feature-x-1.md')).toBe(true)
   expect(isPlanPath('E:\\repo\\plan\\feature-x-1.md')).toBe(true)
-  expect(isPlanPath('/repo/plans/feature-x-1.md')).toBe(false)
-  expect(isPlanPath('/repo/plan/notes.txt')).toBe(false)
+  expect(isPlanPath('/repo/plans/notes.txt')).toBe(false)
+  expect(isPlanPath('/repo/plans/archive/feature-x-1.md')).toBe(false)
+  expect(isPlanPath('/repo/planning/feature-x-1.md')).toBe(false)
+})
+
+test('only a file with an implementation phase is an implementation plan', async () => {
+  expect(isImplementationPlan(parsePlan('/repo/plans/feature-demo-1.md', PLAN))).toBe(true)
+  expect(isImplementationPlan(parsePlan('/repo/plans/assessment-roadmap.md', '# Repository Assessment\n\n## 10. Roadmap\n\n### Do Next (top 3)\n'))).toBe(false)
 })
