@@ -116,7 +116,7 @@ Skills, agents and MCP servers. They work in Claude Code and GitHub Copilot.
 | [dataverse](plugins/dataverse/) | Microsoft Dataverse and Power Platform skills covering connection setup, data, queries, schema, solutions, administration, and security |
 | [docker](plugins/docker/) | Docker and containerization best practices covering Dockerfile optimization, multi-stage builds, security, and orchestration |
 | [dotnet](plugins/dotnet/) | C#/.NET development skills including refactoring, testing, async patterns, and NuGet management |
-| [git](plugins/git/) | Git workflow utilities including commit message generators and PR descriptions |
+| [git](plugins/git/) | Git workflow utilities including commit message generators, PR descriptions and rebasing a branch onto main or another base branch |
 | [github](plugins/github/) | GitHub platform skills including CI/CD workflow conventions for GitHub Actions and GitHub issue management |
 | [playwright](plugins/playwright/) | Browser automation and testing skills using Playwright |
 | [powershell](plugins/powershell/) | PowerShell cmdlet development and scripting best practices based on Microsoft guidelines |
