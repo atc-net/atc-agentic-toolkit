@@ -7,7 +7,7 @@
 
 atc-progress adds two things to Claude Code:
 
-- **A plan bar above the prompt.** It shows the implementation plan you're working on: its goal, a progress bar, the current phase, and how many tasks are done out of the total. It reads `plan/*.md` files in the format the [`common:create-implementation-plan`](../common/skills/create-implementation-plan/SKILL.md) skill writes. The bar updates as soon as Claude (or a subagent) writes or edits the plan file, and is checked again at the end of every turn. The skill needs no changes.
+- **A plan bar above the prompt.** It shows the implementation plan you're working on: its goal, a progress bar, the current phase, and how many tasks are done out of the total. It reads `plans/*.md` files in the format the [`common:create-implementation-plan`](../common/skills/create-implementation-plan/SKILL.md) skill writes, and `plan/*.md`, where that skill wrote plans before. The bar updates as soon as Claude (or a subagent) writes or edits the plan file, and is checked again at the end of every turn. The skill needs no changes.
 - **A subagents pane** (`/atc-progress`). It lists every subagent that is running or has finished, each with its type, task, model, effort, context fill, tokens, estimated cost and elapsed time. While subagents run and no plan is active, a small "N subagents running" row shows above the prompt instead.
 
 ```text
@@ -28,9 +28,10 @@ The bar follows the newest plan by itself until you choose one. After that, the 
 
 ### Following (the default)
 
-- When a session starts, it reads `plan/*.md` in the project root and picks the newest plan whose front matter says `status: 'In progress'`. If there is none, it picks the newest `Planned` one.
-- Any `Write` or `Edit` to a `plan/*.md` file makes that plan the active one and redraws the bar.
-- At the end of every turn, the newest file in `plan/` takes over the bar if it was changed after the active plan and is `In progress` or `Planned`. That catches plans written by the shell or by hand, too.
+- When a session starts, it reads `plans/*.md` and `plan/*.md` in the project root and picks the newest plan whose front matter says `status: 'In progress'`. If there is none, it picks the newest `Planned` one.
+- Any `Write` or `Edit` to a `plans/*.md` (or `plan/*.md`) file makes that plan the active one and redraws the bar.
+- Only a file with at least one `### Implementation Phase` counts as a plan. Other documents in `plans/`, such as an assessment report or your own notes, are left alone.
+- At the end of every turn, the newest plan in `plans/` or `plan/` takes over the bar if it was changed after the active plan and is `In progress` or `Planned`. That catches plans written by the shell or by hand, too.
 
 ### Pinned (after you choose a plan)
 
@@ -51,9 +52,9 @@ The bar follows the newest plan by itself until you choose one. After that, the 
 |---------|--------------|
 | `/atc-progress` | Show or hide the subagents pane. When another pane is in front of it, this brings it forward. |
 | `/atc-progress open` / `close` | Open (or bring forward) / close the pane |
-| `/atc-progress plans` | List every plan under `plan/` (in progress first, then planned, then the rest) in a picker. Press a number, or use Tab/arrows and Enter, to pin one to the bar. Claude is told which plan you picked. Esc closes |
+| `/atc-progress plans` | List every plan under `plans/` and `plan/` (in progress first, then planned, then the rest) in a picker. Press a number, or use Tab/arrows and Enter, to pin one to the bar. Claude is told which plan you picked. Esc closes |
 | `/atc-progress plan <path>` | Pin a specific plan file to the bar. Claude also gets a note saying which plan the bar now tracks, so "continue the plan" means that one |
-| `/atc-progress plan` | Unpin, rescan `plan/*.md`, and follow the newest plan in progress again |
+| `/atc-progress plan` | Unpin, rescan `plans/*.md` and `plan/*.md`, and follow the newest plan in progress again |
 | `/atc-progress continue [path]` | Put a ready-made "continue this plan" prompt in the input box: pick up at the first phase that isn't Complete, run each phase's verification, tick tasks with ✅. Press Enter to send it, or edit it first. Pins the plan; with a path, it switches the bar to that plan first |
 | `/atc-progress hide` / `show` | Hide / show the plan bar (`x` on the bar hides it too) |
 | `/atc-progress help` | List these commands |
@@ -63,11 +64,11 @@ The `continue` button on the bar does the same as `/atc-progress continue`. It s
 ### Switching between plans
 
 ```text
-/atc-progress plans                              # pick a plan from the list (or: /atc-progress plan plan/feature-billing-2.md)
-/atc-progress continue                           # prompt box: "Continue implementing plan/feature-billing-2.md …" → Enter
+/atc-progress plans                              # pick a plan from the list (or: /atc-progress plan plans/feature-billing-2.md)
+/atc-progress continue                           # prompt box: "Continue implementing plans/feature-billing-2.md …" → Enter
 ```
 
-Or in one step: `/atc-progress continue plan/feature-billing-2.md`.
+Or in one step: `/atc-progress continue plans/feature-billing-2.md`.
 
 ## Settings
 
@@ -81,7 +82,7 @@ The pane docks beside the transcript in the fullscreen terminal layout (`/tui fu
 
 ## Try it
 
-Use a scratch project for this, because the steps below create `plan/` files and write code.
+Use a scratch project for this, because the steps below create `plans/` files and write code.
 
 1. **Plan bar:**
    - `Use /common:create-implementation-plan to plan adding a health-check endpoint`: the bar appears as soon as the plan file is written.

@@ -20,9 +20,16 @@ function cellsOf(line: string): string[] {
     .map(cell => cell.split(placeholder).join('|').trim())
 }
 
+/** A markdown file directly in `plans/`, or in `plan/`, where plans were written before. */
 export function isPlanPath(path: string): boolean {
-  return /(^|[\\/])plan[\\/][^\\/]+\.md$/i.test(path)
+  return /(^|[\\/])plans?[\\/][^\\/]+\.md$/i.test(path)
 }
+
+/**
+ * Whether a parsed file is an implementation plan: it has at least one implementation phase.
+ * Other documents in `plans/`, such as an assessment report or notes, are not.
+ */
+export const isImplementationPlan = (plan: Plan): boolean => plan.phases.length > 0
 
 function unquote(value: string): string {
   return value.trim().replace(/^['"]|['"]$/g, '').trim()

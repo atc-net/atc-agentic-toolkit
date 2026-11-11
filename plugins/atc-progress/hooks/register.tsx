@@ -3,7 +3,7 @@ import type { EngineInterface, Register } from 'claude-code'
 
 import type { AgentRun, Plan } from '../types'
 import { CONTEXT_WINDOW, costOf, tokensOf } from './cost'
-import { currentPhase, isFinished, isPlanPath, parsePlan, planRank } from './plan'
+import { currentPhase, isFinished, isImplementationPlan, isPlanPath, parsePlan, planRank } from './plan'
 
 const PANE = 'atc-progress'
 const PLANS_PANE = 'atc-progress-plans'
@@ -22,7 +22,7 @@ const HELP = [
   '',
   '/atc-progress                   show or hide the subagents pane',
   '/atc-progress open | close      open (or bring forward) / close the subagents pane',
-  '/atc-progress plans             list the plans under plan/ and pin one to the bar',
+  '/atc-progress plans             list the plans under plans/ and pin one to the bar',
   '/atc-progress plan <path>       pin a plan file to the bar (Claude is told which plan it is)',
   '/atc-progress plan              unpin: follow the newest plan in progress again',
   '/atc-progress continue [path]   fill the prompt box with "continue this plan"; Enter sends it',
@@ -121,28 +121,36 @@ function bar(done: number, total: number, width: number): string {
 
 // ---------- plan discovery ----------
 
+/** The plan at `path`, or null when it can't be read or is another kind of document. */
 async function readPlan($: EngineInterface, path: string, mtimeMs?: number): Promise<Plan | null> {
   const text = await $.fs.read(path).catch(() => null)
   if (typeof text !== 'string') return null
+  const parsed = parsePlan(path, text)
+  if (!isImplementationPlan(parsed)) return null
   const mtime = mtimeMs ?? (await $.fs.stat(path).then(s => s.mtimeMs).catch(() => 0))
-  return { ...parsePlan(path, text), mtimeMs: mtime }
+  return { ...parsed, mtimeMs: mtime }
 }
 
 const samePath = (a: string, b: string) => a.replace(/\\/g, '/').toLowerCase() === b.replace(/\\/g, '/').toLowerCase()
 
-/** The markdown files under <root>/plan, newest first. */
+/** Where plans live under the root: `plans/`, and `plan/`, where they were written before. */
+const PLAN_DIRS = ['plans', 'plan'] as const
+
+/** The markdown files directly in <root>/plans and <root>/plan, newest first. */
 async function planFiles($: EngineInterface): Promise<{ path: string; mtimeMs: number }[]> {
-  const dir = joinPath(await $.session.root(), 'plan')
-  if (!(await $.fs.exists(dir).catch(() => false))) return []
-  const entries = await $.fs.list(dir).catch(() => [])
-  return entries
-    .filter(f => f.kind === 'file' && /\.md$/i.test(f.name))
-    .sort((a, b) => b.mtimeMs - a.mtimeMs)
-    .slice(0, 25)
-    .map(f => ({ path: joinPath(dir, f.name), mtimeMs: f.mtimeMs }))
+  const root = await $.session.root()
+  const files: { path: string; mtimeMs: number }[] = []
+  for (const name of PLAN_DIRS) {
+    const dir = joinPath(root, name)
+    if (!(await $.fs.exists(dir).catch(() => false))) continue
+    for (const f of await $.fs.list(dir).catch(() => [])) {
+      if (f.kind === 'file' && /\.md$/i.test(f.name)) files.push({ path: joinPath(dir, f.name), mtimeMs: f.mtimeMs })
+    }
+  }
+  return files.sort((a, b) => b.mtimeMs - a.mtimeMs).slice(0, 25)
 }
 
-/** The newest plan in progress under <root>/plan, else the newest planned one. */
+/** The newest plan in progress under <root>/plans, else the newest planned one. */
 async function scanPlans($: EngineInterface): Promise<Plan | null> {
   let best: { plan: Plan; rank: number } | null = null
   for (const file of await planFiles($)) {
@@ -182,7 +190,7 @@ async function refreshPlan($: EngineInterface): Promise<void> {
   if (fresh && fresh.mtimeMs !== active.mtimeMs) await update($, plan, () => fresh)
 }
 
-/** Every plan under <root>/plan: in progress first, then planned, then the rest; newest first within each. */
+/** Every plan under <root>/plans: in progress first, then planned, then the rest; newest first within each. */
 async function listPlans($: EngineInterface): Promise<Plan[]> {
   const found: Plan[] = []
   for (const file of await planFiles($)) {
@@ -277,7 +285,7 @@ export const register: Register = (on, options) => {
             context: [trackingNote(found)],
           }
         }
-        return { text: 'No plan in progress or planned under plan/*.md.' }
+        return { text: 'No plan in progress or planned under plans/*.md.' }
       }
       case 'continue': {
         const target = rest.join(' ')
@@ -299,7 +307,7 @@ export const register: Register = (on, options) => {
       case 'list': {
         const found = await listPlans($)
         await update($, plans, () => found)
-        if (found.length === 0) return { text: 'No plans under plan/*.md yet.' }
+        if (found.length === 0) return { text: 'No plans under plans/*.md yet.' }
         await $.ui.open({ id: PLANS_PANE, title: 'Plans', focus: true, closeOnEscape: true })
         return { text: `${found.length} plan${found.length === 1 ? '' : 's'} listed: press a number or Enter on one to put it on the bar, Esc to close.` }
       }
