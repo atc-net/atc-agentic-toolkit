@@ -23,7 +23,7 @@ Analyze the repository as a Staff Product Engineer and Principal Architect, and 
 4. **Research.** Look up competitors, current package versions and known advisories with the tools you have (Evidence Rule 3).
 5. **Write.** Fill [references/report-template.md](references/report-template.md), section by section.
 6. **Check.** Before saving, check the report against the [Constraints](#constraints) and the Evidence Rules: every item has an ID, priority, status, effort and evidence; no section has more than 7 items; nothing is invented.
-7. **Report back.** In the conversation, give the report's path, the number of 🔴 / 🟡 / 🔵 items, and the Do Next list. Nothing else: the findings live in the file.
+7. **Report back.** In the conversation, give the report's path, the number of 🔴 / 🟡 / 🔵 items, and the Do Next list. Nothing else: the findings live in the file. Then offer to turn Do Next, the Quick Wins or a milestone into an implementation plan with `common:create-implementation-plan`, for example `/common:create-implementation-plan vNext`.
 
 On a large repository, split the discovery across parallel read-only subagents (for example, one each for `src/`, `test/` and CI) when the tool exists, and have each return findings with their `path:line` evidence.
 
@@ -104,6 +104,6 @@ When `plans/assessment-roadmap.md` already exists:
 1. Read the existing report first.
 2. **Keep every existing ID.** Never renumber.
 3. **Keep ❌ Rejected items** with their reason. A rejection is a decision already made: do not propose it again.
-4. **Keep 🚧 In progress items** and their `Plan:` links. Change the status only when the code now shows otherwise.
+4. **Keep 🚧 In progress items** and their `Plan:` links. Change the status only when the code now shows otherwise. When the linked plan is complete, confirm the change in the code, then set ✅.
 5. New findings continue the numbering (`FEAT-08`, `FEAT-09`, …).
 6. Add a **Changed since last run** note at the top: what moved status, what is new, and what was dropped and why.
