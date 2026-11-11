@@ -1,6 +1,6 @@
 ---
 name: create-implementation-plan
-description: 'Create a new implementation plan file for new features, refactoring existing code or upgrading packages, design, architecture or infrastructure. Produces a durable, resumable plan with per-phase verification and handoff summaries so a future agent can pick up where the last one left off. Use when the user wants to plan multi-step or multi-session work.'
+description: 'Create a new implementation plan file for new features, refactoring existing code or upgrading packages, design, architecture or infrastructure. Produces a durable, resumable plan in plans/ with per-phase verification and handoff summaries so a future agent can pick up where the last one left off. Also turns a milestone, the Do Next list or finding IDs from an assessment report (plans/assessment-roadmap.md) into a plan. Use when the user wants to plan multi-step or multi-session work, or to plan the work from an assessment.'
 ---
 
 # Create Implementation Plan
@@ -23,6 +23,29 @@ Do not write the plan until the scope is understood. Ask the user (use `AskUserQ
 - Deployment and failure cases
 
 Surface assumptions for the user to confirm. Once the questions are resolved, the plan itself must be executable without further human interpretation.
+
+## From an Assessment Report
+
+Use this mode when the user names a milestone (`vNext`, `1.1`, `Later`), `Do Next` or `Quick Wins`, or finding IDs (`BUG-02 BUG-03 TEST-01`), or asks to plan the work from an assessment. The report is `plans/assessment-roadmap.md`, written by the `common:create-assessment-report` skill. Follow every other rule of this skill as well.
+
+1. **Pick the findings.** If `plans/assessment-roadmap.md` doesn't exist, say so and offer `common:create-assessment-report` instead of guessing. Otherwise read the report. Take the IDs from the milestone's `Items` column, the `Do Next` or `Quick Wins` list, or the IDs the user gave. Leave out ✅ and ❌ findings and say so. A 🚧 finding with a `Plan:` link already belongs to another plan: ask before taking it over.
+2. **Confirm the scope.** Show the user the findings (ID, title, effort) and ask about anything the report marks `⚠️ unverified` or `⚠️ verify before changing`.
+3. **Order the phases** by the report's `Dependencies`. A `TEST-` finding that covers a fix comes first, in the same phase or the one before (write the failing test, then fix). A finding that needs a benchmark gets one before the change.
+4. **Write the plan** in the normal template, with these additions:
+   - Front matter: `source: plans/assessment-roadmap.md` and `findings: [BUG-02, BUG-03, TEST-01]`.
+   - Task tables get a `Finding` column after `Task`: `| Task | Finding | Description | Completed | Date |`. Each task names the finding it works on; a finding can span several tasks. The plan's own IDs (`TASK-001`, `TEST-001`) stay three-digit, so they never look like the report's two-digit finding IDs.
+   - The finding's *Why* becomes a `REQ-`, its *Evidence* paths become `FILE-` entries, and anything marked `⚠️` becomes a `RISK-` or `ASSUMPTION-`.
+   - The milestone's *Exit criteria* become `VER-` checks, in the last phase or the phase that meets them.
+   - Add the paragraph in [Keeping the report in step](#keeping-the-report-in-step) to **For Future Agents**.
+5. **Mark the findings in the report.** For each finding in the plan, change only its status to 🚧 and end its line with `· *Plan:* plans/<plan file>.md`. Change nothing else in the report.
+
+### Keeping the report in step
+
+Add this to the plan's **For Future Agents** section:
+
+```md
+This plan implements findings from `plans/assessment-roadmap.md` (see `findings:` in the front matter). When the last task of a finding is complete and its phase's verification has passed, set that finding's status to ✅ in the report and end its line with `*Resolved:* <YYYY-MM-DD>`, adding `in <short commit sha>` only when the change is already committed. Never commit just to get a sha. If a finding turns out to be wrong or won't be done, set it to ❌, give the reason, and list it under **Explicitly Not Doing**. Change nothing else in the report.
+```
 
 ## Core Requirements
 
@@ -72,7 +95,7 @@ All implementation plans must strictly adhere to the following template. Each se
 - All section headers must match exactly (case-sensitive)
 - All identifier prefixes must follow the specified format
 - Tables must include all required columns
-- No placeholder text may remain in the final output, except the phase summaries, Final Recap, and Deployment Plan, which stay as placeholders until that work completes
+- No placeholder text may remain in the final output, except the phase summaries, Final Recap, and Deployment Plan, which stay as placeholders until that work completes. Leave out `source` and `findings` when the plan is not made from an assessment report
 
 ## Status
 
@@ -87,6 +110,8 @@ last_updated: [Optional: YYYY-MM-DD]
 owner: [Optional: Team/Individual responsible for this spec]
 status: 'Completed'|'In progress'|'Planned'|'Deprecated'|'On Hold'
 tags: [Optional: List of relevant tags or categories, e.g., `feature`, `upgrade`, `chore`, `architecture`, `migration`, `bug` etc]
+source: [Only for a plan made from an assessment report: plans/assessment-roadmap.md]
+findings: [Only for a plan made from an assessment report: the finding IDs it implements, e.g. BUG-02, TEST-01]
 ---
 
 # Introduction

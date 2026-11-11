@@ -108,12 +108,43 @@ Or ask Claude to "assess this repository" or "make a roadmap for this repo".
 - **Run it again** to update the same report. IDs are kept, rejected items (❌) stay rejected, and a "Changed since last run" note says what moved.
 - **atc-net repositories** are also checked against the atc-net pipeline standard. It first works out how the repository releases (one package or several, versioned together or apart, published from the release workflow or from a workflow per package) and then compares it with an atc-net reference repository of the same shape: release-please, Trusted Publishing, pinned actions and so on. Other repositories get a general CI/CD assessment instead.
 - It uses the search, docs and package tools it has for competitor features, package versions and advisories, and says which ones it used.
+- **Turn the roadmap into work** with [create-implementation-plan](#from-an-assessment-report-to-a-plan): plan a milestone, Do Next or a few findings, and the report follows the plan's progress.
 
 For an architecture deep dive with refactored code, use [senior-engineer-audit](skills/senior-engineer-audit/SKILL.md) instead.
 
 ### create-implementation-plan
 
 Create resumable implementation plan files in `plans/` for features, refactoring, or architecture changes, with per-phase verification and handoff summaries.
+
+#### From an assessment report to a plan
+
+The two skills work as a loop: assess, plan, implement, then assess again.
+
+```text
+/common:create-assessment-report             # 1. Assess: writes plans/assessment-roadmap.md
+/common:create-implementation-plan vNext     # 2. Plan a milestone from the report's roadmap
+/atc-progress continue                       # 3. Work through the plan (with the atc-progress mod)
+/common:create-assessment-report             # 4. Assess again: what moved, what's new
+```
+
+In step 2, name what to plan:
+
+| You type | The plan covers |
+|----------|-----------------|
+| `/common:create-implementation-plan vNext` | The findings in a milestone of the report's roadmap (`vNext`, `1.1`, `Later`, …) |
+| `/common:create-implementation-plan Do Next` | The report's top 3 |
+| `/common:create-implementation-plan Quick Wins` | The small items that could ship this week |
+| `/common:create-implementation-plan BUG-02 BUG-03 TEST-01` | Exactly these findings |
+
+The assessment skill offers this step itself when it finishes.
+
+What the plan does with the findings:
+
+- **Its phases follow the report's dependencies**, with tests before the fixes they cover. Each task says which finding it works on, in a `Finding` column, and the plan's front matter lists them all under `findings:`.
+- **The report is updated as the work moves.** When the plan is written, its findings turn 🚧 with a link to the plan. When a finding's last task is done and verified, it turns ✅ with the date, and the commit once there is one. A finding that turns out to be wrong turns ❌, with the reason.
+- **The next assessment sees all of this.** It keeps the IDs, confirms the ✅ findings in the code, and lists what changed since the last run.
+
+Without the atc-progress mod, step 3 is a prompt such as `Continue implementing plans/feature-vnext-1.md`.
 
 ### create-llms
 
