@@ -52,6 +52,19 @@ The general stop rules still apply: stop only when the user asked for cleanup, l
 freeing, or you started an instance the user didn't ask to keep; `--force` / `--volumes` need explicit
 approval.
 
+## Other extension tools (17.0)
+
+When present, prefer them over guessing from the terminal — their results are summaries (no raw
+logs, env vars, or dashboard login URLs):
+
+| Tool | Use for | Notes |
+|---|---|---|
+| `aspire_resource_debug` | Attach the VS Code debugger to a running .NET project or Go resource (started with Run Without Debugging or `aspire start`) without restarting it | The user confirms first; extension v1.25.0+; Go needs 17.0 hosting |
+| Editor-assistance tools (six, extension v1.24.0+) | Debug-session status, list the AppHosts VS Code runs, explain the latest launch failure, check whether Hot Reload applies to a resource, open the dashboard, open the Aspire output channel | Exact names come from the host's tool list — use what it reports |
+
+The extension also adds Go AppHost CodeLens/gutter indicators and F5 debugging of `apphost.go` (Delve),
+debugger setup for Go/Java/Rust AppHosts, and Node debugging for TypeScript/JavaScript Azure Functions.
+
 ## If the agent started the AppHost with `dotnet run`
 
 Stop that foreground run cleanly (Ctrl+C / terminate the process it owns), then restart through the

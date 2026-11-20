@@ -42,10 +42,14 @@ health check runs before `aspire deploy` so missing/stopped Docker/Podman is cau
 - Don't declare a deployment done until a health/endpoint check against the target passes.
 - Don't commit generated artifacts (`aspire-output/`, `.env.<environment>`, Helm values with resolved
   values) — they can contain secrets. Deployment state (below) is sensitive too.
-- Keep all Aspire packages on **one release family**. Several deployment packages are preview-only
-  (`Aspire.Hosting.Kubernetes` / `Aspire.Hosting.Azure.Kubernetes` are `13.6.0-preview.*`) and
-  `Aspire.Hosting.AWS` versions independently (13.7.x) — don't expect identical version strings, but
-  don't mix 13.5 and 13.6 packages (`MissingMethodException` / `TypeLoadException` at startup).
+- Keep all Aspire packages on **one release family**. In 13.6 some deployment packages were
+  preview-only (`Aspire.Hosting.Kubernetes` / `Aspire.Hosting.Azure.Kubernetes` were `13.6.0-preview.*`;
+  **stable from 17.0**), and `Aspire.Hosting.AWS` versions independently — don't expect identical
+  version strings, but never mix 13.x and 17.0 packages (`MissingMethodException` / `TypeLoadException`
+  at startup).
+- **17.0 redeploy hazards** — ask before redeploying an existing environment after the upgrade: AKS
+  moves to the Standard control-plane tier (cost) and to separate control-plane/kubelet identities
+  (node-pool updates; manual permissions must be re-granted), and generated names can change.
 
 > **Deployment state (13.6):** state is isolated per AppHost and environment under
 > `<ASPIRE_HOME>/deployments/<AppHostSha>/<environment>.json`. The VS Code extension exposes
@@ -69,12 +73,24 @@ health check runs before `aspire deploy` so missing/stopped Docker/Podman is cau
 | Target | `aspire add` | AppHost (C#) | AppHost (TS) |
 |---|---|---|---|
 | Docker Compose | `docker` | `AddDockerComposeEnvironment("compose")` | `addDockerComposeEnvironment('compose')` |
-| Kubernetes (any cluster) | `kubernetes` (preview) | `AddKubernetesEnvironment("k8s")` | `addKubernetesEnvironment('k8s')` |
+| Kubernetes (any cluster) | `kubernetes` (stable in 17.0) | `AddKubernetesEnvironment("k8s")` | `addKubernetesEnvironment('k8s')` |
 | Azure Container Apps | `azure-appcontainers` | `AddAzureContainerAppEnvironment("aca")` | `addAzureContainerAppEnvironment('aca')` |
 | Azure App Service | `azure-appservice` | `AddAzureAppServiceEnvironment("appsvc")` | `addAzureAppServiceEnvironment('appsvc')` |
-| AKS | `azure-kubernetes` (preview) | `AddAzureKubernetesEnvironment("aks")` | `addAzureKubernetesEnvironment('aks')` |
+| AKS | `azure-kubernetes` (stable in 17.0) | `AddAzureKubernetesEnvironment("aks")` | `addAzureKubernetesEnvironment('aks')` |
 
+Go AppHosts (17.0) use the same environment APIs (`AddKubernetesEnvironment`, …) and need the 17.0 CLI.
+
+- If the user didn't name a target and the AppHost doesn't have exactly one environment, **ask** where to
+  deploy (Docker Compose, Kubernetes, Azure Container Apps, Azure App Service, AKS, or AWS via
+  `aspire add aws` — preview, C# only, CDK-based). Radius isn't a default suggestion.
 - If the user just says "Azure", **ask** which compute target (ACA, App Service, or AKS) before adding one.
+- Before deploying, report the **parameters inventory**: each parameter's name, whether it's secret,
+  how it's supplied (`aspire secret set` locally; `Parameters__<name>` env vars in CI — dashes become
+  underscores, e.g. `registry-endpoint` → `Parameters__registry_endpoint`), and whether it's set or
+  missing. Never print values. In 17.0, required parameters can't be empty — mark them `AsOptional()`
+  where that's valid.
+- For a "plan" or "preview" request, stop after `aspire publish --list-steps` / `aspire deploy --list-steps`
+  (or `aspire publish -o <dir>` for artifact review) and ask before provisioning.
 - If the AppHost already has exactly one environment, use it. With a single environment every compute
   resource goes there automatically; `WithComputeEnvironment(env)` is only needed when there are several.
 - Resources added only inside a run-mode branch (`if (!builder.ExecutionContext.IsPublishMode)`) are
@@ -90,7 +106,7 @@ health check runs before `aspire deploy` so missing/stopped Docker/Podman is cau
 
 ```csharp
 var compose = builder.AddDockerComposeEnvironment("compose");
-var api = builder.AddProject<Projects.Api>("api");   // automatically included in the Compose output
+var api = builder.AddDotnetProject("api", "../Api/Api.csproj");   // automatically included in the Compose output
 ```
 
 ```bash
@@ -109,20 +125,26 @@ aspire deploy --environment staging            # prepare + `docker compose up`
   environment, `ConfigureEnvFile(env => …)` for the `.env` model, and
   `PublishAsDockerComposeService((resource, service) => …)` per resource (labels, restart policy, …).
 - Container runtime: auto-detected; force one with `ASPIRE_CONTAINER_RUNTIME=docker|podman`. Podman
-  must be **5.0.0+** (older versions are flagged by `aspire doctor` and ignored).
+  must be **5.0.0+** (older versions are flagged by `aspire doctor` and ignored). WSLc
+  (`ASPIRE_CONTAINER_RUNTIME=wslc`, 17.0) does **not** support Docker Compose deployment.
 - `PublishAsDockerFile()` on a project overrides the default .NET SDK container build.
+- **17.0:** the generated dashboard service uses `mcr.microsoft.com/aspire/nightly/dashboard:17.0` with
+  `ASPIRE_DASHBOARD_TELEMETRY_OPTOUT: "true"`; multiline quoted `.env` values are preserved
+  (unterminated quotes fail fast); Swarm `UpdateConfig.MaxFailureRatio` is a number (`0.3`).
+  `PrimaryBrowserOrigin`/`BrowserOrigins` references become deployment parameters.
 
 ### Kubernetes
 
-**Package:** `Aspire.Hosting.Kubernetes` (`aspire add kubernetes`, preview). Prerequisites: `kubectl`
-with a configured context and **Helm v4.2.0+** on `PATH`.
+**Package:** `Aspire.Hosting.Kubernetes` (`aspire add kubernetes`; preview in 13.x, **stable in 17.0** —
+persistent-volume APIs stay experimental). Prerequisites: `kubectl` with a configured context and
+**Helm 4.0.0+** on `PATH` (13.6 required 4.2.0+).
 
 ```csharp
 var k8s = builder.AddKubernetesEnvironment("k8s");
 var registry = builder.AddContainerRegistry("registry", "myregistry.example.com:5000");
 
-var api = builder.AddProject<Projects.Api>("api").WithReplicas(3);
-var web = builder.AddProject<Projects.Web>("web");
+var api = builder.AddDotnetProject("api", "../Api/Api.csproj").WithReplicas(3);
+var web = builder.AddDotnetProject("web", "../Web/Web.csproj");
 
 // Services are reachable only inside the cluster by default — expose them explicitly:
 var ingress = k8s.AddIngress("public")
@@ -173,6 +195,34 @@ persistent storage; inline CSI volumes (`CsiVolumeSourceV1`, `VolumeV1.Csi`) giv
 pod-scoped mounts; `aspire destroy` on AKS acquires credentials and runs Helm cleanup before removing
 Azure resources.
 
+**17.0 Kubernetes/AKS updates:**
+
+- **Stable packages**; deploy to any existing cluster (local or cloud) through the current kube context.
+- **PVC customization** (still `ASPIRECOMPUTE002`): `WithConfiguration(...)` on a persistent volume,
+  `WithPersistentVolumeName(...)` + `WithoutStorageClass()` to claim an existing volume; the TypeScript
+  callback covers labels, annotations, storage class, volume name/mode, access modes, and requests.
+- **Charts** default buildable images to the configured registry, repository prefix, and push
+  name/tags (no more `<resource>:latest`), honor per-image registries, and include OTLP env vars in
+  referenced resources' ConfigMaps. Publishing no longer overwrites a generated template that shares a
+  name with another object.
+- **`fileKeyRef` env sources** — `EnvVarSourceV1.FileKeyRef` / `FileKeySelectorV1` (Kubernetes 1.35 EnvFiles).
+- **`KubernetesManifestResource.WithField`** (polyglot `withField`) accepts nested objects and arrays.
+- **cert-manager / ACME:** `WithLetsEncryptProduction` / `WithLetsEncryptStaging` are **removed** — call
+  `WithAcmeServer("https://acme-v02.api.letsencrypt.org/directory", email)` (two literals or two
+  parameters), and `.WithExternalAccountBinding(keyId, hmacKey)` after it for ACME providers that need
+  EAB (the HMAC key must be a secret parameter; it isn't written to published artifacts).
+- **AKS:**
+  - Existing clusters via the shared `AsExisting(...)` APIs — Aspire deploys without reconfiguring the cluster.
+  - **Standard control-plane tier by default** for new and redeployed clusters (uptime SLA, extra
+    cost). Upgrading the package alone doesn't change a cluster; redeploying its infrastructure can.
+    Set the tier explicitly via `ConfigureInfrastructure` to stay on Free.
+  - **Separate user-assigned identities** for control plane and kubelet (enables pulling from an ACR in
+    another resource group). Redeploying can update node pools; re-grant any manually assigned
+    permissions to the new identities.
+  - Node pool OS SKU via `AksNodePoolConfig` in `WithSystemNodePool` / `AddNodePool` callbacks
+    (`OsSku = "AzureLinux"`); polyglot `addNodePool` takes a callback.
+  - Gateway API uses the stable provisioning SDK (`ManagedClusterIngressProfile`).
+
 ### Radius (preview, 13.5+)
 
 **Package:** `Aspire.Hosting.Radius` — publish to a [Radius](https://radapp.io/) environment:
@@ -189,6 +239,28 @@ container-image overrides are gated behind experimental diagnostics (`ASPIRERADI
 consumers get addresses/credentials from the backing resource's deployed schema and recipe outputs;
 new publish diagnostics flag unsupported endpoints, database mappings, credentials, and secret
 collisions. Radius **v0.60.2** is recommended (minimum v0.60.0).
+
+### AWS (preview, C# AppHosts)
+
+**Package:** `Aspire.Hosting.AWS` (`aspire add aws`) — maintained by AWS in
+[`aws/integrations-on-dotnet-aspire-for-aws`](https://github.com/aws/integrations-on-dotnet-aspire-for-aws),
+versioned independently of Aspire; check that repo's docs for exact APIs. Deploys through AWS CDK.
+
+```csharp
+#pragma warning disable ASPIREAWSPUBLISHERS001   // keep the suppression narrow
+builder.AddAWSCDKEnvironment(name: "my-stack", cdkDefaultsProviderFactory: CDKDefaultsProviderFactory.Preview_V1);
+#pragma warning restore ASPIREAWSPUBLISHERS001
+```
+
+- Defaults: web projects → ECS Fargate, `AddAWSLambdaFunction` → Lambda, Redis → ElastiCache;
+  `WithReference` drives env vars, VPC, and security groups.
+- **Prerequisites:** AWS credentials and region (`aws sts get-caller-identity`, `aws configure list`,
+  `aws configure get region`), Node 22.x, the CDK CLI (`cdk --version`), a bootstrapped environment
+  (`cdk bootstrap aws://<account>/<region>`), and Docker.
+- **Preview:** `aspire publish -o aws-artifacts`, then `cdk ls --app aws-artifacts/cdk.out` and
+  `cdk diff --app aws-artifacts/cdk.out`. **Deploy:** `aspire deploy` (ask first — it provisions billable resources).
+- **Troubleshooting:** `aws cloudformation describe-stacks`, `describe-stack-events`, `list-stack-resources` —
+  start from the **first** failed stack event, not the last.
 
 ### Azure (all targets)
 
@@ -218,7 +290,7 @@ Shared settings (config keys or env vars):
 ```csharp
 builder.AddAzureContainerAppEnvironment("aca-env");
 
-var api = builder.AddProject<Projects.Api>("api")
+var api = builder.AddDotnetProject("api", "../Api/Api.csproj")
     .WithExternalHttpEndpoints()        // maps to external ingress
     .WithReplicas(3);                   // maps to min replicas
 
@@ -245,19 +317,19 @@ scale-to-zero when idle and on-demand scale-out. Express defaults to zero minimu
 customization are preserved, and app-to-app references require explicitly public HTTP endpoints.
 Suppress `ASPIREACAEXPRESS001` to use it.
 
-**Deterministic environment naming (13.5+, experimental `ASPIREACANAMING002`).** Opt into
+**Deterministic environment naming (13.5+; experimental `ASPIREACANAMING002` until 13.6, stable in 17.0).** Opt into
 collision-resistant resource names when deploying multiple environments into the same resource
 group — names get a `uniqueString(resourceGroup().id)` suffix while preserving each environment's
 digits (`cae1` / `cae2` stay distinct). **Don't apply it retroactively without explicit approval** —
 changing the naming scheme can recreate an existing environment:
 
 ```csharp
-#pragma warning disable ASPIREACANAMING002
+// 13.5/13.6: #pragma warning disable ASPIREACANAMING002 (not needed in 17.0)
 builder.AddAzureContainerAppEnvironment("acaenv")
-    .WithUniqueResourceNaming();
+    .WithUniqueResourceNaming();       // WithCompactResourceNaming() is also stable in 17.0
 ```
 
-**Delegated subnets (13.5+, experimental `ASPIREAZURE003`).** ACA and Azure App Service environments
+**Delegated subnets (13.5+; experimental `ASPIREAZURE003` until 13.6, stable in 17.0).** ACA and Azure App Service environments
 can be placed into a delegated subnet. Declare the subnet with `WithServiceDelegation(serviceName)`,
 then attach it with `WithDelegatedSubnet(subnet)`. The virtual-network builder APIs live in
 `Aspire.Hosting.Azure.Network`.
@@ -352,6 +424,31 @@ builder.AddAzureFrontDoor("frontdoor")
     });
 ```
 
+### Azure additions in 17.0
+
+- **Front Door Private Link origins** (experimental) — `WithAzureFrontDoorPrivateLink(...)` for Azure
+  Container Apps (disables public network access) and App Service. The private endpoint connection must
+  be approved before traffic flows. `AzureFrontDoorResource.GetEndpointId(name)` returns an origin
+  endpoint's Azure resource ID (for Azure DNS alias records on apex domains).
+- **`Aspire.Hosting.Azure.EntraId` (preview)** — model Entra app registrations and service principals
+  (provision or reference existing; client-secret, certificate, and federated-identity credentials;
+  `WithRedirectUris`, `WithAppRole`, `WithOwners`, API identifier URIs and scopes). Also available to
+  polyglot AppHosts. It supplies identity configuration only — it does **not** add authentication
+  middleware or protect routes. `RunWithLocalDeveloperCertificateCredential()` gives each resource a
+  short-lived local dev certificate credential in run mode.
+- **`Aspire.Hosting.Azure.ApiManagement` (preview)** — model APIs, backends, and policies; import OpenAPI
+  documents from files or reachable deployed endpoints. Deployment-only (`aspire run` doesn't provision it).
+- **Identity APIs** — `WithFicMsi` is renamed `WithFederatedManagedIdentityCredential(clientId)` (plus
+  `PublishWithFederatedManagedIdentityCredential`); `PublishWithAppRoleAssignment` overloads for managed identities.
+- **ACR** — `WithPurgeTask` also deletes untagged manifests.
+- **`AddAzureFunctionsApp`** (experimental `ASPIREAZUREFUNCTIONS001`) hosts TypeScript/JavaScript
+  Functions (Node worker) as directory-based resources; `PublishAsStaticWebsite` can publish them as the
+  API of a static site; deterministic Dockerfiles for ACA.
+- Core Azure deployment APIs (`AzureEnvironmentResource`, `AddAzureEnvironment`, `WithLocation`,
+  `WithResourceGroup`, `AzurePublishingContext`) and `AzureRoleAssignmentResource` are stable — remove
+  `ASPIREAZURE001`/`ASPIREAZURE003` suppressions. Deployment token audiences are pre-acquired before
+  resource-group creation.
+
 ### Azure App Service
 
 **Package:** `Aspire.Hosting.Azure.AppService` (`aspire add azure-appservice`)
@@ -373,7 +470,7 @@ after `PublishAsAzureAppServiceWebsite(...)` only when you intend to bypass vali
 
 | AppHost concept | Docker Compose | Kubernetes | Azure Container Apps |
 |---|---|---|---|
-| `AddProject<T>()` | `service` with Dockerfile | `Deployment` + `Service` | `Container App` |
+| `AddDotnetProject()` / `AddProject<T>()` | `service` (SDK container image) | `Deployment` + `Service` | `Container App` |
 | `AddContainer()` | `service` with `image:` | `Deployment` + `Service` | `Container App` |
 | `AddRedis()` | `service: redis` | `StatefulSet` | Managed Redis |
 | `AddPostgres()` | `service: postgres` | `StatefulSet` | Azure PostgreSQL |

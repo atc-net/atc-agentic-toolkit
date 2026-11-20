@@ -82,6 +82,41 @@ Two complementary client-side features surface in the dashboard:
 - **Browser logs** — `Aspire.Hosting.Browsers` + `.WithBrowserLogs()` in the AppHost (`aspire add browsers`). Aspire adds a child resource `<parent>-browser-logs`, attaches a tracked Chromium session to the parent's URL over the Chrome DevTools Protocol, and streams console output, errors, and network events into the **child resource's console log** (`aspire logs <parent>-browser-logs`, not `aspire otel logs <parent>`); the child exposes **Open tracked browser** (`open-tracked-browser`), **Configure tracked browser**, and **Capture screenshot** (`capture-screenshot`) commands. Experimental — suppress `ASPIREBROWSERLOGS001` in C#. See [Polyglot APIs](polyglot-apis.md).
 - **Browser telemetry** — the OpenTelemetry **JavaScript SDK** running inside your front-end app, sending client-side traces/logs/metrics to the dashboard's OTLP endpoint. Configured in the front-end app code (not the AppHost), and enabled on the dashboard via OTLP/CORS settings.
 
+### What's new in 17.0
+
+- **Redesigned dashboard** — opens on a full-width **resource table** home page. Select a row,
+  "All resources", or a tab to drill in; select the app name in the header to return. Error badges open
+  that resource's structured logs filtered to errors. The previous dashboard is still available from
+  Settings ("Dashboard experience" → previous dashboard).
+- **Shared resource pane** — search, filters, and multi-select (Ctrl-click / Cmd-click) that carries
+  across Structured logs, Traces, and Metrics; group by **tags**, resource type, or state. Shared tags
+  come from the AppHost (`WithTags(...)`, experimental `ASPIRERESOURCETRAITS001`); you can also add
+  personal tags in the dashboard without editing the AppHost. `WithDisplayOrder` controls ordering.
+- **"All resources" overview** — health summary, live request activity, error rate, p95 latency,
+  slowest endpoints, busiest resources; "View all" opens recent errors or failed traces. Overview
+  layouts are Summary and Graph (the "Cards" layout was removed; saved preferences migrate to Summary).
+- **Friendly type labels** (`Redis`, `PostgreSQL Server`) here and in `aspire describe`.
+- **Metrics as cards with sparklines** — grouped by resource, meter, or instrument; pinnable.
+- **Terminals page** — separate from Console logs, lists only terminal-capable resources and replicas,
+  terminals resize to fit (`E` opens it; backtick still opens the dock; the top-right Terminals button
+  is gone). Terminal hosts are always hidden — "Show hidden resources" reveals them. Disconnects keep
+  the last screen (incl. Sixel/Kitty graphics).
+- **Export as Mermaid** from the resource graph (downloads `resources.mmd`), or
+  `aspire describe --format Mermaid` from the CLI.
+- **"Add telemetry" dialog** on empty Structured logs / Traces / Metrics pages, with the OTLP
+  endpoints and container guidance. SQL syntax highlighting and Markdown descriptions in the text visualizer.
+- **Parameter editing** in the redesigned UI; required parameters with no value show as
+  `ValueMissing` and the dashboard prompts for them.
+- **"Aspire Outage"** — an arcade easter egg on the resource graph (its optional hardcore mode really
+  stops the resource you hit — don't play it against something you need running).
+- **Telemetry & config** — product telemetry goes directly to Azure Monitor and ignores IDE consent;
+  opt out with `ASPIRE_DASHBOARD_TELEMETRY_OPTOUT=true`. The dashboard's own OTLP `service.name`
+  defaults to `aspire-dashboard` (override with `OTEL_SERVICE_NAME`). New
+  `Dashboard:Frontend:DisableWebSocketCompression`; a relative `Dashboard:Data:Directory`
+  (`ASPIRE_DASHBOARD_DATA_DIRECTORY`) now resolves against the AppHost directory.
+- **Tray companion** — `aspire tray start` (preview) gives a desktop panel of local AppHosts with
+  one-click "open dashboard"; see [CLI Reference](cli-reference.md#aspire-tray-170-preview).
+
 ### What's new in 13.6
 
 - **Persistent telemetry & run history** — telemetry is stored in a versioned SQLite database. The
@@ -124,13 +159,14 @@ Two complementary client-side features surface in the dashboard:
 By default, the dashboard runs on an auto-assigned port. Find it:
 
 - In the terminal output when the app starts
-- Via CLI: `aspire describe` (13.2+)
+- Via CLI: `aspire ps` (13.3+, includes each AppHost's dashboard URL) or `aspire describe` (13.2+)
 - Via MCP: `list_resources` tool
-- Override with `--dashboard-port` (foreground mode):
+- Via the tray companion (17.0+, `aspire tray start`)
+- To pin the port, set `applicationUrl` in the AppHost's launch profile (`Properties/launchSettings.json`,
+  `apphost.run.json`, or the `profiles` section of `aspire.config.json` for polyglot AppHosts) — 17.0's
+  `aspire run` has no `--dashboard-port` option.
 
-```bash
-aspire run --dashboard-port 18888
-```
+Use only dashboard links the CLI returns (they carry the login token); never construct them.
 
 > **13.2+ note:** The VS Code extension shows a live tree view of running apphosts using `aspire describe --follow`.
 
@@ -154,6 +190,9 @@ docker run --rm -d \
   -p 4317:18889 \
   mcr.microsoft.com/dotnet/aspire-dashboard:latest
 ```
+
+> 17.0 publish output (Docker Compose, Kubernetes) references `mcr.microsoft.com/aspire/nightly/dashboard:17.0`
+> and sets `ASPIRE_DASHBOARD_TELEMETRY_OPTOUT: "true"` on it.
 
 | Port             | Purpose                                                      |
 | ---------------- | ------------------------------------------------------------ |

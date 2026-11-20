@@ -3,11 +3,129 @@
 Agent-facing scrub list. Use it when reviewing AppHost code, scripts, or CI for an Aspire version
 bump. Each row is a pattern to **search for and replace** before recommending or generating code.
 
-Sources: [Aspire 13.6 release notes](https://aspire.dev/whats-new/aspire-13-6/),
+Sources: [Aspire 17.0 release notes](https://aspire.dev/whats-new/aspire-17/) and
+[17.0 change log](https://github.com/microsoft/aspire/wiki/17.0-Change-log) (verified against the
+live 17.0.0 CLI and its templates),
+[Aspire 13.6 release notes](https://aspire.dev/whats-new/aspire-13-6/),
 [Aspire 13.5 release notes](https://aspire.dev/whats-new/aspire-13-5/),
 [Aspire 13.4 release notes](https://aspire.dev/whats-new/aspire-13-4/), and
-[Aspire 13.3 release notes](https://aspire.dev/whats-new/aspire-13-3/) (verified against the live
-13.6.0 CLI).
+[Aspire 13.3 release notes](https://aspire.dev/whats-new/aspire-13-3/).
+
+> Aspire went straight from **13.6 to 17.0** — there are no 14, 15, or 16 releases.
+
+---
+
+## 13.6 → 17.0
+
+Upgrade order: `aspire update --self` (CLI) → `aspire update` (packages) from the repo root. Keep every
+`Aspire.*` package on 17.0 — several changes below are **binary breaks**, so a mixed 13.x/17.0 graph
+fails at runtime with `MissingMethodException`.
+
+### Platform and project model
+
+| Change | Migration |
+|---|---|
+| **.NET 10 minimum** — the AppHost and every Aspire library package require .NET 10+; `dotnet new aspire-starter --framework` accepts only `net10.0`/`net11.0` | Retarget the AppHost and any project that references `Aspire.*` client packages. Services that don't reference Aspire packages can stay on older TFMs. If the root `global.json` pins an older SDK, add a nested `global.json` in the AppHost directory — don't change the root one without approval. |
+| **`Aspire.AppHost.Sdk` is obsolete** (`ASPIRE012` warning — still builds) | Change `<Project Sdk="Aspire.AppHost.Sdk/…">` to `<Project Sdk="Microsoft.NET.Sdk">`; add `PackageReference`s to `Aspire.Hosting.AppHost` and `Aspire.Hosting.Dotnet`; replace resource `ProjectReference` items with `AddDotnetProject` calls. `aspire update` does **not** do this, and `aspire update --migrate` only reports it. Temporary silence: `<SuppressAspireAppHostSdkObsoleteWarning>true</SuppressAspireAppHostSdkObsoleteWarning>` (or `NoWarn`). File-based: replace `#:sdk Aspire.AppHost.Sdk@…` with `#:package Aspire.Hosting.AppHost@17.0.0` (+ `#:package Aspire.Hosting.Dotnet@17.0.0`). See [Project v2 Migration](project-v2-migration.md). |
+| **C# AppHosts require the Aspire CLI bundle** (`ASPIRE013` error) | Install/update the CLI; templates no longer set `AspireUseCliBundle` (remove it from new code). `ASPIRE010` is again a suppressible warning for non-C# AppHosts. |
+| **`AddProject` deprecated, `AddCSharpApp` / `addCSharpApp` `[Obsolete]`** (`CS0618`; was `ASPIRECSHARPAPPS001`) | Add `Aspire.Hosting.Dotnet` and use `AddDotnetProject` / `addDotnetProject` (accepts a `.cs` file, a `.csproj`, or a directory with exactly one `.csproj`). It returns `DotnetProjectResource`, not `ProjectResource`/`CSharpAppResource` — explicitly typed builders may need changes. Suppress `CS0618` where warnings are errors and the migration is deferred. |
+| **`ResourceUrlAnnotation.DisplayOrder` is a nullable read/write property** (was a field) | Rebuild every assembly that uses it. `ref`/`out` passing no longer compiles (use a local); reflection must use `GetProperty`. Integration authors must ship a build against 17.0. |
+| **`WithOutputDiffing` moved to the `Aspire.Hosting` namespace** (still experimental, `ASPIREPIPELINES005`) | Drop the old `using`; keep the suppression. |
+| **Required parameters reject empty values** (ordinary, secret, and connection-string parameters) | Supply a real value, or call `AsOptional()` (C#/Go) / `asOptional()` (TS) where empty is valid. At run time a missing value shows as `ValueMissing` and the dashboard prompts; without the dashboard, startup fails with `MissingParameterValueException`. Unset optional parameters resolve to `null` and are omitted from env vars. The legacy manifest publisher doesn't support optional parameters. |
+| **Browser-facing origins** — `PrimaryBrowserOrigin` / `BrowserOrigins` | Use the primary origin for redirect URLs and the full list for CORS instead of building `localhost` URLs; publishers emit them as deployment parameters. |
+| **Terminal hosts always hidden; `TerminalOptions.ShowTerminalHost` removed** | Delete the assignment; use the dashboard's "Show hidden resources" to see them. |
+| **Polyglot feature keys flattened** in `aspire.config.json` / `aspire config set` scripts | `experimentalPolyglot:java` → `experimentalPolyglotJava`, `:python` → `experimentalPolyglotPython`, `:rust` → `experimentalPolyglotRust`; `experimentalPolyglot:go` is **removed** (Go AppHosts need no flag). |
+
+### Packages and integrations
+
+| Change | Migration |
+|---|---|
+| **`Aspire.Azure.AI.OpenAI` and `Aspire.Azure.AI.Inference` discontinued** | Use `Aspire.Azure.AI.Extensions.OpenAI` (registers a standard `OpenAIClient`; `AddAzureOpenAIClient` for Azure OpenAI/Foundry deployments, `AddAzureProjectOpenAIClient` for a Foundry project) or `Aspire.Azure.AI.Projects` (`AddAzureAIProjectClient` → `AIProjectClient`). Code typed against `AzureOpenAIClient` must change. Preview `HostedAgentConfiguration.Tools` removed. |
+| **`Aspire.RabbitMQ.Client.v6` and `Aspire.MongoDB.Driver.v2` no longer published** | Move to `Aspire.RabbitMQ.Client` (RabbitMQ.Client 7.x) and `Aspire.MongoDB.Driver` (MongoDB.Driver 3.x; needs MongoDB Server 4.4+). `AddRabbitMQClient` / `AddMongoDBClient` keep their names — the driver APIs change. |
+| **Cosmos DB `configureClientOptions`** is `Action<IServiceProvider, CosmosClientOptions>` (was `Action<CosmosClientOptions>`) on client, database, and container registrations (incl. keyed) | Update callbacks to the two-argument form. The callback now runs at first DI resolution; `AddKeyedContainer` no longer creates the `CosmosClient` at registration. Old binaries throw `MissingMethodException` even without a callback — rebuild. |
+| **SQL Server REPL** launches `/opt/mssql-tools18/bin/sqlcmd` directly | For images that only have `/opt/mssql-tools/bin/sqlcmd`: `WithRepl(o => o.Command = SqlServerReplCommand.Version17)`. |
+| **OpenTelemetry 1.18** — OTLP exporter default max request size 128 MiB → **64 MiB**; oversized batches are dropped | ServiceDefaults projects keep their OTel versions until updated. To keep the old limit: `builder.Services.Configure<OtlpExporterOptions>(o => o.MaxRequestSizeBytes = 128 * 1024 * 1024);`. |
+| **`WithFicMsi` renamed** | Use `WithFederatedManagedIdentityCredential(clientId)` (plus `PublishWithFederatedManagedIdentityCredential` overloads). |
+| **Default image bumps** — notably **MongoDB 8.3 → 9.0 (major)**, PostgreSQL 18.6, Redis 8.10, RabbitMQ 4.4, Kafka 8.4.0, Keycloak 26.8, Valkey 9.2, Qdrant v1.20.0, NATS 2.15, pgAdmin 9.19.0, Azurite 3.37.0 | Review the MongoDB 9.0 release notes before reusing persistent data volumes, or pin with `WithImageTag(...)`. |
+
+### Deployment
+
+| Change | Migration |
+|---|---|
+| **Let's Encrypt shortcuts removed** — `WithLetsEncryptProduction`, `WithLetsEncryptStaging`, and the `WithAcmeServer` overload mixing a literal URL with a parameter email | Call `WithAcmeServer(directoryUrl, email)` with two literals or two parameters (production directory: `https://acme-v02.api.letsencrypt.org/directory`). ACME providers needing EAB: `.WithExternalAccountBinding(...)` after `WithAcmeServer` (HMAC key must be a secret parameter). |
+| **AKS Standard control-plane tier by default** for new *and redeployed* clusters | Redeploying an existing cluster's infrastructure can add a management charge. To stay on Free, set the tier explicitly via `ConfigureInfrastructure`. Ask the user before redeploying. |
+| **AKS uses separate user-assigned identities** for control plane and kubelet (enables cross-resource-group ACR pull) | Redeploying may update node pools and disrupt workloads. Manually granted permissions on the old identities are **not** transferred — re-grant them to the new identities. |
+| **Polyglot `addNodePool` takes a callback** (was an options object); `AksNodePoolConfig.OsSku` added | TS: `await aks.addNodePool('workers', async (pool) => { pool.osSku = 'AzureLinux'; });`. Go: `aks.AddNodePool("workers", func(pool *aspire.AksNodePoolConfig) { pool.OsSku = aspire.StringPtr("AzureLinux") })`. Python uses camelCase keys. C# is unchanged. |
+| **Docker Swarm `UpdateConfig.MaxFailureRatio`** is `double?` (was `string?`) | Use `0.3`, not `"0.3"`; Compose emits it unquoted. |
+| **Dashboard product telemetry** goes straight to Azure Monitor and no longer honors IDE consent; generated Compose/Helm dashboards set `ASPIRE_DASHBOARD_TELEMETRY_OPTOUT=true` | Set `ASPIRE_DASHBOARD_TELEMETRY_OPTOUT=true` for local/standalone dashboards to opt out (app telemetry is unaffected). Dashboard telemetry attributes were renamed to lowercase dot-separated keys — update any queries on them. CLI: `ASPIRE_CLI_TELEMETRY_OPTOUT`. |
+| **Dashboard image** in generated deployments is `mcr.microsoft.com/aspire/nightly/dashboard:17.0` (was `…:13.6` / `dotnet/aspire-dashboard`) | Mirror or allow-list the new path in locked-down registries. |
+
+### CLI and agent setup
+
+| Change | Migration |
+|---|---|
+| **`aspire secret` is per environment** — `set\|get\|list\|delete\|path` take `-e/--environment` (default `Development`); storage moves to `~/.aspire/secrets/<apphost-id>/<environment>.json` | Existing Development .NET user secrets are imported. Scripts that read the user-secrets file directly must use `aspire secret path` instead. Non-interactive `set` needs a value or `--envvar <NAME>`. |
+| **Embedded skills bundle retired; `aspire agent init --aspire-source` removed** — `agent init` now registers the `aspire@aspire-skills` plugin with each agent's marketplace | Drop `--aspire-source` and `--skill-locations` from scripts; use `--agents copilot,claude,opencode`, `--scope project\|global`, `--skills aspire`. Old copied skill folders become stale — `aspire doctor` flags them; `--remove-skill-copies` deletes them (destructive — includes local edits; ask first). Selecting no agents writes nothing. **With this toolkit:** scripts that only ran `agent init` to get Aspire skills/MCP can drop it, and `aspire new`/`aspire init` calls should add `--suppress-agent-init`. |
+| **`aspire destroy` rejects unknown options and arguments** | Fix scripts that passed extra flags. |
+| **`dotnet run --operation publish` fails fast** | Use `aspire publish`. |
+| **`aspire terminal attach` / `tape play` resolve an exact resource instance ID** | `--replica`/`-r` is hidden but still works. |
+| **Visual Studio "Enlist in Aspire orchestration"** may still generate `AddProject<TProject>` → `CS0234` | Run `aspire add Aspire.Hosting.Dotnet` in the AppHost directory and replace the call with `builder.AddDotnetProject("name", "../Project/Project.csproj")`. |
+
+**Behavior changes worth knowing:**
+
+- **`aspire run --watch` doesn't support `AddDotnetProject` yet** — use the resource's Rebuild action
+  (`aspire resource <name> rebuild`).
+- **`AddDotnetProject` no longer needs the .NET 11 SDK** — a 17.0 starter builds and publishes with the
+  .NET 10 SDK (verified with 10.0.404). The 13.6 SDK `11.0.100-rc.1` note no longer applies.
+- **`IInteractionService.IsAvailable` returns `false` during `BeforeStartEvent`** and other before-start
+  hooks — check it before prompting.
+- **`WithBindMount`** — repeating an identical mount is a no-op; a conflicting target throws immediately.
+- **`*.localhost` host names** in container references are remapped so they resolve inside containers.
+- **Helm charts** default buildable images to the configured registry/prefix instead of `<resource>:latest`.
+- **Go resources** trust system roots and dev certificates by default (Aspire sets `SSL_CERT_FILE`/`SSL_CERT_DIR`).
+- **`DistributedApplicationTestingBuilder.CreateAsync`** fails fast for Microsoft.Testing.Platform test
+  projects; AppHost crashes after build now surface from `StartAsync` instead of `BuildAsync`.
+
+**Diagnostics in 17.0:** new **`ASPIRE012`** (obsolete `Aspire.AppHost.Sdk`) and **`ASPIRE013`** (C# AppHost
+needs the CLI bundle); `ASPIRECSHARPAPPS001` replaced by `CS0618`. **Retired — remove these suppressions**
+from `.editorconfig`, project files, and `#pragma`s: `ASPIREACANAMING001`, `ASPIREACANAMING002`,
+`ASPIREAZURE001`, `ASPIREAZURE003`, `ASPIRECOMMAND001`, `ASPIRECONNECTIONSTRINGS001`, `ASPIREDENO001`,
+`ASPIREDOCKERFILEBUILDER001`, `ASPIREDOTNETPROJECT001`, `ASPIREFILESYSTEM001`, `ASPIREJAVASCRIPT001`,
+`ASPIREMCP001`, `ASPIREPIPELINES001`, `ASPIREPIPELINES002`, `ASPIREPIPELINES004`, `ASPIREPROBES001`,
+`ASPIREUSERSECRETS001`. **Narrowed:** `ASPIRETERMINAL001` (no longer on `WithTerminal`/`TerminalOptions`;
+still on `TerminalService` and automation), `ASPIRECOMPUTE002` (now only Kubernetes persistent-volume APIs).
+**New experimental:** `ASPIRERESOURCETRAITS001` (`WithTags`, `WithTrait`, `WithDisplayOrder`),
+`ASPIREAZUREFUNCTIONS001` (`AddAzureFunctionsApp` for TS/JS Functions); `ASPIREPIPELINES005` still applies.
+
+**Now stable packages:** `Aspire.Hosting.Dotnet`, `Aspire.Hosting.Kubernetes`, `Aspire.Hosting.Azure.Kubernetes`.
+**New preview packages:** `Aspire.Hosting.Azure.EntraId`, `Aspire.Hosting.Azure.ApiManagement`.
+
+### Migration checklist (13.6 → 17.0)
+
+1. **Confirm the user wants the upgrade** — it's a major version with binary breaks.
+2. **.NET 10** — make sure the AppHost and Aspire-referencing projects target `net10.0`+ and that a .NET 10
+   SDK is selected (nested `global.json` for the AppHost if the root pins older).
+3. **Update the CLI, then packages** — `aspire update --self`, then `aspire update`. Verify every
+   `Aspire.*` package is 17.0 (`dotnet list package`, `#:package` lines, `aspire.config.json` `packages`).
+4. **AppHost SDK** — with approval, move off `Aspire.AppHost.Sdk` (`ASPIRE012`) and remove `AspireUseCliBundle`;
+   or suppress `ASPIRE012` temporarily and record the follow-up.
+5. **Project resources** — replace `AddCSharpApp` (now `CS0618`); plan `AddProject` → `AddDotnetProject` per
+   [Project v2 Migration](project-v2-migration.md) (approval required).
+6. **Packages** — replace `Aspire.Azure.AI.OpenAI`/`.Inference`, `Aspire.RabbitMQ.Client.v6`,
+   `Aspire.MongoDB.Driver.v2`; update Cosmos DB `configureClientOptions` callbacks; rename `WithFicMsi`.
+7. **Parameters** — find required parameters that rely on empty values; add `AsOptional()` or real values.
+8. **Deployment** — replace `WithLetsEncrypt*`; decide on the AKS tier and re-grant identity permissions
+   **before** redeploying; switch polyglot `addNodePool` to the callback form; fix Swarm `MaxFailureRatio`.
+9. **Data** — check the MongoDB 9.0 image against persisted volumes (or pin the tag).
+10. **Suppressions/config** — remove retired diagnostic suppressions and `ShowTerminalHost`; rename
+    `experimentalPolyglot:*` keys; drop `experimentalPolyglot:go`.
+11. **Scripts/CI** — remove `--aspire-source` / `--skill-locations` (adopt `--agents`/`--scope`, or add
+    `--suppress-agent-init` to `aspire new`/`aspire init` when this toolkit provides the skills); update
+    anything reading user secrets directly; check `aspire destroy` arguments; set
+    `ASPIRE_DASHBOARD_TELEMETRY_OPTOUT` / `ASPIRE_CLI_TELEMETRY_OPTOUT` if required by policy.
+12. **Validate** — `aspire start --non-interactive --isolated --apphost <path>`, `aspire wait <resource>`,
+    `aspire describe --format Json`, `aspire stop --apphost <path>`; `aspire publish --list-steps` for
+    deployable AppHosts.
 
 ---
 
