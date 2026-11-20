@@ -1,6 +1,6 @@
 # Polyglot APIs — Complete Reference
 
-Aspire supports 10+ languages/runtimes. The AppHost is written in C# (all versions) or TypeScript (preview in 13.2/13.3, **GA in 13.4**), and orchestrated workloads can be any language. Each language has a hosting method that returns a resource you wire into the dependency graph.
+Aspire supports 10+ languages/runtimes. The AppHost is written in C# (all versions), TypeScript (preview in 13.2/13.3, **GA in 13.4**), or Go (**preview in 17.0**), and orchestrated workloads can be any language. Each language has a hosting method that returns a resource you wire into the dependency graph.
 
 ---
 
@@ -8,7 +8,8 @@ Aspire supports 10+ languages/runtimes. The AppHost is written in C# (all versio
 
 | Model | Resource type | How it runs | Examples |
 |---|---|---|---|
-| **Project** | `ProjectResource` | .NET project reference, built by SDK | `AddProject<T>()` |
+| **.NET project (v2)** | `DotnetProjectResource` | Path-based, coordinated SDK builds (stable and the template default in 17.0) | `AddDotnetProject(name, path)` |
+| **Project (legacy)** | `ProjectResource` | .NET project reference, built by SDK (deprecated in 17.0) | `AddProject<T>()` |
 | **Container** | `ContainerResource` | Docker/OCI image | `AddContainer()`, `AddRedis()`, `AddPostgres()` |
 | **Executable** | `ExecutableResource` | Native OS process | `AddExecutable()`, all `Add*App()` polyglot methods |
 
@@ -21,7 +22,8 @@ All polyglot `Add*App()` methods create `ExecutableResource` instances under the
 ### .NET / C\#
 
 ```csharp
-builder.AddProject<Projects.MyApi>("api")
+builder.AddDotnetProject("api", "../MyApi/MyApi.csproj")   // 17.0 default (Aspire.Hosting.Dotnet)
+builder.AddProject<Projects.MyApi>("api")                   // legacy — deprecated in 17.0
 ```
 
 **Chaining methods:**
@@ -36,12 +38,16 @@ builder.AddProject<Projects.MyApi>("api")
 - `.WithExternalHttpEndpoints()` — mark endpoints as externally accessible
 - `.WithOtlpExporter()` — configure OpenTelemetry exporter
 - `.PublishAsDockerFile()` — override publish behavior to Dockerfile
-- `.WithTerminal()` — (13.5+, experimental `ASPIRETERMINAL001`) interactive terminal session attachable from the dashboard / `aspire terminal attach`; dimensions via `TerminalOptions` (`Columns` default 120, `Rows` default 30, `ShowTerminalHost`). 13.6 moved `TerminalService`/`AspireTerminal*`/`TerminalLaunchOptions`/`TerminalOwner`/`TerminalPlacement` to `Aspire.Hosting.ApplicationModel` (AppHost-owned terminals: send input, read snapshots, wait for text)
+- `.WithTerminal()` — (13.5+; experimental `ASPIRETERMINAL001` until 13.6, no suppression in 17.0) interactive terminal session attachable from the dashboard / `aspire terminal attach`; dimensions via `TerminalOptions` (`Columns`, `Rows`; 13.6 default 132×50; `ShowTerminalHost` **removed in 17.0** — terminal hosts are always hidden). 13.6 moved `TerminalService`/`AspireTerminal*`/`TerminalLaunchOptions`/`TerminalOwner`/`TerminalPlacement` to `Aspire.Hosting.ApplicationModel` (AppHost-owned terminals: send input, read snapshots, wait for text)
 - `.WithRepl()` — (13.6+) on PostgreSQL, MySQL, MongoDB, SQL Server, Redis, Valkey server resources: dashboard command opening an authenticated client shell in the terminal dock (run mode only; uses the resource's credentials — enable only for trusted dashboard users)
 - `.WithVolume(name, target, env: "DATA_PATH")` — (13.6+) portable volume path on project/executable resources: the same env var points at a deterministic local directory in run mode and at the mount path (`/data`) when published (also `WithPersistentVolume(..., env:)`)
 - `.WithHttpsDeveloperCertificate()` / `.WithHttpsCertificate(cert, password)` / `.WithHttpsCertificateConfiguration(...)` / `.WithoutHttpsCertificate()` — (13.5+, experimental `ASPIRECERTIFICATES001`) HTTPS certificate configuration for project/executable resources
 - `.WithContainerFiles(destPath, sourcePath, options?)` / `.WithContainerFiles(destPath, callback, options?)` — (13.5+) copy host files or build-time-generated files into container resources; ownership via `ContainerFilesOptions` (`DefaultOwner`, `DefaultGroup`, `Umask`)
-- `builder.AddDotnetProject(name, path)` — (`Aspire.Hosting.Dotnet`, prerelease package) model a .NET project by path without a compile-time `ProjectReference`. **13.6:** no `ASPIREDOTNETPROJECT001` suppression needed (retired); compatible projects are coordinated into shared restore/build groups (file-based C# apps use serialized direct builds), the dashboard **Rebuild** command rebuilds after source changes (**Start**/**Restart** reuse the coordinated output), launch profiles are selectable, MSBuild `-mt` is used when the SDK supports it, and the resources now participate in **.NET SDK container publishing**. Requires .NET SDK `11.0.100-rc.1`+ (file-based apps: `11.0.100-rtm.26473.104` or stable `11.0.100`+). Opt out of grouped restore with the `Aspire:Dotnet:RestoreProjectsIndividually` configuration value. *(13.5: experimental and orchestration-only — publish/deploy failed.)*
+- `.WithTags("Checkout")` / `.WithDisplayOrder(n)` — (17.0, experimental `ASPIRERESOURCETRAITS001`) group and order resources in the dashboard
+- `.WithMcpServer(...)` — declare an MCP endpoint the resource already serves (stable in 17.0)
+- `builder.AddParameter("name").AsOptional()` / `.AsRequired()` — (17.0) optional parameters resolve to `null` when unset instead of prompting or failing; required ones reject `""`
+- Endpoint `PrimaryBrowserOrigin` / `BrowserOrigins` — (17.0) browser-facing origins for redirect URLs and CORS (`*.dev.localhost`, custom URLs, Codespaces)
+- `builder.AddDotnetProject(name, path)` — (`Aspire.Hosting.Dotnet`; prerelease in 13.x, **stable in 17.0** with F#/VB support and no .NET 11 SDK requirement) model a .NET project by path without a compile-time `ProjectReference`. **13.6:** no `ASPIREDOTNETPROJECT001` suppression needed (retired); compatible projects are coordinated into shared restore/build groups (file-based C# apps use serialized direct builds), the dashboard **Rebuild** command rebuilds after source changes (**Start**/**Restart** reuse the coordinated output), launch profiles are selectable, MSBuild `-mt` is used when the SDK supports it, and the resources now participate in **.NET SDK container publishing**. Requires .NET SDK `11.0.100-rc.1`+ (file-based apps: `11.0.100-rtm.26473.104` or stable `11.0.100`+). Opt out of grouped restore with the `Aspire:Dotnet:RestoreProjectsIndividually` configuration value. *(13.5: experimental and orchestration-only — publish/deploy failed.)*
 - `.WithBuildEnvironment(name, value)` — (13.6+) MSBuild-only environment variable for `AddDotnetProject` builds, separate from runtime env vars. Not supported for file-based apps; never use for secrets.
 
 ### Python
@@ -174,6 +180,11 @@ Chaining methods:
 redisAddr := os.Getenv("ConnectionStrings__cache")
 ```
 
+**17.0:** Go resources trust system roots and the dev certificate by default (Aspire sets
+`SSL_CERT_FILE`/`SSL_CERT_DIR`; pre-start tools `WithModTidy`/`WithModDownload` too), and the VS Code
+extension can attach its debugger to a running Go resource. Other options: `WithModVendor`,
+`WithVetTool`, `WithGoPrivate`, build tags/ldflags/gcflags/race detector via `AddGoApp` options.
+
 **Debugging (13.5+):** The Delve server accepts a single client by default; opt into multi-client
 mode with `WithDelveServer(o => o.AcceptMultiClient = true)`. Typed options for common Delve server
 flags (including `--continue`) are configured through `DelveServerOptions`.
@@ -217,11 +228,17 @@ The AppHost itself can be written in **TypeScript** as an alternative to C#. The
     "language": "typescript/nodejs"
   },
   "sdk": {
-    "version": "13.4.0"
+    "version": "17.0.0"
   },
-  "channel": "stable"
+  "packages": {
+    "Aspire.Hosting.JavaScript": "17.0.0"
+  }
 }
 ```
+
+`packages` lists the hosting integrations the generated SDK includes (`aspire add` / `aspire update`
+maintain it; 17.0's `aspire init --language typescript` pre-adds `Aspire.Hosting.JavaScript`). Keep every
+entry on the same version as `sdk.version`.
 
 ### Basic pattern
 
@@ -236,8 +253,8 @@ const builder = await createBuilder();
 const cache = await builder.addRedis("cache");
 const postgres = await builder.addPostgres("pg").addDatabase("catalog");
 
-// .NET API
-const api = await builder.addProject("api", "../api")
+// .NET API (13.x: addProject("api", "../api"))
+const api = await builder.addDotnetProject("api", "../Api/Api.csproj")
     .withReference(postgres)
     .withReference(cache)
     .waitFor(postgres)
@@ -254,7 +271,9 @@ await builder.build().run();
 
 | C# (PascalCase)                  | TypeScript (camelCase)              |
 |---|---|
-| `AddProject<T>(name)`            | `addProject(name, path)`           |
+| `AddDotnetProject(name, path)`   | `addDotnetProject(name, path, options?)` |
+| `AddProject<T>(name)` (legacy)   | `addProject(name, path)`           |
+| `AddParameter(name).AsOptional()` | `addParameter(name).asOptional()` (17.0) |
 | `AddRedis(name)`                 | `addRedis(name)`                   |
 | `AddPostgres(name)`              | `addPostgres(name)`                |
 | `.WithReference(resource)`       | `.withReference(resource)`         |
@@ -405,6 +424,109 @@ certificate trust is wired via `DENO_CERT`.
 **Exact signatures** — `aspire sdk export --language typescript --package <Name@Version>` emits the
 canonical TypeScript API JSON for any hosting package (see [CLI Reference](cli-reference.md)).
 
+### TypeScript AppHost additions (17.0)
+
+```typescript
+const messagePrefix = await builder.addParameter('message-prefix').asOptional();
+const signingKey = await builder.addParameter('checkout-signing-key', { secret: true });
+await signingKey.withTags(['Checkout']);                       // experimental ASPIRERESOURCETRAITS001
+
+await builder.addDotnetProject('checkout', '../Checkout/Checkout.csproj')
+    .withEnvironment('Checkout__SigningKey', signingKey)
+    .withTags(['Checkout']);
+```
+
+- `addCSharpApp` is `@deprecated` (was `@experimental`) — use `addDotnetProject`.
+- `withTerminal` accepts a callback to set columns and rows.
+- AKS `addNodePool(name, async (pool) => { pool.osSku = 'AzureLinux'; })` takes a **callback** (was an
+  options object); Kubernetes `withField` accepts nested objects and arrays.
+- **TypeScript hosting integrations (preview):** hosting integrations can now be authored in TypeScript
+  and consumed from polyglot AppHosts — e.g. the preview `@aspire/nuxt` package.
+- Un-awaited calls are serialized per connection (fixes lost resources and "A health check registration
+  is missing"), but keep awaiting builder calls anyway.
+
+---
+
+## Go AppHost (preview in 17.0)
+
+The AppHost itself can be written in **Go** (`apphost.go`). Like the TypeScript AppHost it is a guest
+process talking to the .NET orchestration host — the .NET SDK and the Aspire CLI are still required.
+The Go SDK is generated from the Aspire Type System into `.aspire/modules/` (not a separate
+implementation), so it tracks the C#/TypeScript APIs. 17.0 promoted it from experimental to
+**preview** — no `experimentalPolyglotGo` flag (the old `experimentalPolyglot:go` key is ignored).
+
+**Requirements:** Go 1.26+ (`aspire doctor` checks it; `gofmt` must be on `PATH` for scaffolding),
+Aspire CLI 17.0+.
+
+**Scaffold:** `aspire new aspire-go-empty` / `aspire new aspire-go-starter` (Go API + React frontend +
+optional Redis), or `aspire init --language go` in an existing repo — agents add
+`--non-interactive --suppress-agent-init` — run it from a subdirectory such as
+`apphost/` when the root already has a `go.mod` (17.0 creates a separate `aspire-apphost` module then).
+
+**Generated layout:**
+
+```text
+apphost.go          # package main — your orchestration code (edit this)
+go.mod              # module apphost; replace apphost/modules/aspire => ./.aspire/modules
+aspire.config.json  # sdk.version + packages (Aspire.Hosting.Go, integrations you add)
+.gitignore          # ignores .aspire/
+.aspire/modules/    # generated SDK — never edit; recover with `aspire restore`
+```
+
+**Basic pattern** (from `aspire-go-empty`):
+
+```go
+package main
+
+import (
+	"log"
+
+	"apphost/modules/aspire"
+)
+
+func main() {
+	builder, err := aspire.CreateBuilder()
+	if err != nil {
+		log.Fatal(aspire.FormatError(err))
+	}
+
+	builder.AddParameter("message-prefix").AsOptional()
+
+	app, err := builder.Build()
+	if err != nil {
+		log.Fatal(aspire.FormatError(err))
+	}
+	if err := app.Run(); err != nil {
+		log.Fatal(aspire.FormatError(err))
+	}
+}
+```
+
+**Idioms:**
+
+- **Deferred errors** — builder calls don't return errors one by one; failures (including child resource
+  errors) surface from `Build()`/`Run()`, or via `Err()` on a handle. Format them with
+  `aspire.FormatError(err)`; `*aspire.CapabilityError` signals an API the connected host doesn't support.
+- **Option structs and pointer helpers** — optional settings are structs/functional options; pointer
+  fields take helpers such as `aspire.StringPtr("AzureLinux")`, e.g.
+  `aks.AddNodePool("workers", func(pool *aspire.AksNodePoolConfig) { pool.OsSku = aspire.StringPtr("AzureLinux") })`.
+- Derived resource builders are accepted where a base type is expected; `GetResources()` /
+  `GetChildren()` return lists/maps.
+
+**Workflow:**
+
+| Task | Command |
+|---|---|
+| Add an integration | `aspire add redis` (regenerates `.aspire/modules/`) |
+| Recover/regenerate the SDK | `aspire restore --apphost apphost.go` |
+| Check the code | `go vet .` (after `aspire restore`) |
+| Run | `aspire start --non-interactive --apphost apphost.go` → `aspire wait <resource>` — **never** `go run .` (the CLI supplies the connection the generated SDK talks to) |
+| Debug | VS Code Go extension (Delve) — F5 on `apphost.go`; attach to running Go/.NET resources from the Aspire view |
+| Look up APIs | `aspire docs api search <query> --language go`, `aspire sdk export --language go --package <Name@Version>` |
+
+Go *services* inside a C# or TypeScript AppHost (`AddGoApp`) are unrelated to the Go AppHost — don't
+pick `--language go` just because the repo contains Go services.
+
 ---
 
 ## Java, Rust, and Deno (first-party, 13.6+)
@@ -473,17 +595,16 @@ Chaining: `withCargoArgs(args)` (cargo args, before `--`) vs `withArgs(...)` (ap
 `withCargoPackage(name)`, `withCargoProfile(name)`, `withCargoReleaseBuild()`, `withCargoLocked()`,
 `withCargoTarget(target)`, `withCargoManifestPath(path)`.
 
-### Deno (`Aspire.Hosting.JavaScript`, experimental `ASPIREDENO001`)
+### Deno (`Aspire.Hosting.JavaScript`; experimental `ASPIREDENO001` in 13.6, stable in 17.0)
 
 Deno hosting ships in `Aspire.Hosting.JavaScript` (Deno must be on `PATH`). Run mode executes
 `deno run -A <script>`; generated containers use the stricter `deno run --allow-net --allow-env`.
 Deno's built-in OpenTelemetry is enabled via `OTEL_DENO`.
 
 ```csharp
-#pragma warning disable ASPIREDENO001
+// 13.6 needs #pragma warning disable ASPIREDENO001; 17.0 doesn't (remove the suppression)
 builder.AddDenoApp("deno-api", "../deno-api", "main.ts")
     .WithDenoAllow(DenoPermissionKind.Net, "api.example.com");
-#pragma warning restore ASPIREDENO001
 ```
 
 ```typescript
@@ -516,7 +637,7 @@ builder.AddPowerShell("ps-script", "../scripts/process.ps1")
 
 ```csharp
 var dapr = builder.AddDapr();
-var api = builder.AddProject<Projects.Api>("api")
+var api = builder.AddDotnetProject("api", "../Api/Api.csproj")
     .WithDaprSidecar("api-sidecar");
 ```
 
@@ -534,7 +655,7 @@ var mongo = builder.AddMongoDB("mongo").AddDatabase("analytics");
 var rabbit = builder.AddRabbitMQ("messaging");
 
 // .NET API (primary)
-var api = builder.AddProject<Projects.CatalogApi>("api")
+var api = builder.AddDotnetProject("api", "../CatalogApi/CatalogApi.csproj")
     .WithReference(postgres)
     .WithReference(redis)
     .WithReference(rabbit)

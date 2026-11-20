@@ -13,6 +13,9 @@ Reference: https://aspire.dev/get-started/ai-coding-agents/
 The easiest way to configure the MCP server is using the Aspire CLI:
 
 ```bash
+# 17.0 — pick agents and scope explicitly in scripts
+aspire agent init --agents claude --scope project --mcp --non-interactive
+
 # 13.6+ — skills only by default; opt into the MCP server explicitly
 aspire agent init --mcp
 
@@ -27,14 +30,28 @@ aspire mcp init
 > `--mcp` (interactive standalone setup offers MCP as an opt-in; `--mcp=false` opts out explicitly).
 > `aspire new` / `aspire init` likewise leave MCP unselected. If an agent has Aspire skills but no
 > Aspire MCP tools, rerun `aspire agent init --mcp`.
+>
+> **Configure MCP only when the user asks for it.** Missing MCP config after a successful
+> `agent init` is expected. Never add `--mcp` to `aspire new`, `aspire init`, a skill refresh, or
+> missing-skill recovery.
+
+> **This toolkit already configures the MCP server** — the `aspire` plugin's `.mcp.json` runs
+> `aspire agent mcp` over STDIO — so you don't need `aspire agent init` for MCP either. Use the steps
+> below only for agents or editors the toolkit isn't installed in, and only when the user asks.
+
+> **Changed in 17.0:** skills are no longer copied into the repo. `agent init` registers Microsoft's
+> Aspire skills **plugin** (`aspire@aspire-skills`, or the `skillSources` in `aspire.config.json`) with
+> each selected agent's plugin system; MCP configuration stays separate and opt-in. The embedded skills
+> bundle and `--aspire-source` are gone, and `--skill-locations` was replaced by `--agents`
+> (`copilot,claude,opencode`) and `--scope project|global`. Reload the agent afterwards.
 
 The command walks you through an interactive setup:
 
 1. **Workspace root** — prompts for the path to your workspace root (defaults to current directory)
-2. **Environment detection** — detects supported AI environments (VS Code, Copilot CLI, Claude Code, OpenCode) and asks which to configure
-3. **Playwright MCP** — optionally offers to configure the Playwright MCP server alongside Aspire
-4. **Config creation** — writes the appropriate configuration files (e.g., `.vscode/mcp.json`)
-5. **Skill files** — creates skill files with Aspire-specific instructions for AI agents
+2. **Agent and scope selection** — detects supported AI agents (GitHub Copilot incl. VS Code, Copilot CLI, and the Copilot app; Claude Code; OpenCode) and asks which to configure and whether at project or global scope (17.0; `aspire new`/`init` use the same picker)
+3. **Skills** — `aspire` by default; optionally `playwright-cli` and `dotnet-inspect` (C# AppHosts only)
+4. **Config creation** — writes the appropriate configuration (e.g., `.vscode/mcp.json` when MCP is selected)
+5. **Skills plugin** — 17.0: registers the skills plugin; 13.6 and earlier: copies skill files with Aspire-specific instructions
 
 > **Note:** The init command uses interactive prompts (Spectre.Console). It must be run in a real terminal — the VS Code integrated terminal may not handle the prompts correctly. Use an external terminal if needed.
 
@@ -130,6 +147,9 @@ aspire mcp tools --format Json                                # includes input s
 aspire mcp call mydb query-tool --input '{"sql":"SELECT 1"}'  # invoke a tool
 ```
 
+To declare that a resource **already serves** an MCP endpoint (so it shows up in `aspire mcp tools`),
+call `WithMcpServer(...)` on it — stable in 17.0 (no `ASPIREMCP001` suppression).
+
 ### Fallback for documentation (13.1 users)
 
 If you are on Aspire CLI 13.1 and don't have `list_docs`/`search_docs`/`get_doc`, use **Context7** as a fallback for documentation queries. See the [SKILL.md documentation research section](../SKILL.md#1-researching-aspire-documentation) for details.
@@ -143,10 +163,10 @@ Resources and associated telemetry can be excluded from MCP results by annotatin
 ```csharp
 var builder = DistributedApplication.CreateBuilder(args);
 
-var apiService = builder.AddProject<Projects.Api>("apiservice")
+var apiService = builder.AddDotnetProject("apiservice", "../Api/Api.csproj")
     .ExcludeFromMcp();  // Hidden from MCP tools
 
-builder.AddProject<Projects.Web>("webfrontend")
+builder.AddDotnetProject("webfrontend", "../Web/Web.csproj")
     .WithExternalHttpEndpoints()
     .WithReference(apiService);
 
@@ -165,6 +185,14 @@ The `aspire agent init` (13.2+) / `aspire mcp init` (13.1) command supports:
 - [OpenCode](https://opencode.ai/docs/mcp-servers/)
 
 The MCP server uses the **STDIO transport protocol** and may work with other agentic coding environments that support this protocol.
+
+**VS Code extension tools (not MCP).** The Aspire VS Code extension also contributes language-model
+tools to Copilot Chat: `aspire_apphost_start` / `aspire_apphost_stop` (see
+[VS Code Lifecycle Tools](vscode-lifecycle.md)), `aspire_resource_debug` (attach the debugger to a
+running .NET or Go resource — the user confirms first; extension v1.25.0+), and, from extension v1.24.0,
+six editor-assistance tools: debug-session status, list the AppHosts VS Code runs, explain the latest
+launch failure, check whether Hot Reload applies to a resource, open the dashboard, and open the Aspire
+output channel. Their results are summaries — no raw logs, env vars, or dashboard login URLs.
 
 ---
 
@@ -232,11 +260,13 @@ On 13.2+, many debugging operations can be done directly via CLI without MCP:
 
 ## Troubleshooting
 
-If you run into issues, check the [open MCP issues on GitHub](https://github.com/dotnet/aspire/issues?q=is%3Aissue+is%3Aopen+label%3Aarea-mcp).
+If you run into issues, check the [open MCP issues on GitHub](https://github.com/microsoft/aspire/issues?q=is%3Aissue+is%3Aopen+label%3Aarea-mcp).
+`aspire doctor` checks the agent configuration (17.0 fixed an MCP doctor timeout on Windows).
 
 ## See Also
 
 - [AI coding agents guide](https://aspire.dev/get-started/ai-coding-agents/)
+- [Aspire skills setup](https://aspire.dev/get-started/aspire-skills/) and [microsoft/aspire-skills](https://github.com/microsoft/aspire-skills)
 - [aspire agent init command](https://aspire.dev/reference/cli/commands/aspire-agent-init/)
 - [aspire agent mcp command](https://aspire.dev/reference/cli/commands/aspire-agent-mcp/)
 - [How I taught AI to read Aspire docs](https://davidpine.dev/posts/aspire-docs-mcp-tools/)

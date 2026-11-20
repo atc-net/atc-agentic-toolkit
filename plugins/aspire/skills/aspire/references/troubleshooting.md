@@ -32,32 +32,43 @@ These codes indicate usage of experimental/preview APIs. They may require `#prag
 | `ASPIREPERSISTENCE001`    | Shared resource-lifetime APIs (`WithPersistentLifetime`/`WithSessionLifetime`/`WithParentProcessLifetime`/`WithLifetimeOf`) for executables/projects (13.4) |
 | `ASPIREPROCESSCOMMAND001` | Process-backed resource commands — `WithProcessCommand`, `ProcessCommandSpec`, `ProcessCommandOptions` (13.4) |
 | `ASPIREBROWSERLOGS001`    | Browser logs — `WithBrowserLogs` (`Aspire.Hosting.Browsers`), tracked Chromium console/network capture (13.3+) |
-| `ASPIRETERMINAL001`       | Interactive terminal sessions — `WithTerminal()`, `TerminalOptions`, `TerminalService` (13.5+). 13.6: types moved to `Aspire.Hosting.ApplicationModel`; the `aspire terminal` CLI no longer needs a feature flag |
+| `ASPIRETERMINAL001`       | Interactive terminal sessions — `WithTerminal()`, `TerminalOptions`, `TerminalService` (13.5+). 13.6: types moved to `Aspire.Hosting.ApplicationModel`; the `aspire terminal` CLI no longer needs a feature flag. **17.0:** no longer reported by `WithTerminal`/`TerminalOptions`; still applies to `TerminalService` and terminal automation |
+| `ASPIRERESOURCETRAITS001` | (17.0) `WithTrait`, `WithTags`, `WithDisplayOrder` |
+| `ASPIREAZUREFUNCTIONS001` | (17.0) `AddAzureFunctionsApp` — TypeScript/JavaScript Azure Functions |
+| `ASPIREPIPELINES005`      | `WithOutputDiffing` (moved to the `Aspire.Hosting` namespace in 17.0) |
 | `ASPIREINTERACTION001`    | Interaction Service. **Scope narrowed in 13.5:** core prompt/input APIs (`PromptInputAsync`, `PromptInputsAsync`, `InteractionInput`, `InputType`, `InteractionInputCollection`) and file-upload inputs are now **stable** — only `PromptProgressAsync` (progress dialogs) still requires the suppression. |
 | `ASPIRECERTIFICATES001`   | HTTPS certificate configuration — `WithHttpsDeveloperCertificate`, `WithHttpsCertificate`, `WithHttpsCertificateConfiguration`, `WithoutHttpsCertificate` (13.5) |
 | `ASPIREDOTNETPROJECT001`  | **Retired in 13.6** (coordinated builds are the default) — remove suppressions. Was: `AddDotnetProject` / `DotnetProjectResource` in `Aspire.Hosting.Dotnet` (13.5) |
 | `ASPIRECOSMOSDB001`       | **Retired in 13.6** (vNext emulator is the default; `RunAsPreviewEmulator` obsolete) — remove suppressions |
-| `ASPIREDENO001`           | Deno hosting — `AddDenoApp`, `WithDenoAllow`, … in `Aspire.Hosting.JavaScript` (13.6) |
+| `ASPIREDENO001`           | Deno hosting — `AddDenoApp`, `WithDenoAllow`, … in `Aspire.Hosting.JavaScript` (13.6). **Retired in 17.0** |
 | `ASPIREAZUREPROVISIONING001` | `Aspire.Hosting.Azure.Provisioning.*` proxies / `configureInfrastructure` (13.6) |
 | `ASPIREACAEXPRESS001`     | Azure Container Apps Express — `AsExpress()` (13.6) |
 | `ASPIREBLAZOR001`         | Blazor WebAssembly hosting types |
 | `ASPIREEXTENSION001`      | Extension debugging support APIs (e.g. the 13.6 `WithDebugSupport` overload receiving `LaunchConfigurationCallbackContext`) — not the old JavaScript ID |
-| `ASPIRECOMPUTE002`        | Kubernetes/AKS persistent volumes — `AddPersistentVolume`, `WithPersistentVolume` (13.5) |
-| `ASPIREACANAMING002`      | Azure Container Apps `WithUniqueResourceNaming()` deterministic naming (13.5) |
-| `ASPIRECSHARPAPPS001`     | `AddCSharpApp` / `addCSharpApp` — path-based and file-based C# apps (13.x) |
+| `ASPIRECOMPUTE002`        | Kubernetes/AKS persistent volumes — `AddPersistentVolume`, `WithPersistentVolume` (13.5); 17.0 adds PVC `WithConfiguration` / `WithPersistentVolumeName` / `WithoutStorageClass` and no longer reports it for `GetHostAddressExpression` / `GetEndpointPropertyExpression` |
+| `ASPIREACANAMING002`      | Azure Container Apps `WithUniqueResourceNaming()` deterministic naming (13.5). **Retired in 17.0** (with `ASPIREACANAMING001`) |
+| `ASPIRECSHARPAPPS001`     | `AddCSharpApp` / `addCSharpApp` — path-based and file-based C# apps (13.x). **Replaced by `CS0618` in 17.0** (`AddCSharpApp` is `[Obsolete]` — use `AddDotnetProject`) |
 | `ASPIREPROJECTS001`       | Project defaults/launch annotations and the `AddEFMigrations` overloads for `IDotnetProgramResource` (Project v2) |
 | `ASPIREDOCKERFILEBUILDER001` | Programmatic Dockerfile generation — `AddDockerfileBuilder` / `WithDockerfileBuilder` |
 | `ASPIREDURABLETASK001`    | Durable Task scheduler / task hub APIs in `Aspire.Hosting.Azure.Functions` (13.3) |
 | `ASPIREEXPORT013`         | Integration authors: two `[AspireExport]`s generate the same polyglot capability ID (13.3) |
-| `ASPIREAZURE003`          | Azure virtual-network builder APIs in `Aspire.Hosting.Azure.Network` — `WithServiceDelegation`, `WithDelegatedSubnet` (13.5) |
+| `ASPIREAZURE003`          | Azure virtual-network builder APIs in `Aspire.Hosting.Azure.Network` — `WithServiceDelegation`, `WithDelegatedSubnet` (13.5). **Retired in 17.0** |
 
-**CLI-bundle diagnostics (13.5, build/MSBuild-level, not suppressible experimental gates):**
+> **Retired in 17.0 — remove the suppressions:** `ASPIREACANAMING001`, `ASPIREACANAMING002`, `ASPIREAZURE001`,
+> `ASPIREAZURE003`, `ASPIRECOMMAND001`, `ASPIRECONNECTIONSTRINGS001`, `ASPIREDENO001`,
+> `ASPIREDOCKERFILEBUILDER001`, `ASPIREDOTNETPROJECT001`, `ASPIREFILESYSTEM001`, `ASPIREJAVASCRIPT001`,
+> `ASPIREMCP001`, `ASPIREPIPELINES001`, `ASPIREPIPELINES002`, `ASPIREPIPELINES004`, `ASPIREPROBES001`,
+> `ASPIREUSERSECRETS001`. A leftover `#pragma`/`<NoWarn>` for a retired ID is harmless but misleading.
+
+**CLI-bundle and SDK diagnostics (build/MSBuild-level, not suppressible experimental gates):**
 
 | Code          | Severity | Meaning |
 | ------------- | -------- | ------- |
-| **ASPIRE009** | Error    | CLI bundle can't be resolved (with `AspireUseCliBundle=true`) |
-| **ASPIRE010** | Warning  | Project opts out of the CLI bundle |
+| **ASPIRE009** | Error    | CLI bundle can't be resolved (17.0 includes the captured DNX/CLI setup output in the message) |
+| **ASPIRE010** | Warning  | Project opts out of the CLI bundle (17.0: suppressible warning for **non-C#** AppHosts only) |
 | **ASPIRE011** | Error    | `dnx` isn't available to acquire the CLI bundle |
+| **ASPIRE012** | Warning  | (17.0) `Aspire.AppHost.Sdk` is obsolete — migrate to `Microsoft.NET.Sdk` + `Aspire.Hosting.AppHost` ([Project v2 Migration](project-v2-migration.md#7-moving-off-aspireapphostsdk-170)); temporarily silence with `SuppressAspireAppHostSdkObsoleteWarning=true` |
+| **ASPIRE013** | Error    | (17.0) a C# AppHost requires the Aspire CLI bundle — install/update the CLI and run through `aspire` |
 
 To suppress experimental warnings:
 
@@ -80,7 +91,7 @@ var resource = builder.AddExperimentalResource("test");
 
 | Code                   | Notes                                                                                    |
 | ---------------------- | ---------------------------------------------------------------------------------------- |
-| **ASPIREJAVASCRIPT001** | Experimental JavaScript/TypeScript hosting APIs (e.g. `AddNextJsApp`). Renamed from `ASPIREEXTENSION001` in 13.3 — update any existing `<NoWarn>`/`#pragma` suppressions. |
+| **ASPIREJAVASCRIPT001** | Experimental JavaScript/TypeScript hosting APIs (e.g. `AddNextJsApp`). Renamed from `ASPIREEXTENSION001` in 13.3 — update any existing `<NoWarn>`/`#pragma` suppressions. **Retired in 17.0** (`AddNextJsApp`, `PublishAsStaticWebsite`, `PublishAsNodeServer`, `PublishAsPackageScript` are stable). |
 | **ASPIREATS001** | **Removed in 13.4** when the TypeScript AppHost went GA — it was the experimental TS-AppHost SDK warning. If you still see it, drop any `<NoWarn>`/`#pragma` suppression for it. |
 
 ---
@@ -98,6 +109,31 @@ If you hit these on 13.4 or earlier, upgrade (`aspire update --self && aspire up
 - **Stale AppHost backchannel sockets** blocking commands like `aspire add` — now pruned automatically; Ctrl+C/SIGTERM handling is also more responsive during startup.
 - **Slow TypeScript AppHost startup** — the CLI no longer waits a fixed delay before connecting; it races the RPC retry loop against process exit.
 
+### Upgrading to 17.0
+
+| Problem | Solution |
+| ------- | -------- |
+| `warning ASPIRE012` on the AppHost project | `Aspire.AppHost.Sdk` is obsolete. Migrate (with approval) per [Project v2 Migration § 7](project-v2-migration.md#7-moving-off-aspireapphostsdk-170), or suppress with `SuppressAspireAppHostSdkObsoleteWarning` for now. `aspire update` doesn't do it. |
+| `error ASPIRE013` | C# AppHosts need the Aspire CLI bundle — `aspire update --self` (or reinstall the CLI) and start with `aspire start`. |
+| Build fails: target framework / "requires .NET 10" | 17.0 AppHosts and `Aspire.*` packages need .NET 10+. Retarget the AppHost and Aspire-referencing projects; add a nested `global.json` for the AppHost if the root pins an older SDK. |
+| `warning CS0618` on `AddCSharpApp` / `AddProject` | Obsolete in 17.0 — move to `AddDotnetProject` (approval for existing code), or suppress narrowly. |
+| `MissingMethodException` / `TypeLoadException` at startup | Mixed release families — make every `Aspire.*` package 17.0.0 (Cosmos DB clients and `ResourceUrlAnnotation.DisplayOrder` users break binary-wise). Rebuild integration libraries against 17.0. |
+| `MissingParameterValueException`, or a parameter stuck in `ValueMissing` | Required parameters reject empty values in 17.0 — set a real value (`aspire secret set Parameters:<name> …`, `Parameters__<name>`) or mark it `AsOptional()`. |
+| Telemetry batches silently dropped | OpenTelemetry 1.18 lowered the OTLP max request size to 64 MiB — raise `OtlpExporterOptions.MaxRequestSizeBytes` in ServiceDefaults if needed. |
+| `CS0234` "`Projects` does not exist" after VS "Enlist in Aspire orchestration" | The AppHost is Project v2 (no generated `Projects` types). `aspire add Aspire.Hosting.Dotnet`, then `AddDotnetProject("name", "../X/X.csproj")`. |
+| `aspire run --watch` ignores `AddDotnetProject` resources | Not supported yet — use `aspire resource <name> rebuild`. |
+| Secrets "disappeared" after upgrade | 17.0 stores them per environment in `~/.aspire/secrets/<apphost-id>/<environment>.json` (Development user secrets are imported). Check `aspire secret list -e <env>` / `aspire secret path`. |
+| `aspire agent init --skill-locations` / `--aspire-source` unknown option | Removed in 17.0 — use `--agents` / `--scope` (or skip `agent init`; this toolkit already provides the skill and MCP server). |
+| `aspire doctor` warns about copied Aspire skill folders | Stale 13.x copies. This toolkit's skill takes precedence; tell the user and delete them only if they ask — don't run `aspire agent init` to "fix" it. |
+| `experimentalPolyglot:java` (etc.) no longer works | Renamed to flat `experimentalPolyglotJava` / `…Python` / `…Rust`; the Go key is gone (no flag needed). |
+| `WithLetsEncryptProduction` / `WithLetsEncryptStaging` not found | Removed — use `WithAcmeServer(directoryUrl, email)` (+ `WithExternalAccountBinding` for EAB). |
+| `WithFicMsi` not found | Renamed to `WithFederatedManagedIdentityCredential(clientId)`. |
+| `Aspire.Azure.AI.OpenAI` / `.Inference`, `Aspire.RabbitMQ.Client.v6`, `Aspire.MongoDB.Driver.v2` have no 17.0 version | Discontinued — use `Aspire.Azure.AI.Extensions.OpenAI` / `Aspire.Azure.AI.Projects`, `Aspire.RabbitMQ.Client`, `Aspire.MongoDB.Driver`. |
+| MongoDB container won't start on an existing volume | Default image moved to MongoDB 9.0 (major) — check the upgrade path or pin `WithImageTag("8.3")`. |
+| SQL Server REPL: `sqlcmd` not found | 17.0 runs `/opt/mssql-tools18/bin/sqlcmd`; for older images `WithRepl(o => o.Command = SqlServerReplCommand.Version17)`. |
+| `aspire init --language go` fails: "gofmt … cannot find the file" | Go isn't installed or not on `PATH` — install Go 1.26+ (`aspire doctor` checks it). |
+| `aspire update --self` fails: "Cannot show selection prompt since the current terminal isn't interactive" | Pass the channel: `aspire update --self --channel stable --non-interactive --yes`. |
+
 ### Upgrading to 13.6
 
 | Problem | Solution |
@@ -111,7 +147,7 @@ If you hit these on 13.4 or earlier, upgrade (`aspire update --self && aspire up
 | `aspire wait` exits with code `18` | The resource reached `FailedToStart` (13.6 reports this even when waiting for `down`) — check `aspire logs <resource>`. |
 | `AddDotnetProject` build errors after upgrade | Coordinated builds need .NET SDK `11.0.100-rc.1`+ (file-based apps: `11.0.100-rtm.26473.104` or stable `11.0.100`+). Projects with per-project restore hooks: set `Aspire:Dotnet:RestoreProjectsIndividually`. |
 | `aspire stop --force` left volumes behind | Expected in 13.6 — add `--volumes` to remove Aspire-owned named volumes. |
-| Agent has skills but no Aspire MCP server | 13.6 `aspire agent init` skips MCP by default — rerun with `--mcp`. |
+| Agent has skills but no Aspire MCP server | With this toolkit, the `aspire` plugin's `.mcp.json` provides it — check the plugin is enabled and `aspire` is on `PATH`. (13.6's `aspire agent init` skips MCP by default; `--mcp` adds it for agents without the toolkit.) |
 | Duplicate Front Door origins after deploy | Origin names now include the backend hostname; delete old origins or preserve names via `ConfigureInfrastructure` (see [Deployment](deployment.md)). |
 
 ### Container runtime

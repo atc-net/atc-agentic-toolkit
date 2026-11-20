@@ -42,6 +42,22 @@ Consequences:
 - The one exception is a **standalone or remote dashboard**: `aspire otel` and `aspire export` accept
   `--dashboard-url <url>` (plus `--api-key` for ApiKey-secured dashboards) to query it over its telemetry
   API instead of the local backchannel.
+- 17.0 creates the backchannel, DCP, and terminal sockets with restrictive permissions before binding, and
+  logs routine connect/disconnect only at Trace (quieter AppHost logs).
+
+### AppHost Server v2 (17.0, preview, opt-in)
+
+With `features.appHostServerV2: true` in `aspire.config.json`, a long-lived server bundled in the CLI owns
+the app graph, pipeline scheduling, and workload lifetimes for `aspire run`, `aspire start`, and
+`aspire deploy`. Leave it off unless the user opts in; report it when diagnosing lifecycle oddities.
+
+### Guest AppHosts (TypeScript, Go)
+
+Polyglot AppHosts run as a guest process that talks to the .NET orchestration host over JSON-RPC; their
+SDKs in `.aspire/modules/` are generated from the **Aspire Type System (ATS)** exported by each hosting
+package (`[AspireExport]`). That's why `aspire add`/`aspire restore` regenerate code, why
+`aspire sdk export --language typescript|go` can show exact signatures, and why integration authors can
+now write hosting integrations in TypeScript (17.0 preview).
 
 ---
 
@@ -54,7 +70,8 @@ Everything in Aspire is a **resource**. The resource model is hierarchical:
 ```
 IResource (interface)
 └── Resource (abstract base)
-    ├── ProjectResource          — .NET project reference
+    ├── DotnetProjectResource    — .NET project by path (AddDotnetProject; 17.0 default)
+    ├── ProjectResource          — .NET project reference (AddProject; deprecated in 17.0)
     ├── ContainerResource        — Docker/OCI container
     ├── ExecutableResource       — Native process (polyglot apps)
     ├── ParameterResource        — Config value or secret
@@ -191,7 +208,7 @@ services__ml__http__0=http://localhost:8000
 
 ```csharp
 var redis = builder.AddRedis("cache");
-var api = builder.AddProject<Projects.Api>("api")
+var api = builder.AddDotnetProject("api", "../Api/Api.csproj")
     .WithReference(redis);
 ```
 
@@ -339,7 +356,7 @@ Every integration adds health checks automatically on the client side:
 ### Custom health checks
 
 ```csharp
-var api = builder.AddProject<Projects.Api>("api")
+var api = builder.AddDotnetProject("api", "../Api/Api.csproj")
     .WithHealthCheck("ready", "/health/ready")
     .WithHealthCheck("live", "/health/live");
 ```
@@ -408,11 +425,22 @@ var apiKey = builder.AddParameter("api-key");
 var dbPassword = builder.AddParameter("db-password", secret: true);
 
 // Use in resources
-var api = builder.AddProject<Projects.Api>("api")
+var api = builder.AddDotnetProject("api", "../Api/Api.csproj")
     .WithEnvironment("API_KEY", apiKey);
 
 var db = builder.AddPostgres("db", password: dbPassword);
+
+// 17.0: optional parameter — unset resolves to null and the env var is omitted
+var prefix = builder.AddParameter("message-prefix").AsOptional();
 ```
+
+**17.0 parameter semantics:** required parameters (ordinary, secret, and connection-string) reject empty
+values. During `aspire run`/`start` a missing or empty value puts the parameter in `ValueMissing` and the
+dashboard prompts for it; without the dashboard, startup fails with `MissingParameterValueException`.
+`AsOptional()` / `AsRequired()` toggle this; `ParameterResource.TryGetCurrentValue` reads without
+prompting and `SetValueAsync` sets or clears a value. An explicitly empty optional value stays `""`.
+Values come from `Parameters:<name>` configuration — locally `aspire secret set Parameters:<name> …`
+(per environment in 17.0), in CI `Parameters__<name>` env vars (dashes → underscores).
 
 ### Configuration sources
 

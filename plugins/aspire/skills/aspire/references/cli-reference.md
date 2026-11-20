@@ -2,7 +2,9 @@
 
 The Aspire CLI (`aspire`) is the primary interface for creating, running, and publishing distributed applications. It is cross-platform and installed standalone (not coupled to the .NET CLI, though `dotnet` commands also work).
 
-**Tested against:** Aspire CLI 13.6 (commands verified against the 13.6.0 CLI)
+**Tested against:** Aspire CLI 17.0 (commands and flags verified against `--help` of the 17.0.0 CLI; 13.x differences are called out inline)
+
+17.0 groups `aspire --help` into **App commands** (`add`, `init`, `integration`, `ls`, `new`, `ps`, `restore`, `run`, `start`, `stop`, `update`), **Resource management** (`resource`, `wait`), **Monitoring** (`dashboard`, `describe`, `export`, `logs`, `otel`, `terminal`, `tray`), **Deployment** (`deploy`, `destroy`, `do`, `publish`), and **Tools & configuration** (`agent`, `cache`, `certs`, `completions`, `config`, `docs`, `doctor`, `mcp`, `secret`, `template`).
 
 ---
 
@@ -40,6 +42,12 @@ nix profile add github:microsoft/aspire#aspire-cli   # Nix
 > **CLI bundle (13.5):** new C# AppHost templates set `AspireUseCliBundle=true`, so the AppHost resolves its own copy of the CLI on the fly via `dnx` and `dotnet run` behaves like `aspire run`. Existing projects stay opt-in (preserve `AspireUseCliBundle` as you find it; add it only when the user opts in). **Agents still use `aspire start --non-interactive`** — the bundle doesn't make a foreground `dotnet run` suitable for agent workflows. Diagnostics: `ASPIRE009` (error — bundle can't be resolved), `ASPIRE010` (warning — project opted out), `ASPIRE011` (`dnx` unavailable). Force the DNX path with `AspireCliInvocationMode=Dnx`.
 >
 > **13.6:** `AspireCliInvocationMode` has two DNX modes — `Dnx` runs `Aspire.Cli` through DNX **without** a version and honors an in-scope `.config/dotnet-tools.json` tool manifest; `DnxPinned` runs the paired `Aspire.Cli` version and ignores the manifest. `aspire update` also updates repository-local CLI references in npm and .NET tool manifests.
+>
+> **17.0:** C# AppHosts **require** the CLI bundle — `ASPIRE013` (error) when it's missing; `ASPIRE010` is only a suppressible warning for non-C# AppHosts. Templates and `aspire init` no longer write `AspireUseCliBundle`. The CLI itself is retargeted to .NET 11 (NativeAOT — no runtime needed); `Aspire.Cli.<rid>` tool packages place the binary under `tools/any/<rid>/`.
+
+**Update channels and qualities.** `aspire update --self --channel <stable|daily>` and `aspire new --channel` take a *channel*; the install scripts take a *quality*: `curl -sSL https://aspire.dev/install.sh | bash -s -- -q staging` (or `-q dev`) / `iex "& { $(irm https://aspire.dev/install.ps1) } -Quality staging"`. In a non-interactive shell `aspire update --self` needs `--channel` (it otherwise tries to prompt and fails).
+
+**Shell completions (17.0+):** `aspire completions script <bash|fish|pwsh|zsh>` writes a completion script to stdout (e.g. `aspire completions script bash > aspire-completion.bash && source ./aspire-completion.bash`). Release installers register completions automatically; pass `--skip-completions` to the installer to opt out.
 
 ---
 
@@ -74,6 +82,24 @@ Many commands also support:
 | `ASPIRE_DCP_USE_DEVELOPER_CERTIFICATE` | Default `true`: DCP's internal server uses the ASP.NET Core dev certificate. Set `false` to opt out (DCP generates an ephemeral certificate). |
 | `ASPIRE_VERSION_CHECK_DISABLED`   | `true` skips the newer-version check on startup. |
 | `ASPIRE_PROXYLESS_ENDPOINT_PORT_RANGE` | (13.5+) Overrides the port range used for proxyless endpoints without an explicit public `port` (allocated during service preparation). Format `start-end`; default `10000-32767`. |
+| `ASPIRE_CONTAINER_RUNTIME=wslc` | (17.0, Windows) Run containers under WSLc 3.0.4.0+. Publish/deploy have preliminary support; Docker Compose deployment is **not** supported. `aspire doctor` reports unsupported WSLc capabilities. |
+| `ASPIRE_INIT_SOURCE_URL` / `_PATH` / `_REF` | (17.0) A Git repo (and optional config path and branch/full SHA) whose `aspire.config.json` `aspire new`/`aspire init` offer as a team configuration source. The CLI shows it and asks for consent; accepted sources copy `integrationSources` and `skillSources` into the local config and record a `configSource` binding. |
+| `ASPIRE_CLI_TELEMETRY_OPTOUT` | (17.0) `true` opts out of CLI product telemetry (now exported to Azure Monitor). |
+| `ASPIRE_DASHBOARD_TELEMETRY_OPTOUT` | (17.0) `true` opts the dashboard out of product telemetry (no longer follows IDE consent). Generated Compose/Helm dashboards set it by default. |
+
+### `aspire.config.json` keys (17.0 additions)
+
+| Key | Purpose |
+|---|---|
+| `integrationSources.<name>` | `{ "source": "<NuGet v3 index URL>", "patterns": ["Team.Hosting.*"] }` — extra feeds for `aspire add`, `aspire integration list/search`, and MCP discovery. `integrationSources.default.enabled: false` disables the built-in feed. |
+| `skillSources.<name>` | `{ "repository", "marketplace", "plugins" }` (OpenCode uses catalog URLs) — skill plugins `aspire agent init` registers. Replaces the single built-in `microsoft/aspire-skills` source; the CLI shows each enabled source with a trust warning before the picker. |
+| `configSource` | Binding written when a team config source is accepted; refresh with `aspire update --config-source`. |
+| `features.appHostServerV2` | `true` opts into the preview AppHost Server v2 bundled in the CLI. |
+| `experimentalPolyglotJava` / `…Python` / `…Rust` | Flat polyglot feature keys (were `experimentalPolyglot:java` etc.). Go needs no key. |
+| `sdk.version`, `packages` | Polyglot AppHosts: the Aspire SDK version and a `{ "Aspire.Hosting.X": "17.0.0" }` package map (`aspire add` / `aspire update` maintain it). |
+| `containerTunnel.baseImage` | Mirrored/custom container tunnel base image (`aspire config set containerTunnel.baseImage <image>`). |
+
+`aspire config set` is array-aware in 17.0: `key[0]` edits an element, the next index appends.
 
 ---
 
@@ -93,16 +119,27 @@ aspire new [<template>] [options]
 #   --version <version>      Version of templates to use
 #   --channel <channel>      Channel (stable, daily)
 #   --language <language>    AppHost language
+#   --template-path <dir>    (17.0+) Unpacked .NET template package directory (repo-relative with
+#                            --template-repository)
+#   --template-repository <url>      (17.0+) Clone a Git repo containing templates
+#   --template-repository-ref <ref>  (17.0+) Branch, tag, or full commit SHA (default: remote HEAD)
+#   --use-config-source[=false]      (17.0+) Accept/decline a proposed Git configuration source
 #   --suppress-agent-init    Skip AI agent environment configuration after creation
-#   --skill-locations <list> Skill locations to install (standard,claudecode,github,opencode | all | none)
-#   --skills <list>          Skills to install (CLI-provided: playwright-cli, dotnet-inspect | all | none)
+#   --agents <list>          (17.0+) copilot,claude,opencode | all | none (default: detected agents, else Copilot)
+#   --scope <project|global> (17.0+) Configuration and skill scope (default: project)
+#   --skills <list>          aspire,playwright-cli,dotnet-inspect | all | none (17.0 default: aspire;
+#                            dotnet-inspect needs a C# AppHost)
+#   --remove-skill-copies    (17.0+) Delete stale copied Aspire skill folders without asking (destructive)
+#   --skill-locations <list> (13.6 and earlier) standard,claudecode,github,opencode | all | none
 
 # Examples:
-aspire new aspire-starter
-aspire new aspire-starter -n MyApp -o ./my-app
-aspire new aspire-ts-cs-starter
-aspire new aspire-py-starter --use-redis-cache
-aspire new aspire-empty
+# Agents: always add --non-interactive --suppress-agent-init (this toolkit already provides the skill + MCP)
+aspire new aspire-starter -n MyApp -o ./my-app --non-interactive --suppress-agent-init
+aspire new aspire-ts-cs-starter -n MyApp -o ./my-app --non-interactive --suppress-agent-init
+aspire new aspire-py-starter -n MyApp -o ./my-app --use-redis-cache --non-interactive --suppress-agent-init
+aspire new aspire-go-starter -n aspire-app -o aspire-app --non-interactive --suppress-agent-init   # 17.0+
+aspire new aspire-empty -n MyApp -o ./my-app --non-interactive --suppress-agent-init
+aspire new --template-repository https://github.com/contoso/aspire-templates --template-path templates/api --suppress-agent-init   # 17.0+
 ```
 
 Available templates:
@@ -111,8 +148,28 @@ Available templates:
 - `aspire-ts-cs-starter` — ASP.NET Core/React starter, **C# AppHost**
 - `aspire-ts-starter` — Express/React starter, **TypeScript AppHost**
 - `aspire-py-starter` — FastAPI/React starter, **TypeScript AppHost** (13.3+: moved off `dotnet new`, no .NET authoring needed — the .NET SDK is still required under the hood; supports `--use-redis-cache`, uses `addUvicornApp`)
+- `aspire-go-starter` — Go API/React starter, **Go AppHost** (17.0+, preview)
 - `aspire-empty` — Empty AppHost (choose language)
 - `aspire-ts-empty` — Empty TypeScript AppHost
+- `aspire-go-empty` — Empty Go AppHost (17.0+, preview)
+
+17.0 C# templates generate `<Project Sdk="Microsoft.NET.Sdk">` with `Aspire.Hosting.AppHost` and
+`Aspire.Hosting.Dotnet` package references and `AddDotnetProject(...)` calls — no `Aspire.AppHost.Sdk`,
+no `ProjectReference`s, no `AspireUseCliBundle`.
+
+### `aspire template source` (17.0+)
+
+Manage global template sources searched by `aspire new` (stored in global settings).
+
+```bash
+aspire template source add <name> --repository <https-or-ssh-url> [--path <dir>] [--ref <ref>] [-y]
+aspire template source add <name> --path <absolute-local-dir>
+aspire template source list
+```
+
+`add` asks you to trust the source (default **No**); `-y/--yes` skips the prompt — use it only when the
+user has said to trust that source. Sources may set `displayName`; interactive `aspire new` groups
+their templates under headings.
 
 ### `aspire init`
 
@@ -122,27 +179,38 @@ Initialize Aspire in an existing project or solution.
 aspire init [options]
 
 # Options:
-#   --language <language>    AppHost language (csharp, typescript)
+#   --language <language>    AppHost language (csharp, typescript, go — go 17.0+)
 #   --file-based             (13.6+) Create apphost.cs in the current directory, skipping
 #                            .NET solution discovery. Requires C#.
+#   --use-config-source[=false]  (17.0+) Accept/decline a proposed Git configuration source
 #   --suppress-agent-init    Skip AI agent environment configuration
-#   --skill-locations <list> Skill locations to install (standard,claudecode,github,opencode | all | none)
-#   --skills <list>          Skills to install (CLI-provided: playwright-cli, dotnet-inspect | all | none)
+#   --agents / --scope / --skills / --remove-skill-copies   (17.0+) same as `aspire new`
+#   --skill-locations <list> (13.6 and earlier) standard,claudecode,github,opencode | all | none
 
 # Examples:
 cd my-existing-solution
-aspire init
-aspire init --language csharp --file-based   # file-based apphost.cs (13.6+)
+aspire init --language csharp --non-interactive --suppress-agent-init
+aspire init --language csharp --file-based --non-interactive --suppress-agent-init   # file-based apphost.cs (13.6+)
+mkdir apphost && cd apphost && aspire init --language go --non-interactive --suppress-agent-init   # 17.0+
 ```
 
-Scaffolds a **minimal AppHost skeleton + `aspire.config.json`** and (optionally) installs the
-`aspireify` agent skill, which the agent then uses to wire up the existing services. It does not
-modify existing projects, `global.json`, or dev-cert trust. What it creates depends on the repo:
+Scaffolds a **minimal AppHost skeleton + `aspire.config.json`** (and, unless `--suppress-agent-init`,
+sets up Microsoft's agent skills — agents using this toolkit pass `--suppress-agent-init` and then wire
+the services themselves with [Wiring](wiring.md)). It does not modify existing projects, `global.json`,
+or dev-cert trust. What it creates depends on the repo:
 
-- `.sln`/`.slnx` present + C# → a project-based `AppHost.csproj` added to the solution (with `ProjectReference`s);
-- C# `--file-based` (or chosen interactively) → `apphost.cs` with `#:sdk` / `#:package` directives;
+- `.sln`/`.slnx` present + C# → a project-based AppHost added to the solution (17.0: `Microsoft.NET.Sdk` +
+  `Aspire.Hosting.AppHost`/`Aspire.Hosting.Dotnet` packages and `AddDotnetProject`; 13.x: `Aspire.AppHost.Sdk`
+  with `ProjectReference`s);
+- C# `--file-based` (or chosen interactively) → `apphost.cs` with `#:package Aspire.Hosting.AppHost@<version>`
+  directives (13.x: `#:sdk Aspire.AppHost.Sdk@<version>`), plus `apphost.run.json`;
 - TypeScript → `apphost.mts` + `.aspire/modules/` + `tsconfig.apphost.json`; if the root already has a
-  `package.json`, the AppHost becomes a nested `aspire-apphost/` package.
+  `package.json`, the AppHost becomes a nested `aspire-apphost/` package. 17.0 also adds the language's
+  default hosting package (JavaScript), so `addViteApp` works without `aspire add`;
+- Go (17.0+) → `apphost.go`, `go.mod` (`replace … => ./.aspire/modules`), `.gitignore` (ignores `.aspire/`),
+  and `aspire.config.json` with `Aspire.Hosting.Go` in `packages`. It writes into the current directory and
+  stops if a `go.mod` already exists — run it from a subdirectory such as `apphost/`. The language is the
+  *AppHost* language, not the services' language. Needs Go 1.26+ (`gofmt` on `PATH`).
 
 Agent rules: **don't run `aspire init` when an AppHost already exists** (any detection signal in
 [SKILL.md](../SKILL.md)); pass `--language` when using `--non-interactive`; afterwards resolve
@@ -150,6 +218,8 @@ Agent rules: **don't run `aspire init` when an AppHost already exists** (any det
 `--source` / `--version` are deprecated no-ops on `init`, and `init` has no `--channel`.
 
 > **13.6:** `aspire new` and `aspire init` preselect repository-local skills (including `aspireify`); MCP is **unselected by default**.
+>
+> **17.0:** `aspire new`, `aspire init`, and `aspire agent init` share one agent/scope picker and register Microsoft's `aspire@aspire-skills` plugin instead of copying skills; selecting no agents (`--agents none`) writes nothing. **With this toolkit, pass `--suppress-agent-init`** — the toolkit's `aspire` skill and MCP server are already installed. Never add `--mcp` to `aspire new`/`aspire init`.
 
 ### `aspire run`
 
@@ -234,9 +304,13 @@ aspire stop [options]          # no --format option — use the exit code
 #                          13.6: volumes are PRESERVED by default
 #   --volumes              (13.6+) Also remove Aspire-owned named volumes (requires --force);
 #                          anonymous volumes and bind mounts are never removed
+#   --pid <pid>            (17.0+) Stop only the AppHost with this process ID (from `aspire ps`;
+#                          not the CLI's PID). With --apphost the path must match too.
+#                          Can't be combined with --all or --force.
 
 # Examples:
 aspire stop --apphost ./src/MyApp.AppHost
+aspire stop --apphost ./src/MyApp.AppHost --pid 41236   # one exact instance (17.0+)
 aspire stop --force --apphost <path>             # stop + clean up persistent resources, keep volumes (13.6)
 aspire stop --force --volumes --apphost <path>   # ...and delete Aspire-owned named volumes (13.6+)
 ```
@@ -277,17 +351,22 @@ aspire resources [options]
 # Options:
 #   --apphost <path>       Path to AppHost project file
 #   -f, --follow           Continuous streaming of resource state changes
-#   --format Json          Machine-readable output
+#   --format <Json|Mermaid|Table>  Machine-readable output; Mermaid (17.0+) = resource graph
+#                                  (can't be combined with --follow)
 #   --include-hidden       Include hidden resources (filtered out by default since 13.3)
 
 # Examples:
 aspire describe
+aspire describe api                  # one resource
 aspire describe --format Json
+aspire describe --format Mermaid > resources.mmd   # 17.0+
 aspire describe --follow             # live updates (used by VS Code extension)
 aspire describe --include-hidden     # show resources hidden by default
 ```
 
 > **13.6:** `describe` redacts secret environment variables, and `describe --follow` emits the current state immediately before streaming changes.
+>
+> **17.0:** the table's `Type` column shows friendly labels (`Redis`, `PostgreSQL Server`), and finished resources show their exit code (nonzero in red).
 
 ### `aspire resource` (13.2+)
 
@@ -401,9 +480,13 @@ aspire otel traces --search "POST /orders -resource:cache"
 
 ### `aspire terminal` (13.5+; no feature flag since 13.6)
 
-Attach to interactive terminal sessions on resources configured with the experimental
-`WithTerminal()` API (`ASPIRETERMINAL001`), database/cache REPLs from `WithRepl()`, or AppHost-owned
-terminals created through `TerminalService` — drive REPLs, shells, and other terminal programs.
+Attach to interactive terminal sessions on resources configured with `WithTerminal()` (experimental
+`ASPIRETERMINAL001` until 13.6; no suppression in 17.0), database/cache REPLs from `WithRepl()`, or
+AppHost-owned terminals created through `TerminalService` — drive REPLs, shells, and other terminal programs.
+
+> **17.0:** `attach` and `tape play` resolve an exact resource *instance* ID; the legacy `--replica`/`-r`
+> option is hidden but still works. In the dashboard, terminals moved to a dedicated Terminals page
+> (`E` shortcut; backtick opens the dock).
 
 ```bash
 aspire terminal ps [--format Json] [-v]   # list resource-owned AND AppHost-owned terminals (13.6)
@@ -415,8 +498,9 @@ aspire terminal tape play <resource> --tape-file <path.tape> [-r <replica>] [--t
 ```
 
 > **Changed in 13.6:** the `features.terminalCommandsEnabled` flag no longer exists — the
-> command group is always available. The AppHost still needs the `terminals.v1` capability and
-> the hosting APIs remain experimental (`ASPIRETERMINAL001`).
+> command group is always available. The AppHost still needs the `terminals.v1` capability. In 13.x
+> the hosting APIs are experimental (`ASPIRETERMINAL001`); 17.0 drops it for `WithTerminal`/`TerminalOptions`
+> but keeps it for `TerminalService` and terminal automation.
 
 The dashboard can also attach/detach from the same sessions in its terminal dock.
 
@@ -430,11 +514,14 @@ aspire ps [options]
 # Options:
 #   --format Json          Machine-readable output
 #   -f, --follow           (13.5+) Keep running and emit updates as AppHosts change;
-#                          JSON output is newline-delimited full snapshots
+#                          JSON output is newline-delimited changed AppHost records
+#   --output <Default|Snapshot>  Snapshot = full AppHost snapshots with resource health,
+#                          heartbeats, and errors (requires --follow --format json)
 
 # Examples:
 aspire ps
 aspire ps --format Json
+aspire ps --follow --format json --output snapshot
 ```
 
 > **Breaking change (13.5):** `--resources` and `--include-hidden` were removed. `aspire ps` now
@@ -462,7 +549,7 @@ aspire ls
 Run comprehensive environment diagnostics.
 
 ```bash
-aspire doctor
+aspire doctor [--format Json]
 
 # Checks:
 #   - HTTPS development certificate status
@@ -473,9 +560,17 @@ aspire doctor
 #   - Operating-system details, incl. Linux distro info from /etc/os-release (13.5+)
 #   - Visual Studio Code detection (13.5+)
 #   - DCP health checks (13.5+)
+#   - Go toolchain version for Go AppHosts — Go 1.26+ (17.0+)
+#   - Only the *configured* container runtime; auto-detect lists Docker, Podman, WSLc (17.0+)
+#   - Stale copied Aspire skill folders that would shadow the skills plugin (17.0+)
 #
 # JSON output includes a structured `operating-system` check for tooling (13.5+).
 ```
+
+> **17.0:** `doctor` warns about copied Aspire skill folders (from 13.x `aspire agent init`) and suggests
+> `aspire agent init --skills aspire`. With this toolkit, don't follow that suggestion on your own — it
+> installs Microsoft's skills plugin. Tell the user the copies are stale and that this toolkit's skill
+> takes precedence; delete the folders only if they ask.
 
 ### `aspire dashboard run` (Preview, 13.3+)
 
@@ -522,7 +617,7 @@ aspire docs api get <id>                    # get the markdown for an API item
 # Options:
 #   --limit <n>            Limit search results
 #   --section <name>       Get a specific section of a doc page
-#   --language <lang>      (docs api search) limit results to a language, e.g. csharp / typescript
+#   --language <lang>      (docs api list/search/get) csharp / typescript / go (go 17.0+)
 #   --format Json          Machine-readable output
 
 # Examples:
@@ -532,6 +627,7 @@ aspire docs get getting-started
 aspire docs get getting-started --section "prerequisites"
 aspire docs list
 aspire docs api search WithReference --language csharp
+aspire docs api search AsOptional --language go          # 17.0+
 ```
 
 ### `aspire export` (13.2+)
@@ -558,21 +654,35 @@ aspire export -o ./diagnostics.zip
 
 ### `aspire secret` (13.2+)
 
-Manage AppHost user secrets without requiring the .NET CLI.
+Manage AppHost secrets without requiring the .NET CLI.
 
 ```bash
-aspire secret set <key> <value> [options]
+aspire secret set <key> [<value>] [options]   # omit <value> for a masked prompt (17.0+)
+aspire secret get <key> [options]             # 17.0+
 aspire secret list [options]
+aspire secret delete <key> [options]          # 17.0+
+aspire secret path [options]                  # 17.0+ — print the store path
 
 # Options:
-#   --apphost <path>       Path to AppHost project file
-#   --format Json          Machine-readable output
+#   --apphost <path>             Path to AppHost project file or directory (run from the AppHost dir)
+#   -e, --environment <name>     (17.0+) Environment whose secrets file is used (case-insensitive;
+#                                default Development)
+#   --envvar <NAME>              (17.0+, set) Read the value from an environment variable
+#   --format Json                Machine-readable output (list)
 
 # Examples:
 aspire secret set "Parameters:ApiKey" "my-secret-key"
+aspire secret set Parameters:database-password --environment production --envvar DATABASE_PASSWORD
 aspire secret list
 aspire secret list --format Json
 ```
+
+> **17.0 (breaking):** secrets are stored per AppHost and environment in
+> `~/.aspire/secrets/<apphost-id>/<environment>.json` instead of .NET user secrets (existing Development
+> user secrets are imported). Non-interactive `set` must get a value or `--envvar`. Prefer `--envvar` in
+> agent and CI runs so the value never appears in the command line or shell history. Secrets are local
+> only — for CI deploys set `Parameters__<name>` env vars on the deploy process instead. `list` shows
+> names; never print secret values back to the user.
 
 ### `aspire certs` (13.2+)
 
@@ -670,13 +780,14 @@ Useful for confirming exact polyglot method signatures before generating AppHost
 aspire sdk export --language <language> [options] > api.json
 
 # Options:
-#   --language <language>        (required) Target language, e.g. typescript
+#   --language <language>        (required) Target language: typescript, or go (17.0+)
 #                                (its -l short alias collides with the global -l/--log-level — use the long form)
 #   -p, --package <Name@Version> Package to export (default: Aspire.Hosting at the CLI's SDK version)
 
 # Examples:
 aspire sdk export --language typescript --package Aspire.Hosting.Redis@13.6.0
 aspire sdk export --language typescript --package Aspire.Hosting.Java@13.6.0-preview.1.26479.8
+aspire sdk export --language go --package Aspire.Hosting.Redis@17.0.0   # 17.0+
 ```
 
 > Observed on 13.6.0: exporting the default `Aspire.Hosting` package failed with "No managed
@@ -791,12 +902,15 @@ aspire destroy [options] [-- <additional arguments>]
 #   --include-exception-details        Include stack traces in pipeline logs
 #   --no-build                         Don't build or restore the AppHost first
 #   --list-steps                       List the steps without running them
+#   --format <Json|Table>              Output format
 #   -y, --yes                          Do not prompt for confirmation before destroying
 
 # Examples:
 aspire destroy
 aspire destroy -e Staging -y
 ```
+
+> **17.0:** `destroy` rejects unknown options and positional arguments instead of ignoring them.
 
 ### `aspire update` (Preview)
 
@@ -813,14 +927,23 @@ aspire update [options]
 #                          (e.g. legacy TypeScript AppHost entry apphost.ts → apphost.mts)
 #   --nuget-config-dir <dir>  Directory to create or update the NuGet.config file in (13.5+)
 #   --channel <channel>    Channel to update to (stable, daily)
+#   --config-source        (17.0+) Re-apply allowed settings from the saved Git configuration source
+#                          (replaces local edits to those settings; doesn't update packages or the CLI)
+#   --use-config-source[=false]  (17.0+) Accept/decline a proposed configuration source
 
 # Examples:
 aspire update                          # Update project integrations
 aspire update --self                   # Update the CLI itself
+aspire update --self --channel stable --non-interactive --yes   # agent/CI self-update (needs --channel)
 aspire update --self --channel daily   # Update CLI to daily build
 aspire update -y                       # Non-interactive (CI)
 aspire update --migrate                # Update + apply pending migrations (13.5+)
+aspire update --config-source          # Refresh team defaults (17.0+)
 ```
+
+> **17.0:** `aspire update` does **not** move a C# AppHost off the obsolete `Aspire.AppHost.Sdk`;
+> `--migrate` reports that the manual `ASPIRE012` steps are needed. The version-skew warning now appears
+> only when the CLI is older than the AppHost SDK.
 
 ### `aspire mcp`
 
@@ -865,25 +988,39 @@ Agent and AI assistant integration commands.
 ```bash
 aspire agent init
 aspire agent init --mcp            # (13.6+) also configure the Aspire MCP server
+aspire agent init --agents claude --scope project --skills aspire --non-interactive   # 17.0+
 
-# Options:
+# Options (17.0):
 #   --workspace-root <path>    Workspace root directory
-#   --skill-locations <list>   standard,claudecode,github,opencode | all | none
-#   --skills <list>            Skills to install (CLI-provided: playwright-cli, dotnet-inspect | all | none)
+#   --agents <list>            copilot,claude,opencode | all | none (default: detected agents,
+#                              else Copilot). Selecting none writes nothing.
+#   --scope <project|global>   Configuration and skill scope (default: project)
+#   --skills <list>            aspire,playwright-cli,dotnet-inspect | all | none (default: aspire;
+#                              dotnet-inspect needs a C# AppHost)
+#   --remove-skill-copies      Delete copied Aspire skill folders (incl. local edits) without asking,
+#                              when the plugin replaces them at the selected scope. Destructive.
 #   --mcp                      (13.6+) Configure the MCP server; omit = leave MCP unconfigured,
 #                              --mcp=false = explicit opt-out
-
-# Interactive — detects your AI environment and creates config files + skill files.
-# Supported environments:
-# - VS Code (GitHub Copilot)
-# - Copilot CLI
-# - Claude Code
-# - OpenCode
+#
+# 13.6 and earlier also had:
+#   --skill-locations <list>   standard,claudecode,github,opencode | all | none   (removed in 17.0)
+#   --aspire-source <...>      embedded skills bundle source                     (removed in 17.0)
 
 # On 13.1, use `aspire mcp init` instead.
 ```
 
-Generates the appropriate configuration and skill files for your detected AI tool.
+**17.0 model:** instead of copying skill files into the repo, `agent init` registers Microsoft's skills
+plugin (`aspire@aspire-skills` from `microsoft/aspire-skills`, or the sources in `skillSources`) with
+each selected agent's own plugin/marketplace system — GitHub Copilot (incl. AppImage installs), Claude
+Code, and OpenCode (skill catalogs). Updates then arrive through the agent's plugin updates, not a new
+CLI bundle; re-running `agent init` doesn't move a pinned version. After it runs, **reload the agent**;
+a missing `.agents/skills/aspire/SKILL.md` is expected. Older copied skills are removed only when the
+plugin replaces them (or reported by `aspire doctor`). Enabled skill sources are listed with trust
+warnings above the picker. `--non-interactive` now works with multiple AppHosts in the workspace.
+
+> **With this toolkit:** you don't need `aspire agent init` — the toolkit's `aspire` plugin provides the
+> skill and the Aspire MCP server (`aspire agent mcp` in its `.mcp.json`). Run it only when the user asks
+> (e.g. to set up a teammate's agent), and then say that it installs Microsoft's plugin alongside the toolkit.
 
 > **Changed in 13.6:** `aspire agent init` defaults to **skills only, without MCP**. Interactive standalone setup offers MCP as an opt-in; pass `--mcp` in scripts. GitHub Copilot is detected even without the standalone Copilot CLI on `PATH`.
 See [MCP Server](mcp-server.md) for details.
@@ -912,6 +1049,9 @@ The following commands are **not valid**. Use alternatives:
 | `aspire start` (on 13.1)          | Use `aspire run` (foreground only on 13.1)                           |
 | `aspire describe` (on 13.1)       | Use MCP `list_resources` tool or dashboard                           |
 | `aspire logs` (on 13.1)           | Use MCP `list_console_logs` tool or dashboard                        |
+| `aspire agent init --skill-locations` / `--aspire-source` (on 17.0) | Use `--agents` / `--scope` / `--skills`                  |
+| `go run .` for a Go AppHost        | Use `aspire start` / `aspire run`                                    |
+| `dotnet run --operation publish` (17.0) | Use `aspire publish` (now fails fast)                           |
 
 ---
 
@@ -927,4 +1067,40 @@ The `dotnet` CLI can perform some Aspire tasks:
 | N/A                         | `dotnet build ./AppHost`         |
 | N/A                         | `dotnet test ./Tests`            |
 
-The Aspire CLI adds value with `start`, `stop`, `wait`, `describe`, `resource`, `logs`, `otel`, `ps`, `ls`, `doctor`, `docs`, `export`, `secret`, `certs`, `publish`, `deploy`, `destroy`, `add`, `integration`, `mcp`, `agent`, `config`, `cache`, `do`, `restore`, and `update` — commands that have no direct `dotnet` equivalent.
+The Aspire CLI adds value with `start`, `stop`, `wait`, `describe`, `resource`, `logs`, `otel`, `ps`, `ls`, `doctor`, `docs`, `export`, `secret`, `certs`, `publish`, `deploy`, `destroy`, `add`, `integration`, `mcp`, `agent`, `config`, `cache`, `do`, `restore`, `update`, and (17.0) `template`, `completions`, and `tray` — commands that have no direct `dotnet` equivalent.
+
+### `aspire tray` (17.0+, Preview)
+
+Manage the **tray companion** — a desktop icon and panel for your local AppHosts, so you don't have to
+keep re-running `aspire ps`.
+
+```bash
+aspire tray start   # start the tray companion, or restore its icon if it's already running
+aspire tray stop    # stop the tray — running AppHosts are NOT stopped
+```
+
+Only the global options apply (`--non-interactive`, `-l/--log-level`, `--nologo`, …).
+
+**What it does:** discovers local AppHosts and shows their aggregate resource health (colored dots;
+gray square = stopped; "No resources" when nothing is visible), lets you open the dashboard, start
+AppHosts, stop an *exact* instance, and manage pinned favorites and history. `tray start` doesn't
+change desktop configuration or register itself for login startup. On Linux, `tray stop` cancels any
+open tray dialogs without confirming their actions or saving settings.
+
+**Where it runs:**
+
+| Platform | Surface | Requirements |
+|---|---|---|
+| macOS | Menu bar icon | Native CLI install |
+| Windows | Notification area icon | Native CLI install |
+| Linux (glibc x64/ARM64) | StatusNotifierItem icon; GNOME renders the D-Bus menu via an AppIndicator extension, other desktops get an Aspire-owned panel | Graphical session, GTK 3, a StatusNotifierItem host (e.g. Waybar's tray module); GNOME: an AppIndicator library + enabled extension; non-GNOME Wayland: `libgtk-layer-shell.so.0` + a layer-shell compositor; non-GNOME X11: a compositing manager |
+
+Not supported: headless sessions, musl-based distros, managed development builds, or running through
+.NET CLI commands — it needs a **native Aspire CLI bundle that includes the tray companion** (the
+command is hidden from `--help` where it's unsupported). If no tray host is available, `tray start`
+says so; the icon appears once tray support becomes available.
+
+**Agent guidance:** the tray is a human-facing UI. Start it only when the user asks for it, and don't
+use it as a lifecycle or status signal — keep using `aspire ps` / `aspire describe` / `aspire wait` /
+`aspire stop --apphost <path>` (or `--pid`). Stopping the tray never stops AppHosts, so it's not a
+cleanup step either.

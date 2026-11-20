@@ -7,8 +7,21 @@ Aspire provides `Aspire.Hosting.Testing` for running integration tests against y
 ## Package
 
 ```xml
-<PackageReference Include="Aspire.Hosting.Testing" Version="*" />
+<!-- Same version as the AppHost's Aspire packages (17.0.0 for a 17.0 AppHost) -->
+<PackageReference Include="Aspire.Hosting.Testing" Version="17.0.0" />
+<ProjectReference Include="..\MyApp.AppHost\MyApp.AppHost.csproj" />
 ```
+
+The test project references the AppHost project; `Projects.<AppHostName>` (dots become underscores, e.g.
+`Projects.MyApp_AppHost`) is generated from that reference. This still works in 17.0 with an AppHost on
+`Microsoft.NET.Sdk` + `Aspire.Hosting.AppHost` (verified with the 17.0 `aspire-starter` xUnit template).
+Templates: `dotnet new aspire-xunit|aspire-mstest|aspire-nunit`, or `aspire-starter --test-framework xUnit.net`.
+
+> **17.0 changes:** `DistributedApplicationTestingBuilder.CreateAsync` fails fast when the target is a
+> Microsoft.Testing.Platform test project; an AppHost that crashes after build now surfaces from
+> `StartAsync`, not `BuildAsync` (put your `try`/assert around `StartAsync`); `FileSystemService` works on the
+> testing builder. Required parameters can't be empty — supply test values (e.g. via `args` /
+> `Parameters:<name>` configuration) or mark them `AsOptional()`.
 
 ---
 

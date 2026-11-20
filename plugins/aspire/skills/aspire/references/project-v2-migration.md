@@ -1,17 +1,36 @@
-# Project v2 Migration — `AddProject` → `AddDotnetProject` (13.6+)
+# Project v2 Migration — `AddProject` → `AddDotnetProject` (13.6+, default in 17.0)
 
 "Project v2" moves .NET services from the legacy `ProjectResource` model (`AddProject<T>`,
 `AddProject(name, path)`, `AddCSharpApp`) to `DotnetProjectResource` (`AddDotnetProject`, package
 `Aspire.Hosting.Dotnet`). Project v2 resources are launched through the .NET SDK with
 executable-based identity, take part in **coordinated restore/build groups**, get per-resource
 **Rebuild** commands, and publish through **.NET SDK container publishing**. See
-[Polyglot APIs](polyglot-apis.md) for the API surface and [Migration](migration.md) for the 13.6 notes.
+[Polyglot APIs](polyglot-apis.md) for the API surface and [Migration](migration.md) for the 13.6 and 17.0 notes.
 
-> The 13.6 CLI ships an `aspire-project-v2-migration` skill (installed by `aspire agent init` /
-> `aspire init`). If it exists in the repo (`.agents/skills/…`, `.claude/skills/…`), follow it — this
-> page summarizes the same rules for repos without it.
+> This page is the complete migration procedure — it covers the rules of Microsoft's
+> `aspire-project-v2-migration` skill, so you don't need that skill (or its plugin) installed.
 
-**Verified on CLI 13.6.0:** `AddDotnetProject(name, path)` and
+### What changed in 17.0
+
+- **`Aspire.Hosting.Dotnet` is stable** (follows the normal 17.0.0 versioning — no more
+  `13.6.0-preview.*`) and supports SDK-style **C#, F#, and VB** projects plus file-based C# apps.
+- **`AddProject` is deprecated** and **`AddCSharpApp` / `addCSharpApp` are `[Obsolete]`** (`CS0618`,
+  replacing `ASPIRECSHARPAPPS001`). Both still work — deprecation is a reason to *offer* the migration,
+  not to perform it unasked.
+- **New templates already use Project v2:** `Microsoft.NET.Sdk` + `Aspire.Hosting.AppHost` +
+  `Aspire.Hosting.Dotnet` package references and `AddDotnetProject("name", "../X/X.csproj")` calls.
+- **`Aspire.AppHost.Sdk` is obsolete (`ASPIRE012`)** — and the SDK is what turns `ProjectReference`s into
+  `Projects.*` types. Moving a 17.0 AppHost off the SDK therefore *is* a Project v2 migration (see
+  [§ 7](#7-moving-off-aspireapphostsdk-170)).
+- **No .NET 11 SDK requirement** — a 17.0 AppHost with `AddDotnetProject` builds and publishes with the
+  .NET 10 SDK (verified on 10.0.404).
+- **`aspire run --watch` doesn't support `AddDotnetProject` yet** — tell the user; use the resource's
+  Rebuild command (`aspire resource <name> rebuild`) instead.
+- **Visual Studio "Enlist in Aspire orchestration"** may still emit `AddProject<TProject>`, which fails
+  with `CS0234` on a Project v2 AppHost (no generated `Projects` type). Fix: `aspire add Aspire.Hosting.Dotnet`
+  from the AppHost directory, then `builder.AddDotnetProject("webapplication1", "../WebApplication1/WebApplication1.csproj")`.
+
+**Verified on CLI 13.6.0 (unchanged in 17.0 templates):** `AddDotnetProject(name, path)` and
 `AddDotnetProject(name, path, Action<ProjectResourceOptions>)`; `ProjectResourceOptions` has
 `LaunchProfileName`, `ExcludeLaunchProfile`, `ExcludeKestrelEndpoints`; TS
 `addDotnetProject(name, path, options?: DotnetProjectOptions)` with a **flat** options object;
@@ -35,19 +54,21 @@ Already-migrated AppHosts, or AppHosts with no matching resources, are a no-op �
 ## 2. Eligibility gate (stop without edits if it fails)
 
 1. Pick **one exact AppHost** and read its real Aspire version:
-   - project AppHost — `Aspire.AppHost.Sdk` / `Aspire.Hosting.AppHost` (incl. central package management);
-   - file-based — `#:sdk` / `#:package` directives (and `global.json`);
+   - project AppHost — `Aspire.AppHost.Sdk` version / `Aspire.Hosting.AppHost` package (incl. central package management);
+   - file-based — `#:sdk` / `#:package` directives (and `global.json`; 17.0 file-based AppHosts have only `#:package`);
    - TypeScript — `aspire.config.json` `sdk.version` and the package graph.
 2. **Stop** if the version is below 13.6, unresolved, or conflicting (e.g. SDK 13.6 but packages 13.5).
    The CLI version, .NET SDK, service `TargetFramework`s, and neighbouring AppHosts are not evidence.
 3. **Never upgrade Aspire implicitly** — that's an `aspire update` decision for the user.
-4. Add `Aspire.Hosting.Dotnet` at the version compatible with the AppHost (it is prerelease:
-   `13.6.0-preview.*`). Coordinated builds need .NET SDK **11.0.100-rc.1+** (see [Troubleshooting](troubleshooting.md)).
+4. Add `Aspire.Hosting.Dotnet` at the **same version as the AppHost** — `17.0.0` on 17.0 (stable);
+   on 13.6 it is prerelease (`13.6.0-preview.*`) and coordinated builds need .NET SDK **11.0.100-rc.1+**
+   (see [Troubleshooting](troubleshooting.md)).
 5. TypeScript: if the generated SDK still exposes only the handle-based `ProjectResourceOptions` for
    `addDotnetProject` (no flat `DotnetProjectOptions`), stop — don't invent a fallback API.
 
 **Unsupported or needs a user decision:** Azure Functions projects and unknown `ProjectResource`
-subtypes; F# (`.fsproj`) / VB (`.vbproj`) projects (assessment only); direct `new ProjectResource(...)`;
+subtypes; F# (`.fsproj`) / VB (`.vbproj`) projects on 13.6 (assessment only — supported from 17.0);
+direct `new ProjectResource(...)`;
 code that consumes `GetProjectResources()`, casts to `ProjectResource`, or uses generic constraints on
 it; custom publishers / image managers; extension methods constrained to `ProjectResource`;
 file-based apps combined with `WithBuildEnvironment` or the EF CLI; ambiguous path/metadata mapping.
@@ -105,7 +126,7 @@ tag, and platform go through `WithContainerBuildOptions`, never through build-en
 
 ## 4. Diagnostics
 
-- **No `ASPIREDOTNETPROJECT001` suppression on 13.6.** The diagnostic was removed from
+- **No `ASPIREDOTNETPROJECT001` suppression on 13.6 or 17.0.** The diagnostic was removed from
   `AddDotnetProject`, `DotnetProjectResource`, `WithBuildEnvironment`, `AddDotnetProjectBlazorGateway`,
   and its `WithBlazorClientApp` overload (the API reference pages may still show the old annotation —
   the 13.6 diagnostic page is authoritative). Remove existing suppressions; don't add new ones.
@@ -113,7 +134,12 @@ tag, and platform go through `WithContainerBuildOptions`, never through build-en
 - `AddEFMigrations` overloads for `IDotnetProgramResource` are experimental under
   **`ASPIREPROJECTS001`** (the legacy `ProjectResource` overload isn't) — add a narrow paired
   `#pragma warning disable/restore` when switching an EF migration resource to Project v2.
-- Legacy `AddCSharpApp` needed `ASPIRECSHARPAPPS001`; drop that suppression once nothing uses it.
+- Legacy `AddCSharpApp` needed `ASPIRECSHARPAPPS001` (13.x) and reports `CS0618` in 17.0; drop those
+  suppressions once nothing uses it. `AddProject` calls left in place on 17.0 may also report obsoletion
+  warnings — keep any `CS0618` suppression narrow and paired.
+- **`ASPIRE012`** (17.0) — obsolete `Aspire.AppHost.Sdk`. Suppress temporarily with
+  `<SuppressAspireAppHostSdkObsoleteWarning>true</SuppressAspireAppHostSdkObsoleteWarning>` only if the
+  user defers the SDK move.
 
 ## 5. Publishing, Dockerfiles, Blazor, EF
 
@@ -156,3 +182,47 @@ tag, and platform go through `WithContainerBuildOptions`, never through build-en
    options).
 5. On failure, report the exact failing step and keep the user's edits. Never fabricate a fallback API
    or disable AOT to make a check pass.
+
+## 7. Moving off `Aspire.AppHost.Sdk` (17.0)
+
+Same approval boundary as § 1 — assess, show the plan, then edit. `aspire update` doesn't do this and
+`aspire update --migrate` only reports it.
+
+**Project AppHost** — before → after:
+
+```xml
+<!-- Before (13.x / legacy SDK) -->
+<Project Sdk="Aspire.AppHost.Sdk/13.6.0">
+  <ItemGroup>
+    <ProjectReference Include="..\Api\Api.csproj" />
+  </ItemGroup>
+</Project>
+
+<!-- After (17.0, what `aspire new aspire-starter` generates) -->
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <UserSecretsId>…keep the existing value…</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="17.0.0" />
+    <PackageReference Include="Aspire.Hosting.Dotnet" Version="17.0.0" />
+  </ItemGroup>
+</Project>
+```
+
+1. Change `Sdk="Aspire.AppHost.Sdk/…"` to `Sdk="Microsoft.NET.Sdk"`; keep `OutputType`, the target
+   framework (`net10.0`+), `UserSecretsId`, and other properties.
+2. Add `PackageReference`s for `Aspire.Hosting.AppHost` and `Aspire.Hosting.Dotnet` (with central package
+   management, add `PackageVersion` entries instead of inline versions).
+3. Replace every resource `AddProject<Projects.X>(…)` with `AddDotnetProject(name, path)` using the mapping
+   in § 3, then remove only the `ProjectReference`s that served those resources (§ 5 rules). Without the
+   SDK, `Projects.*` types are no longer generated, so any remaining `AddProject<Projects.X>` fails to
+   compile — all of them must move in the same change.
+4. Remove `AspireUseCliBundle` (17.0 requires the CLI bundle) and any `ASPIRE012` suppression.
+5. Validate as in § 6.
+
+**File-based AppHost** — replace `#:sdk Aspire.AppHost.Sdk@<version>` with
+`#:package Aspire.Hosting.AppHost@17.0.0` and add `#:package Aspire.Hosting.Dotnet@17.0.0`; drop
+`#:property AspireUseCliBundle=true`; keep the other `#:package` lines on the same 17.0.0 version.
